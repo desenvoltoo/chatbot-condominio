@@ -252,12 +252,24 @@
                 <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Testar →</span>
               </button>
 
+              <!-- Action 2.1: Interrupção & Troca de Fluxo -->
+              <button onclick="simulateSwitchFromBoletoToAttendant()" class="w-full text-left p-3 rounded-xl bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/50 hover:border-amber-400 text-xs text-amber-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">🔄</span>
+                  <div>
+                    <strong class="block text-amber-200 group-hover:text-amber-100">3. Mudança de Ideia (Boleto ➔ Atendente)</strong>
+                    <span class="text-[11px] text-amber-300/80">Pede boleto e depois troca para atendente sem travar</span>
+                  </div>
+                </div>
+                <span class="text-amber-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Testar →</span>
+              </button>
+
               <!-- Action 3: CPF -->
               <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
                 <div class="flex items-center gap-2.5">
                   <span class="text-base">🔑</span>
                   <div>
-                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">3. Enviar CPF Válido (123.456.789-09)</strong>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">4. Enviar CPF Válido (123.456.789-09)</strong>
                     <span class="text-[11px] text-slate-400">Gera linha digitável, Pix Copia e Cola e PDF</span>
                   </div>
                 </div>
@@ -954,6 +966,18 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         return;
       }
 
+      // Interceptador Global: Atendente Humano (funciona em QUALQUER etapa do fluxo, mesmo no meio do pedido de CPF/boleto)
+      const termosAtendente = [
+        'atendente', 'humano', 'operador', 'pessoa', 'falar com alguém',
+        'falar com alguem', 'falar com atendente', 'suporte', 'atendimento',
+        'ajuda', 'socorro', 'com atendente', 'moça', 'rapaz', 'falar com gente'
+      ];
+      if (termosAtendente.some(termo => lower.includes(termo)) && botState !== 'ATENDIMENTO_HUMANO') {
+        botState = 'ATENDIMENTO_HUMANO';
+        addMessage(`👤 <strong>Transferindo para Atendente Humano...</strong><br><br>Entendido! Interrompi a consulta anterior e já coloquei você na nossa fila prioritária com a equipe da administradora.<br><br>Um atendente responderá por aqui em breve.<br><br><em>(Digite <strong>MENU</strong> ou <strong>SAIR</strong> para voltar ao robô)</em>`, false, true);
+        return;
+      }
+
       if (botState === 'INICIO') {
         if (lower.includes('boleto') || lower.includes('pix') || lower.includes('segunda via') || lower.includes('pagar')) {
           botState = 'AGUARDANDO_CPF';
@@ -981,9 +1005,16 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       }
 
       if (botState === 'AGUARDANDO_CPF') {
+        // Se o morador mudar de ideia e quiser relatar um problema
+        if (['ocorrencia', 'ocorrência', 'reclamacao', 'reclamação', 'manutencao', 'manutenção', 'vazamento', 'barulho', 'cano', 'luz'].some(t => lower.includes(t))) {
+          botState = 'MENU_PRINCIPAL';
+          addMessage(`🛠️ <strong>Abertura de Chamado</strong><br><br>Sem problemas! Mudamos de boleto para abertura de chamado.<br>Protocolo <strong>#MANUT-84920</strong> criado com sucesso para o zelador e síndico.<br><br>Digite <strong>MENU</strong> para voltar.`, false, true);
+          return;
+        }
+
         const cleanCpf = userText.replace(/\D/g, '');
         if (cleanCpf.length !== 11 || /^(\d)\1{10}$/.test(cleanCpf)) {
-          addMessage(`⚠️ <strong>CPF inválido.</strong> Por favor, informe um CPF válido com 11 dígitos para consulta de cota condominial.`, false, true);
+          addMessage(`⚠️ <strong>CPF inválido.</strong> Por favor, informe um CPF válido com 11 dígitos para consulta de cota condominial.<br><br><em>(Ou digite <strong>ATENDENTE</strong> se preferir falar com um colaborador)</em>`, false, true);
           return;
         }
 
@@ -1234,6 +1265,29 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         `;
         addMessage(lockHtml, false, true);
       }, 800);
+    }
+
+    function simulateSwitchFromBoletoToAttendant() {
+      addMessage('Quero a 2ª via do boleto deste mês por favor', true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        botState = 'AGUARDANDO_CPF';
+        addMessage(`📄 Perfeito! Para localizar sua cota condominial, por favor <strong>digite o seu CPF</strong> (apenas números):`, false, true);
+
+        // Morador muda de ideia repentinamente e pede para falar com atendente
+        setTimeout(() => {
+          addMessage('Na verdade prefiro falar direto com um atendente humano, pode ser?', true);
+          setTyping(true);
+
+          setTimeout(() => {
+            setTyping(false);
+            botState = 'ATENDIMENTO_HUMANO';
+            addMessage(`👤 <strong>Transferindo para Atendente Humano...</strong><br><br>Entendido! Cancelei a consulta de CPF e já coloquei você na nossa fila com a equipe da administradora.<br><br>Um atendente responderá por aqui em instantes.<br><br><em>(Digite <strong>MENU</strong> para voltar ao robô a qualquer momento)</em>`, false, true);
+          }, 650);
+        }, 1100);
+      }, 700);
     }
 
     function copyToClipboard(text, msg) {
