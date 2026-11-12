@@ -312,12 +312,24 @@
                 <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Listar →</span>
               </button>
 
-              <!-- Action 8: Atendente -->
+              <!-- Action 8: Aviso em Grupo de Condomínio -->
+              <button onclick="simulateGroupAnnouncement()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-teal-950/50 to-slate-900 hover:from-teal-900/60 hover:to-slate-800 border border-teal-500/40 hover:border-teal-400 text-xs text-teal-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">📢</span>
+                  <div>
+                    <strong class="block text-teal-200 group-hover:text-teal-100">8. Disparo de Avisos em Grupo do Condomínio</strong>
+                    <span class="text-[11px] text-teal-300/80">Simula envio simultâneo nos grupos oficiais de prédios</span>
+                  </div>
+                </div>
+                <span class="text-teal-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Disparar →</span>
+              </button>
+
+              <!-- Action 9: Atendente -->
               <button onclick="sendQuickMessage('Gostaria de falar com um atendente humano')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
                 <div class="flex items-center gap-2.5">
                   <span class="text-base">👤</span>
                   <div>
-                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">8. Falar com Atendente Humano</strong>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">9. Falar com Atendente Humano</strong>
                     <span class="text-[11px] text-slate-400">Funciona a qualquer momento para transbordo imediato</span>
                   </div>
                 </div>
@@ -393,18 +405,18 @@
                     </button>
                     <!-- Avatar -->
                     <div class="relative">
-                      <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-50 text-slate-800 font-extrabold flex items-center justify-center text-sm shadow">
+                      <div id="headerAvatar" class="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-50 text-slate-800 font-extrabold flex items-center justify-center text-sm shadow">
                         🏢
                       </div>
-                      <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#005d4b]"></span>
+                      <span id="headerOnlineDot" class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#005d4b]"></span>
                     </div>
                     <div>
                       <div class="flex items-center gap-1">
-                        <h4 class="font-bold text-xs leading-tight text-white">Administradora Modelo</h4>
+                        <h4 id="headerTitle" class="font-bold text-xs leading-tight text-white">Administradora Modelo</h4>
                         <!-- Verified Badge -->
-                        <svg class="w-3.5 h-3.5 text-emerald-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        <svg id="headerVerified" class="w-3.5 h-3.5 text-emerald-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                       </div>
-                      <p class="text-[10px] text-emerald-200">Conta Comercial Oficial • online</p>
+                      <p id="headerSubtitle" class="text-[10px] text-emerald-200">Conta Comercial Oficial • online</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3 text-emerald-100 text-sm">
@@ -1292,10 +1304,58 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       document.getElementById('pdfModal').classList.add('hidden');
     }
 
-    function resetChat() {
+    function simulateGroupAnnouncement() {
+      // Transforma o cabeçalho no grupo oficial do condomínio
+      document.getElementById('headerAvatar').textContent = '👥';
+      document.getElementById('headerTitle').textContent = 'Res. Jardins [Oficial & Moradores]';
+      document.getElementById('headerSubtitle').textContent = '142 participantes • Você e outros';
+      document.getElementById('headerVerified').classList.add('hidden');
+      document.getElementById('headerOnlineDot').classList.add('hidden');
+
       chatHistory.innerHTML = '';
-      botState = 'INICIO';
+      setTyping(true);
+      showToast('Disparando comunicado no grupo do condomínio...');
+
+      setTimeout(() => {
+        setTyping(false);
+        const groupHtml = `
+          <div class="space-y-2 p-1">
+            <div class="flex items-center gap-1.5 text-blue-900 font-extrabold text-xs">
+              <span>📢</span> COMUNICADO OFICIAL DA ADMINISTRAÇÃO
+            </div>
+            <div class="border-t border-b border-blue-200 py-2 space-y-1.5 text-[11px] text-blue-950 leading-relaxed">
+              <div class="font-bold text-slate-700">🏢 Residencial Jardins do Bosque (Todos os Blocos)</div>
+              <div class="font-extrabold text-blue-900 text-xs">💧 Manutenção Preventiva: Limpeza das Caixas d'Água</div>
+              <div>Prezados condôminos, informamos que na próxima <strong>quarta-feira (18/11)</strong>, das <strong>08h00 às 14h00</strong>, realizaremos a desinfecção semestral dos reservatórios superiores.</div>
+              <div class="p-2 bg-amber-50 rounded-lg text-amber-900 text-[10px] border border-amber-200 font-medium">
+                ⚠️ <em>Haverá interrupção temporária no fornecimento de água. Solicitamos que mantenham os registros fechados no período.</em>
+              </div>
+            </div>
+            <div class="text-[10px] text-slate-500 flex justify-between items-center pt-1">
+              <span>✓ Enviado para todos os grupos</span>
+              <button onclick="restorePrivateChat()" class="text-emerald-700 font-bold hover:underline flex items-center gap-1">
+                <span>←</span> Voltar ao Chat Privado
+              </button>
+            </div>
+          </div>
+        `;
+        addMessage(groupHtml, false, true);
+      }, 700);
+    }
+
+    function restorePrivateChat() {
+      document.getElementById('headerAvatar').textContent = '🏢';
+      document.getElementById('headerTitle').textContent = 'Administradora Modelo';
+      document.getElementById('headerSubtitle').textContent = 'Conta Comercial Oficial • online';
+      document.getElementById('headerVerified').classList.remove('hidden');
+      document.getElementById('headerOnlineDot').classList.remove('hidden');
+      chatHistory.innerHTML = '';
       sendMenu();
+    }
+
+    function resetChat() {
+      restorePrivateChat();
+      botState = 'INICIO';
     }
 
     function updateRoiCalculation() {
