@@ -25,21 +25,20 @@ Nele você pode testar:
 
 ---
 
-## 🔍 Soluções de Mercado & O Que Podemos Reaproveitar
+## 🔍 Análise Comparativa de Soluções de Atendimento
 
-Durante o levantamento de soluções prontas para condomínios no mercado brasileiro, mapeamos 3 opções consolidadas:
+Mapeamos os modelos disponíveis no mercado brasileiro para autoatendimento e emissão de boletos:
 
-| Solução | Tecnologias Envolvidas | Custo Mensal | Vantagens | Desvantagens |
+| Modelo de Solução | Flexibilidade | Previsibilidade Financeira | Vantagens | Pontos de Atenção |
 | :--- | :--- | :--- | :--- | :--- |
-| **Nossa Solução (Stack Aberta)** | **Node.js + Evolution API + Chatwoot + Typebot** | Baixo (Apenas VPS ~R$ 35 a R$ 60/mês) | Custo zero por mensagem, dados 100% sob controle da administradora (LGPD), sem bloqueio de fornecedor. | Requer hospedar a VPS própria. |
-| **Módulos Nativos do ERP** | Superlógica (Atende), uCondo (Móra), SeuCondomínio, Siscon (ChatXP) | Taxa adicional por condomínio no plano do ERP | Já integrado com a base financeira do sistema. | Fica amarrado àquele ERP específico; menos flexível para customizações. |
-| **SaaS Especializado** | Kaptia, Digisac, Beeia | R$ 400 a R$ 1.500+/mês | Implantação rápida e suporte do fornecedor. | Custo recorrente elevado que escala conforme a quantidade de condôminos. |
+| **Nossa Solução Personalizada** | **Alta (100% sob medida)** | **Alta (Investimento previsível)** | Sem cobrança por mensagem, dados 100% sob controle e custódia da administradora (LGPD), sem bloqueio de fornecedor. | Implantação inicial assistida. |
+| **Módulos Nativos de ERP** | Baixa | Variável (Taxas por condomínio) | Já conectado à base contábil do sistema contratado. | Fica amarrado àquele ERP específico; pouca flexibilidade para fluxos comerciais. |
+| **Plataformas Terceirizadas de Chatbot** | Média | Baixa (Escala por conversas) | Solução de prateleira já empacotada. | Custo recorrente que cresce conforme o volume de condôminos atendidos. |
 
-### 💡 Estratégia Recomendada
-A melhor estratégia adotada por administradoras modernas é a **Stack Aberta**:
-1. Usar a **Evolution API** (open-source) para não pagar taxas por mensagem do WhatsApp.
-2. Usar o **Chatwoot** (open-source) para os atendentes humanos responderem quando o morador pedir.
-3. Usar nosso **Backend Node.js** (deste repositório) para orquestrar a lógica de negócio e se conectar à API do ERP da administradora.
+### 💡 Vantagens da Nossa Abordagem
+1. **Sem Tarifação por Mensagem**: Atendimento livre de custos extras por conversa no WhatsApp.
+2. **Central de Atendimento Unificada**: Multi-atendentes humanos com divisão por carteira ou condomínio.
+3. **Integração Flexível**: Compatível com os principais ERPs condominiais (Superlógica, Ahreas, Group Software, Condomob, TownSq, etc.).
 
 ---
 
