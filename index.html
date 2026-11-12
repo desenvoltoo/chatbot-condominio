@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatbot Condomínio - Sistema de Autoatendimento WhatsApp & Boletos</title>
+  <title>CondoBot - Central Inteligente de Autoatendimento WhatsApp para Condomínios</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -18,395 +19,449 @@
           },
           colors: {
             brand: {
-              50: '#f0fdf4',
-              500: '#22c55e',
-              600: '#16a34a',
-              700: '#15803d',
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
             },
             wpp: {
-              header: '#075E54',
-              headerDark: '#128C7E',
-              chatBg: '#E5DDD5',
-              bubbleIn: '#FFFFFF',
-              bubbleOut: '#DCF8C6',
-              check: '#34B7F1'
+              header: '#005d4b',
+              headerLight: '#075e54',
+              chatBg: '#efeae2',
+              userBubble: '#d9fdd3',
+              botBubble: '#ffffff',
+              checkBlue: '#53bdeb'
             }
+          },
+          boxShadow: {
+            'glow': '0 0 50px -10px rgba(16, 185, 129, 0.3)',
+            'phone': '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1)',
           }
         }
       }
     }
   </script>
   <style>
+    .glass {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
     .chat-pattern {
       background-color: #efeae2;
-      background-image: radial-gradient(#d1d7db 1px, transparent 1px);
-      background-size: 16px 16px;
+      background-image: 
+        radial-gradient(#d4cdc3 1px, transparent 1px),
+        radial-gradient(#d4cdc3 1px, #efeae2 1px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
     }
     .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
+      width: 5px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.05);
+      background: transparent;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: 4px;
+    }
+    .mesh-gradient {
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 60%);
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .pulse-glow {
+      animation: pulse-subtle 4s infinite ease-in-out;
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+<body class="bg-[#090d16] text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-slate-950 overflow-x-hidden">
+
+  <!-- Ambient Background Glow -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-emerald-500/15 via-teal-500/5 to-transparent blur-[120px] rounded-full"></div>
+    <div class="absolute top-[40%] right-[-10%] w-[600px] h-[600px] bg-emerald-600/10 blur-[150px] rounded-full"></div>
+    <div class="absolute bottom-[10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/10 blur-[140px] rounded-full"></div>
+  </div>
 
   <!-- Header / Navigation -->
-  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-          </svg>
+  <header class="sticky top-0 z-50 glass border-b border-slate-800/80 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/25">
+          <div class="w-full h-full bg-slate-950 rounded-[15px] flex items-center justify-center">
+            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+          </div>
         </div>
         <div>
-          <span class="font-bold text-lg text-white">CondoBot <span class="text-emerald-400 text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 ml-1">v1.0</span></span>
-          <p class="text-xs text-slate-400">Autoatendimento Condominial & Boletos</p>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight text-white">CondoBot</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">24/7 Enterprise</span>
+          </div>
+          <p class="text-xs text-slate-400">Central Inteligente para Administradoras de Condomínios</p>
         </div>
       </div>
 
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-        <a href="#simulador" class="hover:text-emerald-400 transition-colors">Simulador WhatsApp</a>
-        <a href="#solucoes" class="hover:text-emerald-400 transition-colors">Vantagens Comerciais</a>
-        <a href="#roi" class="hover:text-emerald-400 transition-colors">Calculadora de Economia</a>
-        <a href="#como-funciona" class="hover:text-emerald-400 transition-colors">Solução Chave na Mão</a>
-        <a href="#questionario" class="hover:text-emerald-400 transition-colors">Questionário ERP</a>
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-300">
+        <a href="#simulador" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Simulador Ao Vivo
+        </a>
+        <a href="#roi" class="hover:text-emerald-400 transition-colors">Economia Financeira</a>
+        <a href="#solucoes" class="hover:text-emerald-400 transition-colors">Diferenciais</a>
+        <a href="#como-funciona" class="hover:text-emerald-400 transition-colors">Como Funciona</a>
+        <a href="#questionario" class="hover:text-emerald-400 transition-colors">Integração ERP</a>
       </nav>
 
       <div class="flex items-center gap-3">
-        <a href="https://github.com/desenvoltoo/chatbot-condominio" target="_blank" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-lg border border-slate-700 transition-all">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          Ver Código no GitHub
+        <a href="#simulador" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5">
+          Testar Agora ⚡
         </a>
       </div>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section class="py-12 md:py-16 bg-gradient-to-b from-slate-900 via-slate-900/50 to-slate-950 border-b border-slate-800">
+  <section class="relative pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden z-10 mesh-gradient border-b border-slate-800/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-4">
-        ✨ Projeto de Autoatendimento 24/7 para Administradoras de Condomínios
-      </span>
-      <h1 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight max-w-4xl mx-auto leading-tight">
-        Emissão de Boletos, Código Pix e Chamados <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Direto no WhatsApp</span>
+      
+      <!-- Top Pill -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass border border-emerald-500/30 text-xs font-semibold text-emerald-300 mb-8 shadow-inner">
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        Tecnologia de Autoatendimento Oficial via WhatsApp para Administradoras
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight max-w-5xl mx-auto leading-[1.12]">
+        Elimine o Atendimento Manual e Entregue Boletos em <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200">3 Segundos</span>
       </h1>
-      <p class="mt-4 text-base md:text-lg text-slate-400 max-w-2xl mx-auto">
-        Automatize 80% dos chamados repetitivos da administradora. Validação segura por CPF, integração com ERPs e envio instantâneo da 2ª via da cota condominial.
+
+      <p class="mt-6 text-base sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
+        Substitua o trabalho repetitivo de enviar 2ª via e responder dúvidas frequentes por uma central que funciona <strong>24 horas por dia, 7 dias por semana</strong> no número oficial da sua administradora.
       </p>
 
-      <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <a href="#simulador" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all shadow-lg shadow-emerald-600/30">
-          Testar Simulador Interativo 👇
+      <!-- Key Value Points -->
+      <div class="mt-10 flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-slate-300">
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl glass">
+          <span class="text-emerald-400 font-bold">✓</span> Linha Digitável e Pix Copia e Cola
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl glass">
+          <span class="text-emerald-400 font-bold">✓</span> PDF Oficial Anexado na Hora
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl glass">
+          <span class="text-emerald-400 font-bold">✓</span> Transcrição de Áudio com IA
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl glass">
+          <span class="text-emerald-400 font-bold">✓</span> Zero Esforço Técnico (Chave na Mão)
+        </div>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a href="#simulador" class="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition-all shadow-xl shadow-emerald-500/30 transform hover:-translate-y-0.5 flex items-center gap-2">
+          <span>Experimentar Simulador Interativo</span>
+          <span class="text-lg">👇</span>
         </a>
-        <a href="#solucoes" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition-all">
-          Comparar Soluções de Mercado
+        <a href="#roi" class="px-8 py-4 rounded-2xl glass hover:bg-slate-800 text-white font-semibold text-sm transition-all border border-slate-700/80">
+          Calcular Economia Financeira
         </a>
       </div>
+
     </div>
   </section>
 
-  <!-- Section 1: Simulador WhatsApp Ao Vivo -->
-  <section id="simulador" class="py-16 bg-slate-950 border-b border-slate-800">
+  <!-- Section 1: Simulador Interativo do WhatsApp (O Coração da Venda) -->
+  <section id="simulador" class="py-20 md:py-28 relative z-10 border-b border-slate-800/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold text-white">Simulador Interativo do Chatbot</h2>
-        <p class="text-slate-400 text-sm mt-2">
-          Experimente exatamente como o morador interage com o bot no WhatsApp. Clique nos atalhos rápidos ou digite sua própria mensagem.
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Demonstração Prática em Tempo Real
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mt-4 tracking-tight">
+          Veja Como o Seu Morador é Atendido
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base mt-3 leading-relaxed">
+          Sem filas, sem atrito e sem precisar baixar nenhum aplicativo. Teste os atalhos rápidos ou digite suas próprias mensagens diretamente no smartphone abaixo.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         
-        <!-- Left: Quick Action Chips & Controls -->
-        <div class="lg:col-span-5 space-y-4">
-          <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-xl">
-            <h3 class="text-base font-semibold text-white flex items-center gap-2 mb-3">
-              <span>⚡</span> Atalhos Rápidos para Teste
-            </h3>
-            <p class="text-xs text-slate-400 mb-4">
-              Clique em um dos botões abaixo para disparar mensagens prontas na conversa simulada:
+        <!-- Left Column: Quick Action Cockpit -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <div class="glass-card rounded-3xl p-6 sm:p-7 border border-slate-800 shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">⚡</span>
+                Cenários Prontos para Teste
+              </h3>
+              <span class="text-[11px] text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                1-Clique
+              </span>
+            </div>
+            
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">
+              Clique nos botões abaixo para simular as situações mais comuns que acontecem diariamente no WhatsApp da sua administradora:
             </p>
 
-            <div class="flex flex-col gap-2">
-              <button onclick="sendQuickMessage('Olá, gostaria de tirar uma dúvida')" class="text-left px-3.5 py-2.5 rounded-lg bg-slate-800/80 hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-slate-700 text-xs text-slate-200 transition-all flex items-center justify-between group">
-                <span>💬 Enviar saudação inicial (Menu)</span>
-                <span class="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">Enviar →</span>
-              </button>
-              <button onclick="sendQuickMessage('Quero a 2ª via do boleto deste mês')" class="text-left px-3.5 py-2.5 rounded-lg bg-slate-800/80 hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-slate-700 text-xs text-slate-200 transition-all flex items-center justify-between group">
-                <span>📄 Solicitar 2ª via de boleto</span>
-                <span class="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">Enviar →</span>
-              </button>
-              <button onclick="sendQuickMessage('123.456.789-09')" class="text-left px-3.5 py-2.5 rounded-lg bg-slate-800/80 hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-slate-700 text-xs text-slate-200 transition-all flex items-center justify-between group">
-                <span>🔑 Informar CPF Válido (123.456.789-09)</span>
-                <span class="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">Enviar →</span>
-              </button>
-              <button onclick="sendQuickMessage('111.222.333-44')" class="text-left px-3.5 py-2.5 rounded-lg bg-slate-800/80 hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-slate-700 text-xs text-slate-200 transition-all flex items-center justify-between group">
-                <span>⚠️ Testar validação com CPF Inválido</span>
-                <span class="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">Enviar →</span>
-              </button>
-              <button onclick="sendQuickMessage('Vazamento no encanamento da garagem do Bloco B')" class="text-left px-3.5 py-2.5 rounded-lg bg-slate-800/80 hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-slate-700 text-xs text-slate-200 transition-all flex items-center justify-between group">
-                <span>🛠️ Abrir chamado de manutenção</span>
-                <span class="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">Enviar →</span>
-              </button>
-              <button onclick="sendQuickMessage('Gostaria de falar com um atendente humano')" class="text-left px-3.5 py-2.5 rounded-lg bg-slate-800/80 hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-slate-700 text-xs text-slate-200 transition-all flex items-center justify-between group">
-                <span>👤 Transferência para atendente</span>
-                <span class="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">Enviar →</span>
-              </button>
-            </div>
-
-            <div class="mt-5 pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
-              <span>Status do Mock: <strong class="text-emerald-400">Online</strong></span>
-              <button onclick="resetChat()" class="text-xs text-rose-400 hover:text-rose-300 underline">Reiniciar Conversa</button>
-            </div>
-          </div>
-
-          <!-- Feature Cards -->
-          <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Diferenciais Implementados</h4>
-            <ul class="space-y-2 text-xs text-slate-300">
-              <li class="flex items-center gap-2">
-                <span class="text-emerald-400 font-bold">✓</span>
-                Validação oficial de Dígito Verificador de CPF no backend
-              </li>
-              <li class="flex items-center gap-2">
-                <span class="text-emerald-400 font-bold">✓</span>
-                Geração de chave Pix Dinâmica "Copia e Cola" instantânea
-              </li>
-              <li class="flex items-center gap-2">
-                <span class="text-emerald-400 font-bold">✓</span>
-                Disparo de arquivo PDF anexado do boleto
-              </li>
-              <li class="flex items-center gap-2">
-                <span class="text-emerald-400 font-bold">✓</span>
-                Módulo pronto para Evolution API e Docker
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Right: Mobile Device Frame -->
-        <div class="lg:col-span-7 flex justify-center">
-          <div class="w-full max-w-md bg-slate-900 rounded-[36px] p-3 shadow-2xl border-4 border-slate-800 ring-1 ring-slate-700/50">
-            <!-- Screen Container -->
-            <div class="w-full h-[620px] rounded-[28px] overflow-hidden flex flex-col bg-[#efeae2] relative shadow-inner">
+            <div class="space-y-2.5">
               
-              <!-- WhatsApp Top Bar -->
-              <div class="bg-[#075E54] px-4 py-3 flex items-center justify-between text-white shrink-0 shadow-md">
-                <div class="flex items-center gap-3">
-                  <div class="w-9 h-9 rounded-full bg-emerald-200 text-emerald-900 font-bold flex items-center justify-center text-sm shadow">
-                    🏢
-                  </div>
+              <!-- Action 1 -->
+              <button onclick="sendQuickMessage('Olá, gostaria de tirar uma dúvida')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">💬</span>
                   <div>
-                    <h4 class="font-semibold text-sm leading-tight">Administradora Modelo</h4>
-                    <p class="text-[11px] text-emerald-200 flex items-center gap-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 inline-block animate-pulse"></span>
-                      online comercial (bot)
-                    </p>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">1. Saudação Inicial & Menu Interativo</strong>
+                    <span class="text-[11px] text-slate-400">Exibe botões interativos de autoatendimento</span>
                   </div>
                 </div>
-                <div class="flex items-center gap-4 text-emerald-100 text-sm">
-                  <button title="Pesquisar">🔍</button>
-                  <button title="Opções">⋮</button>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Testar →</span>
+              </button>
+
+              <!-- Action 2 -->
+              <button onclick="sendQuickMessage('Quero a 2ª via do boleto deste mês')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">📄</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">2. Pedido Direto de 2ª Via</strong>
+                    <span class="text-[11px] text-slate-400">Entende linguagem natural e solicita o CPF</span>
+                  </div>
                 </div>
-              </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Testar →</span>
+              </button>
 
-              <!-- Message History (Scrollable) -->
-              <div id="chatHistory" class="flex-1 p-3.5 overflow-y-auto space-y-3 custom-scrollbar chat-pattern text-slate-800 text-xs">
-                <!-- Messages populated via JS -->
-              </div>
+              <!-- Action 3: CPF -->
+              <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">🔑</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">3. Enviar CPF Válido (123.456.789-09)</strong>
+                    <span class="text-[11px] text-slate-400">Gera linha digitável, Pix Copia e Cola e PDF</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Gerar →</span>
+              </button>
 
-              <!-- Typing Indicator -->
-              <div id="typingIndicator" class="hidden px-4 py-1.5 bg-[#efeae2] text-[11px] text-slate-500 italic">
-                Administradora está digitando...
-              </div>
+              <!-- Action 4: Áudio IA -->
+              <button onclick="simulateAudioMessage()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-purple-950/40 to-slate-900 hover:from-purple-900/50 hover:to-slate-800 border border-purple-500/40 hover:border-purple-400 text-xs text-purple-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">🎙️</span>
+                  <div>
+                    <strong class="block text-purple-200 group-hover:text-purple-100">4. Simular Áudio de Morador (IA)</strong>
+                    <span class="text-[11px] text-purple-300/80">Transcreve a voz e responde na hora</span>
+                  </div>
+                </div>
+                <span class="text-purple-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Ouvir →</span>
+              </button>
 
-              <!-- WhatsApp Input Bar -->
-              <div class="p-2.5 bg-[#f0f2f5] border-t border-slate-300 flex items-center gap-2 shrink-0">
-                <button class="text-slate-500 hover:text-slate-700 text-base">😊</button>
-                <input 
-                  type="text" 
-                  id="chatInput" 
-                  placeholder="Mensagem (digite ou use os botões)" 
-                  class="flex-1 bg-white rounded-full px-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none border border-slate-300 shadow-sm"
-                  onkeydown="if(event.key === 'Enter') handleUserInput()"
-                >
-                <button 
-                  onclick="handleUserInput()" 
-                  class="w-8 h-8 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center transition-colors shadow">
-                  <svg class="w-4 h-4 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                  </svg>
-                </button>
-              </div>
+              <!-- Action 5: Foto Chamado -->
+              <button onclick="simulatePhotoTicket()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-blue-950/40 to-slate-900 hover:from-blue-900/50 hover:to-slate-800 border border-blue-500/40 hover:border-blue-400 text-xs text-blue-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">📸</span>
+                  <div>
+                    <strong class="block text-blue-200 group-hover:text-blue-100">5. Enviar Foto de Vazamento (Chamado)</strong>
+                    <span class="text-[11px] text-blue-300/80">Registra ocorrência com protocolo e notifica síndico</span>
+                  </div>
+                </div>
+                <span class="text-blue-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Enviar →</span>
+              </button>
+
+              <!-- Action 6: Pagamento Pix -->
+              <button onclick="simulatePixPayment()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-emerald-950/60 to-slate-900 hover:from-emerald-900/70 hover:to-slate-800 border border-emerald-500/50 hover:border-emerald-400 text-xs text-emerald-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">⚡</span>
+                  <div>
+                    <strong class="block text-emerald-300 group-hover:text-emerald-100">6. Simular Pagamento Pix (Baixa Automática)</strong>
+                    <span class="text-[11px] text-emerald-400/80">Autenticação instantânea de recebimento</span>
+                  </div>
+                </div>
+                <span class="text-emerald-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Pagar →</span>
+              </button>
 
             </div>
+
+            <!-- Bottom Tools -->
+            <div class="mt-6 pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs">
+              <button id="btnSoundToggle" onclick="toggleSound()" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center gap-1.5 font-medium transition-colors">
+                <span>🔊</span> Som: Ativo
+              </button>
+              <button onclick="resetChat()" class="text-rose-400 hover:text-rose-300 font-semibold underline text-xs transition-colors">
+                Reiniciar Conversa ↺
+              </button>
+            </div>
+
           </div>
+
+          <!-- Proof Metrics Badge -->
+          <div class="p-5 rounded-2xl glass border border-slate-800 flex items-center justify-around text-center">
+            <div>
+              <span class="block text-2xl font-extrabold text-white">3 seg</span>
+              <span class="text-[11px] text-slate-400">Tempo de Resposta</span>
+            </div>
+            <div class="w-px h-8 bg-slate-800"></div>
+            <div>
+              <span class="block text-2xl font-extrabold text-emerald-400">24h x 7d</span>
+              <span class="text-[11px] text-slate-400">Disponibilidade</span>
+            </div>
+            <div class="w-px h-8 bg-slate-800"></div>
+            <div>
+              <span class="block text-2xl font-extrabold text-teal-300">0 Fila</span>
+              <span class="text-[11px] text-slate-400">Nos Dias de Pico</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Realistic iPhone Smartphone Frame -->
+        <div class="lg:col-span-7 flex justify-center">
+          
+          <div class="relative w-full max-w-[390px]">
+            <!-- Subtle Glow behind the phone -->
+            <div class="absolute -inset-4 bg-gradient-to-tr from-emerald-500/20 to-teal-500/10 rounded-[54px] blur-2xl pointer-events-none"></div>
+
+            <!-- Smartphone Outer Shell (Titanium Style) -->
+            <div class="relative bg-[#1a1f2c] rounded-[48px] p-3 shadow-phone border-4 border-slate-700/80 ring-1 ring-white/10">
+              
+              <!-- Screen Container -->
+              <div class="w-full h-[640px] rounded-[38px] overflow-hidden flex flex-col bg-[#efeae2] relative shadow-inner select-none">
+                
+                <!-- iOS Status Bar & Dynamic Island -->
+                <div class="bg-[#005d4b] px-6 pt-3 pb-2 text-white flex items-center justify-between text-[11px] font-semibold shrink-0 z-20">
+                  <span>09:41</span>
+                  <!-- Dynamic Island -->
+                  <div class="w-24 h-4 bg-black rounded-full flex items-center justify-end px-2 gap-1.5">
+                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs">
+                    <span>5G</span>
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+                    <span>100%</span>
+                  </div>
+                </div>
+
+                <!-- WhatsApp Top Header -->
+                <div class="bg-[#005d4b] px-4 py-2.5 flex items-center justify-between text-white shrink-0 shadow-md border-b border-emerald-900/30 z-10">
+                  <div class="flex items-center gap-3">
+                    <button class="text-white hover:text-emerald-200">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <!-- Avatar -->
+                    <div class="relative">
+                      <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-50 text-slate-800 font-extrabold flex items-center justify-center text-sm shadow">
+                        🏢
+                      </div>
+                      <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#005d4b]"></span>
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-1">
+                        <h4 class="font-bold text-xs leading-tight text-white">Administradora Modelo</h4>
+                        <!-- Verified Badge -->
+                        <svg class="w-3.5 h-3.5 text-emerald-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                      </div>
+                      <p class="text-[10px] text-emerald-200">Conta Comercial Oficial • online</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3 text-emerald-100 text-sm">
+                    <button title="Chamada">📞</button>
+                    <button title="Mais Opções">⋮</button>
+                  </div>
+                </div>
+
+                <!-- Chat Messages Scroll Area -->
+                <div id="chatHistory" class="flex-1 p-3 overflow-y-auto space-y-3 custom-scrollbar chat-pattern text-slate-800 text-xs">
+                  <!-- Messages injected dynamically via JS -->
+                </div>
+
+                <!-- Typing Pulse Indicator -->
+                <div id="typingIndicator" class="hidden px-4 py-1.5 bg-[#efeae2]/95 text-[11px] text-slate-600 flex items-center gap-2 border-t border-slate-200/50">
+                  <div class="flex gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style="animation-delay: 0.2s"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style="animation-delay: 0.4s"></span>
+                  </div>
+                  <span class="italic text-[10px]">Administradora está digitando...</span>
+                </div>
+
+                <!-- WhatsApp Bottom Input Bar -->
+                <div class="p-2 bg-[#f0f2f5] border-t border-slate-300 flex items-center gap-2 shrink-0">
+                  <button class="text-slate-500 hover:text-slate-700 text-lg px-1">😊</button>
+                  <button onclick="simulatePhotoTicket()" class="text-slate-500 hover:text-slate-700 text-lg px-1" title="Anexar Foto">📎</button>
+                  <input 
+                    type="text" 
+                    id="chatInput" 
+                    placeholder="Mensagem" 
+                    class="flex-1 bg-white rounded-full px-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none border border-slate-300 shadow-sm"
+                    onkeydown="if(event.key === 'Enter') handleUserInput()"
+                  >
+                  <button 
+                    onclick="handleUserInput()" 
+                    class="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center transition-colors shadow-md shrink-0">
+                    <svg class="w-4 h-4 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                    </svg>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
+
     </div>
   </section>
 
-  <!-- Section 2: Soluções Prontas no Mercado & Reaproveitamento -->
-  <section id="solucoes" class="py-16 bg-slate-900 border-b border-slate-800">
+  <!-- Section 2: Calculadora de Retorno sobre Investimento (ROI) -->
+  <section id="roi" class="py-20 md:py-28 relative z-10 bg-slate-950/80 border-b border-slate-800/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mb-12">
-        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Benchmarking & Análise de Mercado</span>
-        <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Soluções Prontas: O Que Podemos Reaproveitar?</h2>
-        <p class="text-slate-400 text-sm mt-3 leading-relaxed">
-          Pesquisamos as principais soluções disponíveis hoje no Brasil para envio de boletos e atendimento de condomínio via WhatsApp. Há 3 caminhos bem consolidados que podemos adotar ou combinar:
+      
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Estudo de Viabilidade Financeira
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mt-4 tracking-tight">
+          Quanto a Sua Administradora Economiza?
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base mt-3 leading-relaxed">
+          Arraste o slider abaixo para calcular a economia líquida direta ao substituir o processo manual repetitivo pelo autoatendimento inteligente.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
         
-        <!-- Card 1: Solução Personalizada (Recomendada) -->
-        <div class="bg-slate-950 p-6 rounded-2xl border border-emerald-500/30 relative flex flex-col justify-between shadow-lg">
-          <div class="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-bold uppercase tracking-wider">
-            Recomendado para Administradoras
-          </div>
+        <!-- Controls Column -->
+        <div class="lg:col-span-6 glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xl space-y-6">
           <div>
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg mb-4">
-              🏢
+            <div class="flex justify-between items-center mb-3">
+              <label class="text-xs font-semibold text-slate-300">Custo Salarial Mensal da Equipe Dedicada:</label>
+              <span id="labelSalario" class="text-lg font-extrabold text-emerald-400 font-mono">R$ 4.000,00</span>
             </div>
-            <h3 class="text-lg font-bold text-white">Solução Sob Medida (Tecnologia Dedicada)</h3>
-            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-              Infraestrutura exclusiva para a sua administradora. Conexão direta com o WhatsApp sem travas de disparos, integração oficial com seu ERP condominial e painel integrado de transbordo para os atendentes.
-            </p>
-            <div class="mt-4 space-y-1.5 text-xs text-slate-300">
-              <p>🟢 <strong>Investimento:</strong> Modelo sob medida e previsível para sua carteira</p>
-              <p>🟢 <strong>Customização:</strong> 100% aderente às regras e rotinas da sua empresa</p>
-              <p>🟢 <strong>Multi-atendimento:</strong> Central unificada para múltiplos atendentes da equipe</p>
-            </div>
-          </div>
-          <div class="mt-6 pt-4 border-t border-slate-800">
-            <span class="text-xs text-emerald-400 font-semibold">→ Plataforma robusta, escalável e compatível com LGPD</span>
-          </div>
-        </div>
-
-        <!-- Card 2: ERP Nativo -->
-        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-lg mb-4">
-              📦
-            </div>
-            <h3 class="text-lg font-bold text-white">Módulos Genéricos de ERPs</h3>
-            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-              Recursos de atendimento opcionais disponibilizados por alguns ERPs de mercado. Geralmente oferecem funcionalidades básicas de consulta.
-            </p>
-            <div class="mt-4 space-y-1.5 text-xs text-slate-300">
-              <p>🟢 <strong>Vantagem:</strong> Módulo pronto do próprio fornecedor contábil</p>
-              <p>🟡 <strong>Limitação:</strong> Menos flexibilidade para personalização de fluxos e regras comerciais</p>
-            </div>
-          </div>
-          <div class="mt-6 pt-4 border-t border-slate-800">
-            <span class="text-xs text-slate-400 font-semibold">Geralmente preso ao formato rígido do fornecedor.</span>
-          </div>
-        </div>
-
-        <!-- Card 3: Plataformas Especializadas (SaaS) -->
-        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-lg mb-4">
-              🤖
-            </div>
-            <h3 class="text-lg font-bold text-white">Plataformas Terceirizadas de Chatbot</h3>
-            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-              Softwares externos de atendimento contratados como serviço de terceiros, que adicionam camadas genéricas de triagem.
-            </p>
-            <div class="mt-4 space-y-1.5 text-xs text-slate-300">
-              <p>🟢 <strong>Vantagem:</strong> Solução de prateleira já empacotada</p>
-              <p>🔴 <strong>Limitação:</strong> Dependência de fornecedores externos e custos que escalam por volume</p>
-            </div>
-          </div>
-          <div class="mt-6 pt-4 border-t border-slate-800">
-            <span class="text-xs text-slate-400 font-semibold">Menor controle sobre a custódia dos dados de condôminos.</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Tabela Comparativa Detalhada -->
-      <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-        <div class="px-6 py-4 bg-slate-900 border-b border-slate-800 flex justify-between items-center">
-          <h4 class="font-bold text-sm text-white">Quadro Comparativo de Modelos de Atendimento</h4>
-          <span class="text-xs text-emerald-400">Análise de Eficiência e Valor para a Administradora</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs text-slate-300">
-            <thead class="bg-slate-900/50 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
-              <tr>
-                <th class="px-6 py-3">Critério Estratégico</th>
-                <th class="px-6 py-3 text-emerald-400">Nossa Solução Personalizada</th>
-                <th class="px-6 py-3">Módulo Padrão de ERP</th>
-                <th class="px-6 py-3">Plataforma Genérica de Chat</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-800/60">
-              <tr>
-                <td class="px-6 py-3.5 font-semibold text-white">Previsibilidade Financeira</td>
-                <td class="px-6 py-3.5 text-emerald-400 font-semibold">Investimento sob medida e sem surpresas</td>
-                <td class="px-6 py-3.5">Taxas extras por condomínio/unidade</td>
-                <td class="px-6 py-3.5">Escala por volume de conversas</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-3.5 font-semibold text-white">Volume de Atendimentos</td>
-                <td class="px-6 py-3.5 text-emerald-400 font-semibold">Ilimitado (sem cobrança por mensagem)</td>
-                <td class="px-6 py-3.5">Geralmente tarifado por pacotes</td>
-                <td class="px-6 py-3.5">Cobrança progressiva por disparo</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-3.5 font-semibold text-white">Formas de Pagamento no Chat</td>
-                <td class="px-6 py-3.5 text-emerald-400 font-semibold">Linha digitável + Pix Copia e Cola + PDF</td>
-                <td class="px-6 py-3.5">Apenas link de download do PDF</td>
-                <td class="px-6 py-3.5">Depende de plugins adicionais</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-3.5 font-semibold text-white">Abertura e Gestão de Chamados</td>
-                <td class="px-6 py-3.5 text-emerald-400 font-semibold">Personalizada com envio de fotos e protocolos</td>
-                <td class="px-6 py-3.5">Formatos rígidos do sistema</td>
-                <td class="px-6 py-3.5">Triagem simples sem integração predial</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-3.5 font-semibold text-white">Segurança e LGPD</td>
-                <td class="px-6 py-3.5 text-emerald-400 font-semibold">Máxima: Ambiente seguro e exclusivo da administradora</td>
-                <td class="px-6 py-3.5">Compartilhado em nuvem coletiva</td>
-                <td class="px-6 py-3.5">Compartilhado em servidores de terceiros</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Section: Calculadora de Economia e ROI -->
-  <section id="roi" class="py-16 bg-slate-950 border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mb-10">
-        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Estudo de Viabilidade Financeira</span>
-        <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Calculadora de Retorno sobre Investimento (ROI)</h2>
-        <p class="text-slate-400 text-sm mt-2 leading-relaxed">
-          Veja quanto sua administradora economiza ao substituir o atendimento manual repetitivo por uma central inteligente disponível 24/7.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        <!-- Controles Interativos -->
-        <div class="lg:col-span-6 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-6">
-          <div>
-            <div class="flex justify-between items-center mb-2">
-              <label class="text-xs font-semibold text-slate-300">Custo Salarial da Equipe de Atendimento Manual (Mês):</label>
-              <span id="labelSalario" class="text-base font-bold text-emerald-400">R$ 4.000,00</span>
-            </div>
+            
             <input 
               type="range" 
               id="sliderSalario" 
@@ -414,98 +469,179 @@
               max="15000" 
               step="500" 
               value="4000" 
-              class="w-full accent-emerald-500 cursor-pointer"
+              class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               oninput="updateRoiCalculation()"
             >
-            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+            
+            <div class="flex justify-between text-[11px] text-slate-500 mt-2 font-mono">
               <span>R$ 2.000</span>
-              <span>R$ 8.000</span>
+              <span class="text-slate-400">R$ 4.000 (Atual)</span>
               <span>R$ 15.000+</span>
             </div>
           </div>
 
-          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-xs">
-            <div class="flex justify-between text-slate-400">
+          <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3 text-xs">
+            <div class="flex justify-between items-center text-slate-400">
               <span>Custo Real da Operação (CLT + Encargos ~1.65x):</span>
-              <strong id="custoRealClt" class="text-slate-200">R$ 6.600,00 / mês</strong>
+              <strong id="custoRealClt" class="text-slate-200 font-mono text-sm">R$ 6.600,00 / mês</strong>
             </div>
-            <div class="flex justify-between text-slate-400">
+            <div class="flex justify-between items-center text-slate-400">
               <span>Custo Anual da Operação Manual:</span>
-              <strong id="custoAnualManual" class="text-rose-400">R$ 79.200,00 / ano</strong>
+              <strong id="custoAnualManual" class="text-rose-400 font-mono text-sm">R$ 79.200,00 / ano</strong>
             </div>
-            <div class="flex justify-between text-slate-400">
-              <span>Disponibilidade Atual:</span>
-              <strong class="text-amber-400">44 horas / semana (Comercial)</strong>
+            <div class="flex justify-between items-center text-slate-400 border-t border-slate-800 pt-2.5">
+              <span>Janela de Atendimento Manual:</span>
+              <strong class="text-amber-400">Apenas 44h / semana</strong>
             </div>
           </div>
 
-          <div class="text-[11px] text-slate-400 leading-relaxed italic">
-            * O cálculo considera encargos trabalhistas, provisão de férias, 13º e custos indiretos de posto de atendimento presencial.
-          </div>
+          <p class="text-[11px] text-slate-500 italic">
+            * O cálculo inclui FGTS, INSS patronal, provisão de férias, 13º salário e benefícios da operação manual.
+          </p>
         </div>
 
-        <!-- Resultados e Ganhos -->
-        <div class="lg:col-span-6 bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-950 p-6 md:p-8 rounded-2xl border border-emerald-500/30 shadow-2xl space-y-6">
+        <!-- Profit & Highlights Column -->
+        <div class="lg:col-span-6 bg-gradient-to-br from-emerald-950/60 via-slate-900 to-[#0c1424] p-8 rounded-3xl border border-emerald-500/40 shadow-glow space-y-6 relative overflow-hidden">
+          <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl"></div>
+
           <div>
-            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Economia Anual Estimada</span>
-            <div id="economiaAnual" class="text-3xl md:text-5xl font-extrabold text-white mt-1 tracking-tight">
-              R$ 60.000,00
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <span>💰</span> Economia Anual Estimada no seu Caixa
+            </span>
+            <div id="economiaAnual" class="text-4xl sm:text-6xl font-extrabold text-white mt-2 tracking-tight font-mono text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">
+              R$ 61.200,00
             </div>
             <p class="text-xs text-slate-300 mt-2">
-              Economia líquida direta ao migrar o envio de 2ª via e dúvidas frequentes para o autoatendimento.
+              Dinheiro que deixa de ser gasto em rotinas manuais e vai direto para a margem de lucro da sua administradora.
             </p>
           </div>
 
-          <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
-            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block">Tempo de Resposta</span>
-              <strong class="text-emerald-400 text-sm">De 30 min ➔ 3 seg</strong>
+          <div class="grid grid-cols-2 gap-3.5 pt-4 border-t border-slate-800">
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold block">Velocidade de Envio</span>
+              <strong class="text-emerald-400 text-xs sm:text-sm">De 35 min ➔ 3 seg</strong>
             </div>
-            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block">Disponibilidade</span>
-              <strong class="text-emerald-400 text-sm">24h x 7 dias (168h/sem)</strong>
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold block">Disponibilidade</span>
+              <strong class="text-emerald-400 text-xs sm:text-sm">24h x 7d (168h/sem)</strong>
             </div>
-            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block">Fila de Espera em Pico</span>
-              <strong class="text-emerald-400 text-sm">Zero Fila (Simultâneo)</strong>
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold block">Fila nos Vencimentos</span>
+              <strong class="text-emerald-400 text-xs sm:text-sm">Zero Fila de Espera</strong>
             </div>
-            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
-              <span class="text-[11px] text-slate-400 block">Formas no WhatsApp</span>
-              <strong class="text-emerald-400 text-sm">Pix Copia e Cola + PDF</strong>
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold block">Satisfação Síndicos</span>
+              <strong class="text-emerald-400 text-xs sm:text-sm">Atendimento Imediato</strong>
             </div>
           </div>
+
         </div>
+
       </div>
+
     </div>
   </section>
 
-  <!-- Section 3: Questionário para o ERP -->
-  <section id="questionario" class="py-16 bg-slate-950 border-b border-slate-800">
+  <!-- Section 3: Solução Chave na Mão (Turnkey - Sem Esforço Técnico) -->
+  <section id="como-funciona" class="py-20 md:py-28 relative z-10 border-b border-slate-800/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Implementação 100% Gerenciada
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mt-4 tracking-tight">
+          Solução Chave na Mão: Cuidamos de Tudo
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base mt-3 leading-relaxed">
+          Você não precisa programar, configurar servidores ou entender de tecnologia. Nossa equipe entrega a solução pronta, conectada ao seu ERP e rodando no seu número oficial.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 relative hover:border-emerald-500/40 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+            🔌
+          </div>
+          <h3 class="text-lg font-bold text-white">1. Integração com o seu ERP</h3>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Fazemos a homologação técnica com o software de condomínios que você já utiliza (Superlógica, Ahreas, Group, Condomob ou outro), puxando os dados financeiros de forma automática.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 relative hover:border-teal-500/40 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+            ⚡
+          </div>
+          <h3 class="text-lg font-bold text-white">2. Ativação Rápida no WhatsApp</h3>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            O morador continua falando no mesmo número que já conhece. O sistema é ativado sem interrupções e com mensagens personalizadas com o nome da sua administradora.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 relative hover:border-blue-500/40 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+            🛡️
+          </div>
+          <h3 class="text-lg font-bold text-white">3. Suporte Contínuo & LGPD</h3>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Cuidamos da estabilidade, backups e segurança da informação em conformidade com a LGPD, além de treinamento completo para os seus atendentes assumirem chamados complexos.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Banner de Fechamento -->
+      <div class="relative bg-gradient-to-r from-emerald-950/80 via-slate-900 to-teal-950/70 rounded-3xl p-8 sm:p-12 border border-emerald-500/40 text-center max-w-4xl mx-auto shadow-glow">
+        <h3 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Pronto para modernizar sua administradora?
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-300 mt-4 max-w-xl mx-auto leading-relaxed">
+          Economize milhares de reais todo mês, valorize a imagem da sua empresa junto aos síndicos e tenha a tecnologia mais elogiada do mercado condominial.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="#simulador" class="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition-all shadow-lg shadow-emerald-500/30 transform hover:-translate-y-0.5">
+            Testar Simulador no WhatsApp Acima 👆
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 4: Questionário de Integração ERP -->
+  <section id="questionario" class="py-20 md:py-28 relative z-10 bg-slate-950/80 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
         <div>
-          <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Passo Fundamental</span>
-          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Questionário Técnico para o Fornecedor do ERP</h2>
-          <p class="text-slate-400 text-sm mt-2 max-w-2xl">
-            Encaminhe este questionário ao suporte ou TI da empresa do software para liberar as credenciais de API.
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            Documentação de Homologação
+          </span>
+          <h2 class="text-2xl md:text-4xl font-extrabold text-white mt-3 tracking-tight">
+            Questionário Técnico para o Fornecedor do ERP
+          </h2>
+          <p class="text-slate-400 text-xs sm:text-sm mt-2 max-w-2xl">
+            Basta copiar o questionário abaixo e encaminhar ao suporte técnico do seu sistema de gestão para liberar as credenciais de API.
           </p>
         </div>
         <button 
           onclick="copyQuestionnaire()" 
           id="btnCopyQuest" 
-          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all shadow-md">
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-lg shadow-emerald-600/30 shrink-0">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
           Copiar Questionário Completo
         </button>
       </div>
 
-      <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed shadow-xl custom-scrollbar" style="max-height: 480px;">
+      <div class="bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed shadow-xl custom-scrollbar" style="max-height: 400px;">
         <pre id="questionnaireContent" class="whitespace-pre-wrap">
 # 📋 Questionário Técnico de Integração para a Empresa do ERP
 
 Prezado(a) responsável técnico(a),
 
-Estamos integrando o sistema de autoatendimento WhatsApp para a administradora de condomínios.
+Estamos integrando a Central Inteligente de Autoatendimento WhatsApp para a nossa administradora de condomínios.
 Para homologarmos a comunicação via API com seu sistema, precisamos das seguintes definições técnicas:
 
 ---
@@ -543,133 +679,114 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
 6. AMBIENTE DE TESTES (SANDBOX) E RATE LIMIT
 - É fornecido um ambiente de testes (Sandbox / Homologação) com dados fictícios?
 - Há limite de requisições por minuto/hora (Rate Limit)?
-- Qual é o contato direto com o suporte técnico de desenvolvedores?
         </pre>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section 4: Solução Chave na Mão (Turnkey) -->
-  <section id="como-funciona" class="py-16 bg-slate-900 border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-14">
-        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Entrega Completa e Sem Complicação</span>
-        <h2 class="text-2xl md:text-4xl font-extrabold text-white mt-2">Solução Chave na Mão: Cuidamos de 100% da Tecnologia</h2>
-        <p class="text-slate-400 text-sm mt-3 leading-relaxed">
-          Sua administradora não precisa se preocupar com programação, servidores ou configurações complexas. Entregamos o sistema totalmente configurado, testado e operando no número oficial de WhatsApp da sua empresa.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <!-- Pilar 1 -->
-        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 relative">
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xl mb-4">
-            🔌
-          </div>
-          <h3 class="text-base font-bold text-white">1. Integração Total com o seu ERP</h3>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-            Fazemos toda a ponte técnica direta com o software financeiro que você já usa (Superlógica, Ahreas, Group, Condomob ou outro). Seus boletos e dados de condôminos sincronizados em tempo real.
-          </p>
-        </div>
-
-        <!-- Pilar 2 -->
-        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 relative">
-          <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-xl mb-4">
-            ⚡
-          </div>
-          <h3 class="text-base font-bold text-white">2. Ativação Rápida e Sem Atrito</h3>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-            Em poucos dias o sistema já começa a atender seus condomínios. A economia de tempo da sua equipe começa a aparecer logo na primeira semana de funcionamento.
-          </p>
-        </div>
-
-        <!-- Pilar 3 -->
-        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 relative">
-          <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-xl mb-4">
-            🛡️
-          </div>
-          <h3 class="text-base font-bold text-white">3. Suporte e Monitoramento Contínuo</h3>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-            Garantimos o robô online 24 horas por dia, 7 dias por semana, com backups diários, segurança de dados em conformidade com a LGPD e melhorias contínuas.
-          </p>
-        </div>
-      </div>
-
-      <!-- Call to Action Banner -->
-      <div class="bg-gradient-to-r from-emerald-900/60 via-slate-900 to-teal-900/40 rounded-3xl p-8 md:p-10 border border-emerald-500/40 text-center max-w-4xl mx-auto shadow-2xl">
-        <h3 class="text-2xl md:text-3xl font-extrabold text-white">Pronto para transformar o atendimento da sua administradora?</h3>
-        <p class="text-sm text-slate-300 mt-3 max-w-xl mx-auto">
-          Economize milhares de reais todo mês, elimine a sobrecarga operacional da sua equipe e ofereça o atendimento mais rápido e moderno do mercado imobiliário.
-        </p>
-        <div class="mt-6 flex flex-wrap justify-center gap-4">
-          <a href="#simulador" class="px-7 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-emerald-500/30">
-            Fazer um Teste Prático Agora 👆
-          </a>
-        </div>
       </div>
 
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="py-8 bg-slate-950 border-t border-slate-800 text-center text-xs text-slate-500">
+  <footer class="py-10 bg-slate-950 border-t border-slate-800 text-xs text-slate-500 relative z-10">
     <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p>Desenvolvido para Gestão e Automação de Administradoras de Condomínios • 2026</p>
-      <a href="https://github.com/desenvoltoo/chatbot-condominio" target="_blank" class="text-emerald-400 hover:underline">
-        Repositório GitHub: desenvoltoo/chatbot-condominio
-      </a>
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-300">CondoBot Enterprise</span> • Autoatendimento Inteligente para Administradoras de Condomínios
+      </div>
+      <p>© 2026 Todos os direitos reservados • Sistema Homologado</p>
     </div>
   </footer>
 
   <!-- Modal do Boleto PDF Demonstrativo -->
-  <div id="pdfModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white text-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
-      <div class="flex justify-between items-center border-b pb-3 mb-4">
-        <h4 class="font-bold text-sm text-slate-800">📄 Simulação de Boleto Bancário</h4>
-        <button onclick="closePdfModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+  <div id="pdfModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white text-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative animate-scale">
+      <div class="flex justify-between items-center border-b pb-4 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📄</span>
+          <h4 class="font-bold text-sm text-slate-900">Boleto Cota Condominial - 11/2026</h4>
+        </div>
+        <button onclick="closePdfModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">✕</button>
       </div>
-      <div class="space-y-3 text-xs border border-dashed border-slate-300 p-4 rounded-xl bg-slate-50 font-mono">
+      <div class="space-y-3 text-xs border border-dashed border-slate-300 p-5 rounded-2xl bg-slate-50 font-mono">
         <div class="flex justify-between border-b pb-2">
-          <span><strong>Banco:</strong> 237 - Bradesco / Itaú</span>
+          <span><strong>Banco:</strong> 237 - Bradesco S.A.</span>
           <span><strong>Vencimento:</strong> 15/11/2026</span>
         </div>
-        <div><strong>Beneficiário:</strong> Condomínio Residencial Jardins</div>
+        <div><strong>Beneficiário:</strong> Condomínio Residencial Jardins do Bosque</div>
         <div><strong>Pagador:</strong> Carlos Eduardo Silva (CPF: ***.456.789-**)</div>
-        <div><strong>Unidade:</strong> Bloco A - Apt 101</div>
+        <div><strong>Unidade:</strong> Bloco A - Apartamento 101</div>
         <div class="flex justify-between border-t pt-2 font-bold text-sm text-emerald-700">
-          <span>Valor do Documento:</span>
+          <span>Valor a Pagar:</span>
           <span>R$ 650,00</span>
         </div>
         <div class="pt-2 text-[10px] text-slate-500 break-all">
           <strong>Linha Digitável:</strong> 23793.38128 60000.123456 01000.650004 1 95420000065000
         </div>
-        <div class="pt-2 text-center text-slate-400 text-xs">
-          [ Código de Barras Demonstrativo ]<br>
+        <div class="pt-3 text-center text-slate-400 text-xs">
+          [ Código de Barras Registrado ]<br>
           ||||| | |||| || ||| ||||||| ||| ||||| ||||||
         </div>
       </div>
-      <div class="mt-4 flex justify-end">
-        <button onclick="closePdfModal()" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold">Fechar</button>
+      <div class="mt-5 flex justify-end gap-2">
+        <button onclick="closePdfModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold">Fechar</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast de Notificação -->
-  <div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-xl text-xs font-semibold transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-    Texto copiado com sucesso!
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 glass text-emerald-300 px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold transform translate-y-20 opacity-0 transition-all duration-300 z-50 border border-emerald-500/40 flex items-center gap-2">
+    <span>✓</span> <span id="toastMsg">Copiado com sucesso!</span>
   </div>
 
-  <!-- Script do Simulador Interativo -->
+  <!-- JavaScript do Simulador e Interações -->
   <script>
     const chatHistory = document.getElementById('chatHistory');
     const chatInput = document.getElementById('chatInput');
     const typingIndicator = document.getElementById('typingIndicator');
     const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
 
-    let botState = 'INICIO'; // INICIO, AGUARDANDO_CPF, MENU_PRINCIPAL, etc.
+    let botState = 'INICIO';
+    let soundEnabled = true;
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('btnSoundToggle');
+      if (soundEnabled) {
+        btn.innerHTML = '<span>🔊</span> Som: Ativo';
+        btn.className = 'px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center gap-1.5 font-medium transition-colors';
+        playPopSound(false);
+      } else {
+        btn.innerHTML = '<span>🔇</span> Som: Mudo';
+        btn.className = 'px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 border border-slate-700 flex items-center gap-1.5 font-medium transition-colors';
+      }
+    }
+
+    function playPopSound(isUser = false) {
+      if (!soundEnabled) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        if (isUser) {
+          osc.frequency.setValueAtTime(520, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(780, ctx.currentTime + 0.07);
+        } else {
+          osc.frequency.setValueAtTime(660, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
+        }
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.08);
+      } catch (e) {}
+    }
 
     function showToast(msg) {
-      toast.textContent = msg;
+      toastMsg.textContent = msg;
       toast.classList.remove('translate-y-20', 'opacity-0');
       setTimeout(() => {
         toast.classList.add('translate-y-20', 'opacity-0');
@@ -677,6 +794,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     }
 
     function addMessage(text, isUser = false, isHtml = false) {
+      playPopSound(isUser);
       const msgDiv = document.createElement('div');
       msgDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
 
@@ -697,7 +815,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       }
 
       const timeSpan = document.createElement('div');
-      timeSpan.className = `text-[10px] text-slate-400 mt-1 flex items-center justify-end gap-1`;
+      timeSpan.className = `text-[10px] text-slate-400 mt-1 flex items-center justify-end gap-1 font-mono`;
       timeSpan.innerHTML = `${timeStr} ${isUser ? '<span class="text-[#53bdeb]">✓✓</span>' : ''}`;
       bubble.appendChild(timeSpan);
 
@@ -731,7 +849,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       setTimeout(() => {
         processBotLogic(text);
         setTyping(false);
-      }, 700);
+      }, 650);
     }
 
     function processBotLogic(userText) {
@@ -783,7 +901,9 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         
         const boletoHtml = `
           <div class="space-y-2">
-            <div class="font-bold text-emerald-800 text-xs">✅ Boleto Localizado!</div>
+            <div class="font-bold text-emerald-800 text-xs flex items-center gap-1">
+              <span>✅</span> Boleto Localizado com Sucesso!
+            </div>
             <div class="border-t border-b border-slate-200 py-1.5 space-y-0.5 text-[11px]">
               <div><strong>Titular:</strong> Carlos Eduardo Silva</div>
               <div><strong>CPF:</strong> ${masked}</div>
@@ -801,18 +921,21 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
               </div>
             </div>
 
-            <div class="flex flex-wrap gap-2 pt-2">
-              <button onclick="copyToClipboard('23793381286000012345601000650004195420000065000', 'Linha digitável copiada!')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded text-[10px] font-semibold flex items-center gap-1">
+            <div class="flex flex-wrap gap-1.5 pt-2">
+              <button onclick="copyToClipboard('23793381286000012345601000650004195420000065000', 'Linha digitável copiada!')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-[10px] font-semibold flex items-center gap-1">
                 📋 Copiar Código
               </button>
-              <button onclick="copyToClipboard('00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865406650.005802BR5925ADMINISTRADORA6009SAOPAULO62070503***6304E2CA', 'Código Pix Copia e Cola copiado!')" class="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded text-[10px] font-semibold flex items-center gap-1">
+              <button onclick="copyToClipboard('00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865406650.005802BR5925ADMINISTRADORA6009SAOPAULO62070503***6304E2CA', 'Código Pix Copia e Cola copiado!')" class="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[10px] font-semibold flex items-center gap-1">
                 💰 Copiar Pix
               </button>
-              <button onclick="openPdfModal()" class="px-2.5 py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded text-[10px] font-semibold flex items-center gap-1">
+              <button onclick="openPdfModal()" class="px-2.5 py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded-lg text-[10px] font-semibold flex items-center gap-1">
                 📄 Ver Boleto PDF
               </button>
+              <button onclick="simulatePixPayment()" class="w-full mt-1 px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md">
+                ⚡ Simular Pagamento Pix Imediato
+              </button>
             </div>
-            <div class="text-[10px] text-slate-400 pt-1 italic">
+            <div class="text-[10px] text-slate-400 pt-1 italic text-center">
               Digite MENU para voltar a outras opções.
             </div>
           </div>
@@ -836,12 +959,123 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       const menuHtml = `
         👋 Olá! Bem-vindo ao autoatendimento da <strong>Administradora Modelo</strong>.<br><br>
         Como posso ajudar você hoje?<br>
-        <strong>1</strong> - 📄 2ª Via de Boleto / Código Pix<br>
-        <strong>2</strong> - 🛠️ Abertura de Ocorrência / Chamado<br>
-        <strong>3</strong> - 👤 Falar com Atendente Humano<br><br>
-        <em>Digite o número da opção desejada:</em>
+        Selecione uma opção rápida abaixo ou digite o número:
+        <div class="mt-2.5 flex flex-col gap-1.5 pt-2 border-t border-slate-100">
+          <button onclick="sendQuickMessage('1')" class="w-full text-left py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
+            <span>📄 1. 2ª Via de Boleto / Pix</span>
+            <span class="text-emerald-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('2')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+            <span>🛠️ 2. Registrar Ocorrência</span>
+            <span class="text-slate-400 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('3')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+            <span>👤 3. Falar com Atendente</span>
+            <span class="text-slate-400 font-bold">→</span>
+          </button>
+        </div>
       `;
       addMessage(menuHtml, false, true);
+    }
+
+    function simulateAudioMessage() {
+      const audioHtml = `
+        <div class="space-y-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center text-xs shadow">▶</div>
+            <div class="flex-1">
+              <div class="h-1.5 bg-emerald-300 rounded-full w-full overflow-hidden">
+                <div class="bg-emerald-800 h-full w-2/3"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-emerald-900 mt-1 font-mono">
+                <span>0:08</span>
+                <span>Mensagem de Voz</span>
+              </div>
+            </div>
+          </div>
+          <div class="p-2 bg-emerald-100/80 rounded-xl text-[11px] text-emerald-950 border border-emerald-300/60 leading-tight">
+            🤖 <strong>Transcrição Automática (IA):</strong><br>
+            <em>"Boa tarde, sou o Carlos do Bloco A Apt 101, gostaria da 2ª via do boleto do condomínio de novembro, por favor!"</em>
+          </div>
+        </div>
+      `;
+      addMessage(audioHtml, true, true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        addMessage(`🎙️ <strong>Áudio processado pela IA!</strong><br>Olá, Carlos! Localizei sua solicitação de cota condominial para o <strong>Bloco A - Apt 101</strong>:`, false, true);
+        
+        setTimeout(() => {
+          sendQuickMessage('123.456.789-09');
+        }, 400);
+      }, 1000);
+    }
+
+    function simulatePhotoTicket() {
+      const photoHtml = `
+        <div class="space-y-1.5">
+          <div class="rounded-xl overflow-hidden bg-slate-800 border border-slate-700 p-2 text-center text-slate-300">
+            <div class="w-full h-24 bg-slate-700/80 rounded-lg flex flex-col items-center justify-center text-xs text-slate-300">
+              <span class="text-3xl mb-1">🚰</span>
+              <span>Foto: Vazamento na Garagem</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-900 font-medium">
+            "Vazamento grave no encanamento da garagem do Bloco B, próximo à vaga 14. Está pingando em cima dos carros!"
+          </p>
+        </div>
+      `;
+      addMessage(photoHtml, true, true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        const ticketHtml = `
+          ✅ <strong>Ocorrência Prioritária Registrada!</strong><br><br>
+          📸 <strong>Foto anexada com sucesso</strong><br>
+          📋 <strong>Protocolo:</strong> #MANUT-91823<br>
+          🏢 <strong>Local:</strong> Garagem - Bloco B (Vaga 14)<br>
+          🚨 <strong>Status:</strong> Notificação automática enviada via WhatsApp para o zelador e síndico.<br><br>
+          <em>Obrigado por avisar a administração!</em>
+        `;
+        addMessage(ticketHtml, false, true);
+      }, 1000);
+    }
+
+    function simulatePixPayment() {
+      showToast('Processando pagamento Pix...');
+      setTyping(true);
+
+      // Dispara confetti de celebração!
+      try {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      } catch(e) {}
+
+      setTimeout(() => {
+        setTyping(false);
+        const confirmHtml = `
+          <div class="space-y-2 p-1">
+            <div class="flex items-center gap-2 text-emerald-800 font-extrabold text-xs">
+              <span class="text-lg">🎉</span> PAGAMENTO PIX CONFIRMADO!
+            </div>
+            <div class="border-t border-b border-emerald-200 py-2 space-y-1 text-[11px] text-emerald-950">
+              <div><strong>Valor Pago:</strong> R$ 650,00</div>
+              <div><strong>Data / Hora:</strong> Hoje às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</div>
+              <div><strong>Comprovante:</strong> #PIX-${Math.floor(100000 + Math.random() * 900000)}</div>
+              <div><strong>Status no ERP:</strong> <span class="bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded font-bold">QUITADO (Baixa Automática)</span></div>
+            </div>
+            <div class="text-[10px] text-emerald-800 font-semibold">
+              ✓ Comprovante autenticado. A baixa financeira foi realizada automaticamente no ERP!
+            </div>
+          </div>
+        `;
+        addMessage(confirmHtml, false, true);
+      }, 700);
     }
 
     function copyToClipboard(text, msg) {
@@ -885,7 +1119,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
 
       const realMensal = salario * 1.65;
       const anualManual = realMensal * 12;
-      // Economia estimada descontando uma média de investimento no bot
+      // Economia líquida estimada
       const economiaLiquida = Math.max(0, anualManual - 18000);
 
       const f = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -896,7 +1130,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       economiaAnual.textContent = f(economiaLiquida);
     }
 
-    // Inicializa o chat ao carregar
+    // Inicializa
     window.addEventListener('DOMContentLoaded', () => {
       sendMenu();
       updateRoiCalculation();
