@@ -1,0 +1,33 @@
+{
+  "name": "chatbot-condominio",
+  "version": "1.0.0",
+  "description": "Sistema de autoatendimento WhatsApp para administradora de condomínios com emissão de boletos, Pix e chamados",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "whatsapp",
+    "condominio",
+    "evolution-api",
+    "boletos",
+    "pix",
+    "chatbot"
+  ],
+  "author": "Thxxvs",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
