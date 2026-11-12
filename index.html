@@ -73,10 +73,10 @@
 
       <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
         <a href="#simulador" class="hover:text-emerald-400 transition-colors">Simulador WhatsApp</a>
-        <a href="#solucoes" class="hover:text-emerald-400 transition-colors">Soluções de Mercado</a>
-        <a href="#roi" class="hover:text-emerald-400 transition-colors">Calculadora de ROI</a>
+        <a href="#solucoes" class="hover:text-emerald-400 transition-colors">Vantagens Comerciais</a>
+        <a href="#roi" class="hover:text-emerald-400 transition-colors">Calculadora de Economia</a>
+        <a href="#como-funciona" class="hover:text-emerald-400 transition-colors">Solução Chave na Mão</a>
         <a href="#questionario" class="hover:text-emerald-400 transition-colors">Questionário ERP</a>
-        <a href="#arquitetura" class="hover:text-emerald-400 transition-colors">Arquitetura</a>
       </nav>
 
       <div class="flex items-center gap-3">
@@ -549,53 +549,65 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     </div>
   </section>
 
-  <!-- Section 4: Arquitetura & Como Executar -->
-  <section id="arquitetura" class="py-16 bg-slate-900">
+  <!-- Section 4: Solução Chave na Mão (Turnkey) -->
+  <section id="como-funciona" class="py-16 bg-slate-900 border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-12">
-        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Implementação Prática</span>
-        <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Como Subir a Solução em Produção</h2>
-        <p class="text-slate-400 text-sm mt-2">
-          O projeto foi empacotado para subir com apenas 2 comandos em qualquer VPS Linux ou ambiente local.
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Entrega Completa e Sem Complicação</span>
+        <h2 class="text-2xl md:text-4xl font-extrabold text-white mt-2">Solução Chave na Mão: Cuidamos de 100% da Tecnologia</h2>
+        <p class="text-slate-400 text-sm mt-3 leading-relaxed">
+          Sua administradora não precisa se preocupar com programação, servidores ou configurações complexas. Entregamos o sistema totalmente configurado, testado e operando no número oficial de WhatsApp da sua empresa.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-        <!-- Step 1: Docker Compose -->
-        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">1</span>
-            <h3 class="text-base font-bold text-white">Subir a Evolution API (WhatsApp)</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <!-- Pilar 1 -->
+        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 relative">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xl mb-4">
+            🔌
           </div>
-          <p class="text-xs text-slate-400 mb-3">
-            O arquivo <code class="text-emerald-400">docker-compose.yml</code> incluso já configura a Evolution API v2, banco PostgreSQL e Redis:
-          </p>
-          <div class="bg-slate-900 p-4 rounded-xl font-mono text-xs text-emerald-300 border border-slate-800">
-            <code>docker compose up -d</code>
-          </div>
-          <p class="text-[11px] text-slate-500 mt-2">
-            Acesse <code class="text-slate-300">http://localhost:8080/manager</code> para escanear o QR Code do WhatsApp com o celular da administradora.
+          <h3 class="text-base font-bold text-white">1. Integração Total com o seu ERP</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Fazemos toda a ponte técnica direta com o software financeiro que você já usa (Superlógica, Ahreas, Group, Condomob ou outro). Seus boletos e dados de condôminos sincronizados em tempo real.
           </p>
         </div>
 
-        <!-- Step 2: Backend Node.js -->
-        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">2</span>
-            <h3 class="text-base font-bold text-white">Iniciar o Backend do Chatbot</h3>
+        <!-- Pilar 2 -->
+        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 relative">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-xl mb-4">
+            ⚡
           </div>
-          <p class="text-xs text-slate-400 mb-3">
-            Instale as dependências e inicie o servidor com hot-reload:
+          <h3 class="text-base font-bold text-white">2. Ativação Rápida e Sem Atrito</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Em poucos dias o sistema já começa a atender seus condomínios. A economia de tempo da sua equipe começa a aparecer logo na primeira semana de funcionamento.
           </p>
-          <div class="bg-slate-900 p-4 rounded-xl font-mono text-xs text-emerald-300 border border-slate-800 space-y-1">
-            <div><code>npm install</code></div>
-            <div><code>npm run dev</code></div>
+        </div>
+
+        <!-- Pilar 3 -->
+        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 relative">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-xl mb-4">
+            🛡️
           </div>
-          <p class="text-[11px] text-slate-500 mt-2">
-            O webhook estará escutando em <code class="text-slate-300">http://localhost:3000/webhook/evolution</code>.
+          <h3 class="text-base font-bold text-white">3. Suporte e Monitoramento Contínuo</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Garantimos o robô online 24 horas por dia, 7 dias por semana, com backups diários, segurança de dados em conformidade com a LGPD e melhorias contínuas.
           </p>
         </div>
       </div>
+
+      <!-- Call to Action Banner -->
+      <div class="bg-gradient-to-r from-emerald-900/60 via-slate-900 to-teal-900/40 rounded-3xl p-8 md:p-10 border border-emerald-500/40 text-center max-w-4xl mx-auto shadow-2xl">
+        <h3 class="text-2xl md:text-3xl font-extrabold text-white">Pronto para transformar o atendimento da sua administradora?</h3>
+        <p class="text-sm text-slate-300 mt-3 max-w-xl mx-auto">
+          Economize milhares de reais todo mês, elimine a sobrecarga operacional da sua equipe e ofereça o atendimento mais rápido e moderno do mercado imobiliário.
+        </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-4">
+          <a href="#simulador" class="px-7 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-emerald-500/30">
+            Fazer um Teste Prático Agora 👆
+          </a>
+        </div>
+      </div>
+
     </div>
   </section>
 
