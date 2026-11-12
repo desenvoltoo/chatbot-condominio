@@ -294,10 +294,46 @@
                   <span class="text-base">⚡</span>
                   <div>
                     <strong class="block text-emerald-300 group-hover:text-emerald-100">6. Simular Pagamento Pix (Baixa Automática)</strong>
-                    <span class="text-[11px] text-emerald-400/80">Autenticação instantânea de recebimento</span>
+                    <span class="text-[11px] text-emerald-400/80">Autenticação instantânea com confetes na tela</span>
                   </div>
                 </div>
                 <span class="text-emerald-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Pagar →</span>
+              </button>
+
+              <!-- Action 7: Múltiplas Unidades -->
+              <button onclick="simulateMultipleUnits()" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">🏢</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">7. Morador com Múltiplas Unidades</strong>
+                    <span class="text-[11px] text-slate-400">Exibe seletor de condomínio e apartamentos</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Listar →</span>
+              </button>
+
+              <!-- Action 8: Inadimplência Crítica / Jurídico -->
+              <button onclick="simulateDelinquentResident()" class="w-full text-left p-3 rounded-xl bg-rose-950/30 hover:bg-rose-900/40 border border-rose-500/40 hover:border-rose-400 text-xs text-rose-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">⚖️</span>
+                  <div>
+                    <strong class="block text-rose-200 group-hover:text-rose-100">8. Inadimplência Crítica (Trava Jurídica)</strong>
+                    <span class="text-[11px] text-rose-300/80">Bloqueio de boleto simples & transbordo para acordos</span>
+                  </div>
+                </div>
+                <span class="text-rose-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Testar →</span>
+              </button>
+
+              <!-- Action 9: Atendente -->
+              <button onclick="sendQuickMessage('Gostaria de falar com um atendente humano')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">👤</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">9. Falar com Atendente Humano</strong>
+                    <span class="text-[11px] text-slate-400">Transferência para a central com fila organizada</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Chamar →</span>
               </button>
 
             </div>
@@ -682,6 +718,62 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         </pre>
       </div>
 
+    </div>
+  </section>
+
+  <!-- Section 5: Perguntas Frequentes & Quebra de Objeções -->
+  <section class="py-20 md:py-24 relative z-10 border-b border-slate-800/80">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Tire Suas Dúvidas
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-3 tracking-tight">
+          Perguntas Frequentes de Gestores de Condomínio
+        </h2>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Q1 -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-emerald-400">❓</span> Existe algum risco de banimento do WhatsApp da administradora?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-2.5 leading-relaxed">
+            <strong>Não há risco.</strong> O sistema funciona estritamente no modelo receptivo (<em>inbound</em>), ou seja, é o morador quem entra em contato com o condomínio para solicitar o serviço. As políticas da Meta penalizam envio de spam e mensagens em massa não solicitadas, mas estimulam e priorizam canais de atendimento e autoatendimento ao consumidor.
+          </p>
+        </div>
+
+        <!-- Q2 -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-emerald-400">❓</span> E se o morador estiver com várias cotas atrasadas ou em cobrança jurídica?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-2.5 leading-relaxed">
+            O robô possui uma <strong>trava inteligente de inadimplência</strong>. Se o morador possuir mais de 2 cotas em aberto ou estiver com status de "Cobrança Jurídica" no seu ERP, o sistema bloqueia a emissão automática do boleto comum e transfere o atendimento diretamente para o setor de acordos/jurídico da sua administradora, evitando que ele pague apenas o mês atual e ignore a dívida antiga.
+          </p>
+        </div>
+
+        <!-- Q3 -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-emerald-400">❓</span> Como o robô atende moradores que possuem mais de uma unidade ou vaga de garagem?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-2.5 leading-relaxed">
+            Ao digitar o CPF, o sistema lista automaticamente todas as unidades vinculadas àquele proprietário (ex: <em>Apt 101, Apt 404 ou Vaga 12</em>) em um menu interativo, permitindo que ele escolha com 1 clique de qual unidade deseja emitir a cota condominial.
+          </p>
+        </div>
+
+        <!-- Q4 -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-emerald-400">❓</span> Podemos fazer um período de teste/piloto na nossa carteira?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-2.5 leading-relaxed">
+            <strong>Com certeza.</strong> Recomendamos iniciar com um piloto de 15 dias em 2 ou 3 condomínios selecionados da sua carteira. Dessa forma, você e os síndicos validam a satisfação dos moradores e o alívio imediato na sua equipe antes de estender para os demais prédios.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1076,6 +1168,72 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         `;
         addMessage(confirmHtml, false, true);
       }, 700);
+    }
+
+    function simulateMultipleUnits() {
+      addMessage('Olá! Gostaria de consultar meus boletos.', true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        const multiHtml = `
+          👋 Olá, <strong>Roberto Guimarães</strong>!<br><br>
+          Identifiquei <strong>3 unidades ativas</strong> vinculadas ao seu CPF.<br>
+          De qual imóvel você deseja emitir o boleto?
+          <div class="mt-2.5 flex flex-col gap-1.5 pt-2 border-t border-slate-100">
+            <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-950 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
+              <div>
+                <strong class="block text-emerald-900">🏢 Res. Jardins do Bosque</strong>
+                <span class="text-[10px] text-emerald-700">Bloco A - Apartamento 101</span>
+              </div>
+              <span class="text-emerald-600 font-bold">Escolher →</span>
+            </button>
+            <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+              <div>
+                <strong class="block text-slate-900">🏢 Edifício Solar das Palmeiras</strong>
+                <span class="text-[10px] text-slate-600">Torre 2 - Apartamento 404</span>
+              </div>
+              <span class="text-slate-400 font-bold">Escolher →</span>
+            </button>
+            <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+              <div>
+                <strong class="block text-slate-900">🚗 Edifício Solar das Palmeiras</strong>
+                <span class="text-[10px] text-slate-600">Vaga Extra de Garagem Nº 12</span>
+              </div>
+              <span class="text-slate-400 font-bold">Escolher →</span>
+            </button>
+          </div>
+        `;
+        addMessage(multiHtml, false, true);
+      }, 700);
+    }
+
+    function simulateDelinquentResident() {
+      addMessage('Gostaria do boleto do Apt 502 por favor (CPF 999.888.777-66)', true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        const lockHtml = `
+          <div class="space-y-2 p-1">
+            <div class="flex items-center gap-1.5 text-amber-800 font-bold text-xs">
+              <span class="text-base">⚖️</span> Aviso de Cobrança Administrativa
+            </div>
+            <div class="border-t border-b border-amber-200 py-2 space-y-1 text-[11px] text-amber-950 leading-relaxed">
+              <div>Olá, <strong>Marcos Ferreira</strong>. Constam pendências anteriores ajuizadas ou em renegociação para a unidade <strong>Apt 502</strong>.</div>
+              <div class="p-2 bg-amber-100 rounded-lg text-amber-900 text-[10px] font-semibold mt-1">
+                🔒 <em>Por normas contratuais da convenção, a emissão avulsa está bloqueada para garantir a unificação dos débitos com condições especiais.</em>
+              </div>
+            </div>
+            <div class="pt-1">
+              <button onclick="sendQuickMessage('Gostaria de falar com um atendente humano')" class="w-full py-2 bg-amber-700 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-colors">
+                👤 Falar com Setor de Acordos da Administradora
+              </button>
+            </div>
+          </div>
+        `;
+        addMessage(lockHtml, false, true);
+      }, 800);
     }
 
     function copyToClipboard(text, msg) {
