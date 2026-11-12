@@ -122,8 +122,8 @@
         <a href="#simulador" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Simulador Ao Vivo
         </a>
+        <a href="#diferenciais" class="hover:text-emerald-400 transition-colors">Diferenciais</a>
         <a href="#roi" class="hover:text-emerald-400 transition-colors">Economia Financeira</a>
-        <a href="#solucoes" class="hover:text-emerald-400 transition-colors">Diferenciais</a>
         <a href="#como-funciona" class="hover:text-emerald-400 transition-colors">Como Funciona</a>
         <a href="#questionario" class="hover:text-emerald-400 transition-colors">Integração ERP</a>
       </nav>
@@ -228,6 +228,21 @@
 
             <div class="space-y-2.5">
               
+              <!-- Action 0: Página Inicial do WhatsApp -->
+              <button onclick="showChatList()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-emerald-950/70 via-slate-900 to-teal-950/70 hover:from-emerald-900/80 hover:to-teal-900/80 border border-emerald-500/50 hover:border-emerald-400 text-xs text-white transition-all flex items-center justify-between group shadow-md">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base p-1.5 rounded-lg bg-emerald-500/20 text-emerald-300">📱</span>
+                  <div>
+                    <strong class="block text-emerald-300 group-hover:text-emerald-200 transition-colors flex items-center gap-1.5">
+                      Página Inicial do WhatsApp
+                      <span class="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">4 Conversas</span>
+                    </strong>
+                    <span class="text-[11px] text-slate-300">1 Privada (Bot) + 3 Grupos de Condomínios</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-80 group-hover:opacity-100 transition-opacity">Ver Lista →</span>
+              </button>
+
               <!-- Action 1 -->
               <button onclick="sendQuickMessage('Olá, gostaria de tirar uma dúvida')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
                 <div class="flex items-center gap-2.5">
@@ -313,15 +328,18 @@
               </button>
 
               <!-- Action 8: Aviso em Grupo de Condomínio -->
-              <button onclick="simulateGroupAnnouncement()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-teal-950/50 to-slate-900 hover:from-teal-900/60 hover:to-slate-800 border border-teal-500/40 hover:border-teal-400 text-xs text-teal-200 transition-all flex items-center justify-between group shadow-sm">
+              <button onclick="simulateGroupAnnouncement()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-teal-950/60 via-slate-900 to-blue-950/60 hover:from-teal-900/70 hover:to-blue-900/70 border border-teal-500/50 hover:border-teal-400 text-xs text-teal-200 transition-all flex items-center justify-between group shadow-sm">
                 <div class="flex items-center gap-2.5">
-                  <span class="text-base">📢</span>
+                  <span class="text-base p-1.5 rounded-lg bg-teal-500/20 text-teal-300">📢</span>
                   <div>
-                    <strong class="block text-teal-200 group-hover:text-teal-100">8. Disparo de Avisos em Grupo do Condomínio</strong>
-                    <span class="text-[11px] text-teal-300/80">Simula envio simultâneo nos grupos oficiais de prédios</span>
+                    <strong class="block text-teal-300 group-hover:text-teal-100 flex items-center gap-1.5">
+                      8. Disparo de Avisos em Massa
+                      <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">Todos os 3 Grupos</span>
+                    </strong>
+                    <span class="text-[11px] text-teal-300/80">Envia o mesmo comunicado para todos os condomínios</span>
                   </div>
                 </div>
-                <span class="text-teal-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Disparar →</span>
+                <span class="text-teal-300 text-xs font-bold opacity-80 group-hover:opacity-100 transition-opacity">Disparar →</span>
               </button>
 
               <!-- Action 9: Atendente -->
@@ -371,8 +389,32 @@
         </div>
 
         <!-- Right Column: Realistic iPhone Smartphone Frame -->
-        <div class="lg:col-span-7 flex justify-center">
+        <div class="lg:col-span-7 flex flex-col items-center">
           
+          <!-- Top Navigation Switcher for the Simulator -->
+          <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-3 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 shadow-lg text-xs">
+            <button id="pillBtnHome" onclick="showChatList()" class="px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow">
+              <span>📱</span> Início (4 Conversas)
+              <span id="pillUnreadHome" class="hidden px-1.5 py-0.2 rounded-full bg-slate-950 text-emerald-400 text-[10px] font-black">3</span>
+            </button>
+            <button id="pillBtnBot" onclick="openChat('bot')" class="px-2.5 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1">
+              <span>🏢</span> Bot 2ª Via
+            </button>
+            <div class="h-4 w-px bg-slate-800 hidden sm:block"></div>
+            <button id="pillBtnGroup1" onclick="openChat('group1')" class="px-2 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px]">
+              <span>🌿</span> Jardins
+              <span id="pillGroup1Badge" class="hidden w-2 h-2 rounded-full bg-emerald-400"></span>
+            </button>
+            <button id="pillBtnGroup2" onclick="openChat('group2')" class="px-2 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px]">
+              <span>🌊</span> Mar Azul
+              <span id="pillGroup2Badge" class="hidden w-2 h-2 rounded-full bg-emerald-400"></span>
+            </button>
+            <button id="pillBtnGroup3" onclick="openChat('group3')" class="px-2 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px]">
+              <span>🌳</span> Bosque
+              <span id="pillGroup3Badge" class="hidden w-2 h-2 rounded-full bg-emerald-400"></span>
+            </button>
+          </div>
+
           <div class="relative w-full max-w-[390px]">
             <!-- Subtle Glow behind the phone -->
             <div class="absolute -inset-4 bg-gradient-to-tr from-emerald-500/20 to-teal-500/10 rounded-[54px] blur-2xl pointer-events-none"></div>
@@ -397,74 +439,330 @@
                   </div>
                 </div>
 
-                <!-- WhatsApp Top Header -->
-                <div class="bg-[#005d4b] px-4 py-2.5 flex items-center justify-between text-white shrink-0 shadow-md border-b border-emerald-900/30 z-10">
-                  <div class="flex items-center gap-3">
-                    <button class="text-white hover:text-emerald-200">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                <!-- VIEW 1: HOME DE CONVERSAS (WHATSAPP HOME) -->
+                <div id="viewHome" class="flex-1 flex flex-col bg-white overflow-hidden">
+                  
+                  <!-- WhatsApp Top Green Header -->
+                  <div class="bg-[#005d4b] text-white px-4 pt-2 shadow shrink-0">
+                    <div class="flex items-center justify-between pb-2">
+                      <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-base tracking-tight">WhatsApp Business</span>
+                        <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-700/90 text-emerald-200">PRO</span>
+                      </div>
+                      <div class="flex items-center gap-3.5 text-white/90 text-sm">
+                        <button title="Câmera" class="hover:text-white">📷</button>
+                        <button title="Pesquisar" class="hover:text-white">🔍</button>
+                        <button title="Mais Opções" class="hover:text-white">⋮</button>
+                      </div>
+                    </div>
+
+                    <!-- WhatsApp Tabs -->
+                    <div class="flex items-center text-xs font-bold uppercase tracking-wide">
+                      <div class="py-2 px-1 text-white/60">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v1h8v-1zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 16.5a3.5 3.5 0 00-5.48-2.924A5.968 5.968 0 0111 15v1h5v-.5zM3.48 13.576A3.5 3.5 0 001 16.5v.5h5v-1a5.968 5.968 0 01.48-1.424z"/></svg>
+                      </div>
+                      <div class="flex-1 py-2 text-center text-white border-b-2 border-white flex items-center justify-center gap-1 cursor-pointer">
+                        <span>Conversas</span>
+                        <span id="homeTotalBadge" class="hidden px-1.5 py-0.2 bg-white text-[#005d4b] rounded-full text-[10px] font-black leading-tight">3</span>
+                      </div>
+                      <div class="flex-1 py-2 text-center text-emerald-200/70 hover:text-white cursor-pointer">
+                        <span>Atualizações</span>
+                      </div>
+                      <div class="flex-1 py-2 text-center text-emerald-200/70 hover:text-white cursor-pointer">
+                        <span>Chamadas</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Quick Filter Pills Bar -->
+                  <div class="bg-[#f8fafc] px-3 py-1.5 border-b border-slate-200 flex items-center justify-between text-[11px] shrink-0">
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">Todas (4)</span>
+                      <span class="px-2.5 py-0.5 rounded-full bg-white text-slate-600 font-medium border border-slate-200">Não lidas</span>
+                      <span class="px-2.5 py-0.5 rounded-full bg-white text-slate-600 font-medium border border-slate-200">Grupos (3)</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Toque p/ abrir</span>
+                  </div>
+
+                  <!-- Chats List Container (4 Chats) -->
+                  <div class="flex-1 overflow-y-auto custom-scrollbar divide-y divide-slate-100 bg-white">
+                    
+                    <!-- Chat Item 1: Conversa Privada (Bot Oficial) -->
+                    <div onclick="openChat('bot')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors group">
+                      <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-extrabold flex items-center justify-center text-xl shadow-sm">
+                          🏢
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white flex items-center justify-center">
+                          <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        </span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                          <div class="flex items-center gap-1 truncate">
+                            <h4 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700 transition-colors truncate">Administradora Modelo</h4>
+                            <span class="text-[9px] font-bold px-1 rounded bg-emerald-100 text-emerald-800">BOT</span>
+                          </div>
+                          <span id="time-bot" class="text-[10px] text-slate-400 font-medium shrink-0">09:41</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <p id="snippet-bot" class="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                            <span class="text-emerald-600 font-semibold">2ª Via:</span> Segue o boleto e chave Pix...
+                          </p>
+                          <span class="text-slate-400 text-xs shrink-0" title="Conversa Fixada">📌</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Chat Item 2: Grupo de Condomínio 1 -->
+                    <div onclick="openChat('group1')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors group">
+                      <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-700 to-teal-800 text-white font-extrabold flex items-center justify-center text-xl shadow-sm">
+                          🌿
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-slate-700 ring-2 ring-white flex items-center justify-center text-[8px] text-white">👥</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                          <h4 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700 transition-colors truncate">Res. Jardins do Bosque [Oficial]</h4>
+                          <span id="time-group1" class="text-[10px] text-slate-400 font-medium shrink-0">09:30</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <p id="snippet-group1" class="text-[11px] text-slate-500 truncate">
+                            Síndico Roberto: Reunião na próxima terça às 19h...
+                          </p>
+                          <span id="badge-group1" class="hidden w-5 h-5 rounded-full bg-[#25d366] text-white text-[10px] font-bold flex items-center justify-center shrink-0 shadow-sm animate-pulse">1</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Chat Item 3: Grupo de Condomínio 2 -->
+                    <div onclick="openChat('group2')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors group">
+                      <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-700 text-white font-extrabold flex items-center justify-center text-xl shadow-sm">
+                          🌊
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-slate-700 ring-2 ring-white flex items-center justify-center text-[8px] text-white">👥</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                          <h4 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700 transition-colors truncate">Cond. Edifício Mar Azul [Avisos]</h4>
+                          <span id="time-group2" class="text-[10px] text-slate-400 font-medium shrink-0">Ontem</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <p id="snippet-group2" class="text-[11px] text-slate-500 truncate">
+                            Zelador: Portão consertado com sucesso...
+                          </p>
+                          <span id="badge-group2" class="hidden w-5 h-5 rounded-full bg-[#25d366] text-white text-[10px] font-bold flex items-center justify-center shrink-0 shadow-sm animate-pulse">1</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Chat Item 4: Grupo de Condomínio 3 -->
+                    <div onclick="openChat('group3')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors group">
+                      <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-600 to-emerald-900 text-white font-extrabold flex items-center justify-center text-xl shadow-sm">
+                          🌳
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-slate-700 ring-2 ring-white flex items-center justify-center text-[8px] text-white">👥</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                          <h4 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700 transition-colors truncate">Cond. Bosque Imperial [Comunicados]</h4>
+                          <span id="time-group3" class="text-[10px] text-slate-400 font-medium shrink-0">Terça</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <p id="snippet-group3" class="text-[11px] text-slate-500 truncate">
+                            Conselho: Novo regulamento da piscina disponível...
+                          </p>
+                          <span id="badge-group3" class="hidden w-5 h-5 rounded-full bg-[#25d366] text-white text-[10px] font-bold flex items-center justify-center shrink-0 shadow-sm animate-pulse">1</span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- WhatsApp Bottom Navigation Bar -->
+                  <div class="bg-[#f0f2f5] border-t border-slate-200 py-1.5 px-6 flex items-center justify-around text-slate-500 text-[10px] font-medium shrink-0">
+                    <button class="flex flex-col items-center text-emerald-700 font-bold">
+                      <span class="text-base">💬</span>
+                      <span>Conversas</span>
                     </button>
-                    <!-- Avatar -->
-                    <div class="relative">
-                      <div id="headerAvatar" class="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-50 text-slate-800 font-extrabold flex items-center justify-center text-sm shadow">
-                        🏢
+                    <button class="flex flex-col items-center hover:text-slate-800">
+                      <span class="text-base">⭕</span>
+                      <span>Atualizações</span>
+                    </button>
+                    <button class="flex flex-col items-center hover:text-slate-800">
+                      <span class="text-base">👥</span>
+                      <span>Comunidades</span>
+                    </button>
+                    <button class="flex flex-col items-center hover:text-slate-800">
+                      <span class="text-base">📞</span>
+                      <span>Chamadas</span>
+                    </button>
+                  </div>
+
+                </div>
+
+                <!-- VIEW 2: CHAT ATIVO (CONVERSA ABERTA) -->
+                <div id="viewChat" class="hidden flex-1 flex flex-col bg-[#efeae2] overflow-hidden relative">
+                  
+                  <!-- WhatsApp Top Header -->
+                  <div class="bg-[#005d4b] px-3 py-2 flex items-center justify-between text-white shrink-0 shadow-md border-b border-emerald-900/30 z-10">
+                    <div class="flex items-center gap-2">
+                      <button onclick="showChatList()" class="text-white hover:text-emerald-200 flex items-center gap-0.5 p-1 rounded-lg hover:bg-white/10 transition-colors" title="Voltar para todas as conversas">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                        <span id="backBadge" class="hidden w-4 h-4 rounded-full bg-emerald-400 text-slate-950 text-[9px] font-extrabold flex items-center justify-center">3</span>
+                      </button>
+                      
+                      <!-- Avatar -->
+                      <div class="relative">
+                        <div id="headerAvatar" class="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-50 text-slate-800 font-extrabold flex items-center justify-center text-sm shadow">
+                          🏢
+                        </div>
+                        <span id="headerOnlineDot" class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#005d4b]"></span>
                       </div>
-                      <span id="headerOnlineDot" class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#005d4b]"></span>
-                    </div>
-                    <div>
-                      <div class="flex items-center gap-1">
-                        <h4 id="headerTitle" class="font-bold text-xs leading-tight text-white">Administradora Modelo</h4>
-                        <!-- Verified Badge -->
-                        <svg id="headerVerified" class="w-3.5 h-3.5 text-emerald-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                      
+                      <div class="min-w-0 max-w-[170px]">
+                        <div class="flex items-center gap-1">
+                          <h4 id="headerTitle" class="font-bold text-xs leading-tight text-white truncate">Administradora Modelo</h4>
+                          <!-- Verified Badge -->
+                          <svg id="headerVerified" class="w-3.5 h-3.5 text-emerald-300 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        </div>
+                        <p id="headerSubtitle" class="text-[10px] text-emerald-200 truncate">Conta Comercial Oficial • online</p>
                       </div>
-                      <p id="headerSubtitle" class="text-[10px] text-emerald-200">Conta Comercial Oficial • online</p>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 text-emerald-100 text-sm">
+                      <button title="Chamada">📞</button>
+                      <button onclick="showChatList()" title="Todas as Conversas" class="text-[11px] bg-emerald-700/60 hover:bg-emerald-600 px-2 py-1 rounded text-white font-medium">Chats</button>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3 text-emerald-100 text-sm">
-                    <button title="Chamada">📞</button>
-                    <button title="Mais Opções">⋮</button>
+
+                  <!-- Chat Messages Scroll Area -->
+                  <div id="chatHistory" class="flex-1 p-3 overflow-y-auto space-y-3 custom-scrollbar chat-pattern text-slate-800 text-xs">
+                    <!-- Messages injected dynamically via JS -->
                   </div>
-                </div>
 
-                <!-- Chat Messages Scroll Area -->
-                <div id="chatHistory" class="flex-1 p-3 overflow-y-auto space-y-3 custom-scrollbar chat-pattern text-slate-800 text-xs">
-                  <!-- Messages injected dynamically via JS -->
-                </div>
-
-                <!-- Typing Pulse Indicator -->
-                <div id="typingIndicator" class="hidden px-4 py-1.5 bg-[#efeae2]/95 text-[11px] text-slate-600 flex items-center gap-2 border-t border-slate-200/50">
-                  <div class="flex gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style="animation-delay: 0.2s"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style="animation-delay: 0.4s"></span>
+                  <!-- Typing Pulse Indicator -->
+                  <div id="typingIndicator" class="hidden px-4 py-1.5 bg-[#efeae2]/95 text-[11px] text-slate-600 flex items-center gap-2 border-t border-slate-200/50">
+                    <div class="flex gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce"></span>
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style="animation-delay: 0.2s"></span>
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style="animation-delay: 0.4s"></span>
+                    </div>
+                    <span id="typingLabel" class="italic text-[10px]">Administradora está digitando...</span>
                   </div>
-                  <span class="italic text-[10px]">Administradora está digitando...</span>
+
+                  <!-- WhatsApp Bottom Input Bar -->
+                  <div id="chatBottomBar" class="p-2 bg-[#f0f2f5] border-t border-slate-300 flex items-center gap-2 shrink-0">
+                    <button class="text-slate-500 hover:text-slate-700 text-lg px-1">😊</button>
+                    <button onclick="simulatePhotoTicket()" class="text-slate-500 hover:text-slate-700 text-lg px-1" title="Anexar Foto">📎</button>
+                    <input 
+                      type="text" 
+                      id="chatInput" 
+                      placeholder="Mensagem" 
+                      class="flex-1 bg-white rounded-full px-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none border border-slate-300 shadow-sm"
+                      onkeydown="if(event.key === 'Enter') handleUserInput()"
+                    >
+                    <button 
+                      onclick="handleUserInput()" 
+                      class="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center transition-colors shadow-md shrink-0">
+                      <svg class="w-4 h-4 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                      </svg>
+                    </button>
+                  </div>
+
                 </div>
 
-                <!-- WhatsApp Bottom Input Bar -->
-                <div class="p-2 bg-[#f0f2f5] border-t border-slate-300 flex items-center gap-2 shrink-0">
-                  <button class="text-slate-500 hover:text-slate-700 text-lg px-1">😊</button>
-                  <button onclick="simulatePhotoTicket()" class="text-slate-500 hover:text-slate-700 text-lg px-1" title="Anexar Foto">📎</button>
-                  <input 
-                    type="text" 
-                    id="chatInput" 
-                    placeholder="Mensagem" 
-                    class="flex-1 bg-white rounded-full px-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none border border-slate-300 shadow-sm"
-                    onkeydown="if(event.key === 'Enter') handleUserInput()"
-                  >
-                  <button 
-                    onclick="handleUserInput()" 
-                    class="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center transition-colors shadow-md shrink-0">
-                    <svg class="w-4 h-4 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                    </svg>
-                  </button>
-                </div>
+      </div>
 
-              </div>
-            </div>
+    </div>
+  </section>
 
+  <!-- Section: Diferenciais Exclusivos -->
+  <section id="diferenciais" class="py-20 md:py-28 relative z-10 border-b border-slate-800/80 bg-slate-900/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Tecnologia Superior
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mt-4 tracking-tight">
+          Diferenciais Exclusivos do Nosso Sistema
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base mt-3 leading-relaxed">
+          Projetado especialmente para os desafios reais de administradoras de condomínios que buscam excelência operacional e redução de custos.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        
+        <!-- Card 1 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-emerald-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            ⚡
           </div>
+          <h3 class="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">Segunda Via em 3 Segundos</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Entrega imediata com linha digitável clicável, chave Pix Copia e Cola dinâmica e arquivo PDF oficial do boleto gerado diretamente pelo seu ERP.
+          </p>
+        </div>
 
+        <!-- Card 2 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-teal-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            📢
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-teal-300 transition-colors">Disparo de Avisos em Grupos</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Envie comunicados de manutenção, falta d'água e convocações de assembleia simultaneamente para os grupos oficiais de WhatsApp de todos os prédios.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-purple-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            🎙️
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-purple-300 transition-colors">Transcrição de Áudios por IA</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Condôminos que preferem mandar mensagens de voz são compreendidos automaticamente por IA, que transcreve e resolve o pedido sem intervenção humana.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-blue-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            🏢
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-blue-300 transition-colors">Múltiplas Unidades & Investidores</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Identifica quando o proprietário possui mais de um imóvel ou vagas extras de garagem e apresenta um seletor rápido para emissão de cada cota.
+          </p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-rose-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            ⚖️
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-rose-300 transition-colors">Trava de Inadimplência Crítica</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Bloqueio automático para unidades em cobrança judicial ou acordos quebrados, direcionando o morador com mensagem personalizada para o setor jurídico.
+          </p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-amber-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            🔄
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-amber-300 transition-colors">Transbordo Sem Fricção</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Se o morador mudar de ideia ou solicitar atendimento humano a qualquer momento, o robô interrompe o fluxo e transfere com todo o histórico intacto.
+          </p>
         </div>
 
       </div>
@@ -836,8 +1134,69 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toastMsg');
 
+    let currentView = 'home'; // 'home' | 'chat'
+    let activeChatId = 'bot'; // 'bot' | 'group1' | 'group2' | 'group3'
     let botState = 'INICIO';
     let soundEnabled = true;
+
+    // Estrutura de dados das conversas (1 privada com o bot + 3 grupos de condomínio)
+    const chatsData = {
+      bot: {
+        id: 'bot',
+        type: 'private',
+        name: 'Administradora Modelo',
+        avatar: '🏢',
+        subtitle: 'Conta Comercial Oficial • online',
+        isVerified: true,
+        isOnline: true,
+        time: '09:41',
+        unreadCount: 0,
+        lastSnippet: 'Segunda via de boleto, Pix e atendimento 24h',
+        messages: []
+      },
+      group1: {
+        id: 'group1',
+        type: 'group',
+        name: 'Res. Jardins do Bosque [Oficial]',
+        condoName: 'Residencial Jardins do Bosque',
+        avatar: '🌿',
+        subtitle: '142 participantes • Você e outros',
+        isVerified: false,
+        isOnline: false,
+        time: '09:30',
+        unreadCount: 0,
+        lastSnippet: 'Síndico Roberto: Reunião na próxima terça às 19h...',
+        messages: []
+      },
+      group2: {
+        id: 'group2',
+        type: 'group',
+        name: 'Cond. Edifício Mar Azul [Avisos]',
+        condoName: 'Condomínio Edifício Mar Azul',
+        avatar: '🌊',
+        subtitle: '98 participantes • Você e outros',
+        isVerified: false,
+        isOnline: false,
+        time: 'Ontem',
+        unreadCount: 0,
+        lastSnippet: 'Zelador: Portão consertado com sucesso...',
+        messages: []
+      },
+      group3: {
+        id: 'group3',
+        type: 'group',
+        name: 'Cond. Bosque Imperial [Comunicados]',
+        condoName: 'Condomínio Bosque Imperial',
+        avatar: '🌳',
+        subtitle: '210 participantes • Você e outros',
+        isVerified: false,
+        isOnline: false,
+        time: 'Terça',
+        unreadCount: 0,
+        lastSnippet: 'Conselho: Novo regulamento da piscina disponível...',
+        messages: []
+      }
+    };
 
     function toggleSound() {
       soundEnabled = !soundEnabled;
@@ -882,38 +1241,212 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       toast.classList.remove('translate-y-20', 'opacity-0');
       setTimeout(() => {
         toast.classList.add('translate-y-20', 'opacity-0');
-      }, 2500);
+      }, 2800);
     }
 
-    function addMessage(text, isUser = false, isHtml = false) {
-      playPopSound(isUser);
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+    function updateGroupListItem(gId, snippet, timeStr, hasUnread) {
+      const snipEl = document.getElementById(`snippet-${gId}`);
+      if (snipEl) snipEl.innerHTML = snippet;
+      const tEl = document.getElementById(`time-${gId}`);
+      if (tEl) tEl.textContent = timeStr;
+      const bEl = document.getElementById(`badge-${gId}`);
+      if (bEl) {
+        if (hasUnread) {
+          bEl.classList.remove('hidden');
+          bEl.textContent = '1';
+        } else {
+          bEl.classList.add('hidden');
+        }
+      }
+      const pillDot = document.getElementById(`pill${gId.charAt(0).toUpperCase() + gId.slice(1)}Badge`);
+      if (pillDot) {
+        if (hasUnread) pillDot.classList.remove('hidden');
+        else pillDot.classList.add('hidden');
+      }
+    }
 
+    function updateTotalBadges() {
+      const totalUnread = (chatsData.group1.unreadCount || 0) + (chatsData.group2.unreadCount || 0) + (chatsData.group3.unreadCount || 0) + (chatsData.bot.unreadCount || 0);
+      
+      const homeTotalBadge = document.getElementById('homeTotalBadge');
+      if (homeTotalBadge) {
+        if (totalUnread > 0) {
+          homeTotalBadge.textContent = totalUnread;
+          homeTotalBadge.classList.remove('hidden');
+        } else {
+          homeTotalBadge.classList.add('hidden');
+        }
+      }
+
+      const backBadge = document.getElementById('backBadge');
+      if (backBadge) {
+        if (totalUnread > 0) {
+          backBadge.textContent = totalUnread;
+          backBadge.classList.remove('hidden');
+        } else {
+          backBadge.classList.add('hidden');
+        }
+      }
+
+      const pillUnreadHome = document.getElementById('pillUnreadHome');
+      if (pillUnreadHome) {
+        if (totalUnread > 0) {
+          pillUnreadHome.textContent = totalUnread;
+          pillUnreadHome.classList.remove('hidden');
+        } else {
+          pillUnreadHome.classList.add('hidden');
+        }
+      }
+    }
+
+    function updatePillNav() {
+      const pillBtnHome = document.getElementById('pillBtnHome');
+      const pillBtnBot = document.getElementById('pillBtnBot');
+      const pillBtnGroup1 = document.getElementById('pillBtnGroup1');
+      const pillBtnGroup2 = document.getElementById('pillBtnGroup2');
+      const pillBtnGroup3 = document.getElementById('pillBtnGroup3');
+
+      const inactivePill = 'px-2 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px]';
+      const activePill = 'px-2 py-1.5 rounded-xl font-bold bg-emerald-500 text-slate-950 shadow transition-all flex items-center gap-1 text-[11px]';
+
+      if (pillBtnHome) {
+        pillBtnHome.className = (currentView === 'home') 
+          ? 'px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow text-xs' 
+          : 'px-3 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs';
+      }
+
+      if (pillBtnBot) {
+        pillBtnBot.className = (currentView === 'chat' && activeChatId === 'bot')
+          ? 'px-2.5 py-1.5 rounded-xl font-bold bg-emerald-500 text-slate-950 shadow transition-all flex items-center gap-1 text-xs'
+          : 'px-2.5 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-xs';
+      }
+
+      if (pillBtnGroup1) pillBtnGroup1.className = (currentView === 'chat' && activeChatId === 'group1') ? activePill : inactivePill;
+      if (pillBtnGroup2) pillBtnGroup2.className = (currentView === 'chat' && activeChatId === 'group2') ? activePill : inactivePill;
+      if (pillBtnGroup3) pillBtnGroup3.className = (currentView === 'chat' && activeChatId === 'group3') ? activePill : inactivePill;
+    }
+
+    function showChatList() {
+      currentView = 'home';
+      document.getElementById('viewHome').classList.remove('hidden');
+      document.getElementById('viewChat').classList.add('hidden');
+      updatePillNav();
+      updateTotalBadges();
+    }
+
+    function openChat(chatId) {
+      currentView = 'chat';
+      activeChatId = chatId;
+      const data = chatsData[chatId];
+      if (!data) return;
+
+      // Zera contador de não lidas deste chat ao abrir
+      data.unreadCount = 0;
+      updateGroupListItem(chatId, data.lastSnippet || '', data.time || '09:41', false);
+      updateTotalBadges();
+
+      // Configura cabeçalho da conversa
+      document.getElementById('headerAvatar').textContent = data.avatar;
+      document.getElementById('headerTitle').textContent = data.name;
+      document.getElementById('headerSubtitle').textContent = data.subtitle;
+
+      const headerVerified = document.getElementById('headerVerified');
+      if (headerVerified) {
+        if (data.isVerified) headerVerified.classList.remove('hidden');
+        else headerVerified.classList.add('hidden');
+      }
+
+      const headerOnlineDot = document.getElementById('headerOnlineDot');
+      if (headerOnlineDot) {
+        if (data.isOnline) headerOnlineDot.classList.remove('hidden');
+        else headerOnlineDot.classList.add('hidden');
+      }
+
+      // Renderiza as mensagens acumuladas desta conversa
+      renderChatMessages(chatId);
+
+      document.getElementById('viewHome').classList.add('hidden');
+      document.getElementById('viewChat').classList.remove('hidden');
+      updatePillNav();
+    }
+
+    function renderChatMessages(chatId) {
+      chatHistory.innerHTML = '';
+      const list = chatsData[chatId]?.messages || [];
+
+      list.forEach(item => {
+        if (item.isSystem) {
+          const sysDiv = document.createElement('div');
+          sysDiv.className = 'flex justify-center my-1';
+          sysDiv.innerHTML = `<span class="bg-[#e1f3fb] text-[#1f4a5c] text-[10px] px-2.5 py-1 rounded-lg text-center shadow-xs border border-sky-100 max-w-[90%] leading-tight">${item.text}</span>`;
+          chatHistory.appendChild(sysDiv);
+          return;
+        }
+
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `flex ${item.isUser ? 'justify-end' : 'justify-start'}`;
+
+        const bubble = document.createElement('div');
+        bubble.className = `max-w-[85%] rounded-2xl p-3 shadow-sm text-xs leading-relaxed ${
+          item.isUser 
+            ? 'bg-[#d9fdd3] text-slate-900 rounded-tr-none' 
+            : 'bg-white text-slate-900 rounded-tl-none border border-slate-100'
+        }`;
+
+        if (item.senderName && !item.isUser && chatId !== 'bot') {
+          const senderEl = document.createElement('div');
+          senderEl.className = 'text-[10px] font-bold text-emerald-800 mb-1 flex items-center gap-1';
+          senderEl.innerHTML = `<span>👤</span> ${item.senderName}`;
+          bubble.appendChild(senderEl);
+        }
+
+        const contentEl = document.createElement('div');
+        if (item.isHtml) {
+          contentEl.innerHTML = item.text;
+        } else {
+          contentEl.innerText = item.text;
+        }
+        bubble.appendChild(contentEl);
+
+        const timeSpan = document.createElement('div');
+        timeSpan.className = 'text-[10px] text-slate-400 mt-1 flex items-center justify-end gap-1 font-mono';
+        timeSpan.innerHTML = `${item.timeStr || '09:41'} ${item.isUser ? '<span class="text-[#53bdeb]">✓✓</span>' : ''}`;
+        bubble.appendChild(timeSpan);
+
+        msgDiv.appendChild(bubble);
+        chatHistory.appendChild(msgDiv);
+      });
+
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    function addChatMessage(chatId, text, isUser = false, isHtml = false, senderName = '') {
+      playPopSound(isUser);
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-      const bubble = document.createElement('div');
-      bubble.className = `max-w-[85%] rounded-2xl p-3 shadow-sm text-xs leading-relaxed ${
-        isUser 
-          ? 'bg-[#d9fdd3] text-slate-900 rounded-tr-none' 
-          : 'bg-white text-slate-900 rounded-tl-none border border-slate-100'
-      }`;
+      const msgObj = { text, isUser, isHtml, senderName, timeStr };
+      if (!chatsData[chatId]) return;
+      chatsData[chatId].messages.push(msgObj);
+      chatsData[chatId].time = timeStr;
 
-      if (isHtml) {
-        bubble.innerHTML = text;
+      if (currentView === 'chat' && activeChatId === chatId) {
+        renderChatMessages(chatId);
       } else {
-        bubble.innerText = text;
+        chatsData[chatId].unreadCount = (chatsData[chatId].unreadCount || 0) + 1;
+        const cleanPreview = isHtml ? text.replace(/<[^>]*>?/gm, '').slice(0, 35) + '...' : text.slice(0, 35) + '...';
+        chatsData[chatId].lastSnippet = cleanPreview;
+        updateGroupListItem(chatId, cleanPreview, timeStr, true);
+        updateTotalBadges();
       }
+    }
 
-      const timeSpan = document.createElement('div');
-      timeSpan.className = `text-[10px] text-slate-400 mt-1 flex items-center justify-end gap-1 font-mono`;
-      timeSpan.innerHTML = `${timeStr} ${isUser ? '<span class="text-[#53bdeb]">✓✓</span>' : ''}`;
-      bubble.appendChild(timeSpan);
-
-      msgDiv.appendChild(bubble);
-      chatHistory.appendChild(msgDiv);
-      chatHistory.scrollTop = chatHistory.scrollHeight;
+    // Função de compatibilidade com os testes do painel esquerdo
+    function addMessage(text, isUser = false, isHtml = false) {
+      if (currentView !== 'chat' || activeChatId !== 'bot') {
+        openChat('bot');
+      }
+      addChatMessage('bot', text, isUser, isHtml, isUser ? 'Você' : 'Administradora Modelo');
     }
 
     function setTyping(active) {
@@ -926,6 +1459,9 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     }
 
     function sendQuickMessage(text) {
+      if (currentView !== 'chat' || activeChatId !== 'bot') {
+        openChat('bot');
+      }
       chatInput.value = text;
       handleUserInput();
     }
@@ -933,15 +1469,51 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     function handleUserInput() {
       const text = chatInput.value.trim();
       if (!text) return;
-
-      addMessage(text, true);
       chatInput.value = '';
-      setTyping(true);
 
-      setTimeout(() => {
-        processBotLogic(text);
-        setTyping(false);
-      }, 650);
+      if (activeChatId === 'bot') {
+        addMessage(text, true);
+        setTyping(true);
+
+        setTimeout(() => {
+          processBotLogic(text);
+          setTyping(false);
+        }, 650);
+      } else {
+        // Morador enviou mensagem dentro do grupo de condomínio
+        addChatMessage(activeChatId, text, true, false, 'Você');
+        const lower = text.toLowerCase();
+
+        // Se pedir boleto no grupo, o sistema protege os dados (LGPD) e direciona pro privado!
+        if (['boleto', 'pix', 'segunda via', 'pagar', 'cota', 'mensalidade', 'recibo'].some(k => lower.includes(k))) {
+          setTyping(true);
+          setTimeout(() => {
+            setTyping(false);
+            const lgpdHtml = `
+              <div class="space-y-1.5 p-1">
+                <div class="flex items-center gap-1.5 text-amber-800 font-bold text-xs">
+                  <span>🔒</span> Proteção de Dados (LGPD)
+                </div>
+                <div class="text-[11px] text-slate-800 leading-tight">
+                  Por segurança e sigilo bancário, <strong>não enviamos boletos em grupos públicos</strong>.
+                </div>
+                <div class="pt-1">
+                  <button onclick="openChat('bot'); sendQuickMessage('Quero a 2ª via do boleto deste mês')" class="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                    <span>🏢</span> Abrir Chat Privado do Bot (2ª Via em 3s)
+                  </button>
+                </div>
+              </div>
+            `;
+            addChatMessage(activeChatId, lgpdHtml, false, true, 'Administradora Modelo');
+          }, 600);
+        } else {
+          setTyping(true);
+          setTimeout(() => {
+            setTyping(false);
+            addChatMessage(activeChatId, 'Mensagem recebida pela administração do condomínio! 👍', false, false, 'Síndico');
+          }, 700);
+        }
+      }
     }
 
     function processBotLogic(userText) {
@@ -954,7 +1526,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         return;
       }
 
-      // Interceptador Global: Atendente Humano (funciona em QUALQUER etapa do fluxo, mesmo no meio do pedido de CPF/boleto)
+      // Interceptador Global: Atendente Humano (funciona em QUALQUER etapa do fluxo)
       const termosAtendente = [
         'atendente', 'humano', 'operador', 'pessoa', 'falar com alguém',
         'falar com alguem', 'falar com atendente', 'suporte', 'atendimento',
@@ -993,7 +1565,6 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       }
 
       if (botState === 'AGUARDANDO_CPF') {
-        // Se o morador mudar de ideia e quiser relatar um problema
         if (['ocorrencia', 'ocorrência', 'reclamacao', 'reclamação', 'manutencao', 'manutenção', 'vazamento', 'barulho', 'cano', 'luz'].some(t => lower.includes(t))) {
           botState = 'MENU_PRINCIPAL';
           addMessage(`🛠️ <strong>Abertura de Chamado</strong><br><br>Sem problemas! Mudamos de boleto para abertura de chamado.<br>Protocolo <strong>#MANUT-84920</strong> criado com sucesso para o zelador e síndico.<br><br>Digite <strong>MENU</strong> para voltar.`, false, true);
@@ -1006,7 +1577,6 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
           return;
         }
 
-        // Simula busca no ERP
         botState = 'MENU_PRINCIPAL';
         const masked = `***.${cleanCpf.slice(3,6)}.${cleanCpf.slice(6,9)}-**`;
         
@@ -1090,6 +1660,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     }
 
     function simulateAudioMessage() {
+      openChat('bot');
       const audioHtml = `
         <div class="space-y-2">
           <div class="flex items-center gap-2.5">
@@ -1124,6 +1695,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     }
 
     function simulatePhotoTicket() {
+      openChat('bot');
       const photoHtml = `
         <div class="space-y-1.5">
           <div class="rounded-xl overflow-hidden bg-slate-800 border border-slate-700 p-2 text-center text-slate-300">
@@ -1155,10 +1727,10 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     }
 
     function simulatePixPayment() {
+      openChat('bot');
       showToast('Processando pagamento Pix...');
       setTyping(true);
 
-      // Dispara confetti de celebração!
       try {
         confetti({
           particleCount: 80,
@@ -1190,6 +1762,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     }
 
     function simulateMultipleUnits() {
+      openChat('bot');
       addMessage('Olá! Gostaria de consultar meus boletos.', true);
       setTyping(true);
 
@@ -1228,6 +1801,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     }
 
     function simulateDelinquentResident() {
+      openChat('bot');
       addMessage('Gostaria do boleto do Apt 502 por favor (CPF 999.888.777-66)', true);
       setTyping(true);
 
@@ -1256,6 +1830,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
     }
 
     function simulateSwitchFromBoletoToAttendant() {
+      openChat('bot');
       addMessage('Quero a 2ª via do boleto deste mês por favor', true);
       setTyping(true);
 
@@ -1264,7 +1839,6 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         botState = 'AGUARDANDO_CPF';
         addMessage(`📄 Perfeito! Para localizar sua cota condominial, por favor <strong>digite o seu CPF</strong> (apenas números):`, false, true);
 
-        // Morador muda de ideia repentinamente e pede para falar com atendente
         setTimeout(() => {
           addMessage('Na verdade prefiro falar direto com um atendente humano, pode ser?', true);
           setTyping(true);
@@ -1276,6 +1850,74 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
           }, 650);
         }, 1100);
       }, 700);
+    }
+
+    // DISPARO DE AVISOS EM MASSA PARA TODOS OS 3 GRUPOS SIMULTANEAMENTE!
+    function simulateGroupAnnouncement() {
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const groups = ['group1', 'group2', 'group3'];
+
+      groups.forEach(gId => {
+        const condoName = chatsData[gId].condoName;
+        const announcementHtml = `
+          <div class="space-y-2 p-1">
+            <div class="flex items-center gap-1.5 text-blue-900 font-extrabold text-xs">
+              <span>📢</span> COMUNICADO OFICIAL DA ADMINISTRAÇÃO
+            </div>
+            <div class="border-t border-b border-blue-200 py-2 space-y-1.5 text-[11px] text-blue-950 leading-relaxed">
+              <div class="font-bold text-slate-700">🏢 ${condoName} (Todos os Blocos)</div>
+              <div class="font-extrabold text-blue-900 text-xs">💧 Manutenção Preventiva: Limpeza das Caixas d'Água</div>
+              <div>Prezados condôminos, informamos que na próxima <strong>quarta-feira (18/11)</strong>, das <strong>08h00 às 14h00</strong>, realizaremos a desinfecção semestral dos reservatórios superiores.</div>
+              <div class="p-2 bg-amber-50 rounded-lg text-amber-900 text-[10px] border border-amber-200 font-medium">
+                ⚠️ <em>Haverá interrupção temporária no fornecimento de água. Solicitamos que mantenham os registros fechados no período.</em>
+              </div>
+            </div>
+            <div class="text-[10px] text-slate-500 flex justify-between items-center pt-1">
+              <span>✓ Enviado para todos os moradores</span>
+              <span class="text-emerald-700 font-bold">Oficial • ${timeStr}</span>
+            </div>
+          </div>
+        `;
+
+        chatsData[gId].messages.push({
+          text: announcementHtml,
+          isUser: false,
+          isHtml: true,
+          senderName: 'Administradora Modelo (Oficial)',
+          timeStr: timeStr
+        });
+        chatsData[gId].unreadCount = 1;
+        chatsData[gId].time = 'Agora';
+        chatsData[gId].lastSnippet = `📢 Comunicado: Limpeza das Caixas d'Água...`;
+
+        updateGroupListItem(gId, `<span class="text-blue-600 font-semibold">📢 Comunicado:</span> Limpeza das caixas d'água...`, 'Agora', true);
+      });
+
+      updateTotalBadges();
+      playPopSound(false);
+
+      // Dispara confetes comemorativos
+      try {
+        confetti({
+          particleCount: 85,
+          spread: 75,
+          origin: { y: 0.55 }
+        });
+      } catch(e) {}
+
+      showToast('📢 Aviso disparado para todos os 3 condomínios (450 moradores notificados no WhatsApp)!');
+
+      // Se o usuário estiver dentro de um dos grupos, exibe a mensagem na hora
+      if (currentView === 'chat' && groups.includes(activeChatId)) {
+        renderChatMessages(activeChatId);
+        chatsData[activeChatId].unreadCount = 0;
+        updateGroupListItem(activeChatId, chatsData[activeChatId].lastSnippet, 'Agora', false);
+        updateTotalBadges();
+      } else {
+        // Mostra a tela inicial de conversas com todos os 3 grupos com badge verde!
+        showChatList();
+      }
     }
 
     function copyToClipboard(text, msg) {
@@ -1304,58 +1946,126 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       document.getElementById('pdfModal').classList.add('hidden');
     }
 
-    function simulateGroupAnnouncement() {
-      // Transforma o cabeçalho no grupo oficial do condomínio
-      document.getElementById('headerAvatar').textContent = '👥';
-      document.getElementById('headerTitle').textContent = 'Res. Jardins [Oficial & Moradores]';
-      document.getElementById('headerSubtitle').textContent = '142 participantes • Você e outros';
-      document.getElementById('headerVerified').classList.add('hidden');
-      document.getElementById('headerOnlineDot').classList.add('hidden');
+    function initAllChats() {
+      // 1. Bot de Autoatendimento
+      chatsData.bot.messages = [];
+      const menuHtml = `
+        👋 Olá! Bem-vindo ao autoatendimento da <strong>Administradora Modelo</strong>.<br><br>
+        Como posso ajudar você hoje?<br>
+        Selecione uma opção rápida abaixo ou digite o número:
+        <div class="mt-2.5 flex flex-col gap-1.5 pt-2 border-t border-slate-100">
+          <button onclick="sendQuickMessage('1')" class="w-full text-left py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
+            <span>📄 1. 2ª Via de Boleto / Pix</span>
+            <span class="text-emerald-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('2')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+            <span>🛠️ 2. Registrar Ocorrência</span>
+            <span class="text-slate-400 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('3')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+            <span>👤 3. Falar com Atendente</span>
+            <span class="text-slate-400 font-bold">→</span>
+          </button>
+        </div>
+      `;
+      chatsData.bot.messages.push({
+        text: menuHtml,
+        isUser: false,
+        isHtml: true,
+        senderName: 'Administradora Modelo',
+        timeStr: '09:41'
+      });
+      chatsData.bot.unreadCount = 0;
 
-      chatHistory.innerHTML = '';
-      setTyping(true);
-      showToast('Disparando comunicado no grupo do condomínio...');
+      // 2. Grupo 1: Res. Jardins do Bosque
+      chatsData.group1.messages = [
+        {
+          text: '🔒 As mensagens e chamadas deste grupo são protegidas com a criptografia de ponta a ponta.',
+          isUser: false,
+          isHtml: false,
+          isSystem: true,
+          timeStr: '08:00'
+        },
+        {
+          text: 'Bom dia a todos os moradores! Lembrando que a reunião de prestação de contas será na próxima terça às 19h30 no salão de festas.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Síndico Roberto (Bloco B)',
+          timeStr: '08:30'
+        },
+        {
+          text: 'Bom dia Síndico! Terá votação sobre a pintura da fachada externa também?',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Carlos Eduardo (Apt 101)',
+          timeStr: '09:15'
+        },
+        {
+          text: 'Sim, o orçamento completo da pintura será apresentado pela administradora na reunião.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Síndico Roberto (Bloco B)',
+          timeStr: '09:30'
+        }
+      ];
+      chatsData.group1.unreadCount = 0;
+      updateGroupListItem('group1', 'Síndico Roberto: O orçamento completo da...', '09:30', false);
 
-      setTimeout(() => {
-        setTyping(false);
-        const groupHtml = `
-          <div class="space-y-2 p-1">
-            <div class="flex items-center gap-1.5 text-blue-900 font-extrabold text-xs">
-              <span>📢</span> COMUNICADO OFICIAL DA ADMINISTRAÇÃO
-            </div>
-            <div class="border-t border-b border-blue-200 py-2 space-y-1.5 text-[11px] text-blue-950 leading-relaxed">
-              <div class="font-bold text-slate-700">🏢 Residencial Jardins do Bosque (Todos os Blocos)</div>
-              <div class="font-extrabold text-blue-900 text-xs">💧 Manutenção Preventiva: Limpeza das Caixas d'Água</div>
-              <div>Prezados condôminos, informamos que na próxima <strong>quarta-feira (18/11)</strong>, das <strong>08h00 às 14h00</strong>, realizaremos a desinfecção semestral dos reservatórios superiores.</div>
-              <div class="p-2 bg-amber-50 rounded-lg text-amber-900 text-[10px] border border-amber-200 font-medium">
-                ⚠️ <em>Haverá interrupção temporária no fornecimento de água. Solicitamos que mantenham os registros fechados no período.</em>
-              </div>
-            </div>
-            <div class="text-[10px] text-slate-500 flex justify-between items-center pt-1">
-              <span>✓ Enviado para todos os grupos</span>
-              <button onclick="restorePrivateChat()" class="text-emerald-700 font-bold hover:underline flex items-center gap-1">
-                <span>←</span> Voltar ao Chat Privado
-              </button>
-            </div>
-          </div>
-        `;
-        addMessage(groupHtml, false, true);
-      }, 700);
-    }
+      // 3. Grupo 2: Cond. Edifício Mar Azul
+      chatsData.group2.messages = [
+        {
+          text: '🔒 As mensagens e chamadas deste grupo são protegidas com a criptografia de ponta a ponta.',
+          isUser: false,
+          isHtml: false,
+          isSystem: true,
+          timeStr: '08:00'
+        },
+        {
+          text: 'Informamos que a troca das molas do portão de veículos da garagem foi concluída com sucesso. Portão operando normalmente.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Zelador Marcos',
+          timeStr: 'Ontem'
+        },
+        {
+          text: 'Excelente! Muito obrigada pela rapidez no conserto, Marcos.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Mariana (Apt 42)',
+          timeStr: 'Ontem'
+        }
+      ];
+      chatsData.group2.unreadCount = 0;
+      updateGroupListItem('group2', 'Mariana: Excelente! Muito obrigada pela rapidez...', 'Ontem', false);
 
-    function restorePrivateChat() {
-      document.getElementById('headerAvatar').textContent = '🏢';
-      document.getElementById('headerTitle').textContent = 'Administradora Modelo';
-      document.getElementById('headerSubtitle').textContent = 'Conta Comercial Oficial • online';
-      document.getElementById('headerVerified').classList.remove('hidden');
-      document.getElementById('headerOnlineDot').classList.remove('hidden');
-      chatHistory.innerHTML = '';
-      sendMenu();
+      // 4. Grupo 3: Cond. Bosque Imperial
+      chatsData.group3.messages = [
+        {
+          text: '🔒 Somente administradores e síndicos podem enviar mensagens neste grupo de comunicados.',
+          isUser: false,
+          isHtml: false,
+          isSystem: true,
+          timeStr: '08:00'
+        },
+        {
+          text: 'Prezados condôminos, a agenda para reserva das churrasqueiras no mês de dezembro já se encontra disponível no portal da administradora.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Síndica Patrícia',
+          timeStr: 'Terça'
+        }
+      ];
+      chatsData.group3.unreadCount = 0;
+      updateGroupListItem('group3', 'Síndica Patrícia: A agenda para reserva das churrasqueiras...', 'Terça', false);
+
+      updateTotalBadges();
     }
 
     function resetChat() {
-      restorePrivateChat();
+      initAllChats();
+      showChatList();
       botState = 'INICIO';
+      showToast('Conversas reiniciadas!');
     }
 
     function updateRoiCalculation() {
@@ -1367,7 +2077,6 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
 
       const realMensal = salario * 1.65;
       const anualManual = realMensal * 12;
-      // Economia líquida estimada
       const economiaLiquida = Math.max(0, anualManual - 18000);
 
       const f = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -1378,9 +2087,10 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
       economiaAnual.textContent = f(economiaLiquida);
     }
 
-    // Inicializa
+    // Inicialização da aplicação
     window.addEventListener('DOMContentLoaded', () => {
-      sendMenu();
+      initAllChats();
+      showChatList();
       updateRoiCalculation();
     });
   </script>
