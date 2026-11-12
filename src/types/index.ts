@@ -42,6 +42,17 @@ export interface Ocorrencia {
   status: 'aberta' | 'em_analise' | 'resolvida';
 }
 
+export interface Comunicado {
+  id: string;
+  condominioId: string;
+  condominioNome: string;
+  titulo: string;
+  conteudo: string;
+  data: string;
+  categoria: 'manutencao' | 'assembleia' | 'geral' | 'urgente';
+  autor: string;
+}
+
 export interface UserSession {
   remoteJid: string; // ex: 5511999999999@s.whatsapp.net
   pushName?: string;

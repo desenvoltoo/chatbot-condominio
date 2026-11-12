@@ -1,5 +1,5 @@
 import { IErpService } from './erp.service.js';
-import { Morador, Boleto, Ocorrencia } from '../types/index.js';
+import { Morador, Boleto, Ocorrencia, Comunicado } from '../types/index.js';
 import { limparCpf } from '../utils/cpf.util.js';
 
 export class MockErpService implements IErpService {
@@ -121,5 +121,30 @@ export class MockErpService implements IErpService {
       status: 'aberta',
     };
     return nova;
+  }
+
+  async listarComunicados(condominioNome = 'Residencial Jardins do Bosque'): Promise<Comunicado[]> {
+    return [
+      {
+        id: 'com_1',
+        condominioId: 'cond_1',
+        condominioNome,
+        titulo: '💧 Manutenção Preventiva: Limpeza das Caixas d\'Água',
+        conteudo: 'A limpeza semestral das caixas d\'água ocorrerá na próxima quarta-feira (18/11) das 08h às 14h. O abastecimento será interrompido temporariamente. Solicitamos que economizem água.',
+        data: '18/11/2026',
+        categoria: 'manutencao',
+        autor: 'Síndico / Administradora Modelo',
+      },
+      {
+        id: 'com_2',
+        condominioId: 'cond_1',
+        condominioNome,
+        titulo: '📢 Convocação: Assembleia Geral Ordinária (AGO)',
+        conteudo: 'Convocamos todos os condôminos para a AGO no dia 28/11 às 19h30 no Salão de Festas. Pauta: Prestação de contas e eleição de síndico/conselho.',
+        data: '28/11/2026',
+        categoria: 'assembleia',
+        autor: 'Conselho Consultivo',
+      },
+    ];
   }
 }

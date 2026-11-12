@@ -166,6 +166,17 @@ export class BotOrchestrator {
         remoteJid,
         `ℹ️ *Informações de Contato*\n\n🏢 *${config.company.nome}*\n🕒 Horário: ${config.company.horarioAtendimento}\n📞 Telefone/Plantão: ${config.company.telefoneSuporte}\n\nDigite *MENU* para voltar às opções.`
       );
+    } else if (text.includes('aviso') || text.includes('comunicado') || text.includes('assembleia') || text.includes('obra')) {
+      const comunicados = await this.erpService.listarComunicados();
+      const texto = [
+        `📢 *Mural de Comunicados Oficiais*`,
+        `🏢 Residencial Jardins do Bosque`,
+        `----------------------------------------`,
+        ...comunicados.map(c => `📌 *${c.titulo}*\n${c.conteudo}\n_Publicado por: ${c.autor}_`),
+        `----------------------------------------`,
+        `Digite *MENU* para retornar ao início.`
+      ].join('\n\n');
+      await this.evolutionService.sendText(remoteJid, texto);
     } else {
       await this.evolutionService.sendText(
         remoteJid,

@@ -56,6 +56,31 @@ export class EvolutionService {
   }
 
   /**
+   * Dispara um comunicado oficial formatado para um grupo de condomínio (@g.us)
+   */
+  async sendGroupAnnouncement(
+    groupJid: string,
+    condominioNome: string,
+    titulo: string,
+    mensagem: string,
+    urgente = false
+  ): Promise<boolean> {
+    const icone = urgente ? '🚨 *URGENTE*' : '📢 *COMUNICADO OFICIAL*';
+    const textoFormatado = [
+      `${icone} - ${condominioNome.toUpperCase()}`,
+      `----------------------------------------`,
+      `📌 *${titulo}*`,
+      ``,
+      mensagem,
+      `----------------------------------------`,
+      `🏢 _${config.company.nome} • Gestão Transparente_`,
+      `_Mensagem automática enviada aos moradores do condomínio._`,
+    ].join('\n');
+
+    return this.sendText(groupJid, textoFormatado);
+  }
+
+  /**
    * Verifica o status da conexão da instância com o WhatsApp
    */
   async checkConnectionStatus(): Promise<{ state: string; connected: boolean }> {
