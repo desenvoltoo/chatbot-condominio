@@ -30,6 +30,29 @@ export class BotOrchestrator {
       return;
     }
 
+    // Interceptador Global: Se o morador pedir atendente a qualquer momento (mesmo no meio do fluxo de boleto/CPF)
+    const termosAtendente = [
+      'atendente',
+      'humano',
+      'operador',
+      'pessoa',
+      'falar com alguém',
+      'falar com alguem',
+      'falar com atendente',
+      'suporte',
+      'atendimento',
+      'ajuda',
+    ];
+    if (termosAtendente.some((termo) => lowerText.includes(termo)) && session.state !== 'ATENDIMENTO_HUMANO') {
+      session.state = 'ATENDIMENTO_HUMANO';
+      this.sessionManager.updateSession(session);
+      await this.evolutionService.sendText(
+        remoteJid,
+        '👤 *Transferindo para Atendente Humano...*\n\nEntendi! Interrompi o fluxo anterior e já coloquei você na nossa fila de atendimento humano.\n\nUm de nossos colaboradores responderá por aqui em instantes.\n\n_Para retornar ao autoatendimento a qualquer momento, digite *MENU* ou *SAIR*._'
+      );
+      return;
+    }
+
     switch (session.state) {
       case 'INICIO':
         await this.handleInicio(remoteJid, lowerText, nomeUsuario);
@@ -152,6 +175,19 @@ export class BotOrchestrator {
   }
 
   private async handleAguardandoCpf(remoteJid: string, text: string, session: any): Promise<void> {
+    const lower = text.toLowerCase();
+
+    // Se o morador desistir do boleto e quiser relatar um problema/chamado
+    if (['ocorrencia', 'ocorrência', 'reclamacao', 'reclamação', 'manutencao', 'manutenção', 'vazamento', 'barulho'].some(t => lower.includes(t))) {
+      session.state = 'AGUARDANDO_DESCRICAO_OCORRENCIA';
+      this.sessionManager.updateSession(session);
+      await this.evolutionService.sendText(
+        remoteJid,
+        '🛠️ *Abertura de Chamado / Ocorrência*\n\nSem problemas! Mudamos para abertura de chamado. Por favor, descreva o problema:'
+      );
+      return;
+    }
+
     const cpfLimpo = limparCpf(text);
 
     if (!validarCpf(cpfLimpo)) {
