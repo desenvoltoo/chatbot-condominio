@@ -541,9 +541,167 @@
       background: #eff6ff !important;
       border-color: #3b82f6 !important;
     }
+
+    /* Banner de Ação Recomendada da IA */
+    #smartActionBanner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.08) 50%, rgba(6, 182, 212, 0.08) 100%);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    html:not(.dark) #smartActionBanner {
+      background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 50%, #f0fdf4 100%) !important;
+      border-bottom: 1.5px solid #cbd5e1 !important;
+    }
+    html:not(.dark) #smartActionBanner #smartActionText {
+      color: #0f172a !important;
+      font-weight: 600 !important;
+    }
+    html:not(.dark) #smartActionBanner span.font-bold {
+      color: #3730a3 !important;
+    }
+
+    /* Regras do Modo Simples */
+    body.modo-simples .modo-avancado-only {
+      display: none !important;
+    }
+    body.modo-simples #conversationsList p.text-slate-400 {
+      font-size: 11.5px !important;
+    }
   </style>
 </head>
 <body class="min-h-screen flex h-screen overflow-hidden selection:bg-brand selection:text-white">
+
+  <!-- ============================================================== -->
+  <!-- SISTEMA DE TOAST NOTIFICATIONS (FEEDBACK INSTANTÂNEO & RECONFORTANTE) -->
+  <!-- ============================================================== -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[99999] flex flex-col gap-2.5 pointer-events-none max-w-sm w-full"></div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: GUIA RÁPIDO INTERATIVO (TOUR DE 30 SEGUNDOS) -->
+  <!-- ============================================================== -->
+  <div id="modalQuickTour" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeQuickTourModal()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-lg w-full border border-indigo-500/30 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">✨</span>
+          <div>
+            <h3 class="font-bold text-base text-white">Como Usar o DOMUS AI em 3 Passos</h3>
+            <span class="text-xs text-slate-400">Guia de 30 segundos para síndicos e administradoras</span>
+          </div>
+        </div>
+        <button onclick="closeQuickTourModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+
+      <div class="space-y-3.5">
+        <div class="p-4 rounded-2xl bg-white/[0.03] border border-indigo-500/20 flex gap-3.5 items-start">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-xl shrink-0">
+            💬
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-white mb-0.5">1. Mensagens chegam sozinhas do WhatsApp</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              O morador envia mensagens de texto ou áudio normalmente. A lista à esquerda organiza tudo por prioridade em tempo real.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-white/[0.03] border border-emerald-500/20 flex gap-3.5 items-start">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0">
+            🤖
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-white mb-0.5">2. A IA responde e resolve 90% das demandas</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Dúvidas da convenção, 2ª via de boleto Pix e agendamento de churrasqueira são resolvidas em menos de 2 segundos.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-white/[0.03] border border-purple-500/20 flex gap-3.5 items-start">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-xl shrink-0">
+            ⚡
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-white mb-0.5">3. Ações em 1 Clique sempre recomendadas</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              O sistema analisa o pedido do morador e coloca a ação recomendada no topo do chat. Basta dar 1 clique para enviar o boleto ou emitir termo!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-white/[0.08]">
+        <span class="text-xs text-slate-400">Simples, rápido e sem complicações.</span>
+        <button onclick="concluirTour()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold text-xs shadow-lg transition-all cursor-pointer">
+          🎉 Entendi! Começar a Usar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: CENTRAL DE AJUDA & DÚVIDAS FREQUENTES (FAQ) -->
+  <!-- ============================================================== -->
+  <div id="modalAjudaRapida" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeAjudaModal()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-lg w-full border border-white/[0.12] shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">❓</span>
+          <div>
+            <h3 class="font-bold text-sm text-white">Central de Dúvidas & Ajuda Rápida</h3>
+            <span class="text-[10px] text-slate-400">Respostas diretas para as dúvidas mais comuns</span>
+          </div>
+        </div>
+        <button onclick="closeAjudaModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="space-y-2.5 text-xs max-h-96 overflow-y-auto pr-1">
+        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+          <summary class="font-bold text-white flex items-center justify-between">
+            <span>📄 Como a IA aprende as regras do meu prédio?</span>
+            <span class="text-slate-400 text-xs">▼</span>
+          </summary>
+          <p class="text-slate-300 mt-2 leading-relaxed">
+            Ela lê os documentos enviados na aba <strong>"Base de Conhecimento RAG"</strong> (Convenção, Regimento Interno, Atas em PDF). Basta arrastar os arquivos para lá.
+          </p>
+        </details>
+
+        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+          <summary class="font-bold text-white flex items-center justify-between">
+            <span>⚡ Como enviar 2ª via do boleto para um morador?</span>
+            <span class="text-slate-400 text-xs">▼</span>
+          </summary>
+          <p class="text-slate-300 mt-2 leading-relaxed">
+            Abra a conversa do morador e clique no botão verde <strong>"⚡ Enviar Boleto Pix (1 Clique)"</strong> no topo do chat, ou use o botão <strong>"Ver QR Code Pix"</strong> no painel lateral.
+          </p>
+        </details>
+
+        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+          <summary class="font-bold text-white flex items-center justify-between">
+            <span>🤖 Como mudar o modelo da IA (OpenAI, Gemini, Groq)?</span>
+            <span class="text-slate-400 text-xs">▼</span>
+          </summary>
+          <p class="text-slate-300 mt-2 leading-relaxed">
+            Na barra lateral, clique em <strong>"Hub Multi-IA"</strong>, selecione seu provedor e cole a sua chave de API. Salva na hora sem complicações.
+          </p>
+        </details>
+
+        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+          <summary class="font-bold text-white flex items-center justify-between">
+            <span>🤝 A IA pode fechar acordos de inadimplência sozinha?</span>
+            <span class="text-slate-400 text-xs">▼</span>
+          </summary>
+          <p class="text-slate-300 mt-2 leading-relaxed">
+            Sim! Com o modo autônomo ativado, a IA simula parcelamentos de 1x a 12x dentro das regras parametrizadas e gera o Termo de Acordo com assinatura digital.
+          </p>
+        </details>
+      </div>
+
+      <div class="pt-2 border-t border-white/[0.08] flex justify-between items-center text-xs">
+        <span class="text-slate-400">Atalho rápido: <kbd class="px-1.5 py-0.5 rounded bg-white/[0.08] font-mono text-[10px]">Ctrl + K</kbd></span>
+        <button onclick="openQuickTourModal(); closeAjudaModal();" class="text-indigo-400 hover:underline font-bold">Fazer Tour de 30s →</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================================== -->
   <!-- MODAL: QR CODE PIX VISUAL DINÂMICO (CANVAS REAL) -->
@@ -1017,6 +1175,25 @@
           <span class="text-emerald-700 font-bold">Piloto Automático: <span class="text-emerald-800 underline cursor-pointer" onclick="switchTab('ai')">100% AUTÔNOMO</span></span>
         </div>
 
+        <!-- Botão Guia Rápido / Como Usar (Tour 30s) -->
+        <button 
+          onclick="openQuickTourModal()" 
+          class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 hover:from-indigo-500/20 hover:to-purple-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          title="Ver passo a passo de 30 segundos de como usar">
+          <span>✨</span>
+          <span class="hidden sm:inline">Como Usar (30s)</span>
+        </button>
+
+        <!-- Toggle Modo Simples / Foco Total -->
+        <button 
+          id="btnToggleModoSimples"
+          onclick="toggleModoSimples()" 
+          class="px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
+          title="Alternar entre Modo Simples (sem termos técnicos) e Modo Completo">
+          <span id="modoSimplesIcon">🎯</span>
+          <span id="modoSimplesText" class="hidden sm:inline">Modo Simples</span>
+        </button>
+
         <!-- Botão de Alternar Tema Claro / Escuro (Dark/Light) -->
         <button 
           id="themeToggleBtn" 
@@ -1043,6 +1220,15 @@
         </a>
       </div>
     </header>
+
+    <!-- BANNER INFORMATIVO DO MODO SIMPLES (QUANDO ATIVADO) -->
+    <div id="bannerModoSimples" class="hidden bg-indigo-600/10 border-b border-indigo-500/20 px-4 py-2 text-xs flex items-center justify-between text-indigo-300">
+      <div class="flex items-center gap-2">
+        <span>🎯</span>
+        <span><strong>Modo Simples Ativo:</strong> Visualização limpa e intuitiva, com foco nas ações do dia a dia e sem termos técnicos.</span>
+      </div>
+      <button onclick="toggleModoSimples()" class="text-xs font-bold text-white underline cursor-pointer hover:text-indigo-200">Voltar ao Modo Avançado</button>
+    </div>
 
     <!-- CONTENT MODULES -->
 
@@ -1112,6 +1298,26 @@
               class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span>Ver QR Code Pix</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- BANNER DE AÇÃO RECOMENDADA PELA IA (ZERO COMPLEXIDADE & 1 CLIQUE) -->
+        <div id="smartActionBanner" class="p-3 bg-gradient-to-r from-indigo-950/40 via-purple-950/30 to-blue-950/30 border-b border-indigo-500/20 flex flex-wrap items-center justify-between gap-2.5 transition-all">
+          <div class="flex items-center gap-2.5 text-xs">
+            <span class="flex h-2.5 w-2.5 relative shrink-0">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span class="font-bold text-indigo-300">💡 Sugestão Inteligente da IA:</span>
+            <span id="smartActionText" class="text-slate-200 font-medium">Morador solicitou 2ª via da cota condominial de Novembro (<strong>R$ 650,00</strong>).</span>
+          </div>
+          <div class="flex items-center gap-2" id="smartActionButtons">
+            <button id="btnSmartActionPrimary" onclick="executarAcaoSugerida('pix')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>⚡ Enviar Boleto Pix (1 Clique)</span>
+            </button>
+            <button id="btnSmartActionSecondary" onclick="executarAcaoSugerida('acordo')" class="px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 font-semibold text-xs border border-white/[0.1] transition-all cursor-pointer">
+              <span>🤝 Propor Acordo</span>
             </button>
           </div>
         </div>
@@ -2546,7 +2752,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function salvarMatrizPermissoes() {
       confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-      alert('🔒 Matriz de Permissões RBAC atualizada com sucesso no DOMUS AI!');
+      showToast('Permissões Salvas!', 'Matriz de acessos RBAC atualizada com sucesso.', 'success');
     }
 
     // ==========================================
@@ -2565,7 +2771,11 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
       localStorage.setItem('domus_autonomia_total', enabled ? 'true' : 'false');
       confetti({ particleCount: 30, spread: 60 });
-      alert(enabled ? '⚡ Piloto 100% Autônomo Ativado!\nA IA executará todas as tarefas operacionais de ponta a ponta sem fila e sem intervenção humana.' : '⚠️ Modo Supervisionado Ativado.\nA IA solicitará aprovação do operador humano antes de executar tarefas.');
+      showToast(
+        enabled ? 'Piloto 100% Autônomo Ativado!' : 'Modo Supervisionado Ativado',
+        enabled ? 'A IA executará tarefas operacionais de ponta a ponta sem intervenção humana.' : 'A IA solicitará aprovação do operador humano antes de executar tarefas.',
+        enabled ? 'success' : 'info'
+      );
     }
 
     function handleAIProviderChange() {
@@ -2598,7 +2808,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       setTimeout(() => {
         btn.innerHTML = '<span>⚡</span> Testar Conexão IA';
         confetti({ particleCount: 50, spread: 70 });
-        alert(`🤖 Conexão com o Hub Multi-IA bem-sucedida!\n\nProvedor: ${provider}\nModelo: ${model}\nLatência de Inferência: 24ms\nCapacidade de Autonomia: 100% Zero-Touch Operacional`);
+        showToast('Conexão Multi-IA Bem-Sucedida!', `Provedor: ${provider} (${model}) • Latência: 24ms`, 'success');
         const topModel = document.getElementById('topActiveModel');
         if (topModel) topModel.innerText = `${model} + RAG`;
       }, 500);
@@ -2607,7 +2817,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function salvarConfiguracoesIA(e) {
       if (e) e.preventDefault();
       confetti({ particleCount: 45, spread: 60 });
-      alert('💾 Políticas de Autonomia & Configurações da IA salvas com sucesso no DOMUS AI!');
+      showToast('Configurações Salvas!', 'Políticas de autonomia e parâmetros da IA gravados com sucesso.', 'success');
     }
 
     // ==========================================
@@ -2617,7 +2827,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const query = document.getElementById('ragTestQuery').value.trim();
       const resultDiv = document.getElementById('ragTestResult');
       if (!query) {
-        alert('Digite uma pergunta para consultar a base de conhecimento.');
+        showToast('Atenção', 'Digite uma pergunta para consultar a base de conhecimento.', 'warning');
         return;
       }
 
@@ -2632,13 +2842,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         <span class="text-[9px] text-slate-500 block">Embasamento: Art. 24 e 25 • Convenção Condominial 2026</span>
       `;
       confetti({ particleCount: 25, spread: 50 });
+      showToast('Consulta RAG Concluída', 'Artigo 24 e 25 da Convenção localizados com 96% de relevância.', 'success');
     }
 
     function openNovoDocumentoRAGModal() {
       const nome = prompt('Digite o nome do documento ou norma condominial a indexar:', 'Regulamento_Garagens_e_Bicicletario_2026.pdf');
       if (nome) {
         confetti({ particleCount: 30, spread: 60 });
-        alert(`📄 Documento "${nome}" recebido com sucesso!\n\nProcessamento vetorial concluído: 48 chunks gerados e indexados com zero alucinação.`);
+        showToast('Documento Indexado!', `"${nome}" processado com sucesso: 48 chunks gerados para RAG.`, 'success');
         const docCount = document.getElementById('ragDocCount');
         if (docCount) docCount.innerText = '5 documentos';
       }
@@ -2650,14 +2861,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function testarConexaoSiscon() {
       const erp = document.getElementById('cfgErpProvider').value.toUpperCase();
       const banco = document.getElementById('cfgBancoIntegrado').value.toUpperCase();
-      alert(`🛰️ Conexão com o ERP Condominial ${erp} validada com sucesso!\n\nStatus: Conectado e Sincronizado em Tempo Real\nLatência da API: 18ms\nBanco Integrado: ${banco} (Registro Pix Direto Ativo)`);
+      showToast('ERP Sincronizado!', `Conexão com ${erp} ativa em tempo real. Banco: ${banco} (Pix Habilitado).`, 'success');
       confetti({ particleCount: 35, spread: 60 });
     }
 
     function salvarConfiguracoes(e) {
       if (e) e.preventDefault();
       confetti({ particleCount: 40, spread: 60 });
-      alert('✅ Credenciais do ERP e parâmetros de cobrança salvos com sucesso no DOMUS AI!');
+      showToast('Parâmetros Salvos!', 'Credenciais do ERP e regras de cobrança salvas com sucesso.', 'success');
     }
 
     function handleLogout() {
@@ -2801,7 +3012,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function copiarChavePixModal() {
       navigator.clipboard.writeText('00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865406650.005802BR5925CONDOMINIO JARDINS DO BO6009SAO PAULO62070503***6304E2CA');
-      alert('Chave Pix Copia e Cola copiada para a área de transferência!');
+      showToast('Pix Copiado!', 'Chave Pix Copia e Cola copiada com sucesso.', 'success');
     }
 
     // ==========================================
@@ -2820,7 +3031,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function enviarTermoWhatsApp() {
       closeTermoAcordoModal();
       confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 } });
-      alert('📄 Termo de Acordo Jurídico com link de Assinatura Digital enviado para o WhatsApp do morador com sucesso!');
+      showToast('Termo Enviado!', 'Link de assinatura digital entregue no WhatsApp do morador.', 'success');
     }
 
     // ==========================================
@@ -2835,7 +3046,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const transp = document.getElementById('encTransp').value;
       closeNovaEncomendaModal();
       confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-      alert(`📦 Notificação de encomenda transmitida via WhatsApp para ${dest} (${transp})!`);
+      showToast('Encomenda Notificada!', `Aviso com foto transmitido via WhatsApp para ${dest} (${transp}).`, 'success');
     }
 
     function openNovoVisitanteModal() { document.getElementById('modalNovoVisitante').classList.remove('hidden'); }
@@ -2847,7 +3058,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const unid = document.getElementById('visUnidade').value;
       closeNovoVisitanteModal();
       confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-      alert(`🎟️ Passe de visitante digital com QR Code gerado para ${nome} (${unid})! Enviado ao morador.`);
+      showToast('Passe QR Code Gerado!', `Convite gerado para ${nome} (${unid}) e enviado ao morador via WhatsApp.`, 'success');
     }
 
     // ==========================================
@@ -2868,12 +3079,12 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       document.getElementById('votosNaoBar').style.width = `${percNao}%`;
 
       confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
-      alert(`🗳️ Novo voto computado via WhatsApp: Condômino Apt 302 votou [SIM] a favor da Climatização!`);
+      showToast('Voto Computado!', 'Novo voto [SIM] recebido via WhatsApp (Apt 302).', 'success');
     }
 
     function gerarAtaAssembleiaIa() {
       confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-      alert(`✍️ Ata Resumida da Assembleia elaborada pela IA:\n\n"Aos 16 de Novembro de 2026, com quórum qualificado de 68%, restou APROVADA por 76% dos votos a climatização da academia..."\n\nAta enviada por WhatsApp a todos os condôminos!`);
+      showToast('Ata Elaborada pela IA!', 'Ata com 68% de quórum aprovada e enviada por WhatsApp a todos.', 'success');
     }
 
     function gerarRelatorioMensalPdf() {
@@ -3022,6 +3233,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
 
       updateHandoffButton(conv.isHumanHandoff);
+      updateSmartActionBanner(conv);
 
       const stream = document.getElementById('chatMessagesStream');
       stream.innerHTML = conv.messages.map(m => {
@@ -3058,6 +3270,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
       conv.isHumanHandoff = !conv.isHumanHandoff;
       updateHandoffButton(conv.isHumanHandoff);
+      updateSmartActionBanner(conv);
       renderConversationsList();
     }
 
@@ -3093,6 +3306,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
       input.value = '';
       selectConversation(activeRemoteJid);
+      showToast('Mensagem Enviada!', 'Entregue com sucesso no WhatsApp do morador.', 'success');
     }
 
     function sendQuickReply(msg) {
@@ -3230,12 +3444,12 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         ` + acordosList.innerHTML;
       }
 
-      alert(`🤝 Acordo firmado no DOMUS AI com sucesso!\n\nProtocolo: ${proto}\nCondição: ${opt.parcelas}x de R$ ${opt.valorParcela.toFixed(2)}\nHash SHA-256 gerado e boletos/Pix enviados ao WhatsApp do condômino!`);
+      showToast('Acordo Firmado!', `Protocolo ${proto}: ${opt.parcelas}x de R$ ${opt.valorParcela.toFixed(2)}. Termo enviado ao morador!`, 'success');
     }
 
     function executarReguaCobranca() {
       confetti({ particleCount: 50, spread: 60 });
-      alert(`⚡ Régua de Cobrança Autônoma Executada!\n\n• 18 lembretes preventivos disparados (D-3)\n• 7 notificações de vencimento com Pix hoje (D-0)\n• 4 notificações de atraso com juros recalculados (D+3)\n• 3 convites de acordo parcelado (D+7)`);
+      showToast('Régua Autônoma Disparada!', '18 lembretes preventivos (D-3) e 7 notificações com Pix (D-0) enviados.', 'success');
     }
 
     // ==========================================
@@ -3321,7 +3535,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
 
       confetti({ particleCount: 50, spread: 60 });
-      alert(`🎉 Reserva de "${area.nome}" confirmada com sucesso!\n\nProtocolo: ${proto}\nData: ${dataStr}\nTaxa: R$ ${area.taxaTotal.toFixed(2)} lançada para cobrança na próxima cota condominial.`);
+      showToast('Reserva Confirmada!', `"${area.nome}" agendada para ${dataStr}. Taxa de R$ ${area.taxaTotal.toFixed(2)} lançada no boleto.`, 'success');
     }
 
     // ==========================================
@@ -3330,7 +3544,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function handleUnidadeMedicaoChange() {
       const select = document.getElementById('selectUnidadeMedicao');
       const unid = select ? select.value : 'unid_101';
-      alert(`💧 Telemetria atualizada para: ${select.options[select.selectedIndex].text}\n\n• Consumo de Água: ${unid === 'unid_101' ? '8.2 m³' : '9.7 m³'}\n• Consumo de Gás: ${unid === 'unid_101' ? '3.4 m³' : '4.8 m³'}\n• Auditoria fotográfica validada e sem indício de vazamentos.`);
+      showToast('Telemetria Atualizada', `Medições de Água (${unid === 'unid_101' ? '8.2 m³' : '9.7 m³'}) e Gás carregadas. Auditoria sem vazamentos.`, 'info');
     }
 
     // ==========================================
@@ -3343,13 +3557,13 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (!msg) return;
       closeBroadcastModal();
       confetti({ particleCount: 60, spread: 100, origin: { y: 0.6 } });
-      alert('📢 Comunicado transmitido com sucesso via WhatsApp para todas as 142 unidades do condomínio!');
+      showToast('Comunicado Disparado!', 'Mensagem entregue via WhatsApp para todas as 142 unidades do condomínio.', 'success');
     }
 
     function trocarCondominioAtivo() {
       const sel = document.getElementById('selectCondominioAtivo');
       const nome = sel.options[sel.selectedIndex].text;
-      alert(`🏢 Condomínio ativo alternado para: ${nome}`);
+      showToast('Condomínio Alternado', `Operando agora em: ${nome}`, 'info');
     }
 
     function openCommandPalette() {
@@ -3369,6 +3583,13 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const container = document.getElementById('commandPaletteResults');
       
       const commands = [
+        { label: '⚡ Enviar Boleto Pix no WhatsApp (1 Clique)', action: 'quick_pix', icon: '⚡' },
+        { label: '✍️ Formalizar Acordo de Dívida Amigável', action: 'quick_acordo', icon: '🤝' },
+        { label: '🎟️ Liberar Convidado / Gerar Passe QR Code', action: 'quick_visitante', icon: '🎟️' },
+        { label: '📦 Notificar Chegada de Encomenda', action: 'quick_encomenda', icon: '📦' },
+        { label: '✨ Fazer Tour Rápido de 30 Segundos', action: 'quick_tour', icon: '✨' },
+        { label: '❓ Central de Dúvidas & Perguntas Frequentes', action: 'quick_ajuda', icon: '❓' },
+        { label: '🎯 Alternar Modo Simples / Foco Total', action: 'toggle_modo_simples', icon: '🎯' },
         { label: 'Alternar Tema Claro / Escuro', action: 'toggle_theme', icon: '🌓' },
         { label: 'Ir para Caixa de Entrada (Atendimento)', tab: 'atendimento', icon: '💬' },
         { label: 'Ir para Cobrança & Acordos de Dívidas', tab: 'cobranca', icon: '🧾' },
@@ -3400,11 +3621,170 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (cmd.action === 'toggle_theme') toggleTheme();
       else if (cmd.tab) switchTab(cmd.tab);
       else if (cmd.action === 'broadcast') openBroadcastModal();
+      else if (cmd.action === 'quick_pix') { switchTab('atendimento'); executarAcaoSugerida('pix'); }
+      else if (cmd.action === 'quick_acordo') { switchTab('cobranca'); }
+      else if (cmd.action === 'quick_visitante') { openNovoVisitanteModal(); }
+      else if (cmd.action === 'quick_encomenda') { openNovaEncomendaModal(); }
+      else if (cmd.action === 'quick_tour') { openQuickTourModal(); }
+      else if (cmd.action === 'quick_ajuda') { openAjudaModal(); }
+      else if (cmd.action === 'toggle_modo_simples') { toggleModoSimples(); }
       else if (cmd.morador) {
         switchTab('atendimento');
         const conv = allConversations.find(c => (c.pushName || c.morador?.nome || '').includes(cmd.morador));
         if (conv) selectConversation(conv.remoteJid);
       }
+    }
+
+    // ==========================================
+    // SISTEMA DE USABILIDADE & FACILIDADE MÁXIMA
+    // ==========================================
+
+    // 1. Toast Notifications Reassuradoras
+    function showToast(title, message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const id = 'toast_' + Math.random().toString(36).substring(2, 9);
+      const icons = {
+        success: '✅',
+        info: '💡',
+        warning: '⚠️',
+        error: '❌'
+      };
+      const borders = {
+        success: 'border-emerald-500/50 bg-[#062419] text-emerald-100 shadow-emerald-950/50',
+        info: 'border-indigo-500/50 bg-[#0f1738] text-indigo-100 shadow-indigo-950/50',
+        warning: 'border-amber-500/50 bg-[#2b1803] text-amber-100 shadow-amber-950/50',
+        error: 'border-rose-500/50 bg-[#2b030b] text-rose-100 shadow-rose-950/50'
+      };
+      const toast = document.createElement('div');
+      toast.id = id;
+      toast.className = `pointer-events-auto p-4 rounded-2xl border shadow-2xl backdrop-blur-md transition-all duration-300 transform translate-x-8 opacity-0 flex items-start gap-3 text-xs ${borders[type] || borders.success}`;
+      toast.innerHTML = `
+        <span class="text-base shrink-0 mt-0.5">${icons[type] || '✅'}</span>
+        <div class="flex-1">
+          <strong class="block font-bold text-white text-[13px] mb-0.5">${title}</strong>
+          <p class="text-slate-300 leading-snug">${message}</p>
+        </div>
+        <button onclick="document.getElementById('${id}')?.remove()" class="text-slate-400 hover:text-white p-1 text-xs">✕</button>
+      `;
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-x-8', 'opacity-0');
+      });
+      setTimeout(() => {
+        toast.classList.add('translate-x-8', 'opacity-0');
+        setTimeout(() => toast.remove(), 350);
+      }, 4200);
+    }
+
+    // 2. Banner de Sugestão Inteligente da IA
+    function updateSmartActionBanner(conv) {
+      const textEl = document.getElementById('smartActionText');
+      const btnPrimary = document.getElementById('btnSmartActionPrimary');
+      const btnSecondary = document.getElementById('btnSmartActionSecondary');
+      if (!textEl || !btnPrimary) return;
+
+      if (conv.remoteJid.includes('888888888') || conv.sentiment === 'risco_juridico') {
+        textEl.innerHTML = `Débito de <strong>R$ 1.350,00</strong> (42 dias). IA recomenda acordo amigável com 100% de desconto de juros.`;
+        btnPrimary.innerHTML = `<span>✍️ Formalizar Acordo Sem Juros (1 Clique)</span>`;
+        btnPrimary.onclick = () => executarAcaoSugerida('acordo');
+        if (btnSecondary) {
+          btnSecondary.innerHTML = `<span>📢 Notificar Amigável</span>`;
+          btnSecondary.onclick = () => executarAcaoSugerida('notificar_amigavel');
+        }
+      } else {
+        textEl.innerHTML = `Morador solicitou 2ª via da cota condominial de Novembro (<strong>R$ 650,00</strong>).`;
+        btnPrimary.innerHTML = `<span>⚡ Enviar Boleto Pix (1 Clique)</span>`;
+        btnPrimary.onclick = () => executarAcaoSugerida('pix');
+        if (btnSecondary) {
+          btnSecondary.innerHTML = `<span>🤝 Propor Acordo</span>`;
+          btnSecondary.onclick = () => executarAcaoSugerida('acordo_simular');
+        }
+      }
+    }
+
+    // 3. Execução das Ações Sugeridas em 1 Clique
+    function executarAcaoSugerida(tipo) {
+      const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
+      const nome = conv?.pushName || conv?.morador?.nome || 'Morador';
+
+      if (tipo === 'pix') {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const pixCode = '00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865406650.005802BR5925CONDOMINIO RES JARDINS6009SAO PAULO62070503***6304ABCD';
+        
+        conv.messages.push({
+          id: `msg_${Date.now()}`,
+          sender: 'agent',
+          text: `Aqui está o seu boleto de Novembro/2026 recalculado para pagamento instantâneo via Pix Copia e Cola.\n\n💰 Valor: R$ 650,00\n📅 Vencimento: 20/11/2026\n🏛️ Banco: Pix Banco Central`,
+          timestamp: time,
+          pixCode: pixCode
+        });
+        
+        selectConversation(activeRemoteJid);
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        showToast('Boleto Pix Enviado!', `O boleto de R$ 650,00 foi entregue no WhatsApp de ${nome} com sucesso.`, 'success');
+      } else if (tipo === 'acordo') {
+        abrirModalTermoAcordo(nome, 'unid_204');
+        showToast('Termo Gerado!', `Termo de Confissão de Dívida pronto para assinatura digital de ${nome}.`, 'info');
+      } else if (tipo === 'notificar_amigavel') {
+        sendQuickReply(`Olá ${nome}, tudo bem? Identificamos que a cota de Novembro está em aberto. Deseja que eu gere o Pix com isenção total de encargos?`);
+      } else if (tipo === 'acordo_simular') {
+        switchTab('cobranca');
+      }
+    }
+
+    // 4. Modo Simples vs Avançado (Toggle de Complexidade)
+    function toggleModoSimples() {
+      const isSimples = document.body.classList.toggle('modo-simples');
+      localStorage.setItem('domus_modo_simples', isSimples ? 'true' : 'false');
+      updateModoSimplesUI(isSimples);
+    }
+
+    function updateModoSimplesUI(isSimples) {
+      const banner = document.getElementById('bannerModoSimples');
+      const icon = document.getElementById('modoSimplesIcon');
+      const text = document.getElementById('modoSimplesText');
+
+      if (isSimples) {
+        if (banner) banner.classList.remove('hidden');
+        if (icon) icon.innerText = '🎯';
+        if (text) text.innerText = 'Modo Avançado';
+        showToast('Modo Simples Ativado', 'Interface focada no essencial e livre de jargões técnicos.', 'info');
+      } else {
+        if (banner) banner.classList.add('hidden');
+        if (icon) icon.innerText = '🎯';
+        if (text) text.innerText = 'Modo Simples';
+        showToast('Modo Completo Ativado', 'Exibindo todos os parâmetros e métricas avançadas de governança.', 'info');
+      }
+    }
+
+    function initModoSimples() {
+      const saved = localStorage.getItem('domus_modo_simples');
+      if (saved === 'true') {
+        document.body.classList.add('modo-simples');
+        updateModoSimplesUI(true);
+      }
+    }
+
+    // 5. Guia Rápido (Tour 30s)
+    function openQuickTourModal() {
+      document.getElementById('modalQuickTour')?.classList.remove('hidden');
+    }
+    function closeQuickTourModal() {
+      document.getElementById('modalQuickTour')?.classList.add('hidden');
+    }
+    function concluirTour() {
+      closeQuickTourModal();
+      confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+      showToast('Pronto para Usar!', 'Você conheceu o básico do DOMUS AI. Qualquer dúvida, use o botão "Precisa de Ajuda?".', 'success');
+    }
+
+    // 6. Central de Ajuda & Dúvidas
+    function openAjudaModal() {
+      document.getElementById('modalAjudaRapida')?.classList.remove('hidden');
+    }
+    function closeAjudaModal() {
+      document.getElementById('modalAjudaRapida')?.classList.add('hidden');
     }
 
     // Keyboard Shortcuts (Ctrl+K e Ctrl+B)
@@ -3422,9 +3802,21 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // Inicialização
     window.addEventListener('DOMContentLoaded', () => {
       initTheme();
+      initModoSimples();
       checkUserSession();
       loadConversations();
     });
   </script>
+
+  <!-- ============================================================== -->
+  <!-- BOTÃO FLUTUANTE DE AJUDA & DÚVIDAS RÁPIDAS -->
+  <!-- ============================================================== -->
+  <button 
+    onclick="openAjudaModal()" 
+    class="fixed bottom-5 right-5 z-40 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-2xl flex items-center gap-2 text-xs font-bold transition-all hover:scale-105 border border-indigo-400/30 cursor-pointer"
+    title="Central de Dúvidas & Guia Rápido">
+    <span class="text-sm">❓</span>
+    <span class="hidden md:inline">Precisa de Ajuda?</span>
+  </button>
 </body>
 </html>
