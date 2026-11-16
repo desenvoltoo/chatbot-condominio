@@ -3771,33 +3771,6 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         emptyEl.style.display = 'none';
       }
     }
-      items.forEach(el => {
-        const text = el.innerText.toLowerCase();
-        const match = text.includes(term);
-        el.style.display = match ? 'block' : 'none';
-        if (match) visibleCount++;
-      });
-
-      let emptyEl = document.getElementById('conversationsEmptyState');
-      if (visibleCount === 0) {
-        if (!emptyEl) {
-          emptyEl = document.createElement('div');
-          emptyEl.id = 'conversationsEmptyState';
-          emptyEl.className = 'p-6 text-center text-xs text-slate-400 space-y-2';
-          emptyEl.innerHTML = `
-            <div class="text-3xl">🔍</div>
-            <div class="font-bold text-slate-200">Nenhum morador encontrado</div>
-            <p class="text-[11px] text-slate-400">Nenhuma conversa coincide com "${term}". Tente buscar por nome, bloco ou número.</p>
-          `;
-          document.getElementById('conversationsList').appendChild(emptyEl);
-        } else {
-          emptyEl.style.display = 'block';
-          emptyEl.querySelector('p').innerText = `Nenhuma conversa coincide com "${term}". Tente buscar por nome, bloco ou número.`;
-        }
-      } else if (emptyEl) {
-        emptyEl.style.display = 'none';
-      }
-    }
 
     // ==========================================
     // SIMULADOR DE ACORDO
