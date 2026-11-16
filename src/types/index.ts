@@ -202,4 +202,66 @@ export interface SisconSystemConfig {
     apiKey: string;
     instanceName: string;
   };
+  aiConfig?: AIConfig;
+}
+
+export type UserRole = 'admin' | 'sindico' | 'operador' | 'portaria';
+
+export interface User {
+  id: string;
+  nome: string;
+  email: string;
+  senhaHash?: string;
+  role: UserRole;
+  cargo: string;
+  avatarUrl?: string;
+  ativo: boolean;
+  ultimoAcesso?: string;
+}
+
+export interface AuthSession {
+  token: string;
+  user: Omit<User, 'senhaHash'>;
+  expiresIn: string;
+}
+
+export type AIProvider = 'openai' | 'gemini' | 'anthropic' | 'deepseek' | 'groq' | 'openrouter' | 'custom';
+
+export interface AIConfig {
+  provider: AIProvider;
+  apiKey: string;
+  baseUrl?: string;
+  modelName: string;
+  temperature: number;
+  maxTokens: number;
+  systemPrompt: string;
+  embeddingProvider: 'openai' | 'gemini' | 'local';
+  guardrailsAtivos: boolean;
+  encaminharHumanoBaixaConfianca: boolean;
+}
+
+export interface DocumentoRAG {
+  id: string;
+  titulo: string;
+  categoria: 'regimento_interno' | 'convencao' | 'ata_assembleia' | 'faq' | 'geral';
+  tamanhoBytes: number;
+  qtdChunks: number;
+  dataUpload: string;
+  status: 'indexado' | 'processando' | 'erro';
+  conteudoTexto?: string;
+}
+
+export interface ChunkRAG {
+  id: string;
+  documentoId: string;
+  documentoTitulo: string;
+  texto: string;
+  tags?: string[];
+  embedding?: number[];
+}
+
+export interface RAGSearchResult {
+  chunk: ChunkRAG;
+  score: number;
+  documentoTitulo: string;
 }

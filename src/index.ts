@@ -22,14 +22,19 @@ app.use(express.static(publicPath));
 app.use('/webhook', webhookRouter);
 app.use('/api', createApiRouter(orchestrator));
 
+// Auth & Login Route
+app.get('/login', (_req, res) => {
+  res.sendFile(path.join(publicPath, 'login.html'));
+});
+
 // Dashboard Route (Central do Operador)
 app.get('/painel', (_req, res) => {
   res.sendFile(path.join(publicPath, 'painel.html'));
 });
 
-// Root Route: serves painel
+// Root Route: serves login page by default
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(publicPath, 'painel.html'));
+  res.sendFile(path.join(publicPath, 'login.html'));
 });
 
 app.listen(config.port, () => {

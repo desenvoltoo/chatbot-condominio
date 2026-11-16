@@ -3,6 +3,9 @@ import { BotOrchestrator } from '../bot/bot.orchestrator.js';
 import { EvolutionService } from '../services/evolution.service.js';
 import { SisconService } from '../services/siscon.service.js';
 import { ConfigService } from '../services/config.service.js';
+import { AuthService } from '../services/auth.service.js';
+import { LlmService } from '../services/llm.service.js';
+import { RagService } from '../services/rag.service.js';
 import { formatarMensagemPix } from '../utils/pix.util.js';
 
 export function createApiRouter(orchestrator: BotOrchestrator): Router {
@@ -10,9 +13,143 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   const evolutionService = new EvolutionService();
   const sisconService = new SisconService();
   const configService = ConfigService.getInstance();
+  const authService = AuthService.getInstance();
+  const llmService = LlmService.getInstance();
+  const ragService = RagService.getInstance();
 
   // ==========================================
-  // 1. GESTÃO DE SESSÕES & CONVERSAS WHATSAPP
+  // 1. AUTENTICAÇÃO & CONTROLE DE ACESSO (RBAC)
+  // ==========================================
+
+  // Login
+  router.post('/auth/login', async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
+    }
+
+    const session = await authService.login(email, password);
+    if (!session) {
+      return res.status(401).json({ error: 'Credenciais inválidas ou usuário inativo' });
+    }
+
+    res.json(session);
+  });
+
+  // Get current user profile from token
+  router.get('/auth/me', (req: Request, res: Response) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    const user = authService.verifyToken(token);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Sessão expirada ou não autenticada' });
+    }
+
+    res.json({ user });
+  });
+
+  // Logout
+  router.post('/auth/logout', (req: Request, res: Response) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    authService.logout(token);
+    res.json({ success: true });
+  });
+
+  // List team members (RBAC)
+  router.get('/auth/usuarios', (_req: Request, res: Response) => {
+    res.json(authService.listarUsuarios());
+  });
+
+  // ==========================================
+  // 2. HUB DE IA UNIVERSAL & CONFIGURAÇÃO LLM
+  // ==========================================
+
+  // Get AI engine settings
+  router.get('/ai/config', (_req: Request, res: Response) => {
+    res.json(llmService.getPublicConfig());
+  });
+
+  // Update AI engine settings (use whatever AI you want: OpenAI, Gemini, Claude, Groq, DeepSeek, etc.)
+  router.post('/ai/config', (req: Request, res: Response) => {
+    try {
+      const updated = llmService.updateConfig(req.body);
+      res.json({ success: true, config: llmService.getPublicConfig() });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Test live connection to the configured AI provider
+  router.post('/ai/test', async (req: Request, res: Response) => {
+    try {
+      const result = await llmService.testConnection(req.body);
+      res.json(result);
+    } catch (err: any) {
+      res.status(500).json({ sucesso: false, mensagem: err.message });
+    }
+  });
+
+  // Generate answer with RAG context injection
+  router.post('/ai/chat', async (req: Request, res: Response) => {
+    const { message, condoName } = req.body;
+    if (!message) return res.status(400).json({ error: 'Mensagem é obrigatória' });
+
+    try {
+      // 1. Busca semântica no banco vetorial da RAG
+      const ragResults = ragService.buscarSemantica(message, 3);
+      const contextRAG = ragResults.map(r => `[Fonte: ${r.documentoTitulo}]\n${r.chunk.texto}`).join('\n\n');
+
+      // 2. Geração da resposta contextualizada
+      const answer = await llmService.generateAnswer(message, contextRAG, condoName);
+      res.json({ answer, sources: ragResults.map(r => ({ title: r.documentoTitulo, score: r.score })) });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ==========================================
+  // 3. BASE DE CONHECIMENTO RAG (DOCUMENTOS & EMBEDDINGS)
+  // ==========================================
+
+  // List all indexed documents in RAG
+  router.get('/rag/documentos', (_req: Request, res: Response) => {
+    res.json(ragService.listarDocumentos());
+  });
+
+  // Add document to RAG (auto-chunks and indexes)
+  router.post('/rag/documentos', (req: Request, res: Response) => {
+    const { titulo, categoria, conteudoTexto } = req.body;
+    if (!titulo || !conteudoTexto) {
+      return res.status(400).json({ error: 'Título e conteúdo de texto são obrigatórios' });
+    }
+
+    try {
+      const doc = ragService.adicionarDocumento(titulo, categoria || 'geral', conteudoTexto);
+      res.json({ success: true, documento: doc });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Delete document from RAG
+  router.delete('/rag/documentos/:id', (req: Request, res: Response) => {
+    const deleted = ragService.removerDocumento(req.params.id);
+    res.json({ success: deleted });
+  });
+
+  // Test RAG semantic search playground
+  router.post('/rag/testar', (req: Request, res: Response) => {
+    const { pergunta } = req.body;
+    if (!pergunta) return res.status(400).json({ error: 'Pergunta é obrigatória' });
+
+    const teste = ragService.testarRAG(pergunta);
+    res.json(teste);
+  });
+
+  // ==========================================
+  // 4. GESTÃO DE SESSÕES & CONVERSAS WHATSAPP
   // ==========================================
 
   // List all WhatsApp conversations with SISCON sync
@@ -106,7 +243,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   // ==========================================
-  // 2. CONFIGURAÇÕES & PLUG-AND-PLAY SISCON
+  // 5. CONFIGURAÇÕES & PLUG-AND-PLAY SISCON
   // ==========================================
 
   // Get current system configuration
@@ -135,7 +272,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   // ==========================================
-  // 3. COBRANÇA, RÉGUA & ACORDOS (PARCELAMENTO)
+  // 6. COBRANÇA, RÉGUA & ACORDOS (PARCELAMENTO)
   // ==========================================
 
   // Simulate debt agreement with interest/penalty
@@ -196,7 +333,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   // ==========================================
-  // 4. RESERVAS DE ÁREAS COMUNS (SALÃO/CHURRASQUEIRA)
+  // 7. RESERVAS DE ÁREAS COMUNS (SALÃO/CHURRASQUEIRA)
   // ==========================================
 
   // List common areas
@@ -249,7 +386,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   // ==========================================
-  // 5. SISCON MEDIÇÃO & CONSULTAS GERAIS
+  // 8. SISCON MEDIÇÃO & CONSULTAS GERAIS
   // ==========================================
 
   // Query SISCON directly by CPF
