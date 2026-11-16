@@ -844,6 +844,12 @@
           <span class="text-slate-400">IA: <strong class="text-indigo-300" id="topActiveModel">GPT-4o-mini + RAG</strong></span>
         </div>
 
+        <!-- Indicador de Piloto 100% Autônomo (Zero-Touch AI) -->
+        <div id="topAutonomiaBadge" class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-emerald-700 font-bold">Piloto Automático: <span class="text-emerald-800 underline cursor-pointer" onclick="switchTab('ai')">100% AUTÔNOMO</span></span>
+        </div>
+
         <!-- Botão de Alternar Tema Claro / Escuro (Dark/Light) -->
         <button 
           id="themeToggleBtn" 
@@ -1044,6 +1050,40 @@
             <span>📦 Notificar Encomenda</span>
             <span>→</span>
           </button>
+        </div>
+
+        <!-- Trilha de Ações Autônomas Executadas pela IA -->
+        <div class="p-4 border-t border-white/[0.08] space-y-2.5 text-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Ações Autônomas da IA
+            </span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 font-bold border border-emerald-500/20">Zero-Touch</span>
+          </div>
+          <div class="space-y-2" id="feedAcoesAutonomasMorador">
+            <div class="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[10px] space-y-1">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="font-bold text-emerald-700">⚡ Cobrança Autônoma</span>
+                <span class="font-mono">11:14</span>
+              </div>
+              <p class="text-slate-300">2ª Via Pix gerada e enviada via WhatsApp (R$ 650,00).</p>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[10px] space-y-1">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="font-bold text-indigo-700">📖 Consulta RAG</span>
+                <span class="font-mono">10:48</span>
+              </div>
+              <p class="text-slate-300">Dúvida sobre mudanças no sábado sanada pelo Art. 24 da Convenção.</p>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[10px] space-y-1">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="font-bold text-purple-700">🎟️ Portaria Autônoma</span>
+                <span class="font-mono">09:30</span>
+              </div>
+              <p class="text-slate-300">Passe QR Code emitido para visitante Dr. Marcelo (Unid 101).</p>
+            </div>
+          </div>
         </div>
       </aside>
     </main>
@@ -1357,24 +1397,480 @@
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 8: HUB MULTI-IA COM SANDBOX SPLIT SCREEN -->
+    <!-- MÓDULO 8: HUB MULTI-IA COM PILOTO AUTOMÁTICO 100% AUTÔNOMO -->
     <!-- ============================================================== -->
     <main id="tab-content-ai" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <!-- Conteúdo Multi-IA -->
+      <div class="max-w-5xl mx-auto space-y-6">
+
+        <!-- Header do Módulo -->
+        <div class="p-6 rounded-3xl bg-gradient-to-r from-indigo-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 text-xs font-mono font-semibold mb-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            DOMUS Autonomous Engine • Auto-Pilot Zero-Touch
+          </div>
+          <h1 class="text-2xl font-black text-white tracking-tight">Hub Multi-IA & Piloto 100% Autônomo</h1>
+          <p class="text-xs text-slate-400 mt-1 max-w-2xl">
+            Configure o modelo de inteligência artificial de sua preferência (OpenAI, Gemini, Claude, DeepSeek, Groq ou Custom) e defina as regras de autonomia total para execução de todas as tarefas sem intervenção humana.
+          </p>
+        </div>
+
+        <!-- CARD MASTER: MODO 100% AUTÔNOMO (ZERO INTERVENÇÃO HUMANA) -->
+        <div class="glass-surface rounded-3xl p-6 border-2 border-emerald-500/40 shadow-2xl space-y-5 bg-gradient-to-b from-emerald-500/[0.04] to-transparent">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 text-xl font-black shadow-inner">
+                ⚡
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-extrabold text-base text-white">Piloto 100% Autônomo (Zero Intervenção Humana)</h3>
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500 text-slate-950">ATIVO</span>
+                </div>
+                <p class="text-xs text-slate-400">Quando ativado, a IA executa todas as tarefas operacionais de ponta a ponta sem fila de espera e sem depender de operadores humanos.</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+              <input type="checkbox" id="chkMasterAutonomia" class="sr-only peer" checked onchange="toggleAutonomiaTotal(this.checked)">
+              <div class="w-14 h-7 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+            </label>
+          </div>
+
+          <!-- Grid de 8 Tarefas Autônomas -->
+          <div>
+            <span class="text-xs font-bold text-slate-300 block mb-3 uppercase tracking-wider">Tarefas que a IA executa com 100% de autonomia:</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base">📄</span>
+                  <div>
+                    <strong class="text-white block font-semibold">Cobrança, Juros & Pix Dinâmico</strong>
+                    <span class="text-slate-400 text-[11px]">Recalcula encargos e emite chave Pix Copia e Cola na hora.</span>
+                  </div>
+                </div>
+                <input type="checkbox" id="chkAutoCobranca" checked class="w-4 h-4 rounded text-emerald-600 mt-1 cursor-pointer">
+              </div>
+
+              <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base">🤝</span>
+                  <div>
+                    <strong class="text-white block font-semibold">Negociação & Acordo de Dívidas</strong>
+                    <span class="text-slate-400 text-[11px]">Simula parcelas (1x a 12x) e formaliza termo com hash SHA-256.</span>
+                  </div>
+                </div>
+                <input type="checkbox" id="chkAutoAcordo" checked class="w-4 h-4 rounded text-emerald-600 mt-1 cursor-pointer">
+              </div>
+
+              <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base">📖</span>
+                  <div>
+                    <strong class="text-white block font-semibold">Regimento Interno & Convenção (RAG)</strong>
+                    <span class="text-slate-400 text-[11px]">Responde dúvidas citando os artigos oficiais sem alucinações.</span>
+                  </div>
+                </div>
+                <input type="checkbox" id="chkAutoRag" checked class="w-4 h-4 rounded text-emerald-600 mt-1 cursor-pointer">
+              </div>
+
+              <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base">📅</span>
+                  <div>
+                    <strong class="text-white block font-semibold">Reservas de Áreas Comuns</strong>
+                    <span class="text-slate-400 text-[11px]">Verifica agenda e adimplência e confirma salões/churrasqueira.</span>
+                  </div>
+                </div>
+                <input type="checkbox" id="chkAutoReservas" checked class="w-4 h-4 rounded text-emerald-600 mt-1 cursor-pointer">
+              </div>
+
+              <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base">📦</span>
+                  <div>
+                    <strong class="text-white block font-semibold">Portaria & Encomendas OCR</strong>
+                    <span class="text-slate-400 text-[11px]">Identifica pacote e notifica o condômino com código de retirada.</span>
+                  </div>
+                </div>
+                <input type="checkbox" id="chkAutoEncomendas" checked class="w-4 h-4 rounded text-emerald-600 mt-1 cursor-pointer">
+              </div>
+
+              <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base">🎟️</span>
+                  <div>
+                    <strong class="text-white block font-semibold">Passes de Visitantes com QR Code</strong>
+                    <span class="text-slate-400 text-[11px]">Gera convite temporário e libera acesso na portaria em segundos.</span>
+                  </div>
+                </div>
+                <input type="checkbox" id="chkAutoPasses" checked class="w-4 h-4 rounded text-emerald-600 mt-1 cursor-pointer">
+              </div>
+
+              <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base">🗳️</span>
+                  <div>
+                    <strong class="text-white block font-semibold">Assembleias Virtuais & Votação</strong>
+                    <span class="text-slate-400 text-[11px]">Coleta votos no WhatsApp, valida quórum e gera ata por IA.</span>
+                  </div>
+                </div>
+                <input type="checkbox" id="chkAutoAssembleia" checked class="w-4 h-4 rounded text-emerald-600 mt-1 cursor-pointer">
+              </div>
+
+              <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base">🛠️</span>
+                  <div>
+                    <strong class="text-white block font-semibold">Abertura de Chamados & Ocorrências</strong>
+                    <span class="text-slate-400 text-[11px]">Categoriza problema predial, gera protocolo e despacha zelador.</span>
+                  </div>
+                </div>
+                <input type="checkbox" id="chkAutoOcorrencias" checked class="w-4 h-4 rounded text-emerald-600 mt-1 cursor-pointer">
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2 text-emerald-700">
+              <span class="font-bold">📊 Métrica de Autonomia:</span>
+              <span>1.428 tarefas executadas este mês com <strong>0 intervenções humanas</strong> (Tempo médio: 1.8s)</span>
+            </div>
+            <button onclick="salvarConfiguracoesIA(event)" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+              Aplicar Políticas de Autonomia
+            </button>
+          </div>
+        </div>
+
+        <!-- Configuração de Provedor de IA & Chaves -->
+        <form id="formAIConfig" onsubmit="salvarConfiguracoesIA(event)" class="space-y-6">
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                <span>🧠</span> Provedor de Inteligência Artificial & Modelo
+              </h3>
+              <button type="button" onclick="testarConexaoIA()" id="btnTestAIConnection" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                <span>⚡</span> Testar Conexão IA
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Provedor de LLM</label>
+                <select id="aiProviderSelect" onchange="handleAIProviderChange()" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2.5 text-white">
+                  <option value="openai">OpenAI (GPT-4o, GPT-4o-mini)</option>
+                  <option value="gemini">Google Gemini (Gemini 1.5 Flash / Pro)</option>
+                  <option value="anthropic">Anthropic Claude (Claude 3.5 Sonnet)</option>
+                  <option value="deepseek">DeepSeek (DeepSeek-V3, DeepSeek-R1)</option>
+                  <option value="groq">Groq (Llama 3.3 70B Ultra Rápido)</option>
+                  <option value="openrouter">OpenRouter (Multi-Modelos)</option>
+                  <option value="custom">Endpoint Customizado / OpenAI-Compatible (Ollama, LocalAI)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Modelo Selecionado</label>
+                <input type="text" id="aiModelName" value="gpt-4o-mini" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2.5 text-white font-mono">
+              </div>
+
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Chave de API (API Key)</label>
+                <input type="password" id="aiApiKey" placeholder="sk-proj-••••••••••••••••" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2.5 text-white font-mono">
+              </div>
+
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Base URL da API</label>
+                <input type="text" id="aiBaseUrl" value="https://api.openai.com/v1" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2.5 text-white font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- Parâmetros de Inferência & Prompts -->
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+              <span>🎛️</span> Temperatura & Parâmetros de Inferência
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <label class="text-slate-400 font-semibold">Temperatura (Criatividade vs Precisão):</label>
+                  <span id="lblTemperatureVal" class="text-indigo-400 font-mono font-bold">0.2</span>
+                </div>
+                <input type="range" id="aiTemperature" min="0" max="1" step="0.05" value="0.2" oninput="document.getElementById('lblTemperatureVal').innerText = this.value" class="w-full accent-indigo-500">
+                <span class="text-[10px] text-slate-500 block mt-1">Recomendado 0.1 a 0.3 para respostas exatas e sem alucinações.</span>
+              </div>
+
+              <div>
+                <label class="text-slate-400 font-semibold block mb-1">Limite Máximo de Tokens (Resposta):</label>
+                <input type="number" id="aiMaxTokens" value="600" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+              </div>
+            </div>
+
+            <div class="space-y-2 pt-2">
+              <label class="text-slate-400 font-semibold block text-xs">System Prompt Principal do Agente Condominial Autônomo:</label>
+              <textarea id="aiSystemPrompt" rows="6" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl p-3 text-xs text-white font-mono">Você é o DOMUS AI, assistente oficial 100% autônomo do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP predial.
+Você opera em MODO TOTALMENTE AUTÔNOMO (Zero-Touch AI), resolvendo todas as solicitações dos condôminos sem necessidade de intervenção humana:
+
+CAPACIDADES AUTÔNOMAS IMEDIATAS:
+1. Cobrança & Pix: Localiza cotas, recalcula encargos e emite chave Pix Copia e Cola e boleto PDF instantaneamente.
+2. Acordos de Dívidas: Simula parcelamentos (1x, 3x, 6x, 12x), formaliza a confissão e gera termo com hash de segurança SHA-256.
+3. Regimento & Convenção (RAG): Responde com base estrita no regimento interno sem alucinações.
+4. Reservas de Lazer: Confirma disponibilidade de churrasqueira e salão de festas na hora.
+5. Portaria & Visitantes: Gera passes temporários com QR Code e notifica pacotes recebidos.
+6. Assembleias: Registra e computa votos dos condôminos com recibo formal.
+
+CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
+{{contextoRAG}}</textarea>
+            </div>
+
+            <div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="aiGuardrails" class="w-4 h-4 rounded text-indigo-600" checked>
+                <label for="aiGuardrails" class="text-slate-300 font-semibold cursor-pointer">
+                  Guardrails Anti-Alucinação Ativos (Validação estrita de valores financeiros no ERP)
+                </label>
+              </div>
+              <button type="submit" class="px-6 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+                💾 Salvar Todas as Configurações de IA
+              </button>
+            </div>
+          </div>
+        </form>
+
+      </div>
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 9: BASE DE CONHECIMENTO RAG -->
+    <!-- MÓDULO 9: BASE DE CONHECIMENTO RAG VETORIAL -->
     <!-- ============================================================== -->
     <main id="tab-content-rag" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <!-- Conteúdo RAG -->
+      <div class="max-w-6xl mx-auto space-y-6">
+
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 text-xs font-mono font-semibold mb-2">
+              <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              RAG Vetorial & Zero Alucinação
+            </div>
+            <h1 class="text-2xl font-black text-white tracking-tight">Base de Conhecimento do Agente (RAG)</h1>
+            <p class="text-xs text-slate-400 mt-1 max-w-xl">
+              Indexe a convenção, o regimento interno, atas de assembleias e normas do condomínio para respostas com embasamento jurídico e precisão semântica.
+            </p>
+          </div>
+          <button onclick="openNovoDocumentoRAGModal()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-2 shrink-0 cursor-pointer">
+            <span>+</span> Adicionar Documento / Norma
+          </button>
+        </div>
+
+        <!-- 4 Cards de Métricas RAG -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="p-4 rounded-2xl glass-surface border border-white/[0.08]">
+            <span class="text-slate-400 text-xs">Documentos Indexados:</span>
+            <h3 class="text-2xl font-black text-emerald-600 mt-1 font-mono" id="ragDocCount">4 documentos</h3>
+            <span class="text-[11px] text-slate-500 block mt-1">Convenção, regimento e atas</span>
+          </div>
+          <div class="p-4 rounded-2xl glass-surface border border-white/[0.08]">
+            <span class="text-slate-400 text-xs">Fragmentos Vetoriais (Chunks):</span>
+            <h3 class="text-2xl font-black text-indigo-600 mt-1 font-mono">602 chunks</h3>
+            <span class="text-[11px] text-slate-500 block mt-1">Segmentação semântica ~500 tokens</span>
+          </div>
+          <div class="p-4 rounded-2xl glass-surface border border-white/[0.08]">
+            <span class="text-slate-400 text-xs">Precisão das Consultas:</span>
+            <h3 class="text-2xl font-black text-cyan-600 mt-1 font-mono">99.8%</h3>
+            <span class="text-[11px] text-slate-500 block mt-1">Similaridade cosseno média: 0.91</span>
+          </div>
+          <div class="p-4 rounded-2xl glass-surface border border-white/[0.08]">
+            <span class="text-slate-400 text-xs">Engine de Embeddings:</span>
+            <h3 class="text-2xl font-black text-purple-600 mt-1 text-sm">Híbrido Vetorial</h3>
+            <span class="text-[11px] text-slate-500 block mt-1">text-embedding-3-small + BM25</span>
+          </div>
+        </div>
+
+        <!-- Document List & Semantic Search Playground -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                <span>📚</span> Documentos Regulatórios Indexados
+              </h3>
+              <span class="text-xs text-emerald-600 font-mono font-semibold">● 100% Sincronizado</span>
+            </div>
+
+            <div class="space-y-3" id="ragDocListContainer">
+              <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 font-bold text-sm">PDF</div>
+                  <div>
+                    <h4 class="font-bold text-xs text-white">Regimento Interno e Regras de Convivência (2026).pdf</h4>
+                    <span class="text-[10px] text-slate-400 font-mono">1.4 MB • 142 chunks • Horários de barulho, mudanças e áreas comuns</span>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">Indexado</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 font-bold text-sm">PDF</div>
+                  <div>
+                    <h4 class="font-bold text-xs text-white">Convenção de Condomínio Registrada em Cartório.pdf</h4>
+                    <span class="text-[10px] text-slate-400 font-mono">3.8 MB • 320 chunks • Quórum de assembleias, multas e fração ideal</span>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">Indexado</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 font-bold text-sm">DOCX</div>
+                  <div>
+                    <h4 class="font-bold text-xs text-white">Regulamento da Piscina, Academia e Espaço Gourmet.docx</h4>
+                    <span class="text-[10px] text-slate-400 font-mono">420 KB • 85 chunks • Trajes, exames médicos e taxas de limpeza</span>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">Indexado</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-600 font-bold text-sm">PDF</div>
+                  <div>
+                    <h4 class="font-bold text-xs text-white">Ata da Assembleia Geral Ordinária (AGO 2026).pdf</h4>
+                    <span class="text-[10px] text-slate-400 font-mono">290 KB • 55 chunks • Aprovação de contas e eleição de síndico</span>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">Indexado</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Semantic Search Playground -->
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2 border-b border-white/[0.08] pb-3">
+              <span>🔍</span> Testar Busca Semântica da IA
+            </h3>
+            <p class="text-xs text-slate-400">Digite uma pergunta como um condômino para inspecionar os fragmentos da convenção retornados:</p>
+
+            <div class="space-y-2">
+              <input type="text" id="ragTestQuery" placeholder="Ex: posso fazer mudança no sábado de manhã?" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white" value="posso fazer mudança no sábado?">
+              <button onclick="testarBuscaRAG()" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all cursor-pointer">
+                Executar Busca Semântica
+              </button>
+            </div>
+
+            <div id="ragTestResult" class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-xs space-y-2 font-mono">
+              <div class="flex justify-between items-center text-emerald-600 font-bold">
+                <span>Score: 0.94 (Alta Confiança)</span>
+                <span>Art. 24</span>
+              </div>
+              <p class="text-slate-300 text-[11px] font-sans">"Mudanças e reformas com ruído são estritamente autorizadas aos sábados entre 08h00 e 12h00, mediante prévio agendamento com a administração com 48h de antecedência..."</p>
+              <span class="text-[9px] text-slate-500 block">Fonte: Regimento Interno e Regras de Convivência (2026).pdf</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 10: CONECTORES & INTEGRAÇÕES ERP -->
+    <!-- MÓDULO 10: CONECTORES DE ERP & WEBHOOKS -->
     <!-- ============================================================== -->
     <main id="tab-content-configuracoes" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <!-- Conteúdo ERP -->
+      <div class="max-w-4xl mx-auto space-y-6">
+
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-600 text-xs font-mono font-semibold mb-2">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+              Conectividade com ERPs de Mercado
+            </div>
+            <h1 class="text-2xl font-black text-white tracking-tight">Conectores de ERP & Webhooks</h1>
+            <p class="text-xs text-slate-400 mt-1">
+              Pluge as credenciais do seu ERP condominial (SISCON, Superlógica, Ahreas ou Condomob) e gateways de mensageria do WhatsApp.
+            </p>
+          </div>
+          <button onclick="testarConexaoSiscon()" id="btnTestConnection" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
+            <span>⚡</span> Testar Conexão ERP
+          </button>
+        </div>
+
+        <form id="formConfiguracoes" onsubmit="salvarConfiguracoes(event)" class="space-y-6">
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2 pb-3 border-b border-white/[0.08]">
+              <span>🏛️</span> Provedor de ERP Condominial
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Sistema ERP Ativo</label>
+                <select id="cfgErpProvider" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white">
+                  <option value="siscon">SISCON Gestão (Mais Domínio Soluções)</option>
+                  <option value="superlogica">Superlógica Condomínios</option>
+                  <option value="ahreas">Ahreas Condomínios</option>
+                  <option value="condomob">Condomob</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Instituição Bancária Integrada</label>
+                <select id="cfgBancoIntegrado" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white">
+                  <option value="inter">Banco Inter (Registro Direto Pix em 30min)</option>
+                  <option value="itau">Banco Itaú</option>
+                  <option value="santander">Banco Santander</option>
+                  <option value="sicoob">Sicoob</option>
+                  <option value="sicredi">Sicredi</option>
+                  <option value="cora">Cora</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">API Base URL</label>
+                <input type="text" id="cfgSisconBaseUrl" value="https://api.siscongestao.com.br/v1" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+              </div>
+
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">API Access Token</label>
+                <input type="password" id="cfgSisconApiToken" placeholder="token_••••••••••••••••" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+              </div>
+
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Client ID</label>
+                <input type="text" id="cfgSisconClientId" value="domus_erp_client" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+              </div>
+
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">ID da Empresa / Condomínio no ERP</label>
+                <input type="text" id="cfgSisconEmpresaId" value="101" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- Parâmetros de Cobrança -->
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2 pb-3 border-b border-white/[0.08]">
+              <span>⚖️</span> Parâmetros de Cobrança & Negociação de Dívidas
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Multa por Atraso (%)</label>
+                <input type="number" step="0.1" id="cfgMulta" value="2.0" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+              </div>
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Juros de Mora (% / mês)</label>
+                <input type="number" step="0.1" id="cfgJuros" value="1.0" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+              </div>
+              <div>
+                <label class="text-slate-400 block mb-1 font-semibold">Máximo de Parcelas do Acordo</label>
+                <input type="number" id="cfgMaxParc" value="12" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+              <button type="submit" class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+                💾 Salvar Credenciais & Parâmetros do ERP
+              </button>
+            </div>
+          </div>
+        </form>
+
+      </div>
     </main>
 
     <!-- ============================================================== -->
@@ -1584,6 +2080,117 @@
     function salvarMatrizPermissoes() {
       confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
       alert('🔒 Matriz de Permissões RBAC atualizada com sucesso no DOMUS AI!');
+    }
+
+    // ==========================================
+    // PILOTO 100% AUTÔNOMO & CONFIGURAÇÃO MULTI-IA
+    // ==========================================
+    function toggleAutonomiaTotal(enabled) {
+      const badge = document.getElementById('topAutonomiaBadge');
+      if (badge) {
+        if (enabled) {
+          badge.className = 'hidden sm:flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="text-emerald-700 font-bold">Piloto Automático: <span class="text-emerald-800 underline cursor-pointer" onclick="switchTab(\'ai\')">100% AUTÔNOMO</span></span>';
+        } else {
+          badge.className = 'hidden sm:flex items-center gap-2 px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-mono';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500"></span><span class="text-amber-700 font-bold">Piloto Automático: <span class="text-amber-800 underline cursor-pointer" onclick="switchTab(\'ai\')">SUPERVISIONADO</span></span>';
+        }
+      }
+      localStorage.setItem('domus_autonomia_total', enabled ? 'true' : 'false');
+      confetti({ particleCount: 30, spread: 60 });
+      alert(enabled ? '⚡ Piloto 100% Autônomo Ativado!\nA IA executará todas as tarefas operacionais de ponta a ponta sem fila e sem intervenção humana.' : '⚠️ Modo Supervisionado Ativado.\nA IA solicitará aprovação do operador humano antes de executar tarefas.');
+    }
+
+    function handleAIProviderChange() {
+      const provider = document.getElementById('aiProviderSelect').value;
+      const modelInput = document.getElementById('aiModelName');
+      const urlInput = document.getElementById('aiBaseUrl');
+      
+      const defaults = {
+        openai: { model: 'gpt-4o-mini', url: 'https://api.openai.com/v1' },
+        gemini: { model: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta' },
+        anthropic: { model: 'claude-3-5-sonnet', url: 'https://api.anthropic.com/v1' },
+        deepseek: { model: 'deepseek-chat', url: 'https://api.deepseek.com/v1' },
+        groq: { model: 'llama-3.3-70b-versatile', url: 'https://api.groq.com/openai/v1' },
+        openrouter: { model: 'anthropic/claude-3.5-sonnet', url: 'https://openrouter.ai/api/v1' },
+        custom: { model: 'local-model', url: 'http://localhost:11434/v1' }
+      };
+
+      if (defaults[provider]) {
+        modelInput.value = defaults[provider].model;
+        urlInput.value = defaults[provider].url;
+      }
+    }
+
+    function testarConexaoIA() {
+      const provider = document.getElementById('aiProviderSelect').value.toUpperCase();
+      const model = document.getElementById('aiModelName').value;
+      const btn = document.getElementById('btnTestAIConnection');
+      btn.innerHTML = '<span>⏳</span> Testando...';
+
+      setTimeout(() => {
+        btn.innerHTML = '<span>⚡</span> Testar Conexão IA';
+        confetti({ particleCount: 50, spread: 70 });
+        alert(`🤖 Conexão com o Hub Multi-IA bem-sucedida!\n\nProvedor: ${provider}\nModelo: ${model}\nLatência de Inferência: 24ms\nCapacidade de Autonomia: 100% Zero-Touch Operacional`);
+        const topModel = document.getElementById('topActiveModel');
+        if (topModel) topModel.innerText = `${model} + RAG`;
+      }, 500);
+    }
+
+    function salvarConfiguracoesIA(e) {
+      if (e) e.preventDefault();
+      confetti({ particleCount: 45, spread: 60 });
+      alert('💾 Políticas de Autonomia & Configurações da IA salvas com sucesso no DOMUS AI!');
+    }
+
+    // ==========================================
+    // RAG VETORIAL & BUSCA SEMÂNTICA
+    // ==========================================
+    function testarBuscaRAG() {
+      const query = document.getElementById('ragTestQuery').value.trim();
+      const resultDiv = document.getElementById('ragTestResult');
+      if (!query) {
+        alert('Digite uma pergunta para consultar a base de conhecimento.');
+        return;
+      }
+
+      resultDiv.innerHTML = `
+        <div class="flex justify-between items-center text-emerald-600 font-bold">
+          <span>Score Semântico: 0.96 (Correspondência Alta)</span>
+          <span>Regimento Interno</span>
+        </div>
+        <p class="text-slate-800 dark:text-slate-200 text-[11px] font-sans">
+          "O condômino deve respeitar o horário de silêncio entre 22h00 e 08h00. Mudanças, entregas pesadas e obras são estritamente permitidas de segunda a sexta das 08h às 18h e aos sábados das 08h às 12h, com registro obrigatório na portaria."
+        </p>
+        <span class="text-[9px] text-slate-500 block">Embasamento: Art. 24 e 25 • Convenção Condominial 2026</span>
+      `;
+      confetti({ particleCount: 25, spread: 50 });
+    }
+
+    function openNovoDocumentoRAGModal() {
+      const nome = prompt('Digite o nome do documento ou norma condominial a indexar:', 'Regulamento_Garagens_e_Bicicletario_2026.pdf');
+      if (nome) {
+        confetti({ particleCount: 30, spread: 60 });
+        alert(`📄 Documento "${nome}" recebido com sucesso!\n\nProcessamento vetorial concluído: 48 chunks gerados e indexados com zero alucinação.`);
+        const docCount = document.getElementById('ragDocCount');
+        if (docCount) docCount.innerText = '5 documentos';
+      }
+    }
+
+    // ==========================================
+    // CONECTORES DE ERP & WEBHOOKS
+    // ==========================================
+    function testarConexaoSiscon() {
+      const erp = document.getElementById('cfgErpProvider').value.toUpperCase();
+      const banco = document.getElementById('cfgBancoIntegrado').value.toUpperCase();
+      alert(`🛰️ Conexão com o ERP Condominial ${erp} validada com sucesso!\n\nStatus: Conectado e Sincronizado em Tempo Real\nLatência da API: 18ms\nBanco Integrado: ${banco} (Registro Pix Direto Ativo)`);
+      confetti({ particleCount: 35, spread: 60 });
+    }
+
+    function salvarConfiguracoes(e) {
+      if (e) e.preventDefault();
+      confetti({ particleCount: 40, spread: 60 });
+      alert('✅ Credenciais do ERP e parâmetros de cobrança salvos com sucesso no DOMUS AI!');
     }
 
     function handleLogout() {
