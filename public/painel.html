@@ -1081,7 +1081,7 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL RELATÓRIO EXECUTIVO: RESUMO DO SÍNDICO EM 1 PÁGINA -->
+  <!-- MODAL RELATÓRIO DO SÍNDICO: PRESTAÇÃO DE CONTAS SIMPLES E CLARA -->
   <!-- ============================================================== -->
   <div id="modalRelatorioExecutivoSindico" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 hidden p-4 overflow-y-auto" onclick="if(event.target === this) fecharModalRelatorioExecutivo()">
     <div class="bg-[#0f1422] rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto border border-white/[0.12] shadow-2xl p-6 md:p-8 space-y-6 text-slate-100 animate-in fade-in zoom-in-95 duration-150">
@@ -1089,15 +1089,15 @@
       <!-- Top Action Bar -->
       <div class="flex items-center justify-between border-b border-white/[0.08] pb-4">
         <div class="flex items-center gap-2">
-          <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-mono font-bold uppercase">
-            Documento Oficial • 1 Página
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase">
+            ● Contas no Azul • Novembro/2026
           </span>
-          <span class="text-xs text-slate-400">• Gerado em 16/11/2026</span>
+          <span class="text-xs text-slate-400 hidden sm:inline">• Prestação de Contas para Moradores e Conselho</span>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="imprimirRelatorioExecutivo()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs shadow-lg flex items-center gap-1.5 cursor-pointer">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-            <span>Imprimir / Salvar PDF</span>
+            <span>Imprimir / Salvar em PDF</span>
           </button>
           <button onclick="fecharModalRelatorioExecutivo()" class="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-slate-400 hover:text-white transition-all text-xs cursor-pointer">
             ✕
@@ -1107,87 +1107,123 @@
 
       <!-- Printable Document Canvas -->
       <div id="relatorioDocumentoPrintable" class="bg-gradient-to-b from-[#141a2e] to-[#0c101c] p-6 rounded-2xl border border-white/[0.08] space-y-6">
-        <!-- Header Timbrado -->
-        <div class="flex items-start justify-between border-b border-white/[0.1] pb-4">
+        <!-- Header Timbrado Amigável -->
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-white/[0.1] pb-4">
           <div>
-            <span class="text-xs text-cyan-400 font-mono font-bold tracking-wider uppercase block">Resumo Executivo do Síndico</span>
-            <h2 class="text-xl font-black text-white mt-0.5">Residencial Jardins do Bosque</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Competência: Novembro/2026 • 240 Unidades Autônomas</p>
-          </div>
-          <div class="text-right">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
-              ● Adimplência: 96,2%
+            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 text-[11px] font-bold uppercase tracking-wider mb-1">
+              🏢 Relatório Mensal do Síndico & Conselho Fiscal
             </div>
-            <span class="block text-[10px] text-slate-500 mt-1 font-mono">DOMUS AI Protocol #EX-9921</span>
+            <h2 class="text-2xl font-black text-white">Residencial Jardins do Bosque</h2>
+            <p class="text-xs text-slate-300 mt-1">Prestação de Contas de Novembro/2026 • 240 Apartamentos • Condomínio em Dia</p>
+          </div>
+          <div class="sm:text-right">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
+              ● Situação: Contas Aprovadas
+            </div>
+            <span class="block text-[11px] text-slate-400 mt-1">Adimplência: <strong>96,2%</strong> dos moradores</span>
           </div>
         </div>
 
-        <!-- 4 Pilares Estratégicos -->
+        <!-- Resumo em 1 Parágrafo Simples -->
+        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-slate-200 leading-relaxed">
+          <strong class="text-emerald-300 block mb-1">📌 Resumo Rápido do Mês para os Moradores:</strong>
+          Neste mês, o condomínio fechou com as contas no azul. Arrecadamos <strong>R$ 148.500,00</strong>, a inadimplência caiu para a menor marca do ano (apenas <strong>3,8%</strong>) com 6 acordos amigáveis recuperando <strong>R$ 48.950,00</strong> sem precisar de advogado. No WhatsApp, o atendimento automático tirou <strong>1.240 dúvidas</strong> dos moradores em segundos com <strong>98% de aprovação</strong>. Além disso, evitamos um gasto de <strong>R$ 480,00</strong> na conta de água ao avisar a tempo sobre um vazamento na descarga do Apt 101.
+        </div>
+
+        <!-- 4 Cartões Principais (Números que Importam) -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-          <div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-            <span class="text-slate-400 block text-[11px]">Arrecadação Total:</span>
+          <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <span class="text-slate-400 block text-[11px]">Total Arrecadado:</span>
             <strong class="text-lg font-mono font-black text-white block mt-0.5">R$ 148.500,00</strong>
-            <span class="text-[10px] text-emerald-400 font-mono">228 cotas liquidadas</span>
+            <span class="text-[10px] text-emerald-400 font-bold">228 apartamentos em dia</span>
           </div>
-          <div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-            <span class="text-slate-400 block text-[11px]">Split Adm (3%):</span>
+          <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <span class="text-slate-400 block text-[11px]">Atrasados Recuperados:</span>
+            <strong class="text-lg font-mono font-black text-cyan-300 block mt-0.5">R$ 48.950,00</strong>
+            <span class="text-[10px] text-cyan-400 font-bold">6 acordos sem processo</span>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <span class="text-slate-400 block text-[11px]">Atendimentos WhatsApp:</span>
+            <strong class="text-lg font-mono font-black text-indigo-300 block mt-0.5">1.240 chamados</strong>
+            <span class="text-[10px] text-indigo-400 font-bold">Respondidos em 2 segundos</span>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <span class="text-slate-400 block text-[11px]">Custo Tecnologia (3%):</span>
             <strong class="text-lg font-mono font-black text-emerald-400 block mt-0.5">R$ 4.455,00</strong>
-            <span class="text-[10px] text-slate-400 font-mono">100% repassado Bacen</span>
-          </div>
-          <div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-            <span class="text-slate-400 block text-[11px]">Resolução IA WhatsApp:</span>
-            <strong class="text-lg font-mono font-black text-indigo-400 block mt-0.5">94,8%</strong>
-            <span class="text-[10px] text-slate-400 font-mono">1.240 chamados autônomos</span>
-          </div>
-          <div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-            <span class="text-slate-400 block text-[11px]">Satisfação Condôminos:</span>
-            <strong class="text-lg font-mono font-black text-amber-400 block mt-0.5">4.9 / 5.0</strong>
-            <span class="text-[10px] text-slate-400 font-mono">Índice NPS Premium</span>
+            <span class="text-[10px] text-slate-400 font-mono">Taxa 3% Pix sem taxas extras</span>
           </div>
         </div>
 
-        <!-- Seção 1: Recuperação e Finanças -->
+        <!-- Seção 1: O Que os Moradores Mais Pediram no WhatsApp -->
         <div class="space-y-2 text-xs">
-          <h4 class="font-bold text-white flex items-center gap-1.5 border-b border-white/[0.06] pb-1.5">
-            <span>💰</span> Desempenho Financeiro & Recuperação Extrajudicial
+          <h4 class="font-bold text-white flex items-center gap-2 border-b border-white/[0.06] pb-1.5">
+            <span>💬</span> O que os moradores mais resolveram pelo WhatsApp:
           </h4>
-          <p class="text-slate-300 leading-relaxed text-[11px]">
-            No período, a régua de cobrança autônoma via WhatsApp recuperou <strong>R$ 48.950,00</strong> em dívidas antigas através de 6 acordos amigáveis com confissão digital formalizada. O índice de inadimplência foi reduzido de 8,2% para 3,8%, com receita 100% garantida pela plataforma.
-          </p>
-        </div>
-
-        <!-- Seção 2: Telemetria & Prevenção -->
-        <div class="space-y-2 text-xs">
-          <h4 class="font-bold text-white flex items-center gap-1.5 border-b border-white/[0.06] pb-1.5">
-            <span>🚰</span> Telemetria & Economia Preditiva de Água
-          </h4>
-          <p class="text-slate-300 leading-relaxed text-[11px]">
-            A auditoria fotográfica por IA catalogou 240 leituras individuais sem nenhuma contestação. O motor preditivo detectou precocemente 1 vazamento silencioso no Apt 101, evitando uma conta excedente estimada em R$ 480,00.
-          </p>
-        </div>
-
-        <!-- Seção 3: Portaria & Segurança -->
-        <div class="space-y-2 text-xs">
-          <h4 class="font-bold text-white flex items-center gap-1.5 border-b border-white/[0.06] pb-1.5">
-            <span>🚗</span> Portaria Digital & Acessos Sem Fila
-          </h4>
-          <p class="text-slate-300 leading-relaxed text-[11px]">
-            Registradas 412 encomendas via OCR fotográfico com tempo médio de retirada de 3,4 horas. O reconhecimento LPR de placas permitiu acesso fluido de 1.840 veículos sem necessidade de acionamento do interfone.
-          </p>
-        </div>
-
-        <!-- Assinaturas Formais -->
-        <div class="pt-6 border-t border-white/[0.08] flex justify-between items-center text-[10px] text-slate-400 font-mono">
-          <div class="text-center w-48 border-t border-slate-600 pt-1">
-            <span>Síndico Geral</span>
-          </div>
-          <div class="text-center w-48 border-t border-slate-600 pt-1">
-            <span>Conselho Fiscal</span>
-          </div>
-          <div class="text-center w-48 border-t border-slate-600 pt-1">
-            <span>DOMUS AI Enterprise</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px]">
+            <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
+              <span class="text-slate-300">📄 2ª via de boleto e chave Pix instantânea</span>
+              <strong class="text-emerald-400 font-mono">54% (670 pedidos)</strong>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
+              <span class="text-slate-300">📦 Avisos de encomendas que chegaram</span>
+              <strong class="text-purple-400 font-mono">22% (272 avisos)</strong>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
+              <span class="text-slate-300">🏊 Reserva de churrasqueira e salão</span>
+              <strong class="text-cyan-400 font-mono">14% (173 reservas)</strong>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
+              <span class="text-slate-300">❓ Regras do condomínio, barulho e mudança</span>
+              <strong class="text-amber-400 font-mono">10% (125 dúvidas)</strong>
+            </div>
           </div>
         </div>
+
+        <!-- Seção 2: Economia e Segurança -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5">
+            <h5 class="font-bold text-white flex items-center gap-1.5 text-xs">
+              <span>🚰</span> Economia na Conta de Água
+            </h5>
+            <p class="text-slate-300 leading-relaxed text-[11px]">
+              Todas as 240 medições foram conferidas com foto para evitar erros. Detectamos a tempo um vazamento na descarga do <strong>Apt 101</strong>, avisamos o morador e evitamos um aumento estimado de <strong>R$ 480,00</strong> na conta de água.
+            </p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5">
+            <h5 class="font-bold text-white flex items-center gap-1.5 text-xs">
+              <span>🚗</span> Portaria Ágil e Sem Fila
+            </h5>
+            <p class="text-slate-300 leading-relaxed text-[11px]">
+              <strong>412 encomendas</strong> foram catalogadas e entregues aos moradores sem confusão. Visitantes e prestadores de serviço entraram rapidamente com autorização digital enviada pelos próprios moradores pelo WhatsApp.
+            </p>
+          </div>
+        </div>
+
+        <!-- Parecer do Conselho Fiscal -->
+        <div class="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] space-y-3">
+          <div>
+            <span class="text-cyan-400 text-[10px] font-bold uppercase tracking-wider block">Parecer dos Moradores e Conselho</span>
+            <strong class="text-white text-xs block mt-0.5">Declaração de Conformidade das Contas de Novembro/2026</strong>
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            "Conferimos os valores recebidos via Pix, os acordos firmados e o saldo bancário deste mês. Todas as receitas e comprovantes conferem rigorosamente com os extratos bancários. Recomendamos aos condôminos a <strong>aprovação integral das contas</strong>."
+          </p>
+          <div class="pt-4 border-t border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-[10px] text-slate-400 font-mono">
+            <div class="border-t border-slate-600 pt-1">
+              <span>Síndico(a) Geral</span>
+            </div>
+            <div class="border-t border-slate-600 pt-1">
+              <span>1º Conselheiro(a)</span>
+            </div>
+            <div class="border-t border-slate-600 pt-1">
+              <span>2º Conselheiro(a)</span>
+            </div>
+            <div class="border-t border-slate-600 pt-1">
+              <span>3º Conselheiro(a)</span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -2350,56 +2386,68 @@
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO NOVO: ANALYTICS & BI DO SÍNDICO (RELATÓRIO MENSAL PDF) -->
+    <!-- MÓDULO NOVO: RELATÓRIO MENSAL E PRESTAÇÃO DE CONTAS -->
     <!-- ============================================================== -->
     <main id="tab-content-analytics" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
           <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-semibold mb-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-2">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
-              Executive Intelligence & Business Dashboard
+              📋 Prestação de Contas Mensal
             </div>
-            <h1 class="text-2xl font-black text-white tracking-tight">Analytics & Relatório Executivo Mensal</h1>
-            <p class="text-xs text-slate-400 mt-1 max-w-xl">
-              Visão consolidada de arrecadação, acordos, índice de resolução da IA e prestação de contas com 1 clique.
+            <h1 class="text-2xl font-black text-white tracking-tight">Relatório do Mês para o Síndico & Conselho Fiscal</h1>
+            <p class="text-xs text-slate-300 mt-1 max-w-xl">
+              Tudo o que aconteceu no condomínio explicado de forma simples, transparente e sem termos difíceis para você apresentar em assembleia.
             </p>
           </div>
-          <button onclick="gerarRelatorioMensalPdf()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer">
+          <button onclick="gerarRelatorioMensalPdf()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-            <span>Gerar Relatório Executivo (PDF)</span>
+            <span>Ver / Imprimir Relatório do Mês (PDF)</span>
           </button>
         </div>
 
-        <!-- 4 Cards de Métricas de BI -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- 4 Cards de Métricas em Linguagem Clara e Acessível -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Taxa de Resolução da IA</span>
-            <strong class="text-2xl font-black text-emerald-400 font-mono">94.8%</strong>
-            <span class="text-[10px] text-slate-500 block mt-1">Sem transbordo humano</span>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] text-slate-400 font-bold uppercase">Contas do Prédio</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">● No Azul</span>
+            </div>
+            <strong class="text-2xl font-black text-emerald-400 font-mono">R$ 148.500</strong>
+            <span class="text-[10px] text-slate-400 block mt-1">96,2% dos moradores em dia</span>
           </div>
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Tempo Médio de Resposta</span>
-            <strong class="text-2xl font-black text-indigo-400 font-mono">1.8 seg</strong>
-            <span class="text-[10px] text-slate-500 block mt-1">24h por dia, 7 dias/semana</span>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] text-slate-400 font-bold uppercase">Dívidas Recuperadas</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300">● 6 Acordos</span>
+            </div>
+            <strong class="text-2xl font-black text-cyan-300 font-mono">R$ 48.950</strong>
+            <span class="text-[10px] text-slate-400 block mt-1">Negociados sem advogado</span>
           </div>
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Recuperação de Inadimplência</span>
-            <strong class="text-2xl font-black text-cyan-400 font-mono">R$ 48.950</strong>
-            <span class="text-[10px] text-emerald-400 block mt-1">+18% vs mês anterior</span>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] text-slate-400 font-bold uppercase">Atendimento WhatsApp</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300">● 24h no Ar</span>
+            </div>
+            <strong class="text-2xl font-black text-indigo-300 font-mono">1.240 dúvidas</strong>
+            <span class="text-[10px] text-slate-400 block mt-1">Respondidas em 2 segundos</span>
           </div>
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Índice de Satisfação (CSAT)</span>
-            <strong class="text-2xl font-black text-amber-400 font-mono">4.9 / 5.0</strong>
-            <span class="text-[10px] text-slate-500 block mt-1">Avaliação dos condôminos</span>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] text-slate-400 font-bold uppercase">Satisfação Moradores</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300">⭐ 4.9 de 5</span>
+            </div>
+            <strong class="text-2xl font-black text-amber-300 font-mono">98% aprovação</strong>
+            <span class="text-[10px] text-slate-400 block mt-1">Avaliação dos condôminos</span>
           </div>
         </div>
 
-        <!-- Gráfico Visual de Recuperação e Mapa de Calor -->
+        <!-- Gráfico Visual de Recuperação e Demandas dos Moradores -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
             <h3 class="font-bold text-sm text-white flex items-center justify-between">
-              <span>Evolução da Arrecadação Pix (Últimos 6 meses)</span>
+              <span>Dinheiro Arrecadado no Mês (Últimos 6 meses)</span>
               <span class="text-emerald-400 font-mono text-xs">+34.2%</span>
             </h3>
 
@@ -3736,77 +3784,100 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         return;
       }
       printWindow.document.write(`<!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Resumo Executivo do Síndico • DOMUS AI</title>
+  <title>Prestação de Contas Mensal • Residencial Jardins do Bosque</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13px; line-height: 1.5; color: #1e293b; padding: 40px; margin: 0; background: #fff; }
-    .header { border-bottom: 2px solid #0f172a; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-start; }
-    .header h1 { font-size: 20px; font-weight: 900; margin: 0; color: #0f172a; text-transform: uppercase; letter-spacing: -0.5px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 13px; line-height: 1.5; color: #1e293b; padding: 36px; margin: 0; background: #fff; }
+    .header { border-bottom: 2px solid #0f172a; padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .header h1 { font-size: 20px; font-weight: 900; margin: 0; color: #0f172a; letter-spacing: -0.5px; }
     .header p { margin: 4px 0 0; color: #64748b; font-size: 12px; }
-    .badge { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-weight: bold; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: monospace; }
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-    .kpi-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; background: #f8fafc; }
-    .kpi-card .label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700; display: block; }
+    .badge { background: #ecfdf5; border: 1px solid #10b981; color: #047857; font-weight: bold; padding: 4px 12px; border-radius: 9999px; font-size: 12px; }
+    .highlight-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 20px; color: #166534; font-size: 12.5px; line-height: 1.6; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
+    .kpi-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; background: #f8fafc; }
+    .kpi-card .label { font-size: 11px; color: #64748b; font-weight: 700; display: block; }
     .kpi-card .val { font-size: 18px; font-weight: 900; color: #0f172a; margin-top: 4px; display: block; font-family: monospace; }
-    .kpi-card .sub { font-size: 10px; color: #059669; font-weight: 600; margin-top: 2px; display: block; }
-    .section { border-left: 3px solid #6366f1; padding-left: 12px; margin-bottom: 20px; }
-    .section h3 { font-size: 14px; font-weight: 800; color: #0f172a; margin: 0 0 4px; }
-    .section p { margin: 0; color: #334155; font-size: 12px; }
-    .signatures { margin-top: 60px; display: flex; justify-content: space-between; }
-    .sig-line { width: 28%; border-top: 1px solid #94a3b8; text-align: center; padding-top: 6px; font-size: 11px; color: #475569; font-family: monospace; }
-    @media print { body { padding: 20px; } }
+    .kpi-card .sub { font-size: 10.5px; color: #059669; font-weight: 600; margin-top: 2px; display: block; }
+    .section { border-left: 3px solid #6366f1; padding-left: 12px; margin-bottom: 18px; }
+    .section h3 { font-size: 13.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px; }
+    .section p { margin: 0; color: #334155; font-size: 12px; line-height: 1.5; }
+    .opinion-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-top: 24px; margin-bottom: 24px; }
+    .opinion-box h4 { margin: 0 0 6px; font-size: 12.5px; font-weight: 800; color: #0f172a; }
+    .opinion-box p { margin: 0; font-size: 11.5px; color: #334155; line-height: 1.5; }
+    .signatures { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 36px; text-align: center; }
+    .sig-line { border-top: 1px solid #94a3b8; padding-top: 6px; font-size: 11px; color: #475569; font-weight: 600; }
+    @media print { body { padding: 16px; } }
   </style>
 </head>
 <body>
   <div class="header">
     <div>
-      <h1>Resumo Executivo do Síndico</h1>
-      <p>Condomínio Residencial Jardins do Bosque • Competência: Novembro/2026 (240 Unidades)</p>
+      <h1>Prestação de Contas & Relatório do Mês</h1>
+      <p>Residencial Jardins do Bosque • Novembro de 2026 (240 Apartamentos)</p>
     </div>
     <div>
-      <span class="badge">● Adimplência: 96,2%</span>
+      <span class="badge">● Situação: Contas no Azul (Aprovadas)</span>
     </div>
   </div>
+
+  <div class="highlight-box">
+    <strong>📌 Resumo Rápido para os Moradores e Conselho:</strong><br>
+    Neste mês, o condomínio fechou com todas as contas no azul. Arrecadamos <strong>R$ 148.500,00</strong>, a inadimplência caiu para a menor marca do ano (apenas <strong>3,8%</strong>) com 6 acordos amigáveis recuperando <strong>R$ 48.950,00</strong> sem precisar de advogado. No WhatsApp, o atendimento tirou <strong>1.240 dúvidas</strong> dos moradores em segundos com <strong>98% de aprovação</strong>. Além disso, evitamos um gasto de <strong>R$ 480,00</strong> na conta de água ao avisar a tempo sobre um vazamento na descarga do Apt 101.
+  </div>
+
   <div class="kpi-grid">
     <div class="kpi-card">
-      <span class="label">Arrecadação Total</span>
+      <span class="label">Total Arrecadado</span>
       <span class="val">R$ 148.500,00</span>
-      <span class="sub">228 cotas pagas</span>
+      <span class="sub">228 apartamentos em dia</span>
     </div>
     <div class="kpi-card">
-      <span class="label">Split Adm (3%)</span>
+      <span class="label">Atrasados Recuperados</span>
+      <span class="val">R$ 48.950,00</span>
+      <span class="sub">6 acordos sem processo</span>
+    </div>
+    <div class="kpi-card">
+      <span class="label">Atendimentos WhatsApp</span>
+      <span class="val">1.240 chamados</span>
+      <span class="sub">Respondidos em 2 segundos</span>
+    </div>
+    <div class="kpi-card">
+      <span class="label">Custo Tecnologia (3%)</span>
       <span class="val">R$ 4.455,00</span>
-      <span class="sub">Repasse automático Bacen</span>
-    </div>
-    <div class="kpi-card">
-      <span class="label">Resolução IA WhatsApp</span>
-      <span class="val">94,8%</span>
-      <span class="sub">1.240 chamados autônomos</span>
-    </div>
-    <div class="kpi-card">
-      <span class="label">Satisfação CSAT</span>
-      <span class="val">4.9 / 5.0</span>
-      <span class="sub">Avaliação dos condôminos</span>
+      <span class="sub">Taxa 3% Pix sem taxas extras</span>
     </div>
   </div>
+
   <div class="section">
-    <h3>1. Gestão Financeira & Recuperação Extrajudicial de Crédito</h3>
-    <p>No período analisado, o motor autônomo de cobrança recuperou <strong>R$ 48.950,00</strong> em dívidas com celebração de 6 confissões digitais de dívida e pagamento instantâneo via Pix com split de 3%. A taxa de inadimplência foi contida em 3,8%.</p>
+    <h3>1. O que os moradores mais pediram no WhatsApp?</h3>
+    <p>• <strong>54% (670 pedidos)</strong>: 2ª via de boleto e código Pix recebidos na hora no celular.<br>
+    • <strong>22% (272 pedidos)</strong>: Avisos de encomendas entregues na portaria sem filas.<br>
+    • <strong>14% (173 pedidos)</strong>: Reservas de churrasqueira e salão de festas sem duplicidade de datas.<br>
+    • <strong>10% (125 pedidos)</strong>: Dúvidas sobre regras do prédio, mudanças e barulho.</p>
   </div>
+
   <div class="section">
-    <h3>2. Telemetria Preditiva & Inteligência Hidráulica</h3>
-    <p>Foram catalogadas 240 leituras individuais por auditoria fotográfica com IA. Um vazamento silencioso contínuo de 18,4 L/h foi identificado no Apt 101, acionando notificação imediata preventiva ao condômino e evitando um dano financeiro projetado de R$ 480,00.</p>
+    <h3>2. Economia nas Contas de Água e Gás</h3>
+    <p>Todas as 240 medições individuais foram conferidas com foto do medidor. O sistema detectou preventivamente um vazamento silencioso na descarga do Apt 101 durante a madrugada; o morador foi notificado educadamente e o reparo evitou um acréscimo estimado em <strong>R$ 480,00</strong> na conta d'água do condomínio.</p>
   </div>
+
   <div class="section">
-    <h3>3. Segurança, Portaria LPR & Encomendas com OCR</h3>
-    <p>412 pacotes e correspondências foram processados via OCR com notificação instantânea no WhatsApp. O sistema de reconhecimento LPR de placas permitiu trânsito sem fila para 1.840 veículos cadastrados.</p>
+    <h3>3. Portaria e Segurança dos Moradores</h3>
+    <p>412 encomendas (Amazon, Mercado Livre, Shopee) foram catalogadas e retiradas com segurança. A liberação de visitantes com aviso prévio no WhatsApp agilizou a entrada de veículos sem transtornos nem filas na portaria.</p>
   </div>
+
+  <div class="opinion-box">
+    <h4>Parecer dos Moradores e Conselho Fiscal:</h4>
+    <p>"Conferimos os valores recebidos via Pix, os acordos firmados e o saldo bancário deste mês. Todas as receitas e comprovantes conferem rigorosamente com os extratos bancários. Recomendamos aos condôminos a <strong>aprovação integral das contas</strong>."</p>
+  </div>
+
   <div class="signatures">
-    <div class="sig-line">Síndico Geral</div>
-    <div class="sig-line">Conselho Fiscal</div>
-    <div class="sig-line">DOMUS AI Protocol #EX-9921</div>
+    <div class="sig-line">Síndico(a) Geral</div>
+    <div class="sig-line">1º Conselheiro(a) Fiscal</div>
+    <div class="sig-line">2º Conselheiro(a) Fiscal</div>
+    <div class="sig-line">3º Conselheiro(a) Fiscal</div>
   </div>
   ` + '<scr' + 'ipt>window.onload = function() { window.print(); };</scr' + 'ipt>' + `
 </body>
