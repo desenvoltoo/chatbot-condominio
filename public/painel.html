@@ -433,10 +433,23 @@
       font-weight: 700 !important;
     }
     html:not(.dark) #chatHeaderSentiment {
-      background-color: #ecfdf5 !important;
-      color: #047857 !important;
-      border: 1.5px solid #6ee7b7 !important;
+      background-color: #ffe4e6 !important;
+      color: #be123c !important;
+      border: 1.5px solid #fecdd3 !important;
       font-weight: 700 !important;
+    }
+    html:not(.dark) #topAutonomiaBadge {
+      background-color: #ecfdf5 !important;
+      border-color: #a7f3d0 !important;
+      color: #047857 !important;
+    }
+    html:not(.dark) #smartActionBanner {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) #smartActionText {
+      color: #1e293b !important;
+      font-weight: 500 !important;
     }
     html:not(.dark) #btnToggleHandoff {
       background-color: #e0e7ff !important;
@@ -1263,82 +1276,92 @@
   <!-- ============================================================== -->
   <div class="flex-1 flex flex-col h-screen overflow-hidden">
 
-    <!-- Topbar Executivo estilo Raycast / Linear com Theme Switcher -->
-    <header class="bg-[#0b0f19] border-b border-white/[0.08] px-5 py-2.5 flex items-center justify-between shrink-0 z-20">
-      <div class="flex items-center gap-3">
-        <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-300 hover:text-white p-1.5 rounded-lg hover:bg-white/[0.05]">
+    <!-- Topbar Executivo Minimalista estilo Linear / Raycast -->
+    <header class="bg-[#0b0f19] border-b border-white/[0.08] px-4 md:px-6 py-2 flex items-center justify-between shrink-0 z-20 gap-3">
+      <!-- Lado Esquerdo: Mobile Hamburger + Omnibar de Busca Inteligente -->
+      <div class="flex items-center gap-2.5 flex-1 max-w-md">
+        <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-300 hover:text-white p-1.5 rounded-lg hover:bg-white/[0.05] shrink-0" title="Menu">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
         </button>
 
         <!-- Command Palette Trigger Bar (Ctrl+K) -->
         <button 
           onclick="openCommandPalette()" 
-          class="flex items-center gap-3 px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs text-slate-400 transition-all cursor-pointer">
-          <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <span class="hidden sm:inline">Buscar morador, comando, módulo ou tema...</span>
-          <span class="sm:hidden">Buscar...</span>
-          <kbd class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.08] text-slate-400 border border-white/[0.1]">Ctrl+K</kbd>
+          class="flex items-center justify-between w-full px-3 py-1.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] text-xs text-slate-400 transition-all cursor-pointer group shadow-xs">
+          <div class="flex items-center gap-2 truncate">
+            <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-400 transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span class="truncate text-slate-400 group-hover:text-slate-300">Buscar moradores, tarefas ou módulos...</span>
+          </div>
+          <kbd class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.06] text-slate-400 border border-white/[0.08] shrink-0">Ctrl+K</kbd>
         </button>
       </div>
 
-      <div class="flex items-center gap-2.5">
-        <!-- Live System Metric Indicators -->
-        <div class="hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-white/[0.03] border border-white/[0.06] text-xs font-mono">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-slate-400">Latência: <strong class="text-emerald-400">38ms</strong></span>
-          <span class="text-slate-700">|</span>
-          <span class="text-slate-400">IA: <strong class="text-indigo-300" id="topActiveModel">GPT-4o-mini + RAG</strong></span>
+      <!-- Lado Direito: Status Compacto + Disparo + Ações Rápidas -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Indicador de Status Compacto (Latência + Piloto Autônomo) -->
+        <div 
+          id="topAutonomiaBadge" 
+          onclick="switchTab('ai')" 
+          class="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 cursor-pointer hover:bg-emerald-500/20 transition-all"
+          title="Piloto 100% Autônomo Ativo • Latência: 38ms • IA: GPT-4o-mini + RAG (Clique para configurar)">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="font-semibold text-[11px]">Piloto Autônomo</span>
+          <span class="text-emerald-500/30 text-[10px]">•</span>
+          <span class="font-mono text-[10px] opacity-75">38ms</span>
+          <span class="hidden" id="topActiveModel">GPT-4o-mini + RAG</span>
         </div>
 
-        <!-- Indicador de Piloto 100% Autônomo (Zero-Touch AI) -->
-        <div id="topAutonomiaBadge" class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="text-emerald-700 font-bold">Piloto Automático: <span class="text-emerald-800 underline cursor-pointer" onclick="switchTab('ai')">100% AUTÔNOMO</span></span>
-        </div>
+        <div class="h-4 w-[1px] bg-white/[0.08] hidden sm:block mx-0.5"></div>
 
-        <!-- Botão Guia Rápido / Como Usar (Tour 30s) -->
-        <button 
-          onclick="openQuickTourModal()" 
-          class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 hover:from-indigo-500/20 hover:to-purple-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-          title="Ver passo a passo de 30 segundos de como usar">
-          <span>✨</span>
-          <span class="hidden sm:inline">Como Usar (30s)</span>
-        </button>
-
-        <!-- Toggle Modo Simples / Foco Total -->
-        <button 
-          id="btnToggleModoSimples"
-          onclick="toggleModoSimples()" 
-          class="px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
-          title="Alternar entre Modo Simples (sem termos técnicos) e Modo Completo">
-          <span id="modoSimplesIcon">🎯</span>
-          <span id="modoSimplesText" class="hidden sm:inline">Modo Simples</span>
-        </button>
-
-        <!-- Botão de Alternar Tema Claro / Escuro (Dark/Light) -->
-        <button 
-          id="themeToggleBtn" 
-          onclick="toggleTheme()" 
-          class="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] transition-all cursor-pointer flex items-center gap-1.5"
-          title="Alternar entre modo Claro e Escuro">
-          <svg id="themeIconSun" class="w-4 h-4 hidden text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-          <svg id="themeIconMoon" class="w-4 h-4 text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        </button>
-
+        <!-- Botão Primário: Disparo em Massa -->
         <button 
           id="topBtnBroadcast"
           onclick="openBroadcastModal()"
-          class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-md shadow-indigo-600/20 cursor-pointer">
+          class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm shadow-indigo-600/20 cursor-pointer">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
-          <span>Disparo em Massa</span>
+          <span class="hidden sm:inline">Disparo em Massa</span>
+          <span class="sm:hidden">Disparo</span>
         </button>
 
-        <a 
-          href="index.html" 
-          class="hidden sm:inline-flex px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] text-xs font-semibold transition-all items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
-          <span>Simulador Morador</span>
-        </a>
+        <!-- Barra de Ferramentas / Utilitários (Ícones Limpos) -->
+        <div class="flex items-center gap-1 pl-1">
+          <!-- Simulador do Morador (WhatsApp) -->
+          <a 
+            href="index.html" 
+            target="_blank"
+            class="p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-all flex items-center justify-center cursor-pointer"
+            title="Abrir Simulador WhatsApp do Morador">
+            <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+          </a>
+
+          <!-- Central de Ajuda & Tour (30s) -->
+          <button 
+            onclick="openAjudaModal()" 
+            class="p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-all flex items-center justify-center cursor-pointer"
+            title="Central de Ajuda & Guia Rápido de 30s">
+            <svg class="w-3.5 h-3.5 text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </button>
+
+          <!-- Toggle Modo Simples -->
+          <button 
+            id="btnToggleModoSimples"
+            onclick="toggleModoSimples()" 
+            class="p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-all flex items-center justify-center cursor-pointer"
+            title="Alternar Modo Simples (Foco nas tarefas essenciais)">
+            <span id="modoSimplesIcon" class="text-xs">🎯</span>
+            <span id="modoSimplesText" class="sr-only">Modo Simples</span>
+          </button>
+
+          <!-- Alternar Tema Claro / Escuro -->
+          <button 
+            id="themeToggleBtn" 
+            onclick="toggleTheme()" 
+            class="p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-all cursor-pointer flex items-center justify-center"
+            title="Alternar entre modo Claro e Escuro">
+            <svg id="themeIconSun" class="w-3.5 h-3.5 hidden text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <svg id="themeIconMoon" class="w-3.5 h-3.5 text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -1385,69 +1408,69 @@
 
       <!-- Coluna 2: Chat ao Vivo -->
       <section class="flex-1 flex flex-col bg-[#07090e] relative overflow-hidden">
-        <div class="p-3.5 border-b border-white/[0.08] bg-[#0b0f19] flex items-center justify-between shrink-0">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[1px]">
+        <div class="px-4 py-2.5 border-b border-white/[0.08] bg-[#0b0f19] flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[1px] shrink-0">
               <img id="chatHeaderAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" class="w-full h-full rounded-full object-cover" />
             </div>
-            <div>
+            <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <h2 id="chatHeaderName" class="font-bold text-sm text-white">Carlos Eduardo Silva</h2>
-                <span id="chatHeaderBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <h2 id="chatHeaderName" class="font-bold text-sm text-white truncate">Carlos Eduardo Silva</h2>
+                <span id="chatHeaderBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
                   Em Dia
                 </span>
-                <!-- Detector de Sentimento & Risco Jurídico -->
-                <span id="chatHeaderSentiment" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-                  <span>●</span> Sentimento Positivo
+                <!-- Detector de Sentimento & Risco Jurídico (Oculto em caso normal) -->
+                <span id="chatHeaderSentiment" class="hidden px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 shrink-0 animate-pulse">
+                  ⚠️ Risco Jurídico
                 </span>
               </div>
-              <p id="chatHeaderSub" class="text-xs text-slate-400">Residencial Jardins do Bosque • Apt 101 - Bloco A</p>
+              <p id="chatHeaderSub" class="text-[11px] text-slate-400 truncate">Residencial Jardins do Bosque • Apt 101 - Bloco A</p>
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <button 
-              id="btnToggleDossie" 
-              onclick="toggleDossieLateral()" 
-              title="Abrir / Recolher Dossiê do Morador"
-              class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer">
-              <span>👤</span>
-              <span class="hidden md:inline">Dossiê</span>
-            </button>
+          <div class="flex items-center gap-2 shrink-0">
             <button 
               id="btnToggleHandoff" 
               onclick="toggleHumanHandoff()" 
-              class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer">
+              class="px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer">
               <svg id="handoffIcon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/></svg>
-              <span id="handoffText">IA Autônoma Ativa</span>
+              <span id="handoffText">IA Autônoma</span>
             </button>
             <button 
               id="btnEmitirPixChat"
               onclick="abrirModalQrCodePix('650.00')" 
-              class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Ver QR Code Pix</span>
+              <span class="hidden sm:inline">QR Code Pix</span>
+              <span class="sm:hidden">Pix</span>
+            </button>
+            <button 
+              id="btnToggleDossie" 
+              onclick="toggleDossieLateral()" 
+              title="Abrir / Recolher Dossiê do Morador"
+              class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] transition-all flex items-center gap-1 cursor-pointer">
+              <span>👤</span>
+              <span class="hidden md:inline">Dossiê</span>
             </button>
           </div>
         </div>
 
-        <!-- BANNER DE AÇÃO RECOMENDADA PELA IA (ZERO COMPLEXIDADE & 1 CLIQUE) -->
-        <div id="smartActionBanner" class="p-3 bg-gradient-to-r from-indigo-950/40 via-purple-950/30 to-blue-950/30 border-b border-indigo-500/20 flex flex-wrap items-center justify-between gap-2.5 transition-all">
-          <div class="flex items-center gap-2.5 text-xs">
-            <span class="flex h-2.5 w-2.5 relative shrink-0">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-            </span>
-            <span class="font-bold text-indigo-300">💡 Sugestão Inteligente da IA:</span>
-            <span id="smartActionText" class="text-slate-200 font-medium">Morador solicitou 2ª via da cota condominial de Novembro (<strong>R$ 650,00</strong>).</span>
+        <!-- BANNER DE AÇÃO RECOMENDADA PELA IA (DISCRETO & INTELIGENTE) -->
+        <div id="smartActionBanner" class="px-4 py-2 bg-gradient-to-r from-indigo-950/30 via-slate-900/40 to-transparent border-b border-indigo-500/15 flex flex-wrap items-center justify-between gap-2 transition-all">
+          <div class="flex items-center gap-2 text-xs truncate">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+            <span class="font-bold text-indigo-300 shrink-0">Sugestão:</span>
+            <span id="smartActionText" class="text-slate-300 truncate">Morador solicitou 2ª via da cota (<strong>R$ 650,00</strong>).</span>
           </div>
-          <div class="flex items-center gap-2" id="smartActionButtons">
-            <button id="btnSmartActionPrimary" onclick="executarAcaoSugerida('pix')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
-              <span>⚡ Enviar Boleto Pix (1 Clique)</span>
+          <div class="flex items-center gap-1.5 shrink-0" id="smartActionButtons">
+            <button id="btnSmartActionPrimary" onclick="executarAcaoSugerida('pix')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center gap-1 cursor-pointer">
+              <span>⚡ Enviar Pix</span>
             </button>
-            <button id="btnSmartActionSecondary" onclick="executarAcaoSugerida('acordo')" class="px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 font-semibold text-xs border border-white/[0.1] transition-all cursor-pointer">
-              <span>🤝 Propor Acordo</span>
+            <button id="btnSmartActionSecondary" onclick="executarAcaoSugerida('acordo')" class="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 font-medium text-xs border border-white/[0.08] transition-all cursor-pointer">
+              <span>🤝 Acordo</span>
             </button>
+          </div>
+        </div>
           </div>
         </div>
 
@@ -2891,18 +2914,18 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const badge = document.getElementById('topAutonomiaBadge');
       if (badge) {
         if (enabled) {
-          badge.className = 'hidden sm:flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono';
-          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="text-emerald-700 font-bold">Piloto Automático: <span class="text-emerald-800 underline cursor-pointer" onclick="switchTab(\'ai\')">100% AUTÔNOMO</span></span>';
+          badge.className = 'hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 cursor-pointer hover:bg-emerald-500/20 transition-all';
+          badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span class="font-semibold text-[11px]">Piloto Autônomo</span><span class="text-emerald-500/30 text-[10px]">•</span><span class="font-mono text-[10px] opacity-75">38ms</span><span class="hidden" id="topActiveModel">GPT-4o-mini + RAG</span>';
         } else {
-          badge.className = 'hidden sm:flex items-center gap-2 px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-mono';
-          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500"></span><span class="text-amber-700 font-bold">Piloto Automático: <span class="text-amber-800 underline cursor-pointer" onclick="switchTab(\'ai\')">SUPERVISIONADO</span></span>';
+          badge.className = 'hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs text-amber-400 cursor-pointer hover:bg-amber-500/20 transition-all';
+          badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span class="font-semibold text-[11px]">Supervisionado</span><span class="text-amber-500/30 text-[10px]">•</span><span class="font-mono text-[10px] opacity-75">38ms</span><span class="hidden" id="topActiveModel">GPT-4o-mini + RAG</span>';
         }
       }
       localStorage.setItem('domus_autonomia_total', enabled ? 'true' : 'false');
       confetti({ particleCount: 30, spread: 60 });
       showToast(
-        enabled ? 'Piloto 100% Autônomo Ativado!' : 'Modo Supervisionado Ativado',
-        enabled ? 'A IA executará tarefas operacionais de ponta a ponta sem intervenção humana.' : 'A IA solicitará aprovação do operador humano antes de executar tarefas.',
+        enabled ? 'Piloto Autônomo Ativo' : 'Modo Supervisionado',
+        enabled ? 'A IA executará tarefas sem intervenção humana.' : 'A IA solicitará aprovação antes de executar tarefas.',
         enabled ? 'success' : 'info'
       );
     }
@@ -3421,11 +3444,11 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
       const sentBadge = document.getElementById('chatHeaderSentiment');
       if (conv.sentiment === 'risco_juridico') {
-        sentBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 animate-pulse';
-        sentBadge.innerHTML = '<span>⚠️</span> Alerta: Risco Jurídico Detectado';
+        sentBadge.classList.remove('hidden');
+        sentBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 animate-pulse shrink-0';
+        sentBadge.innerHTML = '<span>⚠️</span> Risco Jurídico';
       } else {
-        sentBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1';
-        sentBadge.innerHTML = '<span>●</span> Sentimento Positivo';
+        sentBadge.classList.add('hidden');
       }
 
       updateHandoffButton(conv.isHumanHandoff);
@@ -3475,11 +3498,11 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const text = document.getElementById('handoffText');
 
       if (isHuman) {
-        btn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 cursor-pointer';
+        btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 cursor-pointer';
         text.innerText = 'Operador Humano';
       } else {
-        btn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer';
-        text.innerText = 'IA Autônoma Ativa';
+        btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer';
+        text.innerText = 'IA Autônoma';
       }
     }
 
