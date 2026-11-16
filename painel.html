@@ -1388,10 +1388,11 @@
               type="text" 
               id="searchConversationInput" 
               placeholder="Filtrar por morador, unidade ou telefone..." 
-              class="w-full bg-[#101524] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all pr-8"
+              class="w-full bg-[#101524] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all pr-14"
               oninput="filterConversations()"
             />
-            <svg class="w-3.5 h-3.5 text-slate-500 absolute right-3 top-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <button id="btnClearSearch" onclick="clearConversationSearch()" class="hidden absolute right-8 top-2 text-xs text-slate-400 hover:text-white px-1.5 py-0.5 rounded font-bold cursor-pointer transition-colors" title="Limpar busca">✕</button>
+            <svg class="w-3.5 h-3.5 text-slate-500 absolute right-3 top-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           </div>
           <div class="flex items-center justify-between text-[11px] text-slate-400 px-0.5">
             <span>Filtro de Fila:</span>
@@ -1477,10 +1478,19 @@
         <!-- Canned Responses / Respostas Rápidas -->
         <div class="px-4 py-2 border-t border-white/[0.06] bg-[#0a0e18] flex items-center gap-2 overflow-x-auto text-[11px]">
           <span class="text-slate-500 font-mono font-semibold shrink-0">Respostas Rápidas:</span>
-          <button onclick="sendQuickReply('📄 Seu boleto recalculado com Pix Copia e Cola já foi gerado!')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08]">📄 Enviar Boleto Pix</button>
-          <button onclick="abrirModalTermoAcordo('Mariana de Souza', 'unid_204')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-indigo-300 shrink-0 border border-indigo-500/30">✍️ Gerar Termo de Acordo</button>
-          <button onclick="sendQuickReply('📦 Conforme o Art. 24 do Regimento Interno, mudanças são permitidas aos sábados das 08h às 12h.')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08]">📦 Regra de Mudança</button>
-          <button onclick="openNovaEncomendaModal()" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-purple-300 shrink-0 border border-purple-500/30">📦 Notificar Encomenda</button>
+          <button onclick="sendQuickReply('📄 Seu boleto recalculado com Pix Copia e Cola já foi gerado!')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08] cursor-pointer">📄 Enviar Boleto Pix</button>
+          <button id="btnQuickAcordo" onclick="abrirModalTermoAcordoParaAtivo()" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-indigo-300 shrink-0 border border-indigo-500/30 cursor-pointer">✍️ Gerar Termo de Acordo</button>
+          <button onclick="sendQuickReply('📦 Conforme o Art. 24 do Regimento Interno, mudanças são permitidas aos sábados das 08h às 12h.')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08] cursor-pointer">📦 Regra de Mudança</button>
+          <button onclick="openNovaEncomendaModal()" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-purple-300 shrink-0 border border-purple-500/30 cursor-pointer">📦 Notificar Encomenda</button>
+        </div>
+
+        <!-- Barra de Status de Controle do Chat (IA vs Humano) -->
+        <div id="chatControlStatusBar" class="px-4 py-1.5 border-t border-emerald-500/20 bg-emerald-500/10 text-emerald-400 text-[11px] flex items-center justify-between transition-all">
+          <div class="flex items-center gap-2 truncate">
+            <span id="chatControlDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <span id="chatControlText" class="truncate"><strong>IA Autônoma Ativa:</strong> O robô responde dúvidas de convenção, boletos e encomendas automaticamente.</span>
+          </div>
+          <button id="chatControlActionBtn" onclick="toggleHumanHandoff()" class="text-xs font-semibold underline hover:text-white cursor-pointer ml-2 shrink-0">Pausar IA & Assumir</button>
         </div>
 
         <div class="p-3 border-t border-white/[0.08] bg-[#0b0f19] flex items-center gap-2 shrink-0">
@@ -1494,7 +1504,7 @@
           <button 
             type="button"
             onclick="simularAudioMorador()" 
-            class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-cyan-400 border border-white/[0.08] transition-all"
+            class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-cyan-400 border border-white/[0.08] transition-all cursor-pointer"
             title="Simular recebimento de Mensagem de Áudio no WhatsApp">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
           </button>
@@ -1538,25 +1548,25 @@
 
           <div class="p-3 rounded-2xl bg-[#101524] border border-white/[0.06] space-y-2 text-xs">
             <div class="flex justify-between">
-              <span class="text-slate-400">Cota Atual:</span>
-              <strong class="text-white font-mono">R$ 650,00</strong>
+              <span id="sideFinanceiroLabel" class="text-slate-400">Cota Atual:</span>
+              <strong id="sideFinanceiroValor" class="text-white font-mono">R$ 650,00</strong>
             </div>
             <div class="flex justify-between">
               <span class="text-slate-400">Vencimento:</span>
-              <span class="text-slate-300 font-mono">15/11/2026</span>
+              <span id="sideFinanceiroVenc" class="text-slate-300 font-mono">15/11/2026</span>
             </div>
             <div class="flex justify-between">
               <span class="text-slate-400">Split Adm:</span>
-              <span class="text-emerald-400 font-mono text-[10px]">R$ 65,00 (10%)</span>
+              <span id="sideFinanceiroSplit" class="text-emerald-400 font-mono text-[10px]">R$ 65,00 (10%)</span>
             </div>
           </div>
 
           <div class="space-y-2 pt-1">
-            <button onclick="abrirModalQrCodePix('650.00')" class="w-full py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <button id="btnSidePix" onclick="abrirModalQrCodePix('650.00')" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span>Exibir QR Code Pix Dinâmico</span>
             </button>
-            <button onclick="switchTab('cobranca')" class="w-full py-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <button onclick="switchTab('cobranca')" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
               <span>Simulador de Acordos →</span>
             </button>
@@ -3169,10 +3179,22 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // ==========================================
     // TERMO DE ACORDO (ASSINATURA DIGITAL)
     // ==========================================
-    function abrirModalTermoAcordo(morador, unidade) {
-      document.getElementById('termoDevedorInfo').innerHTML = `<strong>DEVEDOR:</strong> ${morador || 'MARIANA DE SOUZA'}, ${unidade || 'APTO 204'}, CPF 987.***.***-00`;
-      document.getElementById('termoParcelasInfo').innerHTML = `<strong>CLÁUSULA 2ª:</strong> O valor pactuado de <strong>R$ 1.350,00</strong> será quitado em <strong>${selectedParcelasQtd} parcela(s)</strong> de R$ ${(1350 / selectedParcelasQtd).toFixed(2)}.`;
+    function abrirModalTermoAcordo(morador, unidade, cpf, valor) {
+      const v = Number(valor) || 1350;
+      const c = cpf || '987.***.***-00';
+      const parcVal = (v / selectedParcelasQtd).toFixed(2).replace('.', ',');
+      document.getElementById('termoDevedorInfo').innerHTML = `<strong>DEVEDOR:</strong> ${morador || 'MARIANA DE SOUZA'}, ${unidade || 'APTO 204'}, CPF ${c}`;
+      document.getElementById('termoParcelasInfo').innerHTML = `<strong>CLÁUSULA 2ª:</strong> O valor pactuado de <strong>R$ ${v.toFixed(2).replace('.', ',')}</strong> será quitado em <strong>${selectedParcelasQtd} parcela(s)</strong> de R$ ${parcVal}.`;
       document.getElementById('modalTermoAcordo').classList.remove('hidden');
+    }
+
+    function abrirModalTermoAcordoParaAtivo() {
+      const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
+      const nome = conv?.pushName || conv?.morador?.nome || 'Condômino';
+      const unid = conv?.morador?.unidades?.[0] ? `${conv.morador.unidades[0].bloco} ${conv.morador.unidades[0].numero}` : 'Unidade';
+      const cpf = conv?.cpfFormatted || (conv?.remoteJid?.includes('888888888') ? '987.***.***-00' : '123.***.***-09');
+      const valor = conv?.pixValor ? Number(conv.pixValor) : (conv?.remoteJid?.includes('888888888') ? 1350 : 650);
+      abrirModalTermoAcordo(nome, unid, cpf, valor);
     }
 
     function closeTermoAcordoModal() {
@@ -3348,8 +3370,19 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         remoteJid: '5511999999999@s.whatsapp.net',
         pushName: 'Carlos Eduardo Silva',
         cpf: '12345678909',
+        cpfFormatted: '123.***.***-09',
+        telefone: '(11) 99999-9999',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80',
         isHumanHandoff: false,
         sentiment: 'positivo',
+        statusFinanceiro: 'regular',
+        statusFinanceiroLabel: '● Regular',
+        statusFinanceiroBadgeClass: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        cotaLabel: 'Cota Atual:',
+        cotaValor: 'R$ 650,00',
+        cotaVenc: '15/11/2026',
+        splitAdm: 'R$ 65,00 (10%)',
+        pixValor: '650.00',
         morador: {
           id: 'morador_1',
           nome: 'Carlos Eduardo Silva',
@@ -3367,8 +3400,19 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         remoteJid: '5511988888888@s.whatsapp.net',
         pushName: 'Mariana de Souza',
         cpf: '98765432100',
+        cpfFormatted: '987.***.***-00',
+        telefone: '(11) 98888-8888',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80',
         isHumanHandoff: true,
         sentiment: 'risco_juridico',
+        statusFinanceiro: 'inadimplente',
+        statusFinanceiroLabel: '⚠️ Inadimplente (42d)',
+        statusFinanceiroBadgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+        cotaLabel: 'Total em Aberto:',
+        cotaValor: 'R$ 1.350,00',
+        cotaVenc: 'Vencido há 42 dias (05/10)',
+        splitAdm: 'R$ 135,00 (10%)',
+        pixValor: '1350.00',
         morador: {
           id: 'morador_2',
           nome: 'Mariana de Souza',
@@ -3399,28 +3443,53 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function renderConversationsList() {
       const container = document.getElementById('conversationsList');
+      if (!container) return;
+
       const filtered = allConversations.filter(c => {
         if (currentFilter === 'humano') return c.isHumanHandoff;
         if (currentFilter === 'bot') return !c.isHumanHandoff;
         return true;
       });
 
+      // Atualiza contadores dos filtros
+      const countTodos = allConversations.length;
+      const countHumano = allConversations.filter(c => c.isHumanHandoff).length;
+      const countBot = allConversations.filter(c => !c.isHumanHandoff).length;
+
+      const btnTodos = document.getElementById('btnFilterTodos');
+      const btnHumano = document.getElementById('btnFilterHumano');
+      const btnBot = document.getElementById('btnFilterBot');
+      if (btnTodos) btnTodos.innerText = `Todos (${countTodos})`;
+      if (btnHumano) btnHumano.innerText = `Humano (${countHumano})`;
+      if (btnBot) btnBot.innerText = `IA Ativa (${countBot})`;
+
       container.innerHTML = filtered.map(c => {
         const isActive = c.remoteJid === activeRemoteJid;
         const lastMsg = c.messages?.[c.messages.length - 1] || { text: '', timestamp: '' };
         const unit = c.morador?.unidades?.[0] ? `${c.morador.unidades[0].bloco || ''} ${c.morador.unidades[0].numero || ''}` : 'Condômino';
+        const avatarUrl = c.avatar || (c.pushName?.includes('Mariana') ? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80' : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80');
+        const isFinOk = c.statusFinanceiro === 'regular';
 
         return `
-          <div onclick="selectConversation('${c.remoteJid}')" class="p-3.5 cursor-pointer transition-all ${isActive ? 'bg-indigo-950/30 border-l-4 border-indigo-500' : 'hover:bg-white/[0.03]'}">
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-bold text-xs text-white truncate">${c.pushName || c.morador?.nome || 'Condômino'}</span>
-              <span class="text-[10px] text-slate-500 font-mono">${lastMsg.timestamp || ''}</span>
+          <div onclick="selectConversation('${c.remoteJid}')" class="p-3 cursor-pointer transition-all flex items-start gap-3 border-b border-white/[0.04] ${isActive ? 'bg-indigo-950/40 border-l-4 border-indigo-500' : 'hover:bg-white/[0.03]'}">
+            <div class="relative shrink-0 mt-0.5">
+              <img src="${avatarUrl}" class="w-10 h-10 rounded-full object-cover border border-white/10" alt="${c.pushName || 'Morador'}" />
+              <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0a0e18] ${c.isHumanHandoff ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}" title="${c.isHumanHandoff ? 'Atendimento Humano' : 'IA Autônoma Ativa'}"></span>
             </div>
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="text-indigo-300 truncate max-w-[170px] font-mono font-medium">${unit}</span>
-              ${c.sentiment === 'risco_juridico' ? '<span class="px-1.5 py-0.5 rounded text-[9px] bg-rose-500/20 text-rose-300 font-mono font-bold border border-rose-500/30">⚠️ Risco Jurídico</span>' : (c.isHumanHandoff ? '<span class="px-1.5 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-300 font-mono font-semibold border border-amber-500/30">Humano</span>' : '<span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/10 text-emerald-400 font-mono font-semibold">Robô + RAG</span>')}
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1 mb-0.5">
+                <span class="font-bold text-xs text-white truncate">${c.pushName || c.morador?.nome || 'Condômino'}</span>
+                <span class="text-[10px] text-slate-500 font-mono shrink-0">${lastMsg.timestamp || ''}</span>
+              </div>
+              <div class="flex items-center justify-between text-[11px] gap-1 mb-1">
+                <span class="text-indigo-300 font-mono font-semibold text-[10px] truncate">${unit}</span>
+                ${isFinOk ? '<span class="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/15 text-emerald-400 font-mono font-bold shrink-0 border border-emerald-500/20">● Em Dia</span>' : '<span class="px-1.5 py-0.2 rounded text-[9px] bg-rose-500/20 text-rose-300 font-mono font-bold shrink-0 border border-rose-500/30">⚠️ Débito</span>'}
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-[11px] text-slate-400 truncate flex-1">${lastMsg.text}</p>
+                ${c.sentiment === 'risco_juridico' ? '<span class="px-1 py-0.2 rounded text-[8px] bg-rose-500/30 text-rose-200 font-mono font-bold shrink-0 border border-rose-500/40">Jurídico</span>' : (c.isHumanHandoff ? '<span class="px-1 py-0.2 rounded text-[8px] bg-amber-500/20 text-amber-300 font-mono font-bold shrink-0">Humano</span>' : '<span class="px-1 py-0.2 rounded text-[8px] bg-indigo-500/20 text-indigo-300 font-mono font-bold shrink-0">IA</span>')}
+              </div>
             </div>
-            <p class="text-[11px] text-slate-400 truncate mt-1">${lastMsg.text}</p>
           </div>
         `;
       }).join('');
@@ -3433,52 +3502,118 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const conv = allConversations.find(c => c.remoteJid === remoteJid);
       if (!conv) return;
 
-      document.getElementById('chatHeaderName').innerText = conv.pushName || conv.morador?.nome || 'Condômino';
-      document.getElementById('sideMoradorNome').innerText = conv.pushName || conv.morador?.nome || 'Condômino';
-
+      const nome = conv.pushName || conv.morador?.nome || 'Condômino';
       const unit = conv.morador?.unidades?.[0] ? `${conv.morador.unidades[0].condominioNome} • ${conv.morador.unidades[0].bloco} ${conv.morador.unidades[0].numero}` : 'Condomínio';
-      document.getElementById('chatHeaderSub').innerText = unit;
-      document.getElementById('sideMoradorUnidade').innerText = conv.morador?.unidades?.[0] ? `${conv.morador.unidades[0].bloco} ${conv.morador.unidades[0].numero}` : 'Unidade';
+      const unitShort = conv.morador?.unidades?.[0] ? `${conv.morador.unidades[0].bloco} ${conv.morador.unidades[0].numero}` : 'Unidade';
+      const avatarUrl = conv.avatar || (nome.includes('Mariana') ? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80' : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80');
+      const isFinOk = conv.statusFinanceiro === 'regular';
+      const pixVal = conv.pixValor || (isFinOk ? '650.00' : '1350.00');
 
-      const sentBadge = document.getElementById('chatHeaderSentiment');
-      if (conv.sentiment === 'risco_juridico') {
-        sentBadge.classList.remove('hidden');
-        sentBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 animate-pulse shrink-0';
-        sentBadge.innerHTML = '<span>⚠️</span> Risco Jurídico';
-      } else {
-        sentBadge.classList.add('hidden');
+      // 1. Header do Chat (Coluna 2)
+      const headerName = document.getElementById('chatHeaderName');
+      if (headerName) headerName.innerText = nome;
+      const headerSub = document.getElementById('chatHeaderSub');
+      if (headerSub) headerSub.innerText = unit;
+      const headerAvatar = document.getElementById('chatHeaderAvatar');
+      if (headerAvatar) headerAvatar.src = avatarUrl;
+
+      const headerBadge = document.getElementById('chatHeaderBadge');
+      if (headerBadge) {
+        if (isFinOk) {
+          headerBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0';
+          headerBadge.innerText = 'Em Dia';
+        } else {
+          headerBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 shrink-0';
+          headerBadge.innerText = 'Atraso 42d';
+        }
       }
 
+      const sentBadge = document.getElementById('chatHeaderSentiment');
+      if (sentBadge) {
+        if (conv.sentiment === 'risco_juridico') {
+          sentBadge.classList.remove('hidden');
+          sentBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 animate-pulse shrink-0';
+          sentBadge.innerHTML = '<span>⚠️</span> Risco Jurídico';
+        } else {
+          sentBadge.classList.add('hidden');
+        }
+      }
+
+      const btnEmitirPixChat = document.getElementById('btnEmitirPixChat');
+      if (btnEmitirPixChat) {
+        btnEmitirPixChat.setAttribute('onclick', `abrirModalQrCodePix('${pixVal}')`);
+      }
+
+      // 2. Dossiê Lateral (Coluna 3)
+      const sideAvatar = document.getElementById('sideMoradorAvatar');
+      if (sideAvatar) sideAvatar.src = avatarUrl;
+      const sideNome = document.getElementById('sideMoradorNome');
+      if (sideNome) sideNome.innerText = nome;
+      const sideUnidade = document.getElementById('sideMoradorUnidade');
+      if (sideUnidade) sideUnidade.innerText = unitShort;
+      const sideCpf = document.getElementById('sideMoradorCpf');
+      if (sideCpf) sideCpf.innerText = conv.cpfFormatted || (conv.remoteJid.includes('888888888') ? '987.***.***-00' : '123.***.***-09');
+      const sideTel = document.getElementById('sideMoradorTel');
+      if (sideTel) sideTel.innerText = conv.telefone || (conv.remoteJid.includes('888888888') ? '(11) 98888-8888' : '(11) 99999-9999');
+
+      const sideBadge = document.getElementById('sideFinanceiroBadge');
+      if (sideBadge) {
+        if (isFinOk) {
+          sideBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+          sideBadge.innerText = '● Regular';
+        } else {
+          sideBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30';
+          sideBadge.innerText = '⚠️ Inadimplente (42d)';
+        }
+      }
+
+      const sideLabel = document.getElementById('sideFinanceiroLabel');
+      if (sideLabel) sideLabel.innerText = isFinOk ? 'Cota Atual:' : 'Total em Aberto:';
+      const sideValor = document.getElementById('sideFinanceiroValor');
+      if (sideValor) sideValor.innerText = isFinOk ? 'R$ 650,00' : 'R$ 1.350,00';
+      const sideVenc = document.getElementById('sideFinanceiroVenc');
+      if (sideVenc) sideVenc.innerText = isFinOk ? '15/11/2026' : 'Vencido há 42 dias';
+      const sideSplit = document.getElementById('sideFinanceiroSplit');
+      if (sideSplit) sideSplit.innerText = isFinOk ? 'R$ 65,00 (10%)' : 'R$ 135,00 (10%)';
+
+      const btnSidePix = document.getElementById('btnSidePix');
+      if (btnSidePix) {
+        btnSidePix.setAttribute('onclick', `abrirModalQrCodePix('${pixVal}')`);
+      }
+
+      // 3. Atualiza controles de IA / Handoff
       updateHandoffButton(conv.isHumanHandoff);
       updateSmartActionBanner(conv);
 
+      // 4. Renderiza Mensagens
       const stream = document.getElementById('chatMessagesStream');
-      stream.innerHTML = conv.messages.map(m => {
-        const isUser = m.sender === 'user';
-        return `
-          <div class="flex flex-col ${isUser ? 'items-start' : 'items-end'}">
-            <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md ${isUser ? 'chat-bubble-user text-slate-200' : 'chat-bubble-agent text-indigo-100'}">
-              <div class="flex items-center justify-between gap-4 mb-1">
-                <span class="font-bold text-[10px] ${isUser ? 'text-slate-400' : 'text-cyan-300 font-mono'}">${isUser ? 'Condômino' : 'DOMUS AI'}</span>
-                <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
-              </div>
-              <p class="whitespace-pre-wrap leading-relaxed">${m.text}</p>
-
-              ${m.pixCode ? `
-                <div class="mt-3 p-3 rounded-xl bg-black/60 border border-emerald-500/30 text-emerald-300">
-                  <div class="flex items-center justify-between mb-1.5">
-                    <span class="text-[10px] font-mono font-bold uppercase tracking-wider">Pix Copia e Cola Oficial:</span>
-                    <button onclick="navigator.clipboard.writeText('${m.pixCode}'); alert('Chave Pix copiada!')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-bold text-[10px]">Copiar Chave</button>
-                  </div>
-                  <input readonly value="${m.pixCode}" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded px-2 py-1 text-[10px] font-mono text-slate-300" />
+      if (stream) {
+        stream.innerHTML = conv.messages.map(m => {
+          const isUser = m.sender === 'user';
+          return `
+            <div class="flex flex-col ${isUser ? 'items-start' : 'items-end'}">
+              <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md ${isUser ? 'chat-bubble-user text-slate-200' : 'chat-bubble-agent text-indigo-100'}">
+                <div class="flex items-center justify-between gap-4 mb-1">
+                  <span class="font-bold text-[10px] ${isUser ? 'text-slate-400' : 'text-cyan-300 font-mono'}">${isUser ? 'Condômino' : 'DOMUS AI'}</span>
+                  <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
                 </div>
-              ` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
+                <p class="whitespace-pre-wrap leading-relaxed">${m.text}</p>
 
-      stream.scrollTop = stream.scrollHeight;
+                ${m.pixCode ? `
+                  <div class="mt-3 p-3 rounded-xl bg-black/60 border border-emerald-500/30 text-emerald-300">
+                    <div class="flex items-center justify-between mb-1.5">
+                      <span class="text-[10px] font-mono font-bold uppercase tracking-wider">Pix Copia e Cola Oficial:</span>
+                      <button onclick="navigator.clipboard.writeText('${m.pixCode}'); alert('Chave Pix copiada!')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-bold text-[10px]">Copiar Chave</button>
+                    </div>
+                    <input readonly value="${m.pixCode}" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded px-2 py-1 text-[10px] font-mono text-slate-300" />
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+        stream.scrollTop = stream.scrollHeight;
+      }
     }
 
     function toggleHumanHandoff() {
@@ -3494,19 +3629,53 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function updateHandoffButton(isHuman) {
       const btn = document.getElementById('btnToggleHandoff');
       const text = document.getElementById('handoffText');
+      const statusBar = document.getElementById('chatControlStatusBar');
+      const statusDot = document.getElementById('chatControlDot');
+      const statusText = document.getElementById('chatControlText');
+      const statusActionBtn = document.getElementById('chatControlActionBtn');
 
       if (isHuman) {
-        btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 cursor-pointer';
-        text.innerText = 'Operador Humano';
+        if (btn) {
+          btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 cursor-pointer';
+        }
+        if (text) text.innerText = 'Operador Humano';
+
+        if (statusBar) {
+          statusBar.className = 'px-4 py-1.5 border-t border-amber-500/30 bg-amber-500/10 text-amber-300 text-[11px] flex items-center justify-between transition-all';
+        }
+        if (statusDot) {
+          statusDot.className = 'w-2 h-2 rounded-full bg-amber-400 shrink-0';
+        }
+        if (statusText) {
+          statusText.innerHTML = '<strong>👤 Atendimento Humano Ativo:</strong> A IA está pausada. Suas mensagens são enviadas diretamente ao morador.';
+        }
+        if (statusActionBtn) {
+          statusActionBtn.innerText = 'Devolver para IA 🤖';
+        }
       } else {
-        btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer';
-        text.innerText = 'IA Autônoma';
+        if (btn) {
+          btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer';
+        }
+        if (text) text.innerText = 'IA Autônoma';
+
+        if (statusBar) {
+          statusBar.className = 'px-4 py-1.5 border-t border-emerald-500/20 bg-emerald-500/10 text-emerald-400 text-[11px] flex items-center justify-between transition-all';
+        }
+        if (statusDot) {
+          statusDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0';
+        }
+        if (statusText) {
+          statusText.innerHTML = '<strong>🤖 IA Autônoma Ativa:</strong> O robô responde dúvidas de convenção, boletos e encomendas automaticamente.';
+        }
+        if (statusActionBtn) {
+          statusActionBtn.innerText = 'Pausar IA & Assumir 👤';
+        }
       }
     }
 
     function sendOperatorMessage() {
       const input = document.getElementById('chatInputText');
-      const text = input.value.trim();
+      const text = input ? input.value.trim() : '';
       if (!text || !activeRemoteJid) return;
 
       const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
@@ -3527,7 +3696,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     function sendQuickReply(msg) {
-      document.getElementById('chatInputText').value = msg;
+      const input = document.getElementById('chatInputText');
+      if (input) input.value = msg;
       sendOperatorMessage();
     }
 
@@ -3557,10 +3727,50 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
     }
 
+    function clearConversationSearch() {
+      const input = document.getElementById('searchConversationInput');
+      if (input) input.value = '';
+      filterConversations();
+    }
+
     function filterConversations() {
-      const term = document.getElementById('searchConversationInput').value.toLowerCase().trim();
+      const input = document.getElementById('searchConversationInput');
+      const term = input ? input.value.toLowerCase().trim() : '';
+      const clearBtn = document.getElementById('btnClearSearch');
+      if (clearBtn) {
+        if (term) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+
       const items = document.querySelectorAll('#conversationsList > div:not(#conversationsEmptyState)');
       let visibleCount = 0;
+      items.forEach(el => {
+        const text = el.innerText.toLowerCase();
+        const match = text.includes(term);
+        el.style.display = match ? 'flex' : 'none';
+        if (match) visibleCount++;
+      });
+
+      let emptyEl = document.getElementById('conversationsEmptyState');
+      if (visibleCount === 0) {
+        if (!emptyEl) {
+          emptyEl = document.createElement('div');
+          emptyEl.id = 'conversationsEmptyState';
+          emptyEl.className = 'p-6 text-center text-xs text-slate-400 space-y-2';
+          emptyEl.innerHTML = `
+            <div class="text-3xl">🔍</div>
+            <div class="font-bold text-slate-200">Nenhum morador encontrado</div>
+            <p class="text-[11px] text-slate-400">Nenhuma conversa coincide com "${term}". Tente buscar por nome, bloco ou número.</p>
+          `;
+          document.getElementById('conversationsList').appendChild(emptyEl);
+        } else {
+          emptyEl.style.display = 'block';
+          emptyEl.querySelector('p').innerText = `Nenhuma conversa coincide com "${term}". Tente buscar por nome, bloco ou número.`;
+        }
+      } else if (emptyEl) {
+        emptyEl.style.display = 'none';
+      }
+    }
       items.forEach(el => {
         const text = el.innerText.toLowerCase();
         const match = text.includes(term);
@@ -3992,6 +4202,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function executarAcaoSugerida(tipo) {
       const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
       const nome = conv?.pushName || conv?.morador?.nome || 'Morador';
+      const valorFormatado = conv?.cotaValor || (conv?.remoteJid?.includes('888888888') ? 'R$ 1.350,00' : 'R$ 650,00');
 
       if (tipo === 'pix') {
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -4000,19 +4211,19 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         conv.messages.push({
           id: `msg_${Date.now()}`,
           sender: 'agent',
-          text: `Aqui está o seu boleto de Novembro/2026 recalculado para pagamento instantâneo via Pix Copia e Cola.\n\n💰 Valor: R$ 650,00\n📅 Vencimento: 20/11/2026\n🏛️ Banco: Pix Banco Central`,
+          text: `Aqui está o seu boleto recalculado para pagamento instantâneo via Pix Copia e Cola.\n\n💰 Valor: ${valorFormatado}\n📅 Vencimento: 20/11/2026\n🏛️ Banco: Pix Banco Central`,
           timestamp: time,
           pixCode: pixCode
         });
         
         selectConversation(activeRemoteJid);
         confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
-        showToast('Boleto Pix Enviado!', `O boleto de R$ 650,00 foi entregue no WhatsApp de ${nome} com sucesso.`, 'success');
+        showToast('Boleto Pix Enviado!', `O boleto de ${valorFormatado} foi entregue no WhatsApp de ${nome} com sucesso.`, 'success');
       } else if (tipo === 'acordo') {
-        abrirModalTermoAcordo(nome, 'unid_204');
+        abrirModalTermoAcordoParaAtivo();
         showToast('Termo Gerado!', `Termo de Confissão de Dívida pronto para assinatura digital de ${nome}.`, 'info');
       } else if (tipo === 'notificar_amigavel') {
-        sendQuickReply(`Olá ${nome}, tudo bem? Identificamos que a cota de Novembro está em aberto. Deseja que eu gere o Pix com isenção total de encargos?`);
+        sendQuickReply(`Olá ${nome}, tudo bem? Identificamos que sua cota está em aberto. Deseja que eu gere o Pix com isenção total de encargos?`);
       } else if (tipo === 'acordo_simular') {
         switchTab('cobranca');
       }
