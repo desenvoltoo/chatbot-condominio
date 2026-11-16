@@ -41,6 +41,7 @@
       background-color: #07090e;
       color: #f1f5f9;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
     code, .font-mono { font-family: 'JetBrains Mono', monospace; }
 
@@ -90,9 +91,116 @@
       border: 1px solid rgba(99, 102, 241, 0.3);
       border-bottom-right-radius: 4px;
     }
+
+    /* Regras do Modo Claro (Light Theme) */
+    html:not(.dark) body {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) aside,
+    html:not(.dark) header {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .glass-surface {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05) !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .bg-\[\#0a0e18\],
+    html:not(.dark) .bg-\[\#07090e\],
+    html:not(.dark) .bg-\[\#0b0f19\],
+    html:not(.dark) .bg-\[\#101524\],
+    html:not(.dark) .bg-\[\#0e1320\] {
+      background-color: #ffffff !important;
+    }
+    html:not(.dark) .border-white\/\[0\.08\],
+    html:not(.dark) .border-white\/\[0\.06\],
+    html:not(.dark) .border-white\/\[0\.04\],
+    html:not(.dark) .border-white\/\[0\.1\] {
+      border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .text-white {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-slate-100,
+    html:not(.dark) .text-slate-200 {
+      color: #1e293b !important;
+    }
+    html:not(.dark) .text-slate-300 {
+      color: #334155 !important;
+    }
+    html:not(.dark) .text-slate-400 {
+      color: #64748b !important;
+    }
+    html:not(.dark) input,
+    html:not(.dark) select,
+    html:not(.dark) textarea {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    html:not(.dark) .chat-bubble-user {
+      background: #e2e8f0 !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    html:not(.dark) .chat-bubble-agent {
+      background: linear-gradient(135deg, #eef2ff 0%, #f0fdf4 100%) !important;
+      color: #1e1b4b !important;
+      border-color: #c7d2fe !important;
+    }
+    html:not(.dark) .nav-item-active {
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0.02) 100%) !important;
+      color: #4f46e5 !important;
+    }
+    html:not(.dark) .provider-card {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .provider-card.selected {
+      background: #eef2ff !important;
+      border-color: #6366f1 !important;
+    }
   </style>
 </head>
 <body class="min-h-screen flex h-screen overflow-hidden selection:bg-brand selection:text-white">
+
+  <!-- ============================================================== -->
+  <!-- MODAL: ACESSO RESTRITO POR PERMISSÃO (RBAC) -->
+  <!-- ============================================================== -->
+  <div id="modalAcessoNegado" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeAcessoNegadoModal()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-md w-full border border-rose-500/30 shadow-2xl text-center space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400">
+        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-white">Acesso Restrito pelo Perfil</h3>
+        <p id="acessoNegadoTexto" class="text-xs text-slate-400 mt-1 leading-relaxed">
+          Seu papel atual não possui as permissões necessárias para acessar este módulo.
+        </p>
+      </div>
+      <div class="p-3 rounded-2xl bg-black/30 border border-white/[0.06] text-[11px] text-slate-300 font-mono text-left space-y-1">
+        <div class="flex justify-between">
+          <span class="text-slate-500">Seu Perfil Atual:</span>
+          <strong id="acessoNegadoPerfil" class="text-amber-400">PORTARIA</strong>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Módulo Solicitado:</span>
+          <strong id="acessoNegadoModulo" class="text-cyan-400">Hub Multi-IA</strong>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Permissão Requerida:</span>
+          <span class="text-rose-400">ADMIN MASTER</span>
+        </div>
+      </div>
+      <button onclick="closeAcessoNegadoModal()" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all cursor-pointer">
+        Compreendido, Voltar à Operação
+      </button>
+    </div>
+  </div>
 
   <!-- ============================================================== -->
   <!-- COMMAND PALETTE / SPOTLIGHT (⌘K / Ctrl+K) -->
@@ -104,16 +212,14 @@
         <input 
           type="text" 
           id="commandPaletteInput" 
-          placeholder="O que você deseja fazer ou buscar? (ex: Carlos, Pix, RAG, IA, Acordo)..." 
+          placeholder="O que você deseja fazer ou buscar? (ex: Carlos, Pix, RAG, IA, Tema)..." 
           class="w-full bg-transparent text-xs text-white placeholder-slate-500 focus:outline-none"
           oninput="handleCommandSearch(this.value)"
           onkeydown="if(event.key === 'Escape') closeCommandPalette()"
         />
         <kbd class="px-2 py-0.5 rounded text-[10px] font-mono bg-white/[0.08] text-slate-400 border border-white/[0.1]">ESC</kbd>
       </div>
-      <div id="commandPaletteResults" class="max-h-80 overflow-y-auto p-2 text-xs divide-y divide-white/[0.04]">
-        <!-- Resultados renderizados via JS -->
-      </div>
+      <div id="commandPaletteResults" class="max-h-80 overflow-y-auto p-2 text-xs divide-y divide-white/[0.04]"></div>
       <div class="p-2.5 bg-black/40 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500">
         <div class="flex items-center gap-2">
           <span>Navegar: <kbd class="px-1.5 py-0.5 rounded bg-white/[0.08] text-slate-400 font-mono text-[10px]">↑</kbd> <kbd class="px-1.5 py-0.5 rounded bg-white/[0.08] text-slate-400 font-mono text-[10px]">↓</kbd></span>
@@ -171,7 +277,7 @@
       </select>
     </div>
 
-    <!-- Navegação de Módulos com Ícones SVG Monocromáticos de Alta Precisão -->
+    <!-- Navegação de Módulos com Verificação RBAC -->
     <nav class="flex-1 overflow-y-auto p-2.5 space-y-1 text-xs font-medium">
       
       <div class="px-2 pt-2 pb-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 sidebar-text">
@@ -184,7 +290,10 @@
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           <span class="sidebar-text">Caixa de Entrada</span>
         </div>
-        <span class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30 font-mono">2</span>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30 font-mono">2</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
       </button>
 
       <!-- 2. Cobrança & Acordos -->
@@ -193,7 +302,10 @@
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
           <span class="sidebar-text">Cobrança & Acordos Pix</span>
         </div>
-        <span class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30 font-mono">11</span>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30 font-mono">11</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
       </button>
 
       <!-- 3. Reservas de Áreas -->
@@ -202,7 +314,10 @@
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
           <span class="sidebar-text">Reservas & Lazer</span>
         </div>
-        <span class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 font-mono">3</span>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 font-mono">3</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
       </button>
 
       <!-- 4. Telemetria e Medição -->
@@ -211,7 +326,10 @@
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
           <span class="sidebar-text">Telemetria & Leituras</span>
         </div>
-        <span class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30 font-mono">OCR</span>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30 font-mono">OCR</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
       </button>
 
       <div class="px-2 pt-4 pb-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 sidebar-text">
@@ -224,7 +342,10 @@
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
           <span class="sidebar-text">Hub Multi-IA</span>
         </div>
-        <span class="sidebar-text text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-cyan-300 font-mono font-bold">QUALQUER IA</span>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-cyan-300 font-mono font-bold">QUALQUER IA</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
       </button>
 
       <!-- 6. Base de Conhecimento RAG -->
@@ -233,16 +354,22 @@
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           <span class="sidebar-text">Base de Conhecimento RAG</span>
         </div>
-        <span class="sidebar-text text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold font-mono">4 docs</span>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold font-mono">4 docs</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
       </button>
 
       <!-- 7. Conectores & Integrações ERP -->
       <button onclick="switchTab('configuracoes')" id="nav-configuracoes" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
         <div class="flex items-center gap-3">
-          <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-1 1.73l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
           <span class="sidebar-text">Integrações & ERP</span>
         </div>
-        <span class="sidebar-text text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">ATIVO</span>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">ATIVO</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
       </button>
 
       <!-- 8. Equipe & Perfis RBAC -->
@@ -251,7 +378,10 @@
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           <span class="sidebar-text">Equipe & Acessos</span>
         </div>
-        <span class="sidebar-text text-[10px] text-slate-500 font-mono">RBAC</span>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[10px] text-slate-500 font-mono">RBAC</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
       </button>
 
     </nav>
@@ -282,7 +412,7 @@
   <!-- ============================================================== -->
   <div class="flex-1 flex flex-col h-screen overflow-hidden">
 
-    <!-- Topbar Executivo estilo Raycast / Linear -->
+    <!-- Topbar Executivo estilo Raycast / Linear com Theme Switcher -->
     <header class="bg-[#0b0f19] border-b border-white/[0.08] px-5 py-2.5 flex items-center justify-between shrink-0 z-20">
       <div class="flex items-center gap-3">
         <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-300 hover:text-white p-1.5 rounded-lg hover:bg-white/[0.05]">
@@ -309,7 +439,18 @@
           <span class="text-slate-400">IA: <strong class="text-indigo-300" id="topActiveModel">GPT-4o-mini + RAG</strong></span>
         </div>
 
+        <!-- Botão de Alternar Tema Claro / Escuro (Dark/Light) -->
         <button 
+          id="themeToggleBtn" 
+          onclick="toggleTheme()" 
+          class="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] transition-all cursor-pointer flex items-center gap-1.5"
+          title="Alternar entre modo Claro e Escuro">
+          <svg id="themeIconSun" class="w-4 h-4 hidden text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg id="themeIconMoon" class="w-4 h-4 text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+
+        <button 
+          id="topBtnBroadcast"
           onclick="openBroadcastModal()"
           class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5 shadow-md shadow-indigo-600/20 cursor-pointer">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
@@ -354,14 +495,11 @@
           </div>
         </div>
 
-        <div id="conversationsList" class="flex-1 overflow-y-auto divide-y divide-white/[0.04]">
-          <!-- Renderizado via JS -->
-        </div>
+        <div id="conversationsList" class="flex-1 overflow-y-auto divide-y divide-white/[0.04]"></div>
       </aside>
 
       <!-- Coluna 2: Chat ao Vivo -->
       <section class="flex-1 flex flex-col bg-[#07090e] relative overflow-hidden">
-        <!-- Chat Header -->
         <div class="p-3.5 border-b border-white/[0.08] bg-[#0b0f19] flex items-center justify-between shrink-0">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[1px]">
@@ -379,7 +517,6 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <!-- Toggle IA Autônoma / Operador Humano -->
             <button 
               id="btnToggleHandoff" 
               onclick="toggleHumanHandoff()" 
@@ -388,6 +525,7 @@
               <span id="handoffText">IA Autônoma Ativa</span>
             </button>
             <button 
+              id="btnEmitirPixChat"
               onclick="emitirSegundaViaPixAtivo()" 
               class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -396,12 +534,8 @@
           </div>
         </div>
 
-        <!-- Chat Stream -->
-        <div id="chatMessagesStream" class="flex-1 overflow-y-auto p-4 space-y-3.5">
-          <!-- Balões renderizados via JS -->
-        </div>
+        <div id="chatMessagesStream" class="flex-1 overflow-y-auto p-4 space-y-3.5"></div>
 
-        <!-- Barra de Sugestões de Respostas Rápidas -->
         <div class="px-4 py-2 border-t border-white/[0.06] bg-[#0a0e18] flex items-center gap-2 overflow-x-auto text-[11px]">
           <span class="text-slate-500 font-mono font-semibold shrink-0">Respostas Rápidas:</span>
           <button onclick="sendQuickReply('📄 Seu boleto recalculado com Pix Copia e Cola já foi gerado!')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08]">📄 Enviar Boleto Pix</button>
@@ -410,7 +544,6 @@
           <button onclick="sendQuickReply('💧 Por favor, envie a foto do hidrômetro para leitura mensal.')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08]">💧 Solicitar Foto Medidor</button>
         </div>
 
-        <!-- Input Bar de Digitação -->
         <div class="p-3 border-t border-white/[0.08] bg-[#0b0f19] flex items-center gap-2 shrink-0">
           <input 
             type="text" 
@@ -449,7 +582,6 @@
           </div>
         </div>
 
-        <!-- Painel Financeiro do Condômino -->
         <div class="p-4 border-b border-white/[0.08] space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-slate-300">Situação Financeira</span>
@@ -485,7 +617,6 @@
           </div>
         </div>
 
-        <!-- Histórico e Eventos -->
         <div class="p-4 space-y-2.5 text-xs">
           <span class="text-xs font-bold text-slate-300 block">Registros do Condômino</span>
           <div class="text-[11px] p-2.5 rounded-xl bg-[#101524] border border-white/[0.06]">
@@ -505,8 +636,6 @@
     <!-- ============================================================== -->
     <main id="tab-content-ai" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
       <div class="max-w-6xl mx-auto space-y-6">
-        
-        <!-- Header do Hub de IA -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-indigo-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-semibold mb-2">
@@ -536,7 +665,6 @@
           </div>
         </div>
 
-        <!-- Seletor de Provedores em Cards Visuais SVG -->
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
           <div class="flex items-center justify-between">
             <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">Selecione o Provedor de Inferência:</span>
@@ -544,7 +672,6 @@
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-            <!-- OpenAI -->
             <button type="button" onclick="selectAIProviderPreset('openai')" id="btnProv-openai" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
               <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
@@ -553,16 +680,14 @@
               <span class="text-[10px] text-slate-400 font-mono">GPT-4o</span>
             </button>
 
-            <!-- Google Gemini -->
             <button type="button" onclick="selectAIProviderPreset('gemini')" id="btnProv-gemini" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
               <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
               </div>
               <strong class="text-xs text-white block">Gemini</strong>
-              <span class="text-[10px] text-slate-400 font-mono">1.5 Pro/Flash</span>
+              <span class="text-[10px] text-slate-400 font-mono">1.5 Flash</span>
             </button>
 
-            <!-- Anthropic Claude -->
             <button type="button" onclick="selectAIProviderPreset('anthropic')" id="btnProv-anthropic" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
               <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -571,7 +696,6 @@
               <span class="text-[10px] text-slate-400 font-mono">3.5 Sonnet</span>
             </button>
 
-            <!-- DeepSeek -->
             <button type="button" onclick="selectAIProviderPreset('deepseek')" id="btnProv-deepseek" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
               <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7 7 0 1 1 13 5.07V5a1 1 0 0 1 2 0v.07A7 7 0 0 1 13 16.93z"/></svg>
@@ -580,7 +704,6 @@
               <span class="text-[10px] text-slate-400 font-mono">V3 / R1</span>
             </button>
 
-            <!-- Groq -->
             <button type="button" onclick="selectAIProviderPreset('groq')" id="btnProv-groq" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
               <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -589,7 +712,6 @@
               <span class="text-[10px] text-slate-400 font-mono">Llama 3.3</span>
             </button>
 
-            <!-- OpenRouter -->
             <button type="button" onclick="selectAIProviderPreset('openrouter')" id="btnProv-openrouter" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
               <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
@@ -598,7 +720,6 @@
               <span class="text-[10px] text-slate-400 font-mono">Hub Global</span>
             </button>
 
-            <!-- Local / Ollama -->
             <button type="button" onclick="selectAIProviderPreset('custom')" id="btnProv-custom" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
               <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-slate-500/10 border border-slate-500/30 flex items-center justify-center text-slate-300">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
@@ -609,10 +730,7 @@
           </div>
         </div>
 
-        <!-- Layout Split: Configurações na Esquerda, Sandbox de Teste na Direita -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
-          <!-- Coluna Configurações (7 colunas) -->
           <div class="lg:col-span-7 space-y-6">
             <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
               <h3 class="font-bold text-sm text-white flex items-center gap-2">
@@ -655,7 +773,6 @@
                 <input type="text" id="aiBaseUrl" placeholder="https://api.openai.com/v1" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-indigo-300 font-mono focus:outline-none focus:border-indigo-500" />
               </div>
 
-              <!-- Sliders de Hiperparâmetros -->
               <div class="grid grid-cols-2 gap-4 pt-2">
                 <div>
                   <div class="flex justify-between text-xs mb-1">
@@ -677,7 +794,6 @@
               </div>
             </div>
 
-            <!-- System Prompt -->
             <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
               <div class="flex items-center justify-between">
                 <h3 class="font-bold text-sm text-white flex items-center gap-2">
@@ -697,7 +813,6 @@
             </div>
           </div>
 
-          <!-- Coluna Sandbox de Teste em Tempo Real (5 colunas) -->
           <div class="lg:col-span-5">
             <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] h-full flex flex-col space-y-4">
               <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
@@ -763,7 +878,6 @@
           </button>
         </div>
 
-        <!-- 4 Estatísticas RAG -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
             <span class="text-[11px] text-slate-400 block mb-1">Documentos Indexados</span>
@@ -783,7 +897,6 @@
           </div>
         </div>
 
-        <!-- Playground de Busca Semântica -->
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
           <h3 class="font-bold text-sm text-white flex items-center gap-2">
             <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -809,7 +922,6 @@
           <div id="ragResultadoBusca" class="hidden p-4 rounded-2xl bg-[#0a0e18] border border-white/[0.08] space-y-2"></div>
         </div>
 
-        <!-- Tabela de Documentos Cadastrados -->
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
           <h3 class="font-bold text-sm text-white">Documentos Cadastrados na Base</h3>
           <div class="overflow-x-auto">
@@ -854,7 +966,6 @@
           </button>
         </div>
 
-        <!-- 4 Cards Financeiros -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
             <span class="text-[11px] text-slate-400 block mb-1">Recuperado no Mês</span>
@@ -874,7 +985,6 @@
           </div>
         </div>
 
-        <!-- Simulador Interativo de Acordos de Dívidas -->
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-sm text-white flex items-center gap-2">
@@ -976,7 +1086,7 @@
                   <td class="p-3 text-slate-300 font-mono">21/11/2026 (12:00 às 22:00)</td>
                   <td class="p-3">Mariana de Souza (Apt 204)</td>
                   <td class="p-3 font-mono text-emerald-400">R$ 80,00</td>
-                  <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 font-bold">Lançado no Boleto</span></td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 font-bold">Confirmado</span></td>
                 </tr>
               </tbody>
             </table>
@@ -1032,7 +1142,6 @@
           </form>
         </div>
 
-        <!-- Leituras com Foto e OCR -->
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
           <h3 class="font-bold text-sm text-white">Auditoria Fotográfica de Medidores (Novembro/2026)</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1108,19 +1217,116 @@
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 8: EQUIPE & ACESSOS (RBAC) -->
+    <!-- MÓDULO 8: EQUIPE & MATRIZ INTERATIVA DE PERMISSÕES (RBAC) -->
     <!-- ============================================================== -->
     <main id="tab-content-equipe" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <div class="max-w-4xl mx-auto space-y-6">
+      <div class="max-w-5xl mx-auto space-y-6">
         <div class="p-6 rounded-3xl bg-gradient-to-r from-indigo-950/40 via-[#0e1320] to-purple-950/30 border border-white/[0.08] shadow-xl">
-          <h1 class="text-2xl font-black text-white tracking-tight">Equipe & Controle de Acessos (RBAC)</h1>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-semibold mb-2">
+            <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Políticas de Segurança e Controle de Acessos
+          </div>
+          <h1 class="text-2xl font-black text-white tracking-tight">Equipe & Matriz de Permissões RBAC</h1>
           <p class="text-xs text-slate-400 mt-1">
-            4 papéis operacionais com políticas de segurança restritas para administração, finanças e portaria.
+            Controle granular de permissões operacionais por papel no condomínio. Modifique e personalize as políticas abaixo.
           </p>
         </div>
 
+        <!-- Matriz Interativa de Permissões RBAC -->
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <h3 class="font-bold text-sm text-white">Usuários & Chaves de Acesso</h3>
+          <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+              <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              <span>Matriz de Controle de Permissões por Papel</span>
+            </h3>
+            <button onclick="salvarMatrizPermissoes()" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+              Salvar Políticas
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="text-slate-400 border-b border-white/[0.08] text-[10px] font-mono uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Recurso / Módulo</th>
+                  <th class="p-3 text-center">👑 Admin Master</th>
+                  <th class="p-3 text-center">🏢 Síndico</th>
+                  <th class="p-3 text-center">💼 Financeiro</th>
+                  <th class="p-3 text-center">🚪 Portaria</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/[0.04] font-medium text-slate-300">
+                <tr>
+                  <td class="p-3">💬 Atendimento Omnichannel (WhatsApp)</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">🧾 Cobrança & Negociação de Dívidas</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">⚡ Emissão de 2ª Via & Pix Copia e Cola</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">📅 Gestão de Reservas & Lazer</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">💧 Telemetria & Medição (OCR de Fotos)</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">🤖 Configuração de Chaves & Hub Multi-IA</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">📚 Gerenciar Base de Conhecimento RAG</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">📢 Disparo de Comunicados em Massa</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">⚙️ Configuração de Credenciais de ERP</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Lista de Usuários e Chaves -->
+        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+          <h3 class="font-bold text-sm text-white">Usuários Ativos do Condomínio</h3>
           <div class="divide-y divide-white/[0.04]">
             <div class="py-3.5 flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -1245,6 +1451,39 @@
     let currentSimulacao = null;
     let selectedParcelasQtd = 1;
     let sidebarCollapsed = false;
+    let currentUserRole = 'admin';
+
+    // Matriz de Regras de Permissão RBAC por Papel
+    const ROLE_PERMISSIONS = {
+      admin: {
+        nome: 'Administrador Master',
+        allowedTabs: ['atendimento', 'cobranca', 'reservas', 'medicao', 'ai', 'rag', 'configuracoes', 'equipe'],
+        canBroadcast: true,
+        canEmitPix: true,
+        canEditAcordo: true
+      },
+      sindico: {
+        nome: 'Síndico Geral',
+        allowedTabs: ['atendimento', 'cobranca', 'reservas', 'medicao', 'rag', 'equipe'],
+        canBroadcast: true,
+        canEmitPix: true,
+        canEditAcordo: true
+      },
+      operador: {
+        nome: 'Operador Financeiro',
+        allowedTabs: ['atendimento', 'cobranca', 'reservas'],
+        canBroadcast: false,
+        canEmitPix: true,
+        canEditAcordo: true
+      },
+      portaria: {
+        nome: 'Equipe de Portaria',
+        allowedTabs: ['atendimento', 'medicao', 'reservas'],
+        canBroadcast: false,
+        canEmitPix: false,
+        canEditAcordo: false
+      }
+    };
 
     // Autenticação & Sessão
     function checkUserSession() {
@@ -1252,6 +1491,7 @@
       if (userRaw) {
         try {
           const user = JSON.parse(userRaw);
+          currentUserRole = user.role || 'admin';
           document.getElementById('sidebarUserName').innerText = user.nome;
           const roleMap = {
             admin: '👑 ADMIN MASTER',
@@ -1259,12 +1499,80 @@
             operador: '💼 FINANCEIRO',
             portaria: '🚪 PORTARIA'
           };
-          document.getElementById('sidebarUserRole').innerText = roleMap[user.role] || user.role.toUpperCase();
+          document.getElementById('sidebarUserRole').innerText = roleMap[currentUserRole] || currentUserRole.toUpperCase();
           if (user.avatarUrl) {
             document.getElementById('sidebarUserAvatar').src = user.avatarUrl;
           }
         } catch (e) {}
       }
+
+      applyRolePermissions(currentUserRole);
+    }
+
+    // Aplicação Efetiva de Permissões na Interface (Gating)
+    function applyRolePermissions(role) {
+      const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
+
+      const allTabs = ['atendimento', 'cobranca', 'reservas', 'medicao', 'ai', 'rag', 'configuracoes', 'equipe'];
+      allTabs.forEach(t => {
+        const navBtn = document.getElementById(`nav-${t}`);
+        if (!navBtn) return;
+        const lock = navBtn.querySelector('.sidebar-lock-badge');
+
+        if (!perm.allowedTabs.includes(t)) {
+          navBtn.classList.add('opacity-40');
+          if (lock) lock.classList.remove('hidden');
+        } else {
+          navBtn.classList.remove('opacity-40');
+          if (lock) lock.classList.add('hidden');
+        }
+      });
+
+      // Gating do Disparo em Massa
+      const btnBrd = document.getElementById('topBtnBroadcast');
+      if (btnBrd) {
+        if (!perm.canBroadcast) btnBrd.classList.add('hidden');
+        else btnBrd.classList.remove('hidden');
+      }
+
+      // Se a aba atualmente aberta for proibida para o papel, redireciona para a Caixa de Entrada
+      const currentTab = allTabs.find(t => {
+        const c = document.getElementById(`tab-content-${t}`);
+        return c && !c.classList.contains('hidden');
+      }) || 'atendimento';
+
+      if (!perm.allowedTabs.includes(currentTab)) {
+        switchTab('atendimento');
+      }
+    }
+
+    function mostrarAvisoPermissaoRestrita(tabName, role) {
+      const modal = document.getElementById('modalAcessoNegado');
+      const nomeModulos = {
+        atendimento: 'Caixa de Entrada',
+        cobranca: 'Cobrança & Acordos de Dívidas',
+        reservas: 'Reservas & Lazer',
+        medicao: 'Telemetria & Medição',
+        ai: 'Hub Multi-IA & Modelos',
+        rag: 'Base de Conhecimento RAG',
+        configuracoes: 'Conectores & Integrações ERP',
+        equipe: 'Equipe & Matriz RBAC'
+      };
+
+      document.getElementById('acessoNegadoPerfil').innerText = (ROLE_PERMISSIONS[role]?.nome || role).toUpperCase();
+      document.getElementById('acessoNegadoModulo').innerText = nomeModulos[tabName] || tabName;
+      document.getElementById('acessoNegadoTexto').innerText = `Seu perfil atual de "${ROLE_PERMISSIONS[role]?.nome || role}" não possui acesso liberado ao módulo "${nomeModulos[tabName] || tabName}". Esta restrição garante a segurança e privacidade das informações condominiais.`;
+      
+      modal.classList.remove('hidden');
+    }
+
+    function closeAcessoNegadoModal() {
+      document.getElementById('modalAcessoNegado').classList.add('hidden');
+    }
+
+    function salvarMatrizPermissoes() {
+      confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+      alert('🔒 Políticas de Acesso e Matriz de Permissões RBAC atualizadas com sucesso no DOMUS AI!');
     }
 
     function handleLogout() {
@@ -1273,6 +1581,38 @@
       localStorage.removeItem('siscon_auth_token');
       localStorage.removeItem('siscon_auth_user');
       window.location.href = 'login.html';
+    }
+
+    // ==========================================
+    // THEME SWITCHER (Dark / Light)
+    // ==========================================
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('domus_theme', isDark ? 'dark' : 'light');
+      updateThemeUI(isDark);
+    }
+
+    function updateThemeUI(isDark) {
+      const iconSun = document.getElementById('themeIconSun');
+      const iconMoon = document.getElementById('themeIconMoon');
+      if (isDark) {
+        if (iconSun) iconSun.classList.add('hidden');
+        if (iconMoon) iconMoon.classList.remove('hidden');
+      } else {
+        if (iconSun) iconSun.classList.remove('hidden');
+        if (iconMoon) iconMoon.classList.add('hidden');
+      }
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('domus_theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+        updateThemeUI(false);
+      } else {
+        document.documentElement.classList.add('dark');
+        updateThemeUI(true);
+      }
     }
 
     // Sidebar Toggle
@@ -1299,8 +1639,16 @@
       document.getElementById('mainSidebar').classList.toggle('hidden');
     }
 
-    // Tab Switching
+    // Tab Switching com Checagem Rigorosa de RBAC
     function switchTab(tabName) {
+      const perm = ROLE_PERMISSIONS[currentUserRole] || ROLE_PERMISSIONS.admin;
+
+      // Verificação de Acesso RBAC
+      if (!perm.allowedTabs.includes(tabName)) {
+        mostrarAvisoPermissaoRestrita(tabName, currentUserRole);
+        return;
+      }
+
       const tabs = ['atendimento', 'cobranca', 'reservas', 'medicao', 'rag', 'ai', 'configuracoes', 'equipe'];
       tabs.forEach(t => {
         const content = document.getElementById(`tab-content-${t}`);
@@ -1340,6 +1688,7 @@
       const container = document.getElementById('commandPaletteResults');
       
       const commands = [
+        { label: 'Alternar Tema Claro / Escuro', action: 'toggle_theme', icon: '🌓' },
         { label: 'Ir para Caixa de Entrada (Atendimento)', tab: 'atendimento', icon: '💬' },
         { label: 'Ir para Cobrança & Acordos de Dívidas', tab: 'cobranca', icon: '🧾' },
         { label: 'Ir para Hub Multi-IA & Modelos', tab: 'ai', icon: '🤖' },
@@ -1365,7 +1714,8 @@
 
     function executeCommand(cmd) {
       closeCommandPalette();
-      if (cmd.tab) switchTab(cmd.tab);
+      if (cmd.action === 'toggle_theme') toggleTheme();
+      else if (cmd.tab) switchTab(cmd.tab);
       else if (cmd.action === 'broadcast') openBroadcastModal();
       else if (cmd.morador) {
         switchTab('atendimento');
@@ -1850,6 +2200,12 @@
     }
 
     function emitirSegundaViaPixAtivo() {
+      const perm = ROLE_PERMISSIONS[currentUserRole] || ROLE_PERMISSIONS.admin;
+      if (!perm.canEmitPix) {
+        alert('🔒 Acesso Negado: Seu perfil de usuário não tem autorização para emitir boletos ou Pix financeiro.');
+        return;
+      }
+
       const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
       if (!conv) return;
 
@@ -1915,6 +2271,12 @@
     }
 
     function efetivarAcordoPlataforma() {
+      const perm = ROLE_PERMISSIONS[currentUserRole] || ROLE_PERMISSIONS.admin;
+      if (!perm.canEditAcordo) {
+        alert('🔒 Acesso Negado: Seu perfil não possui permissão para efetivar acordos financeiros.');
+        return;
+      }
+
       if (!currentSimulacao) return;
       confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 } });
       alert(`🤝 Acordo Efetivado no Sistema!\n\nUnidade selecionada com ${currentSimulacao.qtd} parcela(s) de R$ ${currentSimulacao.valorParcela.toFixed(2)} registradas com sucesso.`);
@@ -1985,8 +2347,9 @@
       }
     });
 
-    // Init
+    // Inicialização
     window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
       checkUserSession();
       loadConversations();
       carregarDocumentosRAG();
