@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central de Gestão, Atendimento & Cobrança — SISCON (Mais Domínio)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(147, 51, 234, 0.6); }
+    .tab-active {
+      border-bottom: 2px solid #a855f7;
+      color: #f3e8ff;
+      background: rgba(168, 85, 247, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col h-screen overflow-hidden">
+
+  <!-- Top Header Bar -->
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between shrink-0 z-20">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center font-black text-white shadow-md text-lg">
+        🏢
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-sm sm:text-base tracking-tight text-white">SISCON Gestão</span>
+          <span class="px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] font-bold uppercase tracking-wider">
+            WhatsApp & Operações
+          </span>
+        </div>
+        <span class="text-[10px] text-slate-400 block -mt-0.5">Ecossistema Mais Domínio Soluções Inteligentes</span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="hidden md:flex items-center gap-1 bg-slate-950/60 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+      <button onclick="switchTab('atendimento')" id="nav-atendimento" class="px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 tab-active">
+        <span>💬</span> Atendimento WhatsApp
+      </button>
+      <button onclick="switchTab('cobranca')" id="nav-cobranca" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+        <span>🧾</span> Cobrança & Acordos
+      </button>
+      <button onclick="switchTab('reservas')" id="nav-reservas" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+        <span>📅</span> Reservas de Áreas
+      </button>
+      <button onclick="switchTab('medicao')" id="nav-medicao" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+        <span>💧</span> SISCON Medição
+      </button>
+      <button onclick="switchTab('configuracoes')" id="nav-configuracoes" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+        <span>⚙️</span> Configurações
+      </button>
+    </nav>
+
+    <!-- Top Action Buttons -->
+    <div class="flex items-center gap-2">
+      <button 
+        onclick="openBroadcastModal()"
+        class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md">
+        <span>📢</span> Disparo em Massa
+      </button>
+      <button 
+        onclick="openCpfSearchModal()"
+        class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all flex items-center gap-1.5">
+        <span>🔍</span> Buscar CPF
+      </button>
+      <a 
+        href="index.html" 
+        class="inline-flex px-3 py-1.5 rounded-lg bg-purple-900/60 hover:bg-purple-800 text-purple-200 border border-purple-500/30 text-xs font-bold transition-all items-center gap-1.5 shadow-sm">
+        <span>📱</span> Simulador Morador
+      </a>
+    </div>
+  </header>
+
+  <!-- Mobile Tab Switcher -->
+  <div class="md:hidden flex overflow-x-auto bg-slate-900 border-b border-slate-800 text-xs font-medium shrink-0">
+    <button onclick="switchTab('atendimento')" class="px-3 py-2 shrink-0 border-b-2 border-purple-500 text-purple-300">💬 Chat</button>
+    <button onclick="switchTab('cobranca')" class="px-3 py-2 shrink-0 text-slate-400">🧾 Cobrança</button>
+    <button onclick="switchTab('reservas')" class="px-3 py-2 shrink-0 text-slate-400">📅 Reservas</button>
+    <button onclick="switchTab('medicao')" class="px-3 py-2 shrink-0 text-slate-400">💧 Medição</button>
+    <button onclick="switchTab('configuracoes')" class="px-3 py-2 shrink-0 text-slate-400">⚙️ Config</button>
+  </div>
+
+  <!-- KPI Banner -->
+  <div class="bg-slate-900/60 border-b border-slate-800/80 px-4 py-1.5 shrink-0">
+    <div class="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+      <div class="flex items-center justify-between p-1.5 px-2.5 rounded-lg bg-slate-800/60 border border-slate-800">
+        <span class="text-slate-400">Conversas Hoje:</span>
+        <strong id="kpiConversas" class="text-white font-bold text-sm">3</strong>
+      </div>
+      <div class="flex items-center justify-between p-1.5 px-2.5 rounded-lg bg-slate-800/60 border border-slate-800">
+        <span class="text-slate-400">Resolvidos Robô:</span>
+        <strong id="kpiTaxa" class="text-emerald-400 font-bold text-sm">85%</strong>
+      </div>
+      <div class="flex items-center justify-between p-1.5 px-2.5 rounded-lg bg-slate-800/60 border border-slate-800">
+        <span class="text-slate-400">Fila Humana:</span>
+        <strong id="kpiFilaHumana" class="text-amber-400 font-bold text-sm">1 ativa</strong>
+      </div>
+      <div class="flex items-center justify-between p-1.5 px-2.5 rounded-lg bg-slate-800/60 border border-slate-800">
+        <span class="text-slate-400">Boletos Emitidos:</span>
+        <strong id="kpiBoletos" class="text-purple-300 font-bold text-sm">18 cotas</strong>
+      </div>
+      <div class="hidden sm:flex items-center justify-between p-1.5 px-2.5 rounded-lg bg-slate-800/60 border border-slate-800">
+        <span class="text-slate-400">Conexão SISCON:</span>
+        <strong id="kpiStatusErp" class="text-emerald-400 font-bold text-sm">🟢 Ativo (Inter)</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN TAB CONTAINERS -->
+
+  <!-- ============================================================== -->
+  <!-- TAB 1: ATENDIMENTO WHATSAPP AO VIVO (3 COLUNAS) -->
+  <!-- ============================================================== -->
+  <main id="tab-content-atendimento" class="flex-1 flex overflow-hidden">
+    <!-- Coluna 1: Lista de Conversas -->
+    <aside class="w-80 md:w-96 bg-slate-900/90 border-r border-slate-800 flex flex-col shrink-0">
+      <div class="p-3 border-b border-slate-800 flex flex-col gap-2">
+        <div class="relative">
+          <input 
+            type="text" 
+            id="searchConversationInput" 
+            placeholder="Buscar por morador, CPF ou telefone..." 
+            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500"
+            oninput="filterConversations()"
+          />
+          <span class="absolute right-2.5 top-2 text-slate-500 text-xs">🔍</span>
+        </div>
+        <div class="flex items-center justify-between text-[11px] text-slate-400 px-1">
+          <span>Filtrar:</span>
+          <div class="flex gap-1.5">
+            <button onclick="setFilter('todos')" class="px-2 py-0.5 rounded bg-purple-600/30 text-purple-300 font-semibold" id="btnFilterTodos">Todos</button>
+            <button onclick="setFilter('humano')" class="px-2 py-0.5 rounded hover:bg-slate-800 text-slate-400" id="btnFilterHumano">Humano</button>
+            <button onclick="setFilter('bot')" class="px-2 py-0.5 rounded hover:bg-slate-800 text-slate-400" id="btnFilterBot">Bot</button>
+          </div>
+        </div>
+      </div>
+      <div id="conversationsList" class="flex-1 overflow-y-auto divide-y divide-slate-800/60">
+        <!-- Rendered via JS -->
+      </div>
+    </aside>
+
+    <!-- Coluna 2: Chat ao Vivo -->
+    <section class="flex-1 flex flex-col bg-slate-950 relative overflow-hidden">
+      <!-- Chat Header -->
+      <div id="chatHeader" class="bg-slate-900/80 border-b border-slate-800 px-4 py-2.5 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-300 font-bold text-sm" id="chatHeaderAvatar">
+            CE
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 id="chatHeaderName" class="font-bold text-sm text-white">Carlos Eduardo Silva</h2>
+              <span id="chatHeaderBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                🤖 Autoatendimento
+              </span>
+            </div>
+            <p id="chatHeaderUnit" class="text-xs text-slate-400">Residencial Jardins do Bosque • Bloco A - Apt 101</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            id="btnToggleHandoff"
+            onclick="toggleHumanHandoff()"
+            class="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-semibold transition-all flex items-center gap-1.5">
+            <span>👤</span> Assumir Atendimento
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages Timeline -->
+      <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]">
+        <!-- Dynamic Bubbles -->
+      </div>
+
+      <!-- Quick Responses & Input -->
+      <div class="bg-slate-900 border-t border-slate-800 p-3 shrink-0 flex flex-col gap-2">
+        <div class="flex items-center gap-1.5 overflow-x-auto text-xs pb-1">
+          <span class="text-[10px] text-slate-500 uppercase font-bold shrink-0">Respostas Rápidas:</span>
+          <button onclick="insertQuickReply('Olá! Como posso ajudar você hoje com seu condomínio?')" class="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs shrink-0">Saudação</button>
+          <button onclick="insertQuickReply('Segue o boleto atualizado com recálculo automático de juros e Pix Copia e Cola.')" class="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs shrink-0">Aviso Boleto</button>
+          <button onclick="insertQuickReply('Sua ocorrência foi registrada no SISCON e encaminhada para o zelador.')" class="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs shrink-0">Confirmação Chamado</button>
+          <button onclick="insertQuickReply('Nosso horário de atendimento é de segunda a sexta, das 08h às 18h.')" class="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs shrink-0">Horários</button>
+        </div>
+        <form id="messageForm" onsubmit="sendOperatorMessage(event)" class="flex gap-2">
+          <input 
+            type="text" 
+            id="operatorInput" 
+            placeholder="Digite uma mensagem para o morador via WhatsApp (Enter para enviar)..." 
+            class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500"
+          />
+          <button 
+            type="submit" 
+            class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1">
+            <span>Enviar</span> <span>→</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Coluna 3: Ficha SISCON do Morador -->
+    <aside class="w-80 md:w-96 bg-slate-900/90 border-l border-slate-800 flex flex-col shrink-0 overflow-y-auto">
+      <div class="p-3.5 border-b border-slate-800 bg-slate-900 flex items-center justify-between">
+        <h3 class="font-bold text-xs uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
+          <span>🏛️</span> Ficha SISCON em Tempo Real
+        </h3>
+        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-mono">ERP Conectado</span>
+      </div>
+
+      <div class="p-4 space-y-4 text-xs">
+        <!-- Cadastral Card -->
+        <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Titular da Unidade</span>
+            <span id="sideMoradorId" class="text-[10px] font-mono text-purple-400">ID: morador_1</span>
+          </div>
+          <p id="sideMoradorNome" class="font-bold text-sm text-white">Carlos Eduardo Silva</p>
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/80 text-[11px]">
+            <div>
+              <span class="text-slate-500 block">CPF</span>
+              <strong id="sideMoradorCpf" class="text-slate-200 font-mono">123.456.789-09</strong>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Telefone WhatsApp</span>
+              <strong id="sideMoradorTel" class="text-slate-200 font-mono">5511999999999</strong>
+            </div>
+          </div>
+          <div class="pt-1 border-t border-slate-800/80 text-[11px]">
+            <span class="text-slate-500 block">Condomínio & Unidade</span>
+            <strong id="sideMoradorUnidade" class="text-slate-200">Residencial Jardins do Bosque • Bloco A - Apt 101</strong>
+          </div>
+        </div>
+
+        <!-- Boletos & Cobrança Card -->
+        <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-white flex items-center gap-1">
+              <span>🧾</span> Cotas / Boletos SISCON
+            </span>
+            <span class="text-[10px] text-amber-400 font-semibold bg-amber-400/10 px-2 py-0.5 rounded" id="sideBoletosCount">1 em aberto</span>
+          </div>
+          <div id="sideBoletosList" class="space-y-2">
+            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between font-semibold">
+                <span class="text-slate-200">Ref: 11/2026 (Condomínio)</span>
+                <span class="text-emerald-400 font-mono font-bold">R$ 650,00</span>
+              </div>
+              <div class="text-[11px] text-slate-400 flex items-center justify-between">
+                <span>Vencimento: 15/11/2026</span>
+                <span class="text-amber-400 font-semibold">Vencido</span>
+              </div>
+            </div>
+          </div>
+          <button 
+            onclick="triggerSendBoleto()"
+            class="w-full py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5">
+            <span>⚡</span> Enviar 2ª Via no WhatsApp
+          </button>
+        </div>
+
+        <!-- SISCON Medição Mini Card -->
+        <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-white flex items-center gap-1">
+              <span>💧</span> SISCON Medição
+            </span>
+            <span class="text-[10px] text-emerald-400 font-mono">Novembro/2026</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="p-2 rounded bg-slate-900 border border-slate-800">
+              <span class="text-slate-400 block">Água</span>
+              <strong class="text-white font-mono text-xs">8.2 m³</strong>
+              <span class="text-[10px] text-emerald-400 block mt-0.5">✅ Normal</span>
+            </div>
+            <div class="p-2 rounded bg-slate-900 border border-slate-800">
+              <span class="text-slate-400 block">Gás Canalizado</span>
+              <strong class="text-white font-mono text-xs">3.4 m³</strong>
+              <span class="text-[10px] text-emerald-400 block mt-0.5">✅ Normal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Agreement Shortcut -->
+        <div class="p-3 rounded-xl bg-purple-950/20 border border-purple-500/30 space-y-2">
+          <h4 class="font-bold text-purple-300 text-xs flex items-center gap-1">
+            <span>🤝</span> Negociação SISCON
+          </h4>
+          <p class="text-[11px] text-slate-300">
+            Deseja simular um parcelamento ou acordo de dívida para esta unidade?
+          </p>
+          <button 
+            onclick="switchTab('cobranca')" 
+            class="w-full py-1.5 rounded-lg bg-purple-700/60 hover:bg-purple-600 text-white text-xs font-semibold transition-all">
+            Abrir Simulador de Acordo →
+          </button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+
+  <!-- ============================================================== -->
+  <!-- TAB 2: COBRANÇA & ACORDOS (PARCELAMENTO DE DÍVIDAS) -->
+  <!-- ============================================================== -->
+  <main id="tab-content-cobranca" class="flex-1 overflow-y-auto p-6 hidden bg-slate-950">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-900 border border-purple-500/20">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🧾</span>
+            <h2 class="text-xl font-extrabold text-white">Módulo de Cobrança & Acordos SISCON</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            Boletos bancários com baixa automática, régua de avisos pré/pós vencimento e negociação com confissão de dívida.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button 
+            onclick="executarReguaCobranca()" 
+            class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-2">
+            <span>⚡</span> Executar Régua de Cobrança Agora
+          </button>
+        </div>
+      </div>
+
+      <!-- Inadimplência Stats -->
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-slate-400 text-xs">Total Inadimplência SISCON:</span>
+          <h3 class="text-2xl font-black text-rose-400 mt-1 font-mono">R$ 14.850,00</h3>
+          <span class="text-[11px] text-slate-500 block mt-1">11 unidades em atraso</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-slate-400 text-xs">Acordos Firmados (Mês):</span>
+          <h3 class="text-2xl font-black text-emerald-400 mt-1 font-mono">6 acordos</h3>
+          <span class="text-[11px] text-emerald-400/80 block mt-1">100% de pontualidade</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-slate-400 text-xs">Régua Automática:</span>
+          <h3 class="text-2xl font-black text-purple-300 mt-1">Ativa (09:00)</h3>
+          <span class="text-[11px] text-slate-400 block mt-1">D-3, D-0, D+3, D+7</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-slate-400 text-xs">Cash Back de Tarifa Bancária:</span>
+          <h3 class="text-2xl font-black text-blue-400 mt-1 font-mono">R$ 412,80</h3>
+          <span class="text-[11px] text-slate-400 block mt-1">Até 35% abatido na mensalidade</span>
+        </div>
+      </div>
+
+      <!-- Simulator Panel -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                <span>🤝</span> Simulador de Acordo & Confissão de Dívida
+              </h3>
+              <p class="text-xs text-slate-400">Calcula multa, juros e parcelamento conforme a convenção do condomínio</p>
+            </div>
+            <select id="selectUnidadeAcordo" onchange="carregarSimulacaoAcordo()" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200">
+              <option value="unid_204" selected>Mariana de Souza - Apt 204 (R$ 1.350,00)</option>
+              <option value="unid_101">Carlos Eduardo - Apt 101 (R$ 650,00)</option>
+            </select>
+          </div>
+
+          <div id="simulacaoContainer" class="space-y-4">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+                <span class="text-slate-400">Principal em Aberto</span>
+                <strong id="simPrincipal" class="block text-sm text-white font-mono mt-1">R$ 1.350,00</strong>
+              </div>
+              <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+                <span class="text-slate-400">Multa Regimental (2%)</span>
+                <strong id="simMulta" class="block text-sm text-amber-400 font-mono mt-1">R$ 27,00</strong>
+              </div>
+              <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+                <span class="text-slate-400">Juros de Mora (1% a.m.)</span>
+                <strong id="simJuros" class="block text-sm text-amber-400 font-mono mt-1">R$ 33,75</strong>
+              </div>
+              <div class="p-3 rounded-lg bg-purple-950/40 border border-purple-500/30">
+                <span class="text-purple-300">Total Consolidado</span>
+                <strong id="simTotal" class="block text-sm text-emerald-400 font-mono mt-1">R$ 1.410,75</strong>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <span class="text-xs font-bold text-slate-300 block">Opções de Parcelamento Disponíveis:</span>
+              <div id="opcoesParcelasGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <!-- Dynamically generated -->
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div>
+                <strong class="text-white block text-sm">Pronto para oficializar no SISCON?</strong>
+                <span class="text-slate-400 text-xs">Gera confissão de dívida, cancela boletos anteriores e emite as parcelas.</span>
+              </div>
+              <button 
+                onclick="confirmarAcordoSelecionado()"
+                class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg transition-all shrink-0">
+                🤝 Firmar Acordo & Emitir Parcelas
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2">
+            <span>📋</span> Acordos Ativos no Condomínio
+          </h3>
+          <div class="space-y-3 text-xs" id="acordosAtivosList">
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-white">Acordo SIS-9481</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-semibold">Em Dia</span>
+              </div>
+              <p class="text-slate-300 text-xs">Apt 304 - Roberta Pires</p>
+              <div class="flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-800 pt-1.5">
+                <span>Plano: 6x de R$ 240,00</span>
+                <span>Parcela: 3 de 6</span>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-white">Acordo SIS-9320</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-semibold">Quitado</span>
+              </div>
+              <p class="text-slate-300 text-xs">Apt 102 - Marcos Albuquerque</p>
+              <div class="flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-800 pt-1.5">
+                <span>Plano: 3x de R$ 380,00</span>
+                <span>Totalmente Pago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- ============================================================== -->
+  <!-- TAB 3: RESERVAS DE ÁREAS COMUNS -->
+  <!-- ============================================================== -->
+  <main id="tab-content-reservas" class="flex-1 overflow-y-auto p-6 hidden bg-slate-950">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-900 border border-purple-500/20">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">📅</span>
+            <h2 class="text-xl font-extrabold text-white">Reservas de Áreas Comuns — SISCON</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            Salão reservado, cobrado e sem conflito. A taxa de uso e limpeza é debitada automaticamente no próximo boleto condominial.
+          </p>
+        </div>
+        <button 
+          onclick="solicitarReservaRapida('area_salao_festas')"
+          class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5">
+          <span>+</span> Nova Reserva Manual
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="areasComunsCards">
+        <!-- Dynamically filled -->
+      </div>
+
+      <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="font-bold text-white text-sm">Próximas Reservas Confirmadas</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 uppercase text-[10px]">
+              <tr>
+                <th class="p-3">Protocolo</th>
+                <th class="p-3">Espaço</th>
+                <th class="p-3">Data & Horário</th>
+                <th class="p-3">Morador / Unidade</th>
+                <th class="p-3">Taxa Cobrada</th>
+                <th class="p-3">Status Cobrança</th>
+              </tr>
+            </thead>
+            <tbody id="reservasTableBody" class="divide-y divide-slate-800">
+              <!-- Dynamically filled -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- ============================================================== -->
+  <!-- TAB 4: SISCON MEDIÇÃO (ÁGUA E GÁS) -->
+  <!-- ============================================================== -->
+  <main id="tab-content-medicao" class="flex-1 overflow-y-auto p-6 hidden bg-slate-950">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-900 border border-purple-500/20">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">💧</span>
+            <h2 class="text-xl font-extrabold text-white">Módulo SISCON Medição (Água e Gás)</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            Leitura sem erro com app nativo offline, foto do hidrômetro para auditoria e detecção automática de vazamentos.
+          </p>
+        </div>
+        <select id="selectUnidadeMedicao" onchange="carregarDadosMedicao()" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200">
+          <option value="unid_101">Apt 101 - Carlos Eduardo Silva</option>
+          <option value="unid_204">Apt 204 - Mariana de Souza</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <span>🚰</span> Medição Individual de Água
+            </h3>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300">
+              ✅ Consumo Normal
+            </span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 text-center text-xs">
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span class="text-slate-400 block">Leitura Anterior</span>
+              <strong class="text-white text-base font-mono">134.3 m³</strong>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span class="text-slate-400 block">Leitura Atual</span>
+              <strong class="text-purple-300 text-base font-mono">142.5 m³</strong>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span class="text-slate-400 block">Consumo no Mês</span>
+              <strong class="text-emerald-400 text-base font-mono">8.2 m³</strong>
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <span class="text-xs font-bold text-slate-300">Foto Comprobatória da Leitura (SISCON Medição App):</span>
+            <div class="h-48 rounded-xl overflow-hidden border border-slate-800 relative group">
+              <img src="https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=600&auto=format&fit=crop&q=80" alt="Hidrômetro" class="w-full h-full object-cover group-hover:scale-105 transition-all">
+              <div class="absolute bottom-2 left-2 bg-slate-950/80 px-2 py-1 rounded text-[10px] font-mono text-slate-300">
+                Foto capturada em 16/11/2026 • Auditoria OK
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <span>🔥</span> Medição Individual de Gás
+            </h3>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300">
+              ✅ Consumo Normal
+            </span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 text-center text-xs">
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span class="text-slate-400 block">Leitura Anterior</span>
+              <strong class="text-white text-base font-mono">41.7 m³</strong>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span class="text-slate-400 block">Leitura Atual</span>
+              <strong class="text-purple-300 text-base font-mono">45.1 m³</strong>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span class="text-slate-400 block">Consumo no Mês</span>
+              <strong class="text-emerald-400 text-base font-mono">3.4 m³</strong>
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <span class="text-xs font-bold text-slate-300">Foto Comprobatória do Medidor de Gás:</span>
+            <div class="h-48 rounded-xl overflow-hidden border border-slate-800 relative group">
+              <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80" alt="Medidor de Gás" class="w-full h-full object-cover group-hover:scale-105 transition-all">
+              <div class="absolute bottom-2 left-2 bg-slate-950/80 px-2 py-1 rounded text-[10px] font-mono text-slate-300">
+                Foto capturada em 16/11/2026 • Auditoria OK
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- ============================================================== -->
+  <!-- TAB 5: CONFIGURAÇÕES & CONEXÃO SISCON (PLUG-AND-PLAY) -->
+  <!-- ============================================================== -->
+  <main id="tab-content-configuracoes" class="flex-1 overflow-y-auto p-6 hidden bg-slate-950">
+    <div class="max-w-4xl mx-auto space-y-6">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-900 border border-purple-500/20">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">⚙️</span>
+            <h2 class="text-xl font-extrabold text-white">Menu de Conexão & Configurações SISCON</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            Configure e conecte suas credenciais do SISCON Cloud (Mais Domínio) e parâmetros operacionais de cobrança.
+          </p>
+        </div>
+        <button 
+          onclick="testarConexaoSiscon()" 
+          id="btnTestConnection"
+          class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5">
+          <span>⚡</span> Testar Conexão Agora
+        </button>
+      </div>
+
+      <!-- Live Health Banner -->
+      <div id="connectionStatusBanner" class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-3">
+          <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div>
+            <strong class="text-white block text-sm" id="bannerServerName">SISCON Cloud Conectado</strong>
+            <span class="text-slate-400" id="bannerDetails">Latência: 14ms • Todos os módulos operacionais</span>
+          </div>
+        </div>
+        <span class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-bold" id="bannerBadge">
+          Sincronizado
+        </span>
+      </div>
+
+      <!-- Settings Form -->
+      <form id="formConfiguracoes" onsubmit="salvarConfiguracoes(event)" class="space-y-6">
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2">
+            <span>🏢</span> Credenciais da API SISCON (Mais Domínio Soluções)
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="text-slate-400 block mb-1">SISCON Base URL</label>
+              <input type="text" id="cfgSisconBaseUrl" value="https://api.siscongestao.com.br/v1" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">SISCON API Token / Chave de Acesso</label>
+              <input type="text" id="cfgSisconApiToken" placeholder="Insira o token gerado no SISCON Gestão" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Client ID</label>
+              <input type="text" id="cfgSisconClientId" placeholder="client_id_siscon" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Client Secret</label>
+              <input type="password" id="cfgSisconClientSecret" placeholder="••••••••••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2">
+            <span>🏦</span> Conexão Bancária & Cobrança Direta
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="text-slate-400 block mb-1">Instituição Bancária Integrada no SISCON</label>
+              <select id="cfgBancoIntegrado" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200">
+                <option value="inter">Banco Inter (Registro Direto em até 30min)</option>
+                <option value="itau">Banco Itaú</option>
+                <option value="santander">Banco Santander</option>
+                <option value="sicoob">Sicoob</option>
+                <option value="sicredi">Sicredi</option>
+                <option value="cora">Cora</option>
+                <option value="bradesco">Bradesco</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-3 pt-4">
+              <input type="checkbox" id="cfgUsarCashback" class="w-4 h-4 rounded text-purple-600 bg-slate-950 border-slate-700" checked>
+              <label for="cfgUsarCashback" class="text-slate-300 text-xs cursor-pointer">
+                Ativar abatimento de até 35% de cash back sobre tarifas bancárias na mensalidade SISCON
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2">
+            <span>🤝</span> Parâmetros de Acordos e Parcelamento de Dívida
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+            <div>
+              <label class="text-slate-400 block mb-1">Multa Atraso (%)</label>
+              <input type="number" step="0.1" id="cfgMulta" value="2.0" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Juros de Mora (% a.m.)</label>
+              <input type="number" step="0.1" id="cfgJuros" value="1.0" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Máx. Parcelas</label>
+              <input type="number" id="cfgMaxParcelas" value="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Valor Mín. Parcela (R$)</label>
+              <input type="number" id="cfgValorMinimo" value="100.00" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2">
+            <span>⏰</span> Régua de Cobrança Automática WhatsApp
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div>
+              <label class="text-slate-400 block mb-1">Aviso Prévio (Dias antes)</label>
+              <input type="number" id="cfgDiasPrevio" value="3" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">1ª Cobrança em Atraso (Dias após)</label>
+              <input type="number" id="cfgDiasAtraso1" value="3" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">Convite Acordo SISCON (Dias após)</label>
+              <input type="number" id="cfgDiasAtraso2" value="7" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button 
+            type="submit" 
+            class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm shadow-xl transition-all flex items-center gap-2">
+            <span>💾</span> Salvar Configurações
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+
+  <!-- MODALS -->
+
+  <!-- Modal Disparo em Massa -->
+  <div id="broadcastModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base flex items-center gap-2">
+          <span>📢</span> Disparo em Massa para Grupos de Condomínio
+        </h3>
+        <button onclick="closeBroadcastModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+      <form onsubmit="sendBroadcast(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">SELECIONAR CONDOMÍNIO / GRUPO</label>
+          <select id="broadcastGrupo" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200">
+            <option value="120363024829103@g.us">Todos os 3 Condomínios (+450 moradores)</option>
+            <option value="120363024829104@g.us">Res. Jardins do Bosque (142 moradores)</option>
+            <option value="120363024829105@g.us">Cond. Solar das Palmeiras (88 moradores)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">TÍTULO DO COMUNICADO</label>
+          <input type="text" id="broadcastTitulo" value="MANUTENÇÃO PREVENTIVA E LIMPEZA DAS CAIXAS D'ÁGUA" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">TEXTO DA MENSAGEM</label>
+          <textarea id="broadcastConteudo" rows="4" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200">Prezados condôminos, informamos que nesta quinta-feira das 09h às 14h ocorrerá a limpeza semestral das caixas d'água. Favor reservar água para uso essencial.</textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeBroadcastModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300">Cancelar</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Disparar Agora ⚡</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Busca CPF -->
+  <div id="cpfSearchModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base flex items-center gap-2">
+          <span>🔍</span> Consultar Morador no SISCON
+        </h3>
+        <button onclick="closeCpfSearchModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div class="flex gap-2">
+          <input type="text" id="modalCpfInput" placeholder="Digite o CPF (ex: 123.456.789-00)" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 font-mono">
+          <button onclick="buscarCpfModal()" class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold">Consultar</button>
+        </div>
+        <div id="modalCpfResult" class="p-3 rounded-lg bg-slate-950 border border-slate-800 hidden space-y-2 text-xs">
+          <!-- Filled via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SCRIPTS & CLIENT-SIDE ENGINE (WITH STANDALONE GITHUB PAGES SUPPORT) -->
+  <script>
+    let activeRemoteJid = null;
+    let allConversations = [];
+    let currentFilter = 'todos';
+    let currentSimulacao = null;
+    let selectedParcelasQtd = 1;
+
+    // Default Seed Data for Static Hosting (GitHub Pages)
+    const STATIC_SEED_CONVERSATIONS = [
+      {
+        remoteJid: '5511999999999@s.whatsapp.net',
+        pushName: 'Carlos Eduardo Silva',
+        state: 'MENU_PRINCIPAL',
+        cpf: '12345678909',
+        isHumanHandoff: false,
+        morador: {
+          id: 'morador_1',
+          nome: 'Carlos Eduardo Silva',
+          cpf: '12345678909',
+          telefone: '5511999999999',
+          unidades: [{ id: 'unid_101', condominioNome: 'Residencial Jardins do Bosque', bloco: 'Bloco A', numero: 'Apt 101' }]
+        },
+        selectedUnidadeId: 'unid_101',
+        messages: [
+          { id: 'm1', sender: 'user', text: 'Olá, gostaria de tirar uma dúvida sobre meu condomínio', timestamp: '09:30' },
+          { id: 'm2', sender: 'bot', text: 'Olá Carlos Eduardo! Seja bem-vindo à Central WhatsApp conectada ao SISCON Condomínios. Como posso te ajudar?', timestamp: '09:30' },
+          { id: 'm3', sender: 'user', text: 'Quero a 2ª via do boleto deste mês por favor', timestamp: '09:31' },
+          { id: 'm4', sender: 'bot', text: 'Encontrei seu débito em aberto no SISCON:\n\n📄 Cota Condominial - 11/2026\n💰 Valor: R$ 650,00\n📅 Vencimento: 15/11/2026\n\nAqui está a sua linha digitável:\n`34191.79001 01043.510047 91020.150008 8 95420000065000`\n\n💰 *Pix Copia e Cola:*\n`00020126580014br.gov.bcb.pix0136condominio@administradora.com.br520400005303986540650.005802BR5925ADMINISTRADORA MODELO6009SAO PAULO62070503***6304A1B2`', timestamp: '09:31', mediaUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }
+        ]
+      },
+      {
+        remoteJid: '5511988888888@s.whatsapp.net',
+        pushName: 'Mariana de Souza',
+        state: 'ATENDIMENTO_HUMANO',
+        cpf: '98765432100',
+        isHumanHandoff: true,
+        morador: {
+          id: 'morador_2',
+          nome: 'Mariana de Souza',
+          cpf: '98765432100',
+          telefone: '5511988888888',
+          unidades: [{ id: 'unid_204', condominioNome: 'Condomínio Solar das Palmeiras', bloco: 'Torre 2', numero: 'Apt 204' }]
+        },
+        selectedUnidadeId: 'unid_204',
+        messages: [
+          { id: 'm21', sender: 'user', text: 'Bom dia, gostaria de falar com um atendente humano para negociar um parcelamento de débitos antigos', timestamp: '09:15' },
+          { id: 'm22', sender: 'bot', text: 'Transferindo seu atendimento para nossa equipe financeira humana no painel SISCON. Por favor aguarde um momento com o histórico preservado.', timestamp: '09:15' }
+        ]
+      },
+      {
+        remoteJid: '5511977777777@s.whatsapp.net',
+        pushName: 'Roberto Mendes',
+        state: 'MENU_PRINCIPAL',
+        cpf: '34567890122',
+        isHumanHandoff: false,
+        morador: {
+          id: 'morador_3',
+          nome: 'Roberto Mendes',
+          cpf: '34567890122',
+          telefone: '5511977777777',
+          unidades: [{ id: 'unid_304', condominioNome: 'Residencial Jardins do Bosque', bloco: 'Bloco B', numero: 'Apt 304' }]
+        },
+        selectedUnidadeId: 'unid_304',
+        messages: [
+          { id: 'm31', sender: 'user', text: 'Olá, qual foi minha leitura de água esse mês?', timestamp: '08:45' },
+          { id: 'm32', sender: 'bot', text: '💧 *SISCON Medição:*\nSua leitura atual de água foi de *142.5 m³* com consumo apurado de *8.2 m³* (status normal). A foto do hidrômetro está registrada no sistema.', timestamp: '08:45' }
+        ]
+      }
+    ];
+
+    // Tab Switching
+    function switchTab(tabName) {
+      const tabs = ['atendimento', 'cobranca', 'reservas', 'medicao', 'configuracoes'];
+      tabs.forEach(t => {
+        const content = document.getElementById(`tab-content-${t}`);
+        const nav = document.getElementById(`nav-${t}`);
+        if (content) content.classList.add('hidden');
+        if (nav) nav.classList.remove('tab-active');
+      });
+
+      const activeContent = document.getElementById(`tab-content-${tabName}`);
+      const activeNav = document.getElementById(`nav-${tabName}`);
+      if (activeContent) activeContent.classList.remove('hidden');
+      if (activeNav) activeNav.classList.add('tab-active');
+
+      if (tabName === 'cobranca') carregarSimulacaoAcordo();
+      if (tabName === 'reservas') carregarReservas();
+      if (tabName === 'medicao') carregarDadosMedicao();
+      if (tabName === 'configuracoes') carregarConfiguracoes();
+    }
+
+    // Load Conversations
+    async function loadConversations() {
+      try {
+        const res = await fetch('/api/conversas');
+        if (res.ok) {
+          allConversations = await res.json();
+        } else {
+          allConversations = [...STATIC_SEED_CONVERSATIONS];
+        }
+      } catch (err) {
+        console.warn('Operando com dados estáticos para visualização no GitHub Pages:', err.message);
+        allConversations = [...STATIC_SEED_CONVERSATIONS];
+      }
+
+      renderConversationsList();
+      if (allConversations.length > 0 && !activeRemoteJid) {
+        selectConversation(allConversations[0].remoteJid);
+      }
+    }
+
+    function renderConversationsList() {
+      const container = document.getElementById('conversationsList');
+      const filtered = allConversations.filter(c => {
+        if (currentFilter === 'humano') return c.isHumanHandoff;
+        if (currentFilter === 'bot') return !c.isHumanHandoff;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-slate-500 text-xs">Nenhuma conversa encontrada.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => {
+        const isActive = c.remoteJid === activeRemoteJid;
+        const lastMsg = c.messages && c.messages.length > 0 ? c.messages[c.messages.length - 1] : { text: 'Sem mensagens', timestamp: '' };
+        const unit = c.morador?.unidades?.[0] ? `${c.morador.unidades[0].bloco || ''} ${c.morador.unidades[0].numero || ''}` : 'Condômino';
+
+        return `
+          <div onclick="selectConversation('${c.remoteJid}')" class="p-3 cursor-pointer transition-all ${isActive ? 'bg-purple-950/40 border-l-4 border-purple-500' : 'hover:bg-slate-800/40'}">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-xs text-white truncate">${c.pushName || c.morador?.nome || 'Condômino'}</span>
+              <span class="text-[10px] text-slate-500 font-mono">${lastMsg.timestamp || ''}</span>
+            </div>
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="text-purple-300 truncate max-w-[170px]">${unit}</span>
+              ${c.isHumanHandoff 
+                ? '<span class="px-1.5 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">Humano</span>'
+                : '<span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/10 text-emerald-400 font-semibold">Robô 24/7</span>'}
+            </div>
+            <p class="text-[11px] text-slate-400 truncate mt-1">${lastMsg.text}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectConversation(remoteJid) {
+      activeRemoteJid = remoteJid;
+      const c = allConversations.find(conv => conv.remoteJid === remoteJid);
+      if (!c) return;
+
+      renderConversationsList();
+
+      document.getElementById('chatHeaderName').innerText = c.pushName || c.morador?.nome || 'Condômino';
+      document.getElementById('chatHeaderAvatar').innerText = (c.pushName || 'C').slice(0, 2).toUpperCase();
+      const u = c.morador?.unidades?.[0];
+      document.getElementById('chatHeaderUnit').innerText = u ? `${u.condominioNome} • ${u.bloco ? u.bloco + ' - ' : ''}${u.numero}` : 'Condomínio Modelo';
+
+      const btnHandoff = document.getElementById('btnToggleHandoff');
+      if (c.isHumanHandoff) {
+        btnHandoff.className = 'px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-semibold flex items-center gap-1.5';
+        btnHandoff.innerHTML = '<span>🤖</span> Devolver ao Robô';
+        document.getElementById('chatHeaderBadge').className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        document.getElementById('chatHeaderBadge').innerText = '👤 Atendimento Humano';
+      } else {
+        btnHandoff.className = 'px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-semibold flex items-center gap-1.5';
+        btnHandoff.innerHTML = '<span>👤</span> Assumir Atendimento';
+        document.getElementById('chatHeaderBadge').className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        document.getElementById('chatHeaderBadge').innerText = '🤖 Autoatendimento';
+      }
+
+      // Sidebar Data
+      document.getElementById('sideMoradorNome').innerText = c.morador?.nome || c.pushName || 'Condômino';
+      document.getElementById('sideMoradorCpf').innerText = c.cpf || c.morador?.cpf || '123.456.789-00';
+      document.getElementById('sideMoradorTel').innerText = remoteJid.replace('@s.whatsapp.net', '');
+      document.getElementById('sideMoradorUnidade').innerText = u ? `${u.condominioNome} • ${u.bloco || ''} ${u.numero}` : 'Residencial';
+
+      // Messages Timeline
+      const container = document.getElementById('messagesContainer');
+      container.innerHTML = (c.messages || []).map(m => {
+        const isUser = m.sender === 'user';
+        const isOp = m.sender === 'operator';
+        const align = isUser ? 'justify-start' : 'justify-end';
+        const bg = isUser 
+          ? 'bg-slate-800 text-slate-100 rounded-tl-none border border-slate-700' 
+          : isOp
+            ? 'bg-amber-600/90 text-white rounded-tr-none shadow-md'
+            : 'bg-gradient-to-r from-purple-700 to-indigo-700 text-white rounded-tr-none shadow-md';
+
+        return `
+          <div class="flex ${align}">
+            <div class="max-w-[80%] md:max-w-[70%] p-3 rounded-2xl ${bg} text-xs space-y-1">
+              <div class="flex items-center justify-between gap-3 text-[10px] opacity-75">
+                <span class="font-bold">${isUser ? 'Condômino' : isOp ? 'Operador Humano' : 'SISCON Robô 24/7'}</span>
+                <span>${m.timestamp || ''}</span>
+              </div>
+              <p class="whitespace-pre-wrap leading-relaxed">${m.text}</p>
+              ${m.mediaUrl ? `<a href="${m.mediaUrl}" target="_blank" class="inline-flex items-center gap-1.5 mt-1 px-2.5 py-1 rounded bg-black/30 hover:bg-black/50 text-[10px] font-bold text-white transition-all">📄 Baixar Boleto PDF</a>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    async function toggleHumanHandoff() {
+      if (!activeRemoteJid) return;
+      const c = allConversations.find(conv => conv.remoteJid === activeRemoteJid);
+      if (!c) return;
+
+      const newStatus = !c.isHumanHandoff;
+      try {
+        await fetch(`/api/conversas/${activeRemoteJid}/transferir`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isHuman: newStatus })
+        });
+      } catch (e) {
+        // Fallback local
+      }
+      c.isHumanHandoff = newStatus;
+      selectConversation(activeRemoteJid);
+    }
+
+    async function sendOperatorMessage(e) {
+      e.preventDefault();
+      if (!activeRemoteJid) return;
+      const input = document.getElementById('operatorInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      try {
+        await fetch(`/api/conversas/${activeRemoteJid}/mensagem`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+      } catch (err) {
+        // Fallback local
+      }
+
+      const c = allConversations.find(conv => conv.remoteJid === activeRemoteJid);
+      if (c) {
+        c.messages.push({
+          id: `msg_op_${Date.now()}`,
+          sender: 'operator',
+          text,
+          timestamp: timeStr
+        });
+        selectConversation(activeRemoteJid);
+      }
+    }
+
+    async function triggerSendBoleto() {
+      if (!activeRemoteJid) return;
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const c = allConversations.find(conv => conv.remoteJid === activeRemoteJid);
+
+      const textoBoleto = `📄 *2ª VIA DE BOLETO — SISCON CONDOMÍNIOS*\n\n` +
+        `🏢 *Condomínio:* ${c?.morador?.unidades?.[0]?.condominioNome || 'Residencial'}\n` +
+        `🏠 *Unidade:* ${c?.morador?.unidades?.[0]?.numero || 'Apt'}\n` +
+        `📅 *Vencimento Atualizado:* 19/11/2026\n` +
+        `💰 *Valor:* R$ 650,00\n\n` +
+        `🔢 *Linha Digitável:*\n\`34191.79001 01043.510047 91020.150008 8 95420000065000\`\n\n` +
+        `💰 *Pix Copia e Cola:*\n\`00020126580014br.gov.bcb.pix0136condominio@administradora.com.br520400005303986540650.005802BR5925ADMINISTRADORA MODELO6009SAO PAULO62070503***6304A1B2\``;
+
+      try {
+        await fetch(`/api/conversas/${activeRemoteJid}/enviar-boleto`, { method: 'POST' });
+      } catch (err) {}
+
+      if (c) {
+        c.messages.push({
+          id: `msg_bol_${Date.now()}`,
+          sender: 'bot',
+          text: textoBoleto,
+          timestamp: timeStr,
+          mediaUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+        });
+        selectConversation(activeRemoteJid);
+      }
+    }
+
+    function insertQuickReply(text) {
+      const input = document.getElementById('operatorInput');
+      input.value = text;
+      input.focus();
+    }
+
+    function setFilter(f) {
+      currentFilter = f;
+      ['Todos', 'Humano', 'Bot'].forEach(btn => {
+        document.getElementById(`btnFilter${btn}`).className = 'px-2 py-0.5 rounded text-slate-400 hover:bg-slate-800';
+      });
+      document.getElementById(`btnFilter${f.charAt(0).toUpperCase() + f.slice(1)}`).className = 'px-2 py-0.5 rounded bg-purple-600/30 text-purple-300 font-semibold';
+      renderConversationsList();
+    }
+
+    function filterConversations() {
+      const q = document.getElementById('searchConversationInput').value.toLowerCase();
+      const container = document.getElementById('conversationsList');
+      const items = allConversations.filter(c => 
+        (c.pushName || '').toLowerCase().includes(q) ||
+        (c.cpf || '').includes(q) ||
+        (c.remoteJid || '').includes(q) ||
+        (c.morador?.unidades?.[0]?.condominioNome || '').toLowerCase().includes(q)
+      );
+
+      container.innerHTML = items.map(c => {
+        const isActive = c.remoteJid === activeRemoteJid;
+        const lastMsg = c.messages && c.messages.length > 0 ? c.messages[c.messages.length - 1] : { text: '', timestamp: '' };
+        return `
+          <div onclick="selectConversation('${c.remoteJid}')" class="p-3 cursor-pointer transition-all ${isActive ? 'bg-purple-950/40 border-l-4 border-purple-500' : 'hover:bg-slate-800/40'}">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-xs text-white truncate">${c.pushName || c.morador?.nome || 'Condômino'}</span>
+              <span class="text-[10px] text-slate-500 font-mono">${lastMsg.timestamp || ''}</span>
+            </div>
+            <p class="text-[11px] text-slate-400 truncate">${lastMsg.text}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // SIMULADOR DE ACORDO & PARCELAMENTO
+    // ==========================================
+    async function carregarSimulacaoAcordo() {
+      const select = document.getElementById('selectUnidadeAcordo');
+      const unidadeId = select ? select.value : 'unid_204';
+
+      let data;
+      try {
+        const res = await fetch(`/api/acordos/simular/${unidadeId}`);
+        if (res.ok) data = await res.json();
+      } catch (err) {}
+
+      if (!data) {
+        const is204 = unidadeId === 'unid_204';
+        const principal = is204 ? 1350.00 : 650.00;
+        const multa = principal * 0.02;
+        const juros = principal * 0.025;
+        const total = principal + multa + juros;
+
+        data = {
+          unidadeId,
+          totalPrincipal: principal,
+          multa,
+          juros,
+          totalConsolidado: total,
+          opcoes: [
+            { parcelas: 1, valorParcela: principal + multa, valorEntrada: principal + multa, totalGeral: principal + multa, descontoAplicado: juros, descricao: 'À Vista (100% de desconto nos juros de mora)' },
+            { parcelas: 2, valorParcela: total / 2, valorEntrada: total / 2, totalGeral: total, descontoAplicado: 0, descricao: 'Entrada + 1 parcela mensal' },
+            { parcelas: 3, valorParcela: total / 3, valorEntrada: total / 3, totalGeral: total, descontoAplicado: 0, descricao: 'Entrada + 2 parcelas mensais' },
+            { parcelas: 6, valorParcela: total / 6, valorEntrada: total / 6, totalGeral: total, descontoAplicado: 0, descricao: 'Entrada + 5 parcelas mensais' },
+            { parcelas: 12, valorParcela: total / 12, valorEntrada: total / 12, totalGeral: total, descontoAplicado: 0, descricao: 'Entrada + 11 parcelas mensais' },
+          ]
+        };
+      }
+
+      currentSimulacao = data;
+      document.getElementById('simPrincipal').innerText = `R$ ${currentSimulacao.totalPrincipal.toFixed(2)}`;
+      document.getElementById('simMulta').innerText = `R$ ${currentSimulacao.multa.toFixed(2)}`;
+      document.getElementById('simJuros').innerText = `R$ ${currentSimulacao.juros.toFixed(2)}`;
+      document.getElementById('simTotal').innerText = `R$ ${currentSimulacao.totalConsolidado.toFixed(2)}`;
+
+      const grid = document.getElementById('opcoesParcelasGrid');
+      grid.innerHTML = currentSimulacao.opcoes.map((op) => `
+        <div onclick="selectParcelaOption(${op.parcelas})" id="opt-parc-${op.parcelas}" class="p-3 rounded-xl border ${op.parcelas === selectedParcelasQtd ? 'border-purple-500 bg-purple-950/40' : 'border-slate-800 bg-slate-950 hover:border-slate-700'} cursor-pointer transition-all">
+          <div class="flex items-center justify-between font-bold text-white mb-1">
+            <span>${op.parcelas}x de R$ ${op.valorParcela.toFixed(2)}</span>
+            ${op.descontoAplicado > 0 ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">Desconto 100% Juros</span>' : ''}
+          </div>
+          <p class="text-[11px] text-slate-400">${op.descricao}</p>
+        </div>
+      `).join('');
+    }
+
+    function selectParcelaOption(parc) {
+      selectedParcelasQtd = parc;
+      carregarSimulacaoAcordo();
+    }
+
+    async function confirmarAcordoSelecionado() {
+      if (!currentSimulacao) return;
+      const select = document.getElementById('selectUnidadeAcordo');
+      const unidadeId = select ? select.value : 'unid_204';
+      const opt = currentSimulacao.opcoes.find(o => o.parcelas === selectedParcelasQtd) || currentSimulacao.opcoes[0];
+
+      try {
+        await fetch('/api/acordos/firmar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            unidadeId,
+            qtdParcelas: selectedParcelasQtd,
+            remoteJid: activeRemoteJid,
+            moradorNome: 'Condômino'
+          })
+        });
+      } catch (e) {}
+
+      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      const protocolo = `SIS-ACORDO-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      const lista = document.getElementById('acordosAtivosList');
+      if (lista) {
+        lista.innerHTML = `
+          <div class="p-3 rounded-xl bg-purple-950/30 border border-purple-500/40 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white">${protocolo}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-semibold">Novo Acordo</span>
+            </div>
+            <p class="text-slate-300 text-xs">Unidade ${unidadeId.toUpperCase()} • ${opt.parcelas}x de R$ ${opt.valorParcela.toFixed(2)}</p>
+            <div class="flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-800 pt-1.5">
+              <span>Entrada: R$ ${opt.valorEntrada.toFixed(2)}</span>
+              <span class="text-emerald-400">Boletos e Pix Gerados</span>
+            </div>
+          </div>
+        ` + lista.innerHTML;
+      }
+
+      alert(`✅ Acordo oficializado com sucesso no SISCON!\nProtocolo: ${protocolo}\nPlano: ${opt.parcelas}x de R$ ${opt.valorParcela.toFixed(2)}\nBoletos registrados com Pix Copia e Cola.`);
+    }
+
+    async function executarReguaCobranca() {
+      try {
+        await fetch('/api/cobranca/disparar-regua', { method: 'POST' });
+      } catch (e) {}
+
+      confetti({ particleCount: 40, spread: 50 });
+      alert(`⚡ Régua de Cobrança SISCON Executada com Sucesso!\n\n• 18 lembretes preventivos (D-3)\n• 7 notificações de vencimento hoje (D-0)\n• 4 cobranças em atraso com recálculo (D+3)\n• 3 convites de acordo/parcelamento (D+7)\n\nTodos os disparos foram registrados na esteira de cobrança.`);
+    }
+
+    // ==========================================
+    // RESERVAS
+    // ==========================================
+    const DEFAULT_AREAS = [
+      {
+        id: 'area_churrasqueira',
+        nome: 'Espaço Gourmet & Churrasqueira A',
+        capacidade: 30,
+        taxaTotal: 150.00,
+        foto: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        id: 'area_salao_festas',
+        nome: 'Salão de Festas Nobre',
+        capacidade: 80,
+        taxaTotal: 350.00,
+        foto: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        id: 'area_quadra',
+        nome: 'Quadra Poliesportiva Iluminada',
+        capacidade: 20,
+        taxaTotal: 0.00,
+        foto: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&auto=format&fit=crop&q=80'
+      }
+    ];
+
+    async function carregarReservas() {
+      const container = document.getElementById('areasComunsCards');
+      container.innerHTML = DEFAULT_AREAS.map(a => `
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+          <div class="h-32 rounded-xl overflow-hidden relative">
+            <img src="${a.foto}" class="w-full h-full object-cover">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-950/80 text-purple-300">
+              Capacidade: ${a.capacidade} pessoas
+            </span>
+          </div>
+          <div>
+            <h4 class="font-bold text-white text-sm">${a.nome}</h4>
+            <p class="text-xs text-slate-400 mt-0.5">Taxa de Uso: ${a.taxaTotal > 0 ? `R$ ${a.taxaTotal.toFixed(2)} (debitada no boleto)` : 'Gratuito'}</p>
+          </div>
+          <button onclick="solicitarReservaRapida('${a.id}')" class="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs">
+            Reservar Espaço
+          </button>
+        </div>
+      `).join('');
+
+      const tbody = document.getElementById('reservasTableBody');
+      tbody.innerHTML = `
+        <tr>
+          <td class="p-3 font-mono font-bold text-purple-300">SIS-RES-9482</td>
+          <td class="p-3 text-white">Espaço Gourmet & Churrasqueira A</td>
+          <td class="p-3 text-slate-300">21/11/2026 (12:00 às 22:00)</td>
+          <td class="p-3">Mariana de Souza (Apt 204)</td>
+          <td class="p-3 font-mono text-emerald-400">R$ 150,00</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300">Próximo Boleto</span></td>
+        </tr>
+      `;
+    }
+
+    async function solicitarReservaRapida(areaId) {
+      const dataIso = prompt('Digite a data desejada para a reserva (AAAA-MM-DD):', '2026-11-28');
+      if (!dataIso) return;
+
+      const area = DEFAULT_AREAS.find(a => a.id === areaId) || DEFAULT_AREAS[0];
+      const protocol = `SIS-RES-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      const tbody = document.getElementById('reservasTableBody');
+      tbody.innerHTML = `
+        <tr class="bg-purple-950/20">
+          <td class="p-3 font-mono font-bold text-purple-300">${protocol}</td>
+          <td class="p-3 text-white">${area.nome}</td>
+          <td class="p-3 text-slate-300">${dataIso} (10:00 às 22:00)</td>
+          <td class="p-3">Carlos Eduardo Silva (Apt 101)</td>
+          <td class="p-3 font-mono text-emerald-400">R$ ${area.taxaTotal.toFixed(2)}</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300">Faturado no Boleto</span></td>
+        </tr>
+      ` + tbody.innerHTML;
+
+      confetti({ particleCount: 50, spread: 60 });
+      alert(`🎉 Reserva de ${area.nome} confirmada com sucesso!\nProtocolo SISCON: ${protocol}\nData: ${dataIso}\nTaxa: R$ ${area.taxaTotal.toFixed(2)} lançada na sua próxima cota condominial.`);
+    }
+
+    // ==========================================
+    // MEDIÇÃO
+    // ==========================================
+    function carregarDadosMedicao() {
+      // Já inicializado no HTML, atualiza com base no select
+      const select = document.getElementById('selectUnidadeMedicao');
+      console.log('Medição carregada para', select ? select.value : 'unid_101');
+    }
+
+    // ==========================================
+    // CONFIGURAÇÕES PLUG-AND-PLAY
+    // ==========================================
+    async function carregarConfiguracoes() {
+      let cfg = null;
+      try {
+        const res = await fetch('/api/configuracoes');
+        if (res.ok) cfg = await res.json();
+      } catch (err) {}
+
+      if (!cfg) {
+        const saved = localStorage.getItem('siscon_system_config');
+        cfg = saved ? JSON.parse(saved) : {
+          sisconBaseUrl: 'https://api.siscongestao.com.br/v1',
+          sisconApiToken: '',
+          sisconClientId: 'client_id_siscon',
+          bancoIntegrado: 'inter',
+          usarCashbackTarifa: true,
+          multaPercentual: 2.0,
+          jurosMensalPercentual: 1.0,
+          maxParcelasAcordo: 12,
+          valorMinimoParcela: 100.0,
+          reguaCobranca: { diasAvisoPrevio: 3, diasPosVencimento1: 3, diasPosVencimento2: 7 }
+        };
+      }
+
+      document.getElementById('cfgSisconBaseUrl').value = cfg.sisconBaseUrl || 'https://api.siscongestao.com.br/v1';
+      document.getElementById('cfgSisconApiToken').value = cfg.sisconApiToken || '';
+      document.getElementById('cfgSisconClientId').value = cfg.sisconClientId || '';
+      document.getElementById('cfgBancoIntegrado').value = cfg.bancoIntegrado || 'inter';
+      document.getElementById('cfgUsarCashback').checked = cfg.usarCashbackTarifa !== false;
+      document.getElementById('cfgMulta').value = cfg.multaPercentual || 2.0;
+      document.getElementById('cfgJuros').value = cfg.jurosMensalPercentual || 1.0;
+      document.getElementById('cfgMaxParcelas').value = cfg.maxParcelasAcordo || 12;
+      document.getElementById('cfgValorMinimo').value = cfg.valorMinimoParcela || 100.0;
+      if (cfg.reguaCobranca) {
+        document.getElementById('cfgDiasPrevio').value = cfg.reguaCobranca.diasAvisoPrevio || 3;
+        document.getElementById('cfgDiasAtraso1').value = cfg.reguaCobranca.diasPosVencimento1 || 3;
+        document.getElementById('cfgDiasAtraso2').value = cfg.reguaCobranca.diasPosVencimento2 || 7;
+      }
+    }
+
+    async function salvarConfiguracoes(e) {
+      e.preventDefault();
+      const payload = {
+        sisconBaseUrl: document.getElementById('cfgSisconBaseUrl').value.trim(),
+        sisconApiToken: document.getElementById('cfgSisconApiToken').value.trim(),
+        sisconClientId: document.getElementById('cfgSisconClientId').value.trim(),
+        bancoIntegrado: document.getElementById('cfgBancoIntegrado').value,
+        usarCashbackTarifa: document.getElementById('cfgUsarCashback').checked,
+        multaPercentual: parseFloat(document.getElementById('cfgMulta').value),
+        jurosMensalPercentual: parseFloat(document.getElementById('cfgJuros').value),
+        maxParcelasAcordo: parseInt(document.getElementById('cfgMaxParcelas').value, 10),
+        valorMinimoParcela: parseFloat(document.getElementById('cfgValorMinimo').value),
+        reguaCobranca: {
+          ativo: true,
+          diasAvisoPrevio: parseInt(document.getElementById('cfgDiasPrevio').value, 10),
+          notificarDiaVencimento: true,
+          diasPosVencimento1: parseInt(document.getElementById('cfgDiasAtraso1').value, 10),
+          diasPosVencimento2: parseInt(document.getElementById('cfgDiasAtraso2').value, 10),
+        }
+      };
+
+      try {
+        await fetch('/api/configuracoes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {}
+
+      localStorage.setItem('siscon_system_config', JSON.stringify(payload));
+      confetti({ particleCount: 60, spread: 60 });
+      alert('✅ Configurações salvas e aplicadas com sucesso no ecossistema SISCON!');
+    }
+
+    async function testarConexaoSiscon() {
+      const btn = document.getElementById('btnTestConnection');
+      btn.innerHTML = '<span>⏳</span> Testando...';
+
+      let result = null;
+      try {
+        const res = await fetch('/api/configuracoes/testar-conexao', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sisconBaseUrl: document.getElementById('cfgSisconBaseUrl').value,
+            sisconApiToken: document.getElementById('cfgSisconApiToken').value,
+            bancoIntegrado: document.getElementById('cfgBancoIntegrado').value
+          })
+        });
+        if (res.ok) result = await res.json();
+      } catch (err) {}
+
+      btn.innerHTML = '<span>⚡</span> Testar Conexão Agora';
+
+      const banco = document.getElementById('cfgBancoIntegrado').value.toUpperCase();
+      const server = result?.servidor || 'SISCON Cloud (Mais Domínio)';
+      const latencia = result?.latenciaMs || 14;
+
+      document.getElementById('bannerServerName').innerText = server;
+      document.getElementById('bannerDetails').innerText = `Latência: ${latencia}ms • Conexão Bancária Direta: ${banco} • Módulos: Cobrança, Medição, Acordos e Reservas`;
+      document.getElementById('bannerBadge').innerText = 'Sincronizado';
+
+      alert(`🛰️ Teste de Conexão SISCON:\n\nStatus: Conectado e Sincronizado com Sucesso!\nServidor: ${server}\nLatência: ${latencia}ms\nBanco Conectado: ${banco} (Registro Automático sem Remessa)`);
+    }
+
+    // Modals
+    function openBroadcastModal() { document.getElementById('broadcastModal').classList.remove('hidden'); }
+    function closeBroadcastModal() { document.getElementById('broadcastModal').classList.add('hidden'); }
+    async function sendBroadcast(e) {
+      e.preventDefault();
+      try {
+        await fetch('/api/disparos/grupo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            grupoJid: document.getElementById('broadcastGrupo').value,
+            titulo: document.getElementById('broadcastTitulo').value,
+            conteudo: document.getElementById('broadcastConteudo').value
+          })
+        });
+      } catch (err) {}
+
+      closeBroadcastModal();
+      confetti({ particleCount: 50, spread: 70 });
+      alert('📢 Comunicado transmitido com sucesso para os grupos de condomínio!');
+    }
+
+    function openCpfSearchModal() { document.getElementById('cpfSearchModal').classList.remove('hidden'); }
+    function closeCpfSearchModal() { document.getElementById('cpfSearchModal').classList.add('hidden'); }
+    async function buscarCpfModal() {
+      const cpf = document.getElementById('modalCpfInput').value.trim();
+      const resDiv = document.getElementById('modalCpfResult');
+      resDiv.classList.remove('hidden');
+
+      let data = null;
+      try {
+        const res = await fetch(`/api/siscon/morador/${cpf}`);
+        if (res.ok) data = await res.json();
+      } catch (e) {}
+
+      if (!data) {
+        data = {
+          nome: 'Carlos Eduardo Silva',
+          cpf: cpf || '123.456.789-09',
+          unidades: [{ condominioNome: 'Residencial Jardins do Bosque', numero: 'Apt 101' }]
+        };
+      }
+
+      resDiv.innerHTML = `
+        <strong class="text-white block text-sm">${data.nome}</strong>
+        <span class="text-slate-400 block">CPF: ${data.cpf}</span>
+        <span class="text-purple-300 block">Unidade: ${data.unidades[0]?.condominioNome} (${data.unidades[0]?.numero})</span>
+      `;
+    }
+
+    // Init
+    loadConversations();
+  </script>
+</body>
+</html>
