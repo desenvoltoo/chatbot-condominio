@@ -1108,7 +1108,7 @@
     <!-- Navegação de Módulos com Verificação RBAC -->
     <nav class="flex-1 overflow-y-auto p-2.5 space-y-1 text-xs font-medium">
       
-      <div class="px-2 pt-2 pb-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 sidebar-text">
+      <div id="sidebarCatOperacao" class="px-2 pt-2 pb-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 sidebar-text">
         Operação em Tempo Real
       </div>
 
@@ -1172,7 +1172,7 @@
         </div>
       </button>
 
-      <div class="px-2 pt-4 pb-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 sidebar-text">
+      <div id="sidebarCatGovernanca" class="px-2 pt-4 pb-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 sidebar-text">
         Inteligência & Governança
       </div>
 
@@ -1259,7 +1259,15 @@
         </div>
         <div class="sidebar-text truncate">
           <span id="sidebarUserName" class="font-bold text-xs text-white block truncate">Administrador Master</span>
-          <span id="sidebarUserRole" class="text-[10px] text-indigo-400 font-mono font-semibold block truncate">👑 ADMIN MASTER</span>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span id="sidebarUserRole" class="text-[10px] text-indigo-400 font-mono font-semibold block truncate">👑 ADMIN MASTER</span>
+            <select id="selectRoleSwitcher" onchange="simularRoleChange(this.value)" class="text-[9px] font-mono bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] rounded px-1 py-0.5 text-indigo-300 cursor-pointer focus:outline-none" title="Alternar papel para testar restrição de acesso">
+              <option value="admin" selected>Admin</option>
+              <option value="sindico">Síndico</option>
+              <option value="operador">Financeiro</option>
+              <option value="portaria">Portaria</option>
+            </select>
+          </div>
         </div>
       </div>
       <button 
@@ -2853,15 +2861,37 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         const navBtn = document.getElementById(`nav-${t}`);
         if (!navBtn) return;
         const lock = navBtn.querySelector('.sidebar-lock-badge');
+        if (lock) lock.classList.add('hidden');
 
+        // Se o módulo NÃO for permitido para o perfil, OCULTA COMPLETAMENTE (sem cadeado)
         if (!perm.allowedTabs.includes(t)) {
-          navBtn.classList.add('opacity-40');
-          if (lock) lock.classList.remove('hidden');
+          navBtn.classList.add('hidden');
+          navBtn.classList.remove('flex');
         } else {
+          navBtn.classList.remove('hidden');
+          navBtn.classList.add('flex');
           navBtn.classList.remove('opacity-40');
-          if (lock) lock.classList.add('hidden');
         }
       });
+
+      // Oculta cabeçalhos de categorias caso nenhum item esteja visível
+      const operacaoTabs = ['atendimento', 'cobranca', 'portaria_digital', 'reservas', 'medicao'];
+      const governancaTabs = ['analytics', 'assembleia', 'ai', 'rag', 'configuracoes', 'equipe'];
+
+      const hasOperacao = operacaoTabs.some(t => perm.allowedTabs.includes(t));
+      const hasGovernanca = governancaTabs.some(t => perm.allowedTabs.includes(t));
+
+      const catOp = document.getElementById('sidebarCatOperacao');
+      if (catOp) {
+        if (!hasOperacao) catOp.classList.add('hidden');
+        else catOp.classList.remove('hidden');
+      }
+
+      const catGov = document.getElementById('sidebarCatGovernanca');
+      if (catGov) {
+        if (!hasGovernanca) catGov.classList.add('hidden');
+        else catGov.classList.remove('hidden');
+      }
 
       const btnBrd = document.getElementById('topBtnBroadcast');
       if (btnBrd) {
@@ -2869,14 +2899,49 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         else btnBrd.classList.remove('hidden');
       }
 
+      const selectSwitcher = document.getElementById('selectRoleSwitcher');
+      if (selectSwitcher) selectSwitcher.value = role;
+
       const currentTab = allTabs.find(t => {
         const c = document.getElementById(`tab-content-${t}`);
         return c && !c.classList.contains('hidden');
       }) || 'atendimento';
 
       if (!perm.allowedTabs.includes(currentTab)) {
-        switchTab('atendimento');
+        switchTab(perm.allowedTabs[0] || 'atendimento');
       }
+    }
+
+    function simularRoleChange(newRole) {
+      currentUserRole = newRole;
+      const roleMap = {
+        admin: '👑 ADMIN MASTER',
+        sindico: '🏢 SÍNDICO',
+        operador: '💼 FINANCEIRO',
+        portaria: '🚪 PORTARIA'
+      };
+      const nameMap = {
+        admin: 'Administrador Master',
+        sindico: 'Dr. Roberto Mendes (Síndico)',
+        operador: 'Juliana Costa (Financeiro)',
+        portaria: 'Marcos Vinícius (Portaria)'
+      };
+      const avatarMap = {
+        admin: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+        sindico: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+        operador: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+        portaria: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'
+      };
+
+      const nameEl = document.getElementById('sidebarUserName');
+      if (nameEl) nameEl.innerText = nameMap[newRole] || 'Operador';
+      const roleEl = document.getElementById('sidebarUserRole');
+      if (roleEl) roleEl.innerText = roleMap[newRole] || newRole.toUpperCase();
+      const avatarEl = document.getElementById('sidebarUserAvatar');
+      if (avatarEl && avatarMap[newRole]) avatarEl.src = avatarMap[newRole];
+
+      applyRolePermissions(newRole);
+      showToast('Perfil Alternado', `Visualização ajustada para "${roleMap[newRole]}". Menus não permitidos foram 100% ocultados.`, 'info');
     }
 
     function mostrarAvisoPermissaoRestrita(tabName, role) {
