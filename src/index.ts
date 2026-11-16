@@ -1,31 +1,44 @@
 import express from 'express';
+import cors from 'cors';
+import path from 'path';
 import { config } from './config.js';
-import { webhookRouter } from './routes/webhook.routes.js';
+import { webhookRouter, orchestrator } from './routes/webhook.routes.js';
+import { createApiRouter } from './routes/api.routes.js';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rotas da aplicação
-app.use('/webhook', webhookRouter);
+// Serve static frontend assets
+const publicPath = path.join(__dirname, '..', 'public');
+const docsPath = path.join(__dirname, '..', 'docs');
 
+app.use('/docs', express.static(docsPath));
+app.use(express.static(publicPath));
+
+// Webhook & Management API Routes
+app.use('/webhook', webhookRouter);
+app.use('/api', createApiRouter(orchestrator));
+
+// Dashboard Route (Central do Operador)
+app.get('/painel', (_req, res) => {
+  res.sendFile(path.join(publicPath, 'painel.html'));
+});
+
+// Root Route: serves painel
 app.get('/', (_req, res) => {
-  res.json({
-    app: 'Chatbot Condomínio WhatsApp API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/webhook/health',
-      webhook: '/webhook/evolution',
-    },
-  });
+  res.sendFile(path.join(publicPath, 'painel.html'));
 });
 
 app.listen(config.port, () => {
   console.log(`=======================================================`);
-  console.log(`🤖 Chatbot Condomínio rodando na porta ${config.port}`);
-  console.log(`🔗 Webhook da Evolution API: http://localhost:${config.port}/webhook/evolution`);
-  console.log(`🏢 Administradora: ${config.company.nome}`);
-  console.log(`⚙️ Modo ERP: ${config.erp.provider}`);
+  console.log(`🏢 SISTEMA CONDOMÍNIO + SISCON (MAIS DOMÍNIO)`);
+  console.log(`🤖 Backend Ativo na Porta ${config.port}`);
+  console.log(`💻 Painel de Atendimento: http://localhost:${config.port}/painel`);
+  console.log(`📱 Simulador WhatsApp:     http://localhost:${config.port}/docs/`);
+  console.log(`🔗 Webhook Evolution API:  http://localhost:${config.port}/webhook/evolution`);
+  console.log(`⚙️ Provedor ERP Conectado: ${config.erp.provider.toUpperCase()}`);
   console.log(`=======================================================`);
 });

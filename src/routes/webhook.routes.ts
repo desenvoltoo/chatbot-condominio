@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { BotOrchestrator } from '../bot/bot.orchestrator.js';
 
+export const orchestrator = new BotOrchestrator();
 export const webhookRouter = Router();
-const orchestrator = new BotOrchestrator();
 
 webhookRouter.post('/evolution', async (req: Request, res: Response) => {
   try {

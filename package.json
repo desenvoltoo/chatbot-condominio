@@ -20,7 +20,9 @@
   "author": "Thxxvs",
   "license": "MIT",
   "dependencies": {
+    "@types/cors": "^2.8.19",
     "axios": "^1.7.9",
+    "cors": "^2.8.6",
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
   },

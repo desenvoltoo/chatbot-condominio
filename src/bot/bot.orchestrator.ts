@@ -2,6 +2,7 @@ import { SessionManager } from './session.manager.js';
 import { EvolutionService } from '../services/evolution.service.js';
 import { IErpService } from '../services/erp.service.js';
 import { MockErpService } from '../services/mock-erp.service.js';
+import { SisconService } from '../services/siscon.service.js';
 import { validarCpf, limparCpf, mascararCpf } from '../utils/cpf.util.js';
 import { formatarMensagemPix } from '../utils/pix.util.js';
 import { config } from '../config.js';
@@ -14,7 +15,21 @@ export class BotOrchestrator {
   constructor() {
     this.sessionManager = new SessionManager();
     this.evolutionService = new EvolutionService();
-    this.erpService = new MockErpService(); // Inicializado com Mock; conectável a qualquer ERP via IErpService
+    
+    // Suporte nativo ao SISCON ou Mock
+    if (config.erp.provider === 'siscon') {
+      this.erpService = new SisconService();
+    } else {
+      this.erpService = new MockErpService();
+    }
+  }
+
+  getSessionManager(): SessionManager {
+    return this.sessionManager;
+  }
+
+  getErpService(): IErpService {
+    return this.erpService;
   }
 
   async processIncomingMessage(remoteJid: string, text: string, pushName?: string): Promise<void> {

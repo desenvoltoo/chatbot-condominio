@@ -53,6 +53,16 @@ export interface Comunicado {
   autor: string;
 }
 
+export interface ChatMessage {
+  id: string;
+  sender: 'user' | 'bot' | 'operator' | 'system';
+  text: string;
+  timestamp: string;
+  mediaUrl?: string;
+  mediaType?: 'pdf' | 'image' | 'audio';
+  read?: boolean;
+}
+
 export interface UserSession {
   remoteJid: string; // ex: 5511999999999@s.whatsapp.net
   pushName?: string;
@@ -63,6 +73,9 @@ export interface UserSession {
   boletosDisponiveis?: Boleto[];
   tempData?: Record<string, any>;
   lastInteraction: Date;
+  messages?: ChatMessage[];
+  npsRating?: number;
+  isHumanHandoff?: boolean;
 }
 
 export interface WebhookMessage {
