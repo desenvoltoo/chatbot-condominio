@@ -1081,6 +1081,88 @@
   </div>
 
   <!-- ============================================================== -->
+  <!-- MODAL: CRIAR NOVA ASSEMBLEIA VIRTUAL OU ENQUETE -->
+  <!-- ============================================================== -->
+  <div id="modalCriarAssembleia" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 hidden p-4 overflow-y-auto" onclick="if(event.target === this) fecharModalCriarAssembleia()">
+    <div class="glass-surface rounded-3xl w-full max-w-lg p-6 border border-purple-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-300 text-lg">
+            🗳️
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-sm">Criar Nova Assembleia ou Votação</h3>
+            <span class="text-[10px] text-slate-400">Envio automático da cédula digital no WhatsApp dos moradores</span>
+          </div>
+        </div>
+        <button onclick="fecharModalCriarAssembleia()" class="p-1 rounded-lg hover:bg-white/[0.08] text-slate-400 hover:text-white transition-all text-xs cursor-pointer">✕</button>
+      </div>
+
+      <div class="space-y-3.5 text-xs">
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">Título da Pauta / Assunto a ser Votado:</label>
+          <input type="text" id="novaAssembleiaTitulo" placeholder="Ex: Reforma da Fachada & Pintura dos Blocos" value="Pauta 02/2026: Reforma da Fachada & Impermeabilização dos Blocos" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Tipo de Assembleia:</label>
+            <select id="novaAssembleiaTipo" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-purple-500">
+              <option value="Assembleia Geral Extraordinária (AGE)">Assembleia Geral Extraordinária (AGE)</option>
+              <option value="Assembleia Geral Ordinária (AGO)">Assembleia Geral Ordinária (AGO)</option>
+              <option value="Enquete Rápida / Consulta de Opinião">Enquete Rápida / Consulta de Opinião</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Data Limite de Votação:</label>
+            <input type="date" id="novaAssembleiaDataLimite" value="2026-11-25" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-purple-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Opções de Resposta:</label>
+            <select id="novaAssembleiaOpcoes" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-purple-500">
+              <option value="sim_nao">Sim / Não / Abstenção</option>
+              <option value="orcamentos">Orçamento A / Orçamento B / Orçamento C</option>
+              <option value="aprovacao">Aprovar com Ressalvas / Rejeitar</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Quem Pode Votar?</label>
+            <select id="novaAssembleiaQuemPode" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-purple-500">
+              <option value="Apenas Moradores em Dia (Código Civil)">Apenas Moradores em Dia (Código Civil)</option>
+              <option value="Todos os Moradores (Consulta Livre)">Todos os Moradores (Consulta Livre)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">Descrição / Justificativa da Pauta:</label>
+          <textarea id="novaAssembleiaDesc" rows="2" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500" placeholder="Insira detalhes sobre os orçamentos, cronograma e valor do rateio se houver...">Aprovação do rateio extraordinário em 4x para impermeabilização e pintura externa dos blocos A e B, conforme 3 orçamentos já anexados no edital.</textarea>
+        </div>
+
+        <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-start gap-2.5 text-[11px] text-slate-300">
+          <input type="checkbox" id="chkDispararWhatsapp" checked class="mt-0.5 rounded text-purple-600 focus:ring-0">
+          <label for="chkDispararWhatsapp" class="cursor-pointer">
+            <strong class="text-white block">Disparo Automático no WhatsApp</strong>
+            Enviar convocação oficial com botão de votação no WhatsApp de todos os 240 condôminos assim que publicar.
+          </label>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="fecharModalCriarAssembleia()" class="flex-1 py-2.5 rounded-xl border border-white/[0.1] hover:bg-white/[0.05] text-slate-300 font-bold text-xs transition-all cursor-pointer">
+          Cancelar
+        </button>
+        <button onclick="salvarNovaAssembleia()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          <span>🚀</span> Publicar e Disparar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
   <!-- MODAL RELATÓRIO DO SÍNDICO: PRESTAÇÃO DE CONTAS SIMPLES E CLARA -->
   <!-- ============================================================== -->
   <div id="modalRelatorioExecutivoSindico" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 hidden p-4 overflow-y-auto" onclick="if(event.target === this) fecharModalRelatorioExecutivo()">
@@ -2547,15 +2629,22 @@
               Democracia Condominial Digital
             </div>
             <h1 class="text-2xl font-black text-white tracking-tight">Assembleias & Votações por WhatsApp</h1>
-            <p class="text-xs text-slate-400 mt-1 max-w-xl">
-              Pautas deliberativas disparadas aos condôminos adimplentes com cômputo de quórum por fração ideal e ata gerada por IA.
+            <p class="text-xs text-slate-300 mt-1 max-w-xl">
+              Crie assembleias virtuais, enquetes de deliberação rápida e envie as cédulas com botão de voto direto no WhatsApp dos moradores.
             </p>
           </div>
-          <button onclick="simularVotoAssembleia()" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
-            + Simular Voto via WhatsApp
-          </button>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="abrirModalCriarAssembleia()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center gap-2 cursor-pointer">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>+ Criar Nova Assembleia ou Votação</span>
+            </button>
+            <button onclick="simularVotoAssembleia()" class="px-3.5 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] text-slate-200 font-semibold text-xs border border-white/[0.1] transition-all cursor-pointer flex items-center gap-1.5">
+              <span>📱</span> Simular Voto
+            </button>
+          </div>
         </div>
 
+        <div id="listaAssembleiasContainer" class="space-y-4">
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
             <div>
@@ -2603,6 +2692,7 @@
               <span>✍️</span> Gerar Ata Oficial Resumida por IA
             </button>
           </div>
+        </div>
         </div>
       </div>
     </main>
@@ -3738,6 +3828,80 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // ==========================================
     let votosSim = 74;
     let votosNao = 18;
+
+    function abrirModalCriarAssembleia() {
+      const m = document.getElementById('modalCriarAssembleia');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function fecharModalCriarAssembleia() {
+      const m = document.getElementById('modalCriarAssembleia');
+      if (m) m.classList.add('hidden');
+    }
+
+    function salvarNovaAssembleia() {
+      const titulo = document.getElementById('novaAssembleiaTitulo')?.value || 'Pauta Deliberativa Condominial';
+      const tipo = document.getElementById('novaAssembleiaTipo')?.value || 'Assembleia Geral Extraordinária (AGE)';
+      const limite = document.getElementById('novaAssembleiaDataLimite')?.value || '2026-11-25';
+      const desc = document.getElementById('novaAssembleiaDesc')?.value || 'Pauta deliberativa enviada aos moradores para votação via WhatsApp.';
+      const dispararWpp = document.getElementById('chkDispararWhatsapp')?.checked;
+
+      const container = document.getElementById('listaAssembleiasContainer');
+      if (container) {
+        const novoCard = document.createElement('div');
+        novoCard.className = 'glass-surface rounded-3xl p-6 border-2 border-purple-500/40 bg-gradient-to-br from-purple-950/20 via-[#0a0e18] to-slate-900/50 space-y-4 animate-in fade-in zoom-in-95 duration-200';
+        novoCard.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/[0.08]">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300 font-mono uppercase">${tipo}</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">● Votação Aberta</span>
+              </div>
+              <h3 class="text-base font-bold text-white mt-0.5">${titulo}</h3>
+              <p class="text-xs text-slate-300 mt-1">${desc}</p>
+            </div>
+            <div class="text-left sm:text-right">
+              <span class="text-xs text-slate-400 font-mono block">Encerramento: <strong class="text-white">${limite}</strong></span>
+              <span class="text-[11px] text-purple-400 font-mono font-bold block mt-0.5">Disparado no WhatsApp • 240 Cédulas</span>
+            </div>
+          </div>
+
+          <div class="space-y-4 pt-2">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-emerald-400 flex items-center gap-1"><span>👍</span> A Favor (Sim)</span>
+                <span class="font-mono text-emerald-400 font-bold">100% (1 voto)</span>
+              </div>
+              <div class="w-full bg-white/[0.06] rounded-full h-3 overflow-hidden">
+                <div class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-rose-400 flex items-center gap-1"><span>👎</span> Contra (Não)</span>
+                <span class="font-mono text-rose-400 font-bold">0% (0 votos)</span>
+              </div>
+              <div class="w-full bg-white/[0.06] rounded-full h-3 overflow-hidden">
+                <div class="bg-rose-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/[0.08] flex items-center justify-between">
+            <span class="text-xs text-slate-400">Cédulas digitais enviadas com autenticação via WhatsApp</span>
+            <button onclick="gerarAtaAssembleiaIa()" class="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-cyan-300 border border-white/[0.1] text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>✍️</span> Gerar Ata Parcial por IA
+            </button>
+          </div>
+        `;
+        container.prepend(novoCard);
+      }
+
+      fecharModalCriarAssembleia();
+      confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+      showToast('Assembleia Publicada!', dispararWpp ? 'Pauta aberta e convocação enviada com cédula de votação no WhatsApp de 240 condôminos.' : 'Pauta aberta no sistema com sucesso.', 'success');
+    }
 
     function simularVotoAssembleia() {
       votosSim++;
