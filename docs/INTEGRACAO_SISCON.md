@@ -1,20 +1,21 @@
 # Guia Técnico de Integração: SISCON ERP (Mais Domínio) & Central WhatsApp
 
-Este documento detalha o funcionamento técnico da integração entre a plataforma de automação e atendimento WhatsApp (`chatbot-condominio`) e o ecossistema **SISCON Gestão Condominial**, desenvolvido pela **Mais Domínio Soluções**.
+Este documento detalha o funcionamento técnico da integração entre a plataforma de automação e atendimento WhatsApp (`chatbot-condominio`) e o ecossistema **SISCON Gestão Condominial**, desenvolvido pela **Mais Domínio Soluções** ([siscongestao.com.br](https://siscongestao.com.br)).
 
 ---
 
 ## 1. Visão Geral da Arquitetura
 
-O sistema atua como a camada inteligente de atendimento 24/7 e cockpit operacional conectada diretamente ao banco de dados e APIs do **SISCON**.
+O sistema atua como a camada inteligente de atendimento 24/7, régua de cobrança automática, parcelamento de acordos e cockpit operacional conectada diretamente ao banco de dados e APIs do **SISCON**.
 
 ```mermaid
 flowchart LR
     Morador["Morador / WhatsApp"] <--> Evolution["Evolution API (WhatsApp)"]
     Evolution <--> Backend["Backend Node.js / Express\n(Porta 3001)"]
+    Backend <--> ConfigService["ConfigService\n(Menu Plug-and-Play)"]
     Backend <--> SisconService["SisconService (Conector ERP)"]
     SisconService <--> SisconAPI["SISCON Cloud API\n(Mais Domínio)"]
-    Backend <--> Painel["Central do Operador\n(/painel - 3 Colunas)"]
+    Backend <--> Painel["Central do Operador\n(/painel - 5 Módulos)"]
     Painel <--> Operador["Atendente Humano / Síndico"]
 ```
 
@@ -25,80 +26,89 @@ flowchart LR
 | Recurso | Descrição Técnica | Módulo SISCON Correspondente |
 | :--- | :--- | :--- |
 | **Identificação do Morador** | Consulta instantânea por CPF ou telefone com vínculo de múltiplas unidades/blocos | *Siscon Gestão / Condôminos* |
-| **2ª Via de Boletos** | Listagem de títulos abertos e emissão com recálculo automático de juros/multa em atraso | *Siscon Financeiro / Boleto Direto* |
-| **Pix Copia e Cola** | Geração e entrega do código Pix dinâmico com baixa e conciliação bancária imediata | *Siscon Cobrança Pix* |
-| **SISCON Medição** | Leitura e histórico de consumo individualizado de água e gás com fotos do hidrômetro | *Siscon Medição Mobile* |
-| **Registro de Ocorrências** | Abertura de protocolos de manutenção/reclamações com fotos e gravação no CRM | *Siscon Atendimento & Ocorrências* |
-| **Comunicados e Disparos** | Transmissão de avisos urgentes e circulares oficiais para grupos de condomínios | *Siscon Circulares / WhatsApp* |
+| **Boletos com Registro Bancário Direto** | Emissão sem remessa/retorno (Inter, Itaú, Santander, Sicoob, Sicredi, Cora) em até 30min com cash back | *Siscon Cobrança Bancária* |
+| **2ª Via & Recálculo Automático** | Recálculo instantâneo de multa regimental (2%) e juros de mora (1% a.m.) proporcionais aos dias de atraso | *Siscon Financeiro / Boleto Direto* |
+| **Pix Copia e Cola Dinâmico** | Geração e entrega do código Pix dinâmico com baixa e conciliação bancária imediata | *Siscon Cobrança Pix* |
+| **Acordos & Parcelamentos de Dívidas** | Simulação em até 12x, confissão de dívida digital, cancelamento de boletos anteriores e emissão de parcelas | *Siscon Acordos e Inadimplência* |
+| **Régua de Cobrança Automática** | Disparos preventivos (D-3), no vencimento (D-0), cobrança amigável (D+3) e convite para acordo (D+7) | *Siscon Régua de Cobrança* |
+| **Reservas de Áreas Comuns** | Reserva de churrasqueira, salão de festas e quadras com lançamento automático da taxa no próximo boleto | *Siscon Áreas Comuns* |
+| **SISCON Medição** | Leitura de água e gás por app nativo offline, com foto do hidrômetro e detecção de vazamentos | *Siscon Medição Mobile* |
+| **Certidões & Nada Consta** | Emissão de Certidão Negativa de Débitos (Art. 1.336 CC) e Declaração Anual de Quitação (Lei 12.007/2009) | *Siscon Documentos Oficiais* |
+| **Registro de Ocorrências** | Abertura de protocolos de manutenção/reclamações com fotos e gravação no CRM do condomínio | *Siscon Atendimento & Ocorrências* |
+| **Comunicados e Disparos em Massa** | Transmissão de avisos urgentes e circulares oficiais para grupos de WhatsApp do condomínio | *Siscon Circulares / WhatsApp* |
 
 ---
 
-## 3. Configuração de Variáveis de Ambiente (`.env`)
+## 3. Configuração Plug-and-Play no Menu do Sistema
 
-Para conectar o sistema ao ambiente de produção do SISCON, configure o arquivo `.env`:
+Não é necessário alterar arquivos de código ou `.env` para plugar sua conta SISCON. Basta acessar a aba **⚙️ Configurações** no painel (`http://localhost:3001/painel`):
 
-```env
-# Porta do Servidor
-PORT=3001
-
-# Provedor de ERP
-ERP_PROVIDER=siscon
-
-# Credenciais Oficiais SISCON (Mais Domínio)
-SISCON_BASE_URL=https://api.siscongestao.com.br/v1
-SISCON_API_TOKEN=seu_token_de_homologacao_ou_producao
-SISCON_CLIENT_ID=seu_client_id_siscon
-SISCON_CLIENT_SECRET=seu_client_secret_siscon
-SISCON_EMPRESA_ID=1
-
-# WhatsApp Gateway (Evolution API)
-EVOLUTION_API_URL=http://localhost:8080
-EVOLUTION_API_KEY=B6D711FCDE4D4FD5936544120E713976
-EVOLUTION_INSTANCE_NAME=condominio_bot
-```
-
-> [!NOTE]
-> **Modo Sandbox / Fallback Automático**: Se `SISCON_API_TOKEN` não for fornecido ou for a chave padrão, o conector `SisconService` ativa automaticamente o modo Sandbox/Simulação, provendo dados realistas para homologação sem interrupção dos serviços.
+1. **Credenciais SISCON Cloud (Mais Domínio)**:
+   - `SISCON Base URL`: Endpoint da API SISCON (padrão `https://api.siscongestao.com.br/v1`).
+   - `SISCON API Token / Chave de Acesso`: Chave de autenticação gerada no painel SISCON Gestão.
+   - `Client ID` & `Client Secret`: Chaves de aplicação OAuth2.
+2. **Conexão Bancária Direta**:
+   - Selecione a instituição financeira integrada no condomínio (Banco Inter, Itaú, Santander, Sicoob, Sicredi, Cora, Bradesco).
+   - Ative o abatimento de até 35% de cash back de tarifa bancária na mensalidade SISCON.
+3. **Parâmetros de Acordo & Inadimplência**:
+   - Multa por atraso (% - padrão 2.0%).
+   - Juros de mora mensal (% - padrão 1.0%).
+   - Número máximo de parcelas permitidas (ex: 12x).
+   - Valor mínimo de parcela (ex: R$ 100,00).
+4. **Régua de Cobrança Automática**:
+   - Defina dias prévios (ex: 3 dias antes) e dias pós-vencimento (3 e 7 dias).
+5. **Botão ⚡ Testar Conexão Agora**:
+   - Valida a conectividade com o servidor SISCON Cloud em tempo real, informando latência e módulos ativos.
+6. **Botão 💾 Salvar Configurações**:
+   - Persiste as alterações no arquivo `data/system-config.json` sem reiniciar a aplicação.
 
 ---
 
 ## 4. Endpoints da API REST Operacional (`/api`)
 
-A Central do Operador e aplicações externas consom os seguintes endpoints:
+### Configurações & Conexão Plug-and-Play
+- `GET /api/configuracoes`: Retorna status da conexão e chaves públicas mascaradas.
+- `POST /api/configuracoes`: Salva novos parâmetros de integração e cobrança.
+- `POST /api/configuracoes/testar-conexao`: Testa em tempo real a comunicação com a API SISCON.
 
-### Painel e Sessões
-- `GET /api/dashboard/stats`: Métricas em tempo real (total de conversas, taxa de automação, tempo de resposta, boletos emitidos, status da conexão SISCON).
-- `GET /api/conversas`: Lista todas as conversas ativas no WhatsApp sincronizadas com o perfil do morador.
-- `GET /api/conversas/:remoteJid`: Detalhes e histórico da conversa selecionada.
-- `POST /api/conversas/:remoteJid/mensagem`: Envio de resposta manual do operador humano via WhatsApp.
-- `POST /api/conversas/:remoteJid/enviar-boleto`: Disparo manual com 1 clique da 2ª via atualizada (Linha Digitável, Pix e link PDF).
-- `POST /api/conversas/:remoteJid/transferir`: Transfere o controle entre o bot automatizado e o operador humano (Handoff).
+### Cobrança, Régua & Acordos de Dívidas
+- `GET /api/acordos/simular/:unidadeId`: Retorna simulação detalhada com multa, juros e opções de 1x a 12x.
+- `POST /api/acordos/firmar`: Efetiva o acordo, cancela pendências anteriores e emite as parcelas com linha digitável e Pix.
+- `POST /api/cobranca/disparar-regua`: Executa a régua de cobrança automática com base no calendário de vencimentos.
 
-### Consultas Diretas SISCON
-- `GET /api/siscon/morador/:cpf`: Busca cadastro completo do condômino no SISCON e seus boletos pendentes por unidade.
-- `GET /api/siscon/medicao/:unidadeId`: Consulta leituras de água e gás do módulo *SISCON Medição*.
+### Reservas de Áreas Comuns
+- `GET /api/reservas/areas`: Lista os espaços comuns cadastrados no SISCON e valores de taxa.
+- `GET /api/reservas/disponibilidade/:areaId?data=YYYY-MM-DD`: Verifica disponibilidade de data.
+- `POST /api/reservas/solicitar`: Realiza a reserva e agenda a cobrança na próxima cota condominial.
 
-### Disparos e Transmissão
-- `POST /api/disparos/grupo`: Disparo de avisos ou comunicados urgentes para grupos de WhatsApp do condomínio.
+### Certidões Oficiais & SISCON Medição
+- `GET /api/certidoes/nada-consta/:unidadeId`: Emite a Certidão Negativa de Débitos (Art. 1.336 CC).
+- `GET /api/certidoes/quitacao-anual/:unidadeId`: Emite a Declaração de Quitação Anual (Lei 12.007/2009).
+- `GET /api/siscon/medicao/:unidadeId`: Consulta consumo de água e gás com foto do hidrômetro.
+
+### Gestão de Atendimento & WhatsApp
+- `GET /api/dashboard/stats`: Métricas em tempo real do sistema.
+- `GET /api/conversas`: Lista conversas sincronizadas.
+- `POST /api/conversas/:remoteJid/mensagem`: Mensagem manual do atendente.
+- `POST /api/conversas/:remoteJid/enviar-boleto`: Disparo manual da 2ª via com 1 clique.
+- `POST /api/conversas/:remoteJid/transferir`: Handoff entre robô e operador humano.
+- `POST /api/disparos/grupo`: Disparo de comunicados em massa para grupos de WhatsApp.
 
 ---
 
 ## 5. Como Executar o Sistema
 
 ```bash
-# 1. Instalar dependências (caso necessário)
-npm install
-
-# 2. Compilar TypeScript
+# 1. Compilar TypeScript
 npx tsc
 
-# 3. Iniciar servidor operacional
+# 2. Iniciar servidor operacional
 npm run start
 # ou
 node dist/index.js
 ```
 
-Acessos disponíveis:
-- **Painel do Operador (Cockpit)**: `http://localhost:3001/painel`
-- **Simulador Interativo do Morador**: `http://localhost:3001/docs/`
+Acessos:
+- **Painel Central (Cockpit & Menu de Configurações)**: `http://localhost:3001/painel`
+- **Simulador Interativo do Condômino**: `http://localhost:3001/docs/`
 - **Webhook Evolution API**: `http://localhost:3001/webhook/evolution`

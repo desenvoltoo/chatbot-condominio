@@ -4,6 +4,9 @@ export type SessionState =
   | 'MENU_PRINCIPAL'
   | 'ESCOLHENDO_BOLETO'
   | 'AGUARDANDO_DESCRICAO_OCORRENCIA'
+  | 'SIMULANDO_ACORDO'
+  | 'CONFIRMANDO_ACORDO'
+  | 'RESERVANDO_AREA'
   | 'ATENDIMENTO_HUMANO';
 
 export interface Unidade {
@@ -102,5 +105,101 @@ export interface WebhookMessage {
         };
       };
     };
+  };
+}
+
+export interface AcordoOpcao {
+  parcelas: number;
+  valorEntrada: number;
+  valorParcela: number;
+  totalGeral: number;
+  descontoAplicado: number;
+  descricao: string;
+}
+
+export interface AcordoSimulacao {
+  unidadeId: string;
+  moradorNome: string;
+  totalPrincipal: number;
+  multa: number;
+  juros: number;
+  correcaoMonetaria: number;
+  totalConsolidado: number;
+  boletosNegociados: string[];
+  opcoes: AcordoOpcao[];
+}
+
+export interface AcordoEfetivado {
+  id: string;
+  unidadeId: string;
+  moradorCpf: string;
+  moradorNome: string;
+  dataAcordo: string;
+  totalDivida: number;
+  qtdParcelas: number;
+  valorEntrada: number;
+  valorParcela: number;
+  status: 'ativo' | 'cumprido' | 'quebrado';
+  boletosGerados: Boleto[];
+  termoUrl?: string;
+}
+
+export interface AreaComum {
+  id: string;
+  condominioId: string;
+  condominioNome: string;
+  nome: string;
+  capacidade: number;
+  taxaUso: number;
+  taxaLimpeza: number;
+  horarioFuncionamento: string;
+  fotos: string[];
+  regras: string[];
+}
+
+export interface Reserva {
+  id: string;
+  areaId: string;
+  areaNome: string;
+  unidadeId: string;
+  moradorNome: string;
+  moradorTelefone: string;
+  dataReserva: string;
+  periodo: string;
+  convidadosQtd: number;
+  taxaTotal: number;
+  status: 'confirmada' | 'pendente_aprovacao' | 'cancelada';
+  statusCobranca: 'faturado_proximo_boleto' | 'pago_antecipado';
+  protocoloSiscon: string;
+}
+
+export interface ReguaCobrancaConfig {
+  ativo: boolean;
+  diasAvisoPrevio: number;
+  notificarDiaVencimento: boolean;
+  diasPosVencimento1: number;
+  diasPosVencimento2: number;
+  oferecerAcordoAutomatico: boolean;
+  horarioDisparo: string;
+}
+
+export interface SisconSystemConfig {
+  erpProvider: 'siscon' | 'mock';
+  sisconBaseUrl: string;
+  sisconApiToken: string;
+  sisconClientId: string;
+  sisconClientSecret: string;
+  sisconEmpresaId: string;
+  bancoIntegrado: 'inter' | 'itau' | 'santander' | 'sicoob' | 'sicredi' | 'cora' | 'bradesco';
+  usarCashbackTarifa: boolean;
+  multaPercentual: number;
+  jurosMensalPercentual: number;
+  maxParcelasAcordo: number;
+  valorMinimoParcela: number;
+  reguaCobranca: ReguaCobrancaConfig;
+  evolution: {
+    apiUrl: string;
+    apiKey: string;
+    instanceName: string;
   };
 }
