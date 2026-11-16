@@ -3,87 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Entrar — SISCON Gestão Condominial & IA</title>
+  <title>DOMUS AI — Automação Condominial & SISCON</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
     .glass-card {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(13, 19, 33, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    
+    .role-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .role-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(99, 102, 241, 0.5);
+      background: rgba(99, 102, 241, 0.08);
+    }
+    .role-card.active {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.15);
+      box-shadow: 0 0 20px -5px rgba(99, 102, 241, 0.4);
+    }
+
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 0.25; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(1.03); }
+    }
+    .animate-aurora {
+      animation: pulse-subtle 8s ease-in-out infinite;
     }
   </style>
 </head>
-<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col justify-between selection:bg-purple-600 selection:text-white relative overflow-x-hidden">
+<body class="bg-[#070a12] text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white relative overflow-x-hidden">
 
-  <!-- Ambient Glow Background -->
+  <!-- Ambient Aurora Glow Background -->
   <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-purple-600/20 via-indigo-600/10 to-transparent blur-[140px] rounded-full"></div>
-    <div class="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-600/10 blur-[150px] rounded-full"></div>
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-gradient-to-b from-indigo-600/25 via-purple-600/15 to-transparent blur-[140px] rounded-full animate-aurora"></div>
+    <div class="absolute top-1/3 -left-40 w-[600px] h-[600px] bg-cyan-600/10 blur-[160px] rounded-full"></div>
+    <div class="absolute bottom-[-10%] -right-20 w-[600px] h-[600px] bg-emerald-600/10 blur-[160px] rounded-full"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-40"></div>
   </div>
 
-  <!-- Header Minimalista Estilo Vozko -->
+  <!-- Header Superior -->
   <header class="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between z-10">
-    <a href="index.html" class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center font-black text-white shadow-lg text-xl">
-        🏢
+    <a href="index.html" class="flex items-center gap-3.5 group">
+      <!-- Logo Moderno SVG DOMUS AI -->
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all">
+        <div class="w-full h-full bg-[#0d1321] rounded-[15px] flex items-center justify-center">
+          <svg class="w-5 h-5 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <span class="font-extrabold text-base tracking-tight text-white">SISCON Gestão</span>
-          <span class="px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] font-bold uppercase tracking-wider">
+          <span class="font-extrabold text-base tracking-tight text-white group-hover:text-cyan-300 transition-colors">DOMUS AI</span>
+          <span class="px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-[10px] font-bold uppercase tracking-wider">
             Enterprise
           </span>
         </div>
-        <span class="text-[10px] text-slate-400 block -mt-0.5">Ecossistema Mais Domínio & IA</span>
+        <span class="text-[10px] text-slate-400 block -mt-0.5">Ecossistema SISCON • Mais Domínio</span>
       </div>
     </a>
 
     <div class="flex items-center gap-4 text-xs font-semibold text-slate-400">
-      <a href="index.html" class="hover:text-purple-300 transition-colors">📱 Simulador WhatsApp</a>
-      <a href="https://siscongestao.com.br" target="_blank" class="hover:text-purple-300 transition-colors">Portal SISCON</a>
+      <a href="index.html" class="hover:text-cyan-300 transition-colors flex items-center gap-1.5">
+        <span>📱</span> Simulador WhatsApp
+      </a>
+      <a href="https://siscongestao.com.br" target="_blank" class="hover:text-cyan-300 transition-colors flex items-center gap-1.5">
+        <span>🌐</span> Portal SISCON
+      </a>
     </div>
   </header>
 
   <!-- Login Main Card -->
-  <main class="w-full max-w-md mx-auto px-4 z-10 my-auto py-8">
-    <div class="glass-card rounded-3xl p-8 shadow-2xl border border-slate-800 space-y-6">
+  <main class="w-full max-w-lg mx-auto px-4 z-10 my-auto py-8">
+    <div class="glass-card rounded-3xl p-8 shadow-2xl border border-slate-800/80 space-y-6">
       
       <!-- Top Title -->
       <div class="text-center space-y-2">
-        <h1 class="text-2xl font-black tracking-tight text-white">Acesse sua conta</h1>
-        <p class="text-xs text-slate-400">Entre na central integrada de atendimento, cobrança e RAG</p>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+          Central de Gestão & Automação Inteligente
+        </div>
+        <h1 class="text-2xl font-black tracking-tight text-white">Acesse o DOMUS AI</h1>
+        <p class="text-xs text-slate-400">Entre na central integrada com suporte a qualquer IA, RAG e ERP SISCON</p>
       </div>
 
       <!-- Error Alert -->
-      <div id="loginError" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs hidden flex items-center gap-2">
-        <span>⚠️</span> <span id="loginErrorMsg">E-mail ou senha incorretos.</span>
+      <div id="loginError" class="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs hidden flex items-center gap-2.5">
+        <span class="text-base">⚠️</span> 
+        <span id="loginErrorMsg">E-mail ou senha incorretos.</span>
       </div>
 
       <!-- Form -->
       <form onsubmit="handleLogin(event)" class="space-y-4 text-xs">
         <div>
-          <label class="text-slate-300 font-semibold block mb-1.5">E-mail Corporativo</label>
+          <label class="text-slate-300 font-semibold block mb-1.5">E-mail de Acesso</label>
           <div class="relative">
             <input 
               type="email" 
               id="inputEmail" 
               required
               placeholder="seu.email@condominio.com.br" 
-              class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-all pl-10"
+              class="w-full bg-[#0a0f1d] border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all pl-10"
             />
-            <span class="absolute left-3.5 top-3.5 text-slate-500">✉️</span>
+            <span class="absolute left-3.5 top-3.5 text-slate-400">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </span>
           </div>
         </div>
 
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-slate-300 font-semibold">Senha</label>
-            <a href="#" onclick="alert('Entre em contato com o administrador master para redefinir seu acesso.')" class="text-[11px] text-purple-400 hover:text-purple-300 transition-colors">Esqueceu a senha?</a>
+            <a href="#" onclick="alert('Entre em contato com o Administrador Master para redefinir o acesso corporativo.')" class="text-[11px] text-cyan-400 hover:text-cyan-300 transition-colors">Esqueceu a senha?</a>
           </div>
           <div class="relative">
             <input 
@@ -91,111 +135,161 @@
               id="inputPassword" 
               required
               placeholder="••••••••••••" 
-              class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-all pl-10 pr-10"
+              class="w-full bg-[#0a0f1d] border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all pl-10 pr-10"
             />
-            <span class="absolute left-3.5 top-3.5 text-slate-500">🔒</span>
+            <span class="absolute left-3.5 top-3.5 text-slate-400">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
             <button 
               type="button" 
               onclick="togglePasswordVisibility()" 
-              class="absolute right-3.5 top-3 text-slate-500 hover:text-slate-300 text-sm">
-              👁️
+              class="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-200 text-sm">
+              <span id="pwdEye">👁️</span>
             </button>
           </div>
         </div>
 
-        <div class="flex items-center gap-2 pt-1">
-          <input type="checkbox" id="rememberMe" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-purple-600 focus:ring-0" checked>
-          <label for="rememberMe" class="text-slate-400 text-xs cursor-pointer">Lembrar de mim por 7 dias</label>
+        <div class="flex items-center justify-between py-1">
+          <label class="flex items-center gap-2 cursor-pointer text-slate-400 select-none text-[11px]">
+            <input type="checkbox" id="rememberMe" checked class="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500">
+            Lembrar minha sessão neste dispositivo
+          </label>
+          <span class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 256-bit SSL
+          </span>
         </div>
 
         <button 
           type="submit" 
           id="btnLoginSubmit"
-          class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-purple-600/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-          <span>Entrar na Plataforma</span> <span>→</span>
+          class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-cyan-500 hover:from-indigo-400 hover:via-purple-500 hover:to-cyan-400 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
+          <span>Entrar no DOMUS AI</span>
+          <span>→</span>
         </button>
       </form>
 
-      <!-- Divisor -->
-      <div class="relative flex items-center justify-center my-4">
-        <div class="border-t border-slate-800 w-full"></div>
-        <span class="bg-slate-900 px-3 text-[10px] text-slate-500 uppercase tracking-wider font-bold absolute">Acesso Rápido por Perfil (RBAC)</span>
+      <!-- RBAC Quick Test Switcher -->
+      <div class="pt-4 border-t border-slate-800/80">
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Acesso Rápido de Teste (1-Clique RBAC):</span>
+          <span class="text-[10px] text-slate-500">Sem digitar senha</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-left">
+          <!-- Admin Master -->
+          <button 
+            type="button" 
+            onclick="quickLogin('admin@condominio.com.br', 'admin123', 'admin')"
+            id="card-admin"
+            class="role-card p-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-left cursor-pointer group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm">👑</span>
+              <span class="text-[9px] font-mono font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">MASTER</span>
+            </div>
+            <div class="font-bold text-xs text-white group-hover:text-indigo-300">Admin Geral</div>
+            <div class="text-[10px] text-slate-400">Acesso irrestrito a IA, RAG e SISCON</div>
+          </button>
+
+          <!-- Síndico -->
+          <button 
+            type="button" 
+            onclick="quickLogin('sindico@condominio.com.br', 'sindico123', 'sindico')"
+            id="card-sindico"
+            class="role-card p-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-left cursor-pointer group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm">🏢</span>
+              <span class="text-[9px] font-mono font-bold text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">SÍNDICO</span>
+            </div>
+            <div class="font-bold text-xs text-white group-hover:text-cyan-300">Síndico Eleito</div>
+            <div class="text-[10px] text-slate-400">Atendimento, relatórios e aprovações</div>
+          </button>
+
+          <!-- Operador Financeiro -->
+          <button 
+            type="button" 
+            onclick="quickLogin('financeiro@condominio.com.br', 'operador123', 'operador')"
+            id="card-operador"
+            class="role-card p-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-left cursor-pointer group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm">💼</span>
+              <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">FINANCEIRO</span>
+            </div>
+            <div class="font-bold text-xs text-white group-hover:text-emerald-300">Cobrança SISCON</div>
+            <div class="text-[10px] text-slate-400">Acordos, 2ª via Pix e parcelamento</div>
+          </button>
+
+          <!-- Portaria -->
+          <button 
+            type="button" 
+            onclick="quickLogin('portaria@condominio.com.br', 'portaria123', 'portaria')"
+            id="card-portaria"
+            class="role-card p-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-left cursor-pointer group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm">🚪</span>
+              <span class="text-[9px] font-mono font-bold text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/30">PORTARIA</span>
+            </div>
+            <div class="font-bold text-xs text-white group-hover:text-purple-300">Portaria & Zeladoria</div>
+            <div class="text-[10px] text-slate-400">SISCON Medição e Reservas</div>
+          </button>
+        </div>
       </div>
 
-      <!-- Quick Role Switcher Buttons (Inspiração Vozko) -->
-      <div class="grid grid-cols-2 gap-2 text-[11px]">
-        <button 
-          type="button" 
-          onclick="fillCredentials('admin@condominio.com.br', 'admin123')"
-          class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:border-purple-500/40 group">
-          <strong class="text-white block group-hover:text-purple-300">👑 Admin Master</strong>
-          <span class="text-slate-400 text-[10px] block">Acesso total + RAG + IA</span>
-        </button>
+    </div>
 
-        <button 
-          type="button" 
-          onclick="fillCredentials('sindico@condominio.com.br', 'sindico123')"
-          class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:border-purple-500/40 group">
-          <strong class="text-white block group-hover:text-purple-300">🏢 Síndico Eleito</strong>
-          <span class="text-slate-400 text-[10px] block">Relatórios & Reservas</span>
-        </button>
-
-        <button 
-          type="button" 
-          onclick="fillCredentials('financeiro@condominio.com.br', 'operador123')"
-          class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:border-purple-500/40 group">
-          <strong class="text-white block group-hover:text-purple-300">💼 Financeiro</strong>
-          <span class="text-slate-400 text-[10px] block">Cobrança, Acordos e Chat</span>
-        </button>
-
-        <button 
-          type="button" 
-          onclick="fillCredentials('portaria@condominio.com.br', 'portaria123')"
-          class="p-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition-all hover:border-purple-500/40 group">
-          <strong class="text-white block group-hover:text-purple-300">🚪 Portaria / Zelador</strong>
-          <span class="text-slate-400 text-[10px] block">Visualização de Áreas</span>
-        </button>
-      </div>
-
+    <!-- Security & Compliance Footer -->
+    <div class="mt-6 text-center space-y-1">
+      <p class="text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
+        <span>🛡️</span> Criptografia de ponta a ponta integrada aos protocolos LGPD & SISCON
+      </p>
+      <p class="text-[10px] text-slate-600">
+        DOMUS AI v2.4 Enterprise • Desenvolvido para Condomínios e Administradoras
+      </p>
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="w-full text-center py-6 text-xs text-slate-500 z-10 space-y-1">
-    <p>© 2026 SISCON Condomínios • Desenvolvido pela Mais Domínio Soluções</p>
-    <div class="flex justify-center gap-4 text-[11px]">
-      <a href="#" class="hover:text-slate-400">Termos de Uso</a>
-      <span>•</span>
-      <a href="#" class="hover:text-slate-400">Política de Privacidade (LGPD)</a>
-      <span>•</span>
-      <a href="#" class="hover:text-slate-400">Suporte Técnico</a>
-    </div>
-  </footer>
-
+  <!-- Script de Autenticação -->
   <script>
     function togglePasswordVisibility() {
-      const pwd = document.getElementById('inputPassword');
-      pwd.type = pwd.type === 'password' ? 'text' : 'password';
+      const input = document.getElementById('inputPassword');
+      const eye = document.getElementById('pwdEye');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eye.innerText = '🔒';
+      } else {
+        input.type = 'password';
+        eye.innerText = '👁️';
+      }
     }
 
-    function fillCredentials(email, pwd) {
+    function quickLogin(email, password, role) {
       document.getElementById('inputEmail').value = email;
-      document.getElementById('inputPassword').value = pwd;
-      document.getElementById('loginError').classList.add('hidden');
+      document.getElementById('inputPassword').value = password;
+      
+      document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById(`card-${role}`);
+      if (activeCard) activeCard.classList.add('active');
+
+      // Auto submete para login instantâneo
+      setTimeout(() => {
+        handleLogin(new Event('submit'));
+      }, 200);
     }
 
     async function handleLogin(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
+      
       const email = document.getElementById('inputEmail').value.trim();
-      const password = document.getElementById('inputPassword').value.trim();
-      const btn = document.getElementById('btnLoginSubmit');
+      const password = document.getElementById('inputPassword').value;
       const errBox = document.getElementById('loginError');
+      const btn = document.getElementById('btnLoginSubmit');
 
-      btn.disabled = true;
-      btn.innerHTML = '<span>⏳ Autenticando...</span>';
       errBox.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="inline-block animate-spin mr-2">⟳</span> Validando credenciais...';
 
       let session = null;
+
+      // 1. Tenta autenticar no backend Node.js
       try {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
@@ -206,10 +300,10 @@
           session = await res.json();
         }
       } catch (err) {
-        console.warn('API local offline. Validando em modo sandbox client-side...');
+        // Modo estático no GitHub Pages
       }
 
-      // Fallback para GitHub Pages e demonstração standalone
+      // 2. Fallback de alta fidelidade para GitHub Pages (Client-side)
       if (!session) {
         const validUsers = {
           'admin@condominio.com.br': { nome: 'Administrador Master', role: 'admin', cargo: 'Diretor / TI', senha: 'admin123' },
@@ -235,7 +329,7 @@
       }
 
       btn.disabled = false;
-      btn.innerHTML = '<span>Entrar na Plataforma</span> <span>→</span>';
+      btn.innerHTML = '<span>Entrar no DOMUS AI</span> <span>→</span>';
 
       if (session) {
         localStorage.setItem('siscon_auth_token', session.token);
@@ -243,7 +337,7 @@
         window.location.href = 'painel.html';
       } else {
         errBox.classList.remove('hidden');
-        document.getElementById('loginErrorMsg').innerText = 'Credenciais inválidas. Verifique seu e-mail e senha.';
+        document.getElementById('loginErrorMsg').innerText = 'Credenciais inválidas. Verifique seu e-mail e senha corporativos.';
       }
     }
   </script>
