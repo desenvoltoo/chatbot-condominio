@@ -196,14 +196,14 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     const boletos = await sisconService.listarBoletosEmAberto(unidadeId);
 
     if (!boletos || boletos.length === 0) {
-      return res.status(404).json({ error: 'Nenhum boleto em aberto encontrado no SISCON para esta unidade.' });
+      return res.status(404).json({ error: 'Nenhum boleto em aberto encontrado no sistema para esta unidade.' });
     }
 
     const boleto = boletos[0];
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-    const textoBoleto = `📄 *2ª VIA DE BOLETO — SISCON CONDOMÍNIOS*\n\n` +
+    const textoBoleto = `📄 *2ª VIA DE BOLETO — DOMUS AI CONDOMÍNIOS*\n\n` +
       `🏢 *Condomínio:* ${session.morador?.unidades?.[0]?.condominioNome || 'Residencial'}\n` +
       `🏠 *Unidade:* ${session.morador?.unidades?.[0]?.bloco || ''} ${session.morador?.unidades?.[0]?.numero || 'Apt'}\n` +
       `📅 *Vencimento:* ${boleto.vencimento}\n` +
@@ -304,7 +304,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       // If remoteJid was provided, notify resident on WhatsApp
       if (remoteJid) {
         const primeiraParcela = acordo.boletosGerados[0];
-        const msgAcordo = `🤝 *ACORDO DE DÍVIDAS FIRMADO — SISCON*\n\n` +
+        const msgAcordo = `🤝 *ACORDO DE DÍVIDAS FIRMADO — DOMUS AI*\n\n` +
           `✅ *Protocolo:* \`${acordo.id}\`\n` +
           `📅 *Data:* ${acordo.dataAcordo}\n` +
           `📊 *Plano:* ${acordo.qtdParcelas}x de R$ ${acordo.valorParcela.toFixed(2)}\n\n` +
@@ -370,12 +370,12 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       if (resultado.sucesso && remoteJid) {
         await evolutionService.sendText(
           remoteJid,
-          `🎉 *CONFIRMAÇÃO DE RESERVA — SISCON*\n\n` +
+          `🎉 *CONFIRMAÇÃO DE RESERVA — DOMUS AI*\n\n` +
           `📍 *Espaço:* ${resultado.reserva?.areaNome}\n` +
           `📅 *Data:* ${resultado.reserva?.dataReserva}\n` +
           `⏰ *Horário:* ${resultado.reserva?.periodo}\n` +
           `💰 *Taxa:* R$ ${resultado.reserva?.taxaTotal.toFixed(2)} (será debitada na sua próxima cota)\n` +
-          `🔢 *Protocolo SISCON:* \`${resultado.reserva?.protocoloSiscon}\``
+          `🔢 *Protocolo DOMUS:* \`${resultado.reserva?.protocoloSiscon}\``
         );
       }
 
@@ -393,7 +393,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   router.get('/siscon/morador/:cpf', async (req: Request, res: Response) => {
     try {
       const morador = await sisconService.buscarMoradorPorCpf(req.params.cpf);
-      if (!morador) return res.status(404).json({ error: 'Morador não localizado no SISCON' });
+      if (!morador) return res.status(404).json({ error: 'Morador não localizado no cadastro' });
 
       const unidadesComBoletos = await Promise.all(
         morador.unidades.map(async (u) => {
@@ -481,7 +481,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       boletosEmitidosHoje: 18,
       acordosFirmadosMes: 6,
       reservasConfirmadasMes: 12,
-      erpConectado: 'SISCON Gestão Condominial (Mais Domínio)',
+      erpConectado: 'DOMUS ERP Integrado (Nativo)',
       bancoAtivo: `${cfg.bancoIntegrado.toUpperCase()} (Conexão Bancária Direta)`,
       statusConexaoErp: 'Ativo & Sincronizado',
     });

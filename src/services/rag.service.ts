@@ -66,7 +66,7 @@ export class RagService {
       'Regimento Interno e Normas de Convivência (2026)',
       'regimento_interno',
       `CAPÍTULO I - DO HORÁRIO DE SILÊNCIO
-Artigo 18 - Fica estabelecido o horário de silêncio absoluto no condomínio entre 22h00 e 08h00 nos dias úteis, e entre 22h00 e 09h00 aos sábados, domingos e feriados. O uso de aparelhos de som, instrumentos musicais ou reformas barulhentas fora deste horário implicará em notificação formal e, em caso de reincidência, multa de 50% da taxa condominial lançada no boleto do SISCON.
+Artigo 18 - Fica estabelecido o horário de silêncio absoluto no condomínio entre 22h00 e 08h00 nos dias úteis, e entre 22h00 e 09h00 aos sábados, domingos e feriados. O uso de aparelhos de som, instrumentos musicais ou reformas barulhentas fora deste horário implicará em notificação formal e, em caso de reincidência, multa de 50% da taxa condominial lançada no boleto condominial.
 
 CAPÍTULO II - DAS MUDANÇAS E TRANSPORTES PESADOS
 Artigo 24 - O transporte de móveis e mudanças de qualquer natureza somente poderá ser efetuado de segunda a sexta-feira, das 08h00 às 17h00, e aos sábados das 08h00 às 12h00. É expressamente proibida a realização de mudanças aos domingos e feriados nacionais. O condômino deve agendar com a administração ou via WhatsApp com antecedência mínima de 48 horas para instalação das mantas protetoras nos elevadores.
@@ -79,7 +79,7 @@ Artigo 31 - É permitida a permanência de animais de pequeno e médio porte nas
       'Regulamento de Uso das Áreas Comuns e Lazer',
       'geral',
       `TÍTULO I - DA CHURRASQUEIRA E ESPAÇO GOURMET
-Artigo 12 - A reserva do Espaço Gourmet & Churrasqueira pode ser feita com até 60 dias de antecedência. O valor da taxa de uso é de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado automaticamente no próximo boleto condominial via SISCON. O horário limite para término de eventos e desligamento de som é às 22h00. Cancelamentos sem ônus devem ser solicitados com 48h de antecedência.
+Artigo 12 - A reserva do Espaço Gourmet & Churrasqueira pode ser feita com até 60 dias de antecedência. O valor da taxa de uso é de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado automaticamente no próximo boleto condominial via DOMUS AI. O horário limite para término de eventos e desligamento de som é às 22h00. Cancelamentos sem ônus devem ser solicitados com 48h de antecedência.
 
 TÍTULO II - DO SALÃO DE FESTAS NOBRE
 Artigo 15 - O Salão de Festas suporta capacidade máxima de 80 pessoas sentadas. A taxa de locação é de R$ 350,00 (inclusa taxa de limpeza profissional). A lista de convidados deve ser enviada para a portaria até 24h antes do evento para controle de acesso biométrico/facial.
@@ -95,14 +95,14 @@ Artigo 20 - A piscina funciona de terça a domingo das 08h00 às 21h00. Às segu
 O não pagamento da cota condominial ordinária ou extraordinária até a data de seu vencimento sujeita o devedor à incidência de multa moratória irrevogável de 2% (dois por cento) sobre o débito atualizado, acrescida de juros moratórios de 1% (um por cento) ao mês calculados pro rata die, bem como atualização monetária pelo índice oficial IPCA/IBGE.
 
 CLÁUSULA 35 - DOS ACORDOS E PARCELAMENTOS
-Fica a Administradora e o Síndico autorizados a firmar acordos amigáveis com devedores através do sistema SISCON em até 12 (doze) parcelas mensais e sucessivas, com entrada mínima correspondente à primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplência superior a 30 dias.`
+Fica a Administradora e o Síndico autorizados a firmar acordos amigáveis com devedores através do sistema DOMUS AI em até 12 (doze) parcelas mensais e sucessivas, com entrada mínima correspondente à primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplência superior a 30 dias.`
     );
 
     this.adicionarDocumento(
       'FAQ Oficial da Administração & Portaria',
       'faq',
       `PERGUNTA: Como recebo minha 2ª via de boleto?
-RESPOSTA: O boleto pode ser obtido instantaneamente enviando "boleto" ou "segunda via" no nosso WhatsApp oficial, informando seu CPF cadastrado no SISCON. O sistema gera a linha digitável e o código Pix Copia e Cola para pagamento imediato.
+RESPOSTA: O boleto pode ser obtido instantaneamente enviando "boleto" ou "segunda via" no nosso WhatsApp oficial, informando seu CPF cadastrado no condom�nio. O sistema gera a linha digitável e o código Pix Copia e Cola para pagamento imediato.
 
 PERGUNTA: Onde retiro encomendas deixadas na portaria?
 RESPOSTA: As encomendas entregues são catalogadas na portaria e notificadas no aplicativo. A retirada pode ser feita 24 horas por dia apresentando documento ou o número do apartamento.`
