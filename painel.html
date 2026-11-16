@@ -1484,13 +1484,25 @@
           <button id="chatControlActionBtn" onclick="toggleHumanHandoff()" class="text-xs font-semibold underline hover:text-white cursor-pointer ml-2 shrink-0">Pausar IA & Assumir</button>
         </div>
 
-        <div class="p-3 border-t border-white/[0.08] bg-[#0b0f19] flex items-center gap-2 shrink-0">
+        <div class="p-3 border-t border-white/[0.08] bg-[#0b0f19] flex items-center gap-2 shrink-0 relative">
+          <!-- Popover Flutuante de Comandos Rápidos ("/") -->
+          <div id="slashCommandsPopover" class="hidden absolute bottom-full left-3 mb-2 w-80 bg-[#0e1322] border border-indigo-500/30 rounded-2xl shadow-2xl p-2 z-30 backdrop-blur-xl">
+            <div class="px-2.5 py-1.5 border-b border-white/[0.06] flex items-center justify-between text-[11px] text-slate-400">
+              <span class="font-bold text-indigo-300 font-mono flex items-center gap-1">
+                <span>⚡</span> Comandos Rápidos
+              </span>
+              <span class="text-[9px] font-mono bg-white/[0.06] text-slate-400 px-1.5 py-0.5 rounded">↑↓ navegar • Enter</span>
+            </div>
+            <div id="slashCommandsList" class="max-h-56 overflow-y-auto mt-1 space-y-1 text-xs"></div>
+          </div>
+
           <input 
             type="text" 
             id="chatInputText" 
-            placeholder="Digite sua mensagem como operador humano (ou envie áudio)..." 
+            placeholder="Digite uma mensagem ou '/' para comandos rápidos..." 
             class="flex-1 bg-[#07090e] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all"
-            onkeydown="if(event.key === 'Enter') sendOperatorMessage()"
+            oninput="handleChatInput(event)"
+            onkeydown="handleChatKeyDown(event)"
           />
           <button 
             type="button"
@@ -1576,38 +1588,16 @@
           </button>
         </div>
 
-        <!-- Trilha de Ações Autônomas Executadas pela IA -->
-        <div class="p-4 border-t border-white/[0.08] space-y-2.5 text-xs">
+        <!-- Linha do Tempo 360° do Morador (Life-Events & Histórico Vivo) -->
+        <div class="p-4 border-t border-white/[0.08] space-y-3 text-xs">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Ações Autônomas da IA
+              <span>⏱️</span>
+              Linha do Tempo 360°
             </span>
-            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 font-bold border border-emerald-500/20">Zero-Touch</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30">Histórico Vivo</span>
           </div>
-          <div class="space-y-2" id="feedAcoesAutonomasMorador">
-            <div class="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[10px] space-y-1">
-              <div class="flex justify-between items-center text-slate-400">
-                <span class="font-bold text-emerald-700">⚡ Cobrança Autônoma</span>
-                <span class="font-mono">11:14</span>
-              </div>
-              <p class="text-slate-300">2ª Via Pix gerada e enviada via WhatsApp (R$ 650,00).</p>
-            </div>
-            <div class="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[10px] space-y-1">
-              <div class="flex justify-between items-center text-slate-400">
-                <span class="font-bold text-indigo-700">📖 Consulta RAG</span>
-                <span class="font-mono">10:48</span>
-              </div>
-              <p class="text-slate-300">Dúvida sobre mudanças no sábado sanada pelo Art. 24 da Convenção.</p>
-            </div>
-            <div class="p-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[10px] space-y-1">
-              <div class="flex justify-between items-center text-slate-400">
-                <span class="font-bold text-purple-700">🎟️ Portaria Autônoma</span>
-                <span class="font-mono">09:30</span>
-              </div>
-              <p class="text-slate-300">Passe QR Code emitido para visitante Dr. Marcelo (Unid 101).</p>
-            </div>
-          </div>
+          <div id="sideMoradorTimeline" class="relative pl-3 space-y-3.5 border-l border-white/10 ml-2"></div>
         </div>
       </aside>
     </main>
@@ -3322,7 +3312,182 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       window.print();
     }
 
-    // Simulação de Áudio de Morador com Waveform e Transcrição
+    // ==========================================
+    // 1. COMANDOS RÁPIDOS NO CHAT ("/")
+    // ==========================================
+    const SLASH_COMMANDS = [
+      { cmd: '/pix', icon: '⚡', label: 'Enviar Boleto Pix', desc: 'Emite Pix dinâmico com valor da cota do morador ativo' },
+      { cmd: '/acordo', icon: '🤝', label: 'Simulador de Acordos', desc: 'Abre o módulo de parcelamento sem juros' },
+      { cmd: '/termo', icon: '✍️', label: 'Termo de Confissão', desc: 'Gera termo com validade jurídica e assinatura digital' },
+      { cmd: '/mudanca', icon: '📦', label: 'Regra de Mudança (Art. 24)', desc: 'Envia regra regimental de sábado (08h às 12h)' },
+      { cmd: '/encomenda', icon: '📬', label: 'Notificar Encomenda', desc: 'Abre registro de pacote recebido na portaria' },
+      { cmd: '/visitante', icon: '🎟️', label: 'Passe QR Code Visitante', desc: 'Emite credencial de acesso para a portaria' },
+      { cmd: '/audio', icon: '🎙️', label: 'Simular Áudio Morador', desc: 'Simula nota de voz com transcrição Whisper e resumo IA' }
+    ];
+
+    let currentSlashMatches = [...SLASH_COMMANDS];
+    let selectedSlashIdx = 0;
+
+    function renderSlashCommands(list) {
+      const container = document.getElementById('slashCommandsList');
+      if (!container) return;
+      currentSlashMatches = list;
+      selectedSlashIdx = 0;
+
+      if (list.length === 0) {
+        container.innerHTML = '<div class="p-3 text-center text-slate-500 text-[11px]">Nenhum comando correspondente.</div>';
+        return;
+      }
+
+      container.innerHTML = list.map((item, idx) => `
+        <div 
+          onclick="executeSlashCommand('${item.cmd}')"
+          class="slash-cmd-item p-2 rounded-xl cursor-pointer flex items-center justify-between transition-all border ${idx === 0 ? 'bg-indigo-600/25 border-indigo-500/40 text-white' : 'hover:bg-white/[0.04] border-transparent text-slate-300'}">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-sm shrink-0">${item.icon}</span>
+            <div class="truncate">
+              <strong class="text-xs block text-white font-mono">${item.cmd} <span class="text-indigo-300 font-sans font-normal ml-1">${item.label}</span></strong>
+              <p class="text-[10px] text-slate-400 truncate">${item.desc}</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono text-slate-500 shrink-0">Enter ↵</span>
+        </div>
+      `).join('');
+    }
+
+    function handleChatInput(e) {
+      const val = e.target.value;
+      const popover = document.getElementById('slashCommandsPopover');
+      if (!popover) return;
+
+      if (val.startsWith('/')) {
+        const query = val.toLowerCase().trim();
+        const matches = SLASH_COMMANDS.filter(c => c.cmd.startsWith(query) || c.label.toLowerCase().includes(query.replace('/', '')));
+        renderSlashCommands(matches);
+        popover.classList.remove('hidden');
+      } else {
+        popover.classList.add('hidden');
+      }
+    }
+
+    function handleChatKeyDown(e) {
+      const popover = document.getElementById('slashCommandsPopover');
+      const isOpen = popover && !popover.classList.contains('hidden');
+
+      if (isOpen) {
+        const items = document.querySelectorAll('.slash-cmd-item');
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (items.length > 0) {
+            selectedSlashIdx = (selectedSlashIdx + 1) % items.length;
+            highlightSlashSelection(items);
+          }
+          return;
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (items.length > 0) {
+            selectedSlashIdx = (selectedSlashIdx - 1 + items.length) % items.length;
+            highlightSlashSelection(items);
+          }
+          return;
+        }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (currentSlashMatches[selectedSlashIdx]) {
+            executeSlashCommand(currentSlashMatches[selectedSlashIdx].cmd);
+          }
+          return;
+        }
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          popover.classList.add('hidden');
+          return;
+        }
+      }
+
+      if (e.key === 'Enter' && !isOpen) {
+        sendOperatorMessage();
+      }
+    }
+
+    function highlightSlashSelection(items) {
+      items.forEach((el, idx) => {
+        if (idx === selectedSlashIdx) {
+          el.className = 'slash-cmd-item p-2 rounded-xl cursor-pointer flex items-center justify-between transition-all border bg-indigo-600/25 border-indigo-500/40 text-white';
+        } else {
+          el.className = 'slash-cmd-item p-2 rounded-xl cursor-pointer flex items-center justify-between transition-all border hover:bg-white/[0.04] border-transparent text-slate-300';
+        }
+      });
+    }
+
+    function executeSlashCommand(cmd) {
+      const popover = document.getElementById('slashCommandsPopover');
+      if (popover) popover.classList.add('hidden');
+      const input = document.getElementById('chatInputText');
+      if (input) input.value = '';
+
+      if (cmd === '/pix') {
+        executarAcaoSugerida('pix');
+      } else if (cmd === '/acordo') {
+        switchTab('cobranca');
+      } else if (cmd === '/termo') {
+        abrirModalTermoAcordoParaAtivo();
+      } else if (cmd === '/mudanca') {
+        sendQuickReply('📦 Conforme o Art. 24 do Regimento Interno, mudanças são permitidas aos sábados das 08h às 12h, mediante agendamento com 48h de antecedência junto à administração para colocação de mantas protetoras no elevador.');
+      } else if (cmd === '/encomenda') {
+        openNovaEncomendaModal();
+      } else if (cmd === '/visitante') {
+        openNovoVisitanteModal();
+      } else if (cmd === '/audio') {
+        simularAudioMorador();
+      }
+    }
+
+    // ==========================================
+    // 2. LINHA DO TEMPO 360° DO MORADOR (CRM VIVO)
+    // ==========================================
+    const MORADOR_TIMELINES = {
+      '5511999999999@s.whatsapp.net': [
+        { time: 'Hoje 09:31', icon: '📄', dotClass: 'bg-emerald-400', title: 'Solicitação de 2ª Via', desc: 'IA localizou a cota de 11/2026 e enviou Pix Copia e Cola de R$ 650,00.' },
+        { time: 'Hoje 09:30', icon: '📦', dotClass: 'bg-indigo-400', title: 'Consulta Regimento Interno', desc: 'Orientação automática pelo Art. 24 sobre mudanças no sábado das 08h às 12h.' },
+        { time: '15/10/2026', icon: '💰', dotClass: 'bg-emerald-400', title: 'Cota de Outubro Paga', desc: 'Pix de R$ 650,00 compensado instantaneamente no Santander.' },
+        { time: '12/10/2026', icon: '📬', dotClass: 'bg-purple-400', title: 'Encomenda Retirada', desc: 'Pacote Amazon (Armário B-12) liberado na portaria com QR Code.' },
+        { time: '04/10/2026', icon: '🥩', dotClass: 'bg-cyan-400', title: 'Reserva Espaço Gourmet', desc: 'Reserva confirmada para 18/10 com taxa de R$ 120,00 debitada no boleto.' }
+      ],
+      '5511988888888@s.whatsapp.net': [
+        { time: 'Hoje 09:15', icon: '⚠️', dotClass: 'bg-rose-400', title: 'Risco Jurídico Detectado', desc: 'Moradora contestou encargos moratórios; transferida para atendimento humano.' },
+        { time: '05/11/2026', icon: '📩', dotClass: 'bg-amber-400', title: 'Régua de Cobrança D+20', desc: 'Lembrete amigável com proposta de acordo sem juros enviado no WhatsApp.' },
+        { time: '15/10/2026', icon: '⚠️', dotClass: 'bg-rose-400', title: 'Cota de Outubro Vencida', desc: 'Cota de R$ 1.350,00 em aberto (inadimplência de 42 dias).' },
+        { time: '20/09/2026', icon: '🤝', dotClass: 'bg-emerald-400', title: 'Acordo Anterior Quitado', desc: 'Termo de confissão nº 842 cumprido integralmente com 100% de pontualidade.' }
+      ]
+    };
+
+    function renderMoradorTimeline(remoteJid) {
+      const container = document.getElementById('sideMoradorTimeline');
+      if (!container) return;
+
+      const events = MORADOR_TIMELINES[remoteJid] || [
+        { time: 'Hoje', icon: '💬', dotClass: 'bg-indigo-400', title: 'Interação WhatsApp', desc: 'Atendimento registrado na plataforma DOMUS AI.' }
+      ];
+
+      container.innerHTML = events.map(e => `
+        <div class="relative pl-5 pb-1">
+          <div class="absolute -left-[18px] top-1 w-2.5 h-2.5 rounded-full ${e.dotClass || 'bg-indigo-400'} ring-4 ring-[#0a0e18]"></div>
+          <div class="flex items-center justify-between text-[11px] mb-0.5">
+            <strong class="text-slate-200 font-semibold flex items-center gap-1">
+              <span>${e.icon}</span> ${e.title}
+            </strong>
+            <span class="text-slate-500 font-mono text-[9px]">${e.time}</span>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-snug">${e.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    // ==========================================
+    // 3. SIMULAÇÃO DE ÁUDIO COM TRANSCRIÇÃO & RESUMO IA
+    // ==========================================
     function simularAudioMorador() {
       const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
       if (!conv) return;
@@ -3330,27 +3495,53 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       
+      const isMariana = activeRemoteJid.includes('888888888');
+      const duration = isMariana ? '0:35' : '0:22';
+      const summary = isMariana 
+        ? 'Moradora aceita quitar parcelas sem multa e solicita envio do termo de acordo.'
+        : 'Morador confirma pagamento Pix de R$ 650,00 e solicita comprovante de quitação.';
+      const transcription = isMariana
+        ? 'Olá, como conversamos, se retirarem a multa abusiva eu concordo em parcelar o valor principal e pagar a primeira parcela hoje mesmo via Pix. Podem me mandar o termo?'
+        : 'Boa tarde, pessoal da administração. Acabei de realizar o pagamento da cota de condomínio pelo Pix Copia e Cola. Gostaria de saber se já consta baixado no sistema predial.';
+
       conv.messages.push({
         id: `audio_${Date.now()}`,
         sender: 'user',
         isAudio: true,
-        duration: '0:18',
-        text: '🎙️ *Mensagem de Áudio (0:18)*\n\n📝 *Transcrição por IA (Whisper):*\n"Boa tarde, eu acabei de pagar meu condomínio pelo Pix Copia e Cola, gostaria de saber se já deu baixa no sistema."',
+        duration: duration,
+        audioSummary: summary,
+        audioTranscription: transcription,
+        text: transcription,
         timestamp: timeStr
       });
 
+      // Registra na Linha do Tempo 360° em tempo real
+      if (!MORADOR_TIMELINES[activeRemoteJid]) MORADOR_TIMELINES[activeRemoteJid] = [];
+      MORADOR_TIMELINES[activeRemoteJid].unshift({
+        time: `${timeStr}`,
+        icon: '🎙️',
+        dotClass: 'bg-cyan-400',
+        title: 'Áudio WhatsApp Transcrito',
+        desc: summary
+      });
+
       selectConversation(activeRemoteJid);
+      showToast('Áudio Recebido & Transcrito!', 'A IA processou o áudio, gerou o resumo executivo e a transcrição Whisper.', 'info');
 
       setTimeout(() => {
+        const replyText = isMariana
+          ? 'Perfeito, Mariana! Formalizamos sua proposta: termo sem juros de R$ 1.350,00 pronto para assinatura digital. Você pode assinar com 1 clique no botão acima.'
+          : 'Olá Carlos! Sim, seu pagamento via Pix de R$ 650,00 foi identificado instantaneamente pelo gateway. Sua unidade está 100% regularizada e sem pendências!';
+
         conv.messages.push({
           id: `bot_reply_${Date.now()}`,
           sender: 'bot',
-          text: 'Olá Carlos! Sim, seu pagamento via Pix de R$ 650,00 foi compensado instantaneamente no sistema. Seu comprovante de quitação está disponível e sua unidade está regularizada!',
+          text: replyText,
           timestamp: timeStr
         });
         selectConversation(activeRemoteJid);
-        confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
-      }, 900);
+        confetti({ particleCount: 35, spread: 65, origin: { y: 0.6 } });
+      }, 1000);
     }
 
     // ==========================================
@@ -3477,7 +3668,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
                 ${isFinOk ? '<span class="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/15 text-emerald-400 font-mono font-bold shrink-0 border border-emerald-500/20">● Em Dia</span>' : '<span class="px-1.5 py-0.2 rounded text-[9px] bg-rose-500/20 text-rose-300 font-mono font-bold shrink-0 border border-rose-500/30">⚠️ Débito</span>'}
               </div>
               <div class="flex items-center justify-between gap-2">
-                <p class="text-[11px] text-slate-400 truncate flex-1">${lastMsg.text}</p>
+                ${lastMsg.isAudio ? `
+                  <p class="text-[11px] text-cyan-300 truncate flex-1 flex items-center gap-1 font-medium">
+                    <span class="px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 font-mono text-[9px] font-bold shrink-0">🎙️ ${lastMsg.duration || '0:22'}</span>
+                    <span class="truncate">${lastMsg.audioSummary || 'Nota de voz recebida'}</span>
+                  </p>
+                ` : `
+                  <p class="text-[11px] text-slate-400 truncate flex-1">${lastMsg.text}</p>
+                `}
                 ${c.sentiment === 'risco_juridico' ? '<span class="px-1 py-0.2 rounded text-[8px] bg-rose-500/30 text-rose-200 font-mono font-bold shrink-0 border border-rose-500/40">Jurídico</span>' : (c.isHumanHandoff ? '<span class="px-1 py-0.2 rounded text-[8px] bg-amber-500/20 text-amber-300 font-mono font-bold shrink-0">Humano</span>' : '<span class="px-1 py-0.2 rounded text-[8px] bg-indigo-500/20 text-indigo-300 font-mono font-bold shrink-0">IA</span>')}
               </div>
             </div>
@@ -3572,15 +3770,69 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         btnSidePix.setAttribute('onclick', `abrirModalQrCodePix('${pixVal}')`);
       }
 
-      // 3. Atualiza controles de IA / Handoff
+      // 3. Atualiza Linha do Tempo 360° do Morador
+      renderMoradorTimeline(remoteJid);
+
+      // 4. Atualiza controles de IA / Handoff
       updateHandoffButton(conv.isHumanHandoff);
       updateSmartActionBanner(conv);
 
-      // 4. Renderiza Mensagens
+      // 5. Renderiza Mensagens
       const stream = document.getElementById('chatMessagesStream');
       if (stream) {
         stream.innerHTML = conv.messages.map(m => {
           const isUser = m.sender === 'user';
+
+          if (m.isAudio) {
+            return `
+              <div class="flex flex-col items-start">
+                <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md chat-bubble-user text-slate-200 border border-cyan-500/20">
+                  <div class="flex items-center justify-between gap-4 mb-2">
+                    <div class="flex items-center gap-1.5 font-bold text-[10px] text-cyan-300">
+                      <span>🎙️</span>
+                      <span>Áudio WhatsApp</span>
+                      <span class="px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 font-mono text-[9px]">${m.duration || '0:22'}</span>
+                    </div>
+                    <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
+                  </div>
+
+                  <!-- Waveform Player Interativo -->
+                  <div class="flex items-center gap-3 p-2.5 rounded-xl bg-black/40 border border-white/[0.08]">
+                    <button onclick="showToast('Áudio em Reprodução', 'Reproduzindo áudio do morador com velocidade normal (1.0x).', 'info')" class="w-7 h-7 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black flex items-center justify-center font-bold text-[11px] shrink-0 transition-transform active:scale-95 shadow cursor-pointer">
+                      ▶
+                    </button>
+                    <div class="flex-1 flex items-center gap-1 h-5">
+                      <span class="w-1 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
+                      <span class="w-1 h-4 bg-cyan-400 rounded-full"></span>
+                      <span class="w-1 h-2 bg-cyan-500/60 rounded-full"></span>
+                      <span class="w-1 h-5 bg-cyan-300 rounded-full"></span>
+                      <span class="w-1 h-3 bg-cyan-400 rounded-full animate-pulse"></span>
+                      <span class="w-1 h-4 bg-cyan-400 rounded-full"></span>
+                      <span class="w-1 h-1.5 bg-cyan-500/60 rounded-full"></span>
+                      <span class="w-1 h-5 bg-cyan-400 rounded-full"></span>
+                      <span class="w-1 h-2 bg-cyan-500/40 rounded-full"></span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-mono shrink-0">${m.duration || '0:22'}</span>
+                  </div>
+
+                  <!-- Resumo Executivo DOMUS AI -->
+                  <div class="mt-2.5 p-2.5 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-indigo-100">
+                    <div class="flex items-center gap-1.5 text-[10px] font-bold text-cyan-300 mb-1">
+                      <span>🧠</span>
+                      <span>Resumo Executivo DOMUS AI:</span>
+                    </div>
+                    <p class="text-xs text-white font-medium leading-relaxed">${m.audioSummary || 'Morador solicita confirmação de baixa do Pix no sistema.'}</p>
+                    
+                    <details class="mt-2 text-[10px] text-slate-400">
+                      <summary class="hover:text-indigo-300 cursor-pointer font-mono font-semibold">Ver Transcrição Whisper Completa...</summary>
+                      <p class="mt-1.5 p-2 rounded-lg bg-black/50 text-slate-300 italic border border-white/5 font-sans">${m.audioTranscription || m.text || ''}</p>
+                    </details>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+
           return `
             <div class="flex flex-col ${isUser ? 'items-start' : 'items-end'}">
               <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md ${isUser ? 'chat-bubble-user text-slate-200' : 'chat-bubble-agent text-indigo-100'}">
