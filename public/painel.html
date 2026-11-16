@@ -169,6 +169,165 @@
 <body class="min-h-screen flex h-screen overflow-hidden selection:bg-brand selection:text-white">
 
   <!-- ============================================================== -->
+  <!-- MODAL: QR CODE PIX VISUAL DINÂMICO (CANVAS REAL) -->
+  <!-- ============================================================== -->
+  <div id="modalQrCodePix" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeQrCodePixModal()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-sm w-full border border-emerald-500/30 shadow-2xl text-center space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-2 border-b border-white/[0.08]">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>QR Code Pix Dinâmico</span>
+        </h3>
+        <button onclick="closeQrCodePixModal()" class="text-slate-400 hover:text-white text-xs">✕</button>
+      </div>
+
+      <!-- Canvas do QR Code Pix -->
+      <div class="p-4 rounded-2xl bg-white flex flex-col items-center justify-center shadow-inner mx-auto w-56 h-56">
+        <canvas id="canvasPixQr" width="200" height="200" class="w-full h-full"></canvas>
+      </div>
+
+      <div class="space-y-1">
+        <span class="text-xs text-slate-400 block font-mono">Valor Atualizado:</span>
+        <strong id="modalPixValor" class="text-xl font-mono text-emerald-400">R$ 650,00</strong>
+        <span class="text-[10px] text-slate-500 block font-mono">Vencimento: 20/11/2026 • Pix Banco Central</span>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="copiarChavePixModal()" class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all">
+          Copiar Pix
+        </button>
+        <button onclick="alert('Download do comprovante de cobrança em PDF iniciado!'); closeQrCodePixModal();" class="flex-1 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] text-slate-200 text-xs font-semibold">
+          Baixar PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: TERMO DE ACORDO E CONFISSÃO DE DÍVIDA (ASSINATURA DIGITAL) -->
+  <!-- ============================================================== -->
+  <div id="modalTermoAcordo" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeTermoAcordoModal()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-xl w-full border border-indigo-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white">Termo de Confissão & Parcelamento de Dívida</h3>
+            <span class="text-[10px] text-slate-400 font-mono">Documento Jurídico com Assinatura Digital</span>
+          </div>
+        </div>
+        <button onclick="closeTermoAcordoModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <!-- Preview do Contrato Legal -->
+      <div class="p-4 rounded-2xl bg-[#0a0e18] border border-white/[0.06] max-h-64 overflow-y-auto space-y-2.5 text-xs text-slate-300 font-mono leading-relaxed">
+        <p class="font-bold text-white text-center">INSTRUMENTO PARTICULAR DE CONFISSÃO E RENEGOCIAÇÃO DE DÉBITO CONDOMINIAL</p>
+        <p><strong>CREDOR:</strong> CONDOMÍNIO RESIDENCIAL JARDINS DO BOSQUE (CNPJ 12.345.678/0001-90)</p>
+        <p id="termoDevedorInfo"><strong>DEVEDOR:</strong> MARIANA DE SOUZA, APTO 204 - BLOCO B, CPF 987.***.***-00</p>
+        <p><strong>CLÁUSULA 1ª:</strong> O DEVEDOR reconhece expressamente o débito consolidado de <strong>R$ 1.350,00</strong>, pactuando o pagamento parcelado conforme aceite registrado digitalmente via WhatsApp.</p>
+        <p id="termoParcelasInfo"><strong>CLÁUSULA 2ª:</strong> O valor será quitado em <strong>3 parcelas mensais de R$ 450,00</strong> com vencimento todo dia 15.</p>
+        <p><strong>CLÁUSULA 3ª:</strong> O inadimplemento de qualquer parcela acarretará o vencimento antecipado do saldo remanescente, com multa de 10% e honorários advocatícios.</p>
+        <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[10px]">
+          <span>🔒 HASH CRIPTOGRÁFICO DE INTEGRIDADE:</span>
+          <span class="block truncate font-mono mt-0.5">sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs pt-1">
+        <div class="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px]">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Assinatura Digital Válida (Lei 14.063/20)
+        </div>
+        <div class="flex gap-2">
+          <button onclick="closeTermoAcordoModal()" class="px-3.5 py-2 rounded-xl bg-white/[0.06] text-slate-300 text-xs font-semibold">Fechar</button>
+          <button onclick="enviarTermoWhatsApp()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            Disparar Termo no WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: CONVITE DE VISITANTE COM QR CODE (PORTARIA DIGITAL) -->
+  <!-- ============================================================== -->
+  <div id="modalNovoVisitante" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeNovoVisitanteModal()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-md w-full border border-cyan-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+          <span>Gerar Convite Digital com QR Code</span>
+        </h3>
+        <button onclick="closeNovoVisitanteModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="salvarNovoVisitante(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="text-slate-300 font-semibold block mb-1">Nome do Visitante / Prestador</label>
+          <input type="text" id="visNome" required placeholder="Ex: Lucas Mendes (Técnico Internet)" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-slate-300 font-semibold block mb-1">Unidade Destino</label>
+            <select id="visUnidade" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white">
+              <option value="Apt 101">Apt 101 - Bloco A</option>
+              <option value="Apt 204">Apt 204 - Bloco B</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-slate-300 font-semibold block mb-1">Validade do Acesso</label>
+            <input type="date" id="visData" value="2026-11-20" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+          Gerar QR Code de Acesso & Enviar ao Morador
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: REGISTRO DE ENCOMENDA COM FOTO & OCR VISUAL -->
+  <!-- ============================================================== -->
+  <div id="modalNovaEncomenda" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeNovaEncomendaModal()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-md w-full border border-purple-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <svg class="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+          <span>Notificar Encomenda com Foto & OCR</span>
+        </h3>
+        <button onclick="closeNovaEncomendaModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="salvarNovaEncomenda(event)" class="space-y-3.5 text-xs">
+        <div class="p-4 rounded-2xl border-2 border-dashed border-white/[0.1] bg-[#0a0e18] text-center space-y-2">
+          <svg class="w-8 h-8 text-indigo-400 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span class="text-slate-300 block font-semibold">Foto do Pacote / Etiqueta</span>
+          <span class="text-[10px] text-slate-500 block">OCR automático identifica morador e apartamento pela etiqueta</span>
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-semibold block mb-1">Destinatário Identificado</label>
+          <input type="text" id="encDest" value="Carlos Eduardo Silva (Apt 101)" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white" />
+        </div>
+
+        <div>
+          <label class="text-slate-300 font-semibold block mb-1">Transportadora / Código</label>
+          <input type="text" id="encTransp" placeholder="Ex: Mercado Livre / Amazon (Pacote Médio)" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white" />
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+          Disparar Notificação Instantânea no WhatsApp
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
   <!-- MODAL: ACESSO RESTRITO POR PERMISSÃO (RBAC) -->
   <!-- ============================================================== -->
   <div id="modalAcessoNegado" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeAcessoNegadoModal()">
@@ -299,7 +458,7 @@
       <!-- 2. Cobrança & Acordos -->
       <button onclick="switchTab('cobranca')" id="nav-cobranca" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
         <div class="flex items-center gap-3">
-          <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
+          <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
           <span class="sidebar-text">Cobrança & Acordos Pix</span>
         </div>
         <div class="flex items-center gap-1">
@@ -308,7 +467,19 @@
         </div>
       </button>
 
-      <!-- 3. Reservas de Áreas -->
+      <!-- 3. Portaria & Encomendas Digital -->
+      <button onclick="switchTab('portaria_digital')" id="nav-portaria_digital" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+          <span class="sidebar-text">Encomendas & Visitantes</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono font-bold">QR PASS</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
+      </button>
+
+      <!-- 4. Reservas de Áreas -->
       <button onclick="switchTab('reservas')" id="nav-reservas" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
         <div class="flex items-center gap-3">
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
@@ -320,7 +491,7 @@
         </div>
       </button>
 
-      <!-- 4. Telemetria e Medição -->
+      <!-- 5. Telemetria e Medição -->
       <button onclick="switchTab('medicao')" id="nav-medicao" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
         <div class="flex items-center gap-3">
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
@@ -333,10 +504,34 @@
       </button>
 
       <div class="px-2 pt-4 pb-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 sidebar-text">
-        Inteligência & Sistema
+        Inteligência & Governança
       </div>
 
-      <!-- 5. Hub Multi-IA -->
+      <!-- 6. Analytics & BI do Síndico -->
+      <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
+          <span class="sidebar-text">Analytics & BI do Síndico</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono font-bold">PDF REL</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
+      </button>
+
+      <!-- 7. Assembleias & Votações -->
+      <button onclick="switchTab('assembleia')" id="nav-assembleia" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
+        <div class="flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          <span class="sidebar-text">Assembleias & Votos</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="sidebar-text text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono font-bold">QUÓRUM</span>
+          <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+        </div>
+      </button>
+
+      <!-- 8. Hub Multi-IA -->
       <button onclick="switchTab('ai')" id="nav-ai" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
         <div class="flex items-center gap-3">
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
@@ -348,7 +543,7 @@
         </div>
       </button>
 
-      <!-- 6. Base de Conhecimento RAG -->
+      <!-- 9. Base de Conhecimento RAG -->
       <button onclick="switchTab('rag')" id="nav-rag" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
         <div class="flex items-center gap-3">
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -360,7 +555,7 @@
         </div>
       </button>
 
-      <!-- 7. Conectores & Integrações ERP -->
+      <!-- 10. Conectores & Integrações ERP -->
       <button onclick="switchTab('configuracoes')" id="nav-configuracoes" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
         <div class="flex items-center gap-3">
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-1 1.73l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -372,7 +567,7 @@
         </div>
       </button>
 
-      <!-- 8. Equipe & Perfis RBAC -->
+      <!-- 11. Equipe & Perfis RBAC -->
       <button onclick="switchTab('equipe')" id="nav-equipe" class="w-full flex items-center justify-between p-2.5 rounded-xl text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all">
         <div class="flex items-center gap-3">
           <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -424,7 +619,7 @@
           onclick="openCommandPalette()" 
           class="flex items-center gap-3 px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs text-slate-400 transition-all cursor-pointer">
           <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <span class="hidden sm:inline">Buscar morador, unidade, comando ou módulo...</span>
+          <span class="hidden sm:inline">Buscar morador, comando, módulo ou tema...</span>
           <span class="sm:hidden">Buscar...</span>
           <kbd class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.08] text-slate-400 border border-white/[0.1]">Ctrl+K</kbd>
         </button>
@@ -469,7 +664,7 @@
     <!-- CONTENT MODULES -->
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 1: CAIXA DE ENTRADA OMNICHANNEL (3 COLUNAS) -->
+    <!-- MÓDULO 1: CAIXA DE ENTRADA OMNICHANNEL (COM ÁUDIO & SENTIMENTO) -->
     <!-- ============================================================== -->
     <main id="tab-content-atendimento" class="flex-1 flex overflow-hidden">
       <!-- Coluna 1: Lista de Conversas -->
@@ -511,6 +706,10 @@
                 <span id="chatHeaderBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                   Em Dia
                 </span>
+                <!-- Detector de Sentimento & Risco Jurídico -->
+                <span id="chatHeaderSentiment" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+                  <span>●</span> Sentimento Positivo
+                </span>
               </div>
               <p id="chatHeaderSub" class="text-xs text-slate-400">Residencial Jardins do Bosque • Apt 101 - Bloco A</p>
             </div>
@@ -526,32 +725,40 @@
             </button>
             <button 
               id="btnEmitirPixChat"
-              onclick="emitirSegundaViaPixAtivo()" 
+              onclick="abrirModalQrCodePix('650.00')" 
               class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Gerar 2ª Via Pix</span>
+              <span>Ver QR Code Pix</span>
             </button>
           </div>
         </div>
 
         <div id="chatMessagesStream" class="flex-1 overflow-y-auto p-4 space-y-3.5"></div>
 
+        <!-- Canned Responses / Respostas Rápidas -->
         <div class="px-4 py-2 border-t border-white/[0.06] bg-[#0a0e18] flex items-center gap-2 overflow-x-auto text-[11px]">
           <span class="text-slate-500 font-mono font-semibold shrink-0">Respostas Rápidas:</span>
           <button onclick="sendQuickReply('📄 Seu boleto recalculado com Pix Copia e Cola já foi gerado!')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08]">📄 Enviar Boleto Pix</button>
-          <button onclick="sendQuickReply('🤝 Podemos parcelar seu débito condominial em até 12x.')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08]">🤝 Simular Acordo</button>
+          <button onclick="abrirModalTermoAcordo('Mariana de Souza', 'unid_204')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-indigo-300 shrink-0 border border-indigo-500/30">✍️ Gerar Termo de Acordo</button>
           <button onclick="sendQuickReply('📦 Conforme o Art. 24 do Regimento Interno, mudanças são permitidas aos sábados das 08h às 12h.')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08]">📦 Regra de Mudança</button>
-          <button onclick="sendQuickReply('💧 Por favor, envie a foto do hidrômetro para leitura mensal.')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08]">💧 Solicitar Foto Medidor</button>
+          <button onclick="openNovaEncomendaModal()" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-purple-300 shrink-0 border border-purple-500/30">📦 Notificar Encomenda</button>
         </div>
 
         <div class="p-3 border-t border-white/[0.08] bg-[#0b0f19] flex items-center gap-2 shrink-0">
           <input 
             type="text" 
             id="chatInputText" 
-            placeholder="Digite sua mensagem como operador humano (ou pressione Enter)..." 
+            placeholder="Digite sua mensagem como operador humano (ou envie áudio)..." 
             class="flex-1 bg-[#07090e] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all"
             onkeydown="if(event.key === 'Enter') sendOperatorMessage()"
           />
+          <button 
+            type="button"
+            onclick="simularAudioMorador()" 
+            class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-cyan-400 border border-white/[0.08] transition-all"
+            title="Simular recebimento de Mensagem de Áudio no WhatsApp">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+          </button>
           <button 
             onclick="sendOperatorMessage()" 
             class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5">
@@ -600,624 +807,368 @@
               <span class="text-slate-300 font-mono">15/11/2026</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Linha Digitável:</span>
-              <span class="text-indigo-400 font-mono text-[10px] truncate max-w-[150px]">34191.79001...</span>
+              <span class="text-slate-400">Split Adm:</span>
+              <span class="text-emerald-400 font-mono text-[10px]">R$ 65,00 (10%)</span>
             </div>
           </div>
 
           <div class="space-y-2 pt-1">
-            <button onclick="emitirSegundaViaPixAtivo()" class="w-full py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <button onclick="abrirModalQrCodePix('650.00')" class="w-full py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Emitir Pix Copia e Cola</span>
+              <span>Exibir QR Code Pix Dinâmico</span>
             </button>
             <button onclick="switchTab('cobranca')" class="w-full py-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
-              <span>Simular Parcelamento de Dívida →</span>
+              <span>Simulador de Acordos →</span>
             </button>
           </div>
         </div>
 
         <div class="p-4 space-y-2.5 text-xs">
-          <span class="text-xs font-bold text-slate-300 block">Registros do Condômino</span>
-          <div class="text-[11px] p-2.5 rounded-xl bg-[#101524] border border-white/[0.06]">
-            <span class="text-indigo-300 font-semibold block">Reserva de Churrasqueira</span>
-            <span class="text-slate-400 block text-[10px] mt-0.5 font-mono">28/11/2026 • Taxa R$ 80,00</span>
-          </div>
-          <div class="text-[11px] p-2.5 rounded-xl bg-[#101524] border border-white/[0.06]">
-            <span class="text-cyan-300 font-semibold block">Telemetria de Água</span>
-            <span class="text-slate-400 block text-[10px] mt-0.5 font-mono">10/11/2026 • 142.500 m³</span>
-          </div>
+          <span class="text-xs font-bold text-slate-300 block">Ações Rápidas de Portaria</span>
+          <button onclick="openNovoVisitanteModal()" class="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-cyan-300 border border-white/[0.08] text-xs font-medium text-left px-3 flex items-center justify-between">
+            <span>🎟️ Gerar Convite QR Code</span>
+            <span>→</span>
+          </button>
+          <button onclick="openNovaEncomendaModal()" class="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-purple-300 border border-white/[0.08] text-xs font-medium text-left px-3 flex items-center justify-between">
+            <span>📦 Notificar Encomenda</span>
+            <span>→</span>
+          </button>
         </div>
       </aside>
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 2: HUB MULTI-IA COM SANDBOX SPLIT SCREEN -->
+    <!-- MÓDULO NOVO: PORTARIA DIGITAL & ENCOMENDAS COM OCR -->
     <!-- ============================================================== -->
-    <main id="tab-content-ai" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <div class="max-w-6xl mx-auto space-y-6">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-indigo-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
+    <main id="tab-content-portaria_digital" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
           <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-semibold mb-2">
-              <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
-              Hub de Inteligência Artificial Universal
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono font-semibold mb-2">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              Smart Building & Portaria Sem Atrito
             </div>
-            <h1 class="text-2xl font-black text-white tracking-tight">Configure a IA que você quiser</h1>
+            <h1 class="text-2xl font-black text-white tracking-tight">Encomendas com OCR & Convites com QR Code</h1>
             <p class="text-xs text-slate-400 mt-1 max-w-xl">
-              Pluge qualquer modelo comercial ou local (OpenAI, Gemini, Anthropic, DeepSeek, Groq, OpenRouter ou Ollama) e teste em tempo real na sandbox lateral.
+              Reconhecimento fotográfico de pacotes recebidos e geração de passes digitais para visitantes com QR Code no WhatsApp.
             </p>
           </div>
-          <div class="flex items-center gap-3">
-            <button 
-              type="button" 
-              onclick="testarConexaoIA()" 
-              class="px-4 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/[0.1] font-semibold text-xs transition-all flex items-center gap-2 cursor-pointer">
-              <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Testar Ping</span>
+          <div class="flex gap-2">
+            <button onclick="openNovaEncomendaModal()" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition-all shadow-md">
+              + Nova Encomenda
             </button>
-            <button 
-              type="button" 
-              onclick="salvarConfiguracoesIA(event)" 
-              class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold text-xs shadow-lg shadow-indigo-500/25 transition-all flex items-center gap-2 cursor-pointer">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              <span>Salvar Parâmetros</span>
+            <button onclick="openNovoVisitanteModal()" class="px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition-all shadow-md">
+              + Convite QR Code
             </button>
           </div>
         </div>
 
-        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">Selecione o Provedor de Inferência:</span>
-            <span class="text-[11px] text-slate-500">Presets automáticos de endpoint e modelo</span>
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Lista de Encomendas Recebidas -->
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <h3 class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Encomendas Aguardando Retirada</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/20 text-purple-300 font-bold">2 Pendentes</span>
+            </h3>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-            <button type="button" onclick="selectAIProviderPreset('openai')" id="btnProv-openai" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
-              <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
-              </div>
-              <strong class="text-xs text-white block">OpenAI</strong>
-              <span class="text-[10px] text-slate-400 font-mono">GPT-4o</span>
-            </button>
-
-            <button type="button" onclick="selectAIProviderPreset('gemini')" id="btnProv-gemini" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
-              <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
-              </div>
-              <strong class="text-xs text-white block">Gemini</strong>
-              <span class="text-[10px] text-slate-400 font-mono">1.5 Flash</span>
-            </button>
-
-            <button type="button" onclick="selectAIProviderPreset('anthropic')" id="btnProv-anthropic" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
-              <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              </div>
-              <strong class="text-xs text-white block">Claude</strong>
-              <span class="text-[10px] text-slate-400 font-mono">3.5 Sonnet</span>
-            </button>
-
-            <button type="button" onclick="selectAIProviderPreset('deepseek')" id="btnProv-deepseek" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
-              <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7 7 0 1 1 13 5.07V5a1 1 0 0 1 2 0v.07A7 7 0 0 1 13 16.93z"/></svg>
-              </div>
-              <strong class="text-xs text-white block">DeepSeek</strong>
-              <span class="text-[10px] text-slate-400 font-mono">V3 / R1</span>
-            </button>
-
-            <button type="button" onclick="selectAIProviderPreset('groq')" id="btnProv-groq" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
-              <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              </div>
-              <strong class="text-xs text-white block">Groq</strong>
-              <span class="text-[10px] text-slate-400 font-mono">Llama 3.3</span>
-            </button>
-
-            <button type="button" onclick="selectAIProviderPreset('openrouter')" id="btnProv-openrouter" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
-              <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-              </div>
-              <strong class="text-xs text-white block">OpenRouter</strong>
-              <span class="text-[10px] text-slate-400 font-mono">Hub Global</span>
-            </button>
-
-            <button type="button" onclick="selectAIProviderPreset('custom')" id="btnProv-custom" class="provider-card p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-center cursor-pointer">
-              <div class="w-7 h-7 mx-auto mb-2 rounded-lg bg-slate-500/10 border border-slate-500/30 flex items-center justify-center text-slate-300">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
-              </div>
-              <strong class="text-xs text-white block">Ollama / Local</strong>
-              <span class="text-[10px] text-slate-400 font-mono">Sem Custos</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div class="lg:col-span-7 space-y-6">
-            <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-              <h3 class="font-bold text-sm text-white flex items-center gap-2">
-                <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                <span>Credenciais do Modelo</span>
-              </h3>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="text-xs text-slate-300 font-semibold block mb-1">Provedor Ativo</label>
-                  <select id="aiProviderSelect" onchange="onAIProviderChange(this.value)" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
-                    <option value="openai">OpenAI</option>
-                    <option value="gemini">Google Gemini API</option>
-                    <option value="anthropic">Anthropic Claude API</option>
-                    <option value="deepseek">DeepSeek AI</option>
-                    <option value="groq">Groq Cloud (Llama 3.3)</option>
-                    <option value="openrouter">OpenRouter Multi-Models</option>
-                    <option value="custom">Ollama / Endpoint Local</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="text-xs text-slate-300 font-semibold block mb-1">Modelo (Model ID)</label>
-                  <input type="text" id="aiModelName" placeholder="gpt-4o-mini" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-indigo-500" />
-                </div>
-              </div>
-
-              <div>
-                <label class="text-xs text-slate-300 font-semibold block mb-1">Chave de API (API Key)</label>
-                <div class="relative">
-                  <input type="password" id="aiApiKey" placeholder="sk-proj-... ou sua chave" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-indigo-500 pr-10" />
-                  <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-200">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label class="text-xs text-slate-300 font-semibold block mb-1">Base URL (Endpoint)</label>
-                <input type="text" id="aiBaseUrl" placeholder="https://api.openai.com/v1" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-indigo-300 font-mono focus:outline-none focus:border-indigo-500" />
-              </div>
-
-              <div class="grid grid-cols-2 gap-4 pt-2">
-                <div>
-                  <div class="flex justify-between text-xs mb-1">
-                    <span class="text-slate-300 font-semibold">Temperatura</span>
-                    <span id="displayTemperature" class="text-indigo-400 font-mono font-bold">0.3</span>
+            <div id="encomendasListContainer" class="space-y-3">
+              <div class="p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-300 font-bold">📦</div>
+                  <div>
+                    <strong class="text-xs text-white block">Carlos Eduardo (Apt 101)</strong>
+                    <span class="text-[10px] text-slate-400 font-mono">Amazon • Pacote #AMZ-9921 • Notificado</span>
                   </div>
-                  <input type="range" id="aiTemperature" min="0.0" max="1.0" step="0.05" value="0.3" oninput="document.getElementById('displayTemperature').innerText = this.value" class="w-full accent-indigo-500" />
-                  <span class="text-[10px] text-slate-500 block mt-0.5 font-mono">0.0 = Mais estrito às regras</span>
                 </div>
+                <button onclick="alert('Retirada confirmada com sucesso! Notificação de entrega enviada ao morador.'); this.parentElement.remove();" class="px-3 py-1 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
+                  Baixar Retirada
+                </button>
+              </div>
 
-                <div>
-                  <div class="flex justify-between text-xs mb-1">
-                    <span class="text-slate-300 font-semibold">Tokens Máx</span>
-                    <span id="displayMaxTokens" class="text-indigo-400 font-mono font-bold">500</span>
+              <div class="p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-300 font-bold">📦</div>
+                  <div>
+                    <strong class="text-xs text-white block">Mariana de Souza (Apt 204)</strong>
+                    <span class="text-[10px] text-slate-400 font-mono">Mercado Livre • Pacote Médio • Notificado</span>
                   </div>
-                  <input type="range" id="aiMaxTokens" min="150" max="2000" step="50" value="500" oninput="document.getElementById('displayMaxTokens').innerText = this.value" class="w-full accent-indigo-500" />
-                  <span class="text-[10px] text-slate-500 block mt-0.5 font-mono">Tamanho máximo da resposta</span>
                 </div>
-              </div>
-            </div>
-
-            <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="font-bold text-sm text-white flex items-center gap-2">
-                  <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                  <span>Prompt do Sistema (System Prompt)</span>
-                </h3>
-                <div class="flex gap-1.5">
-                  <button type="button" onclick="insertPromptVariable('{{condominioNome}}')" class="text-[9px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono font-bold">+ {{condominioNome}}</button>
-                  <button type="button" onclick="insertPromptVariable('{{contextoRAG}}')" class="text-[9px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono font-bold">+ {{contextoRAG}}</button>
-                </div>
-              </div>
-
-              <textarea 
-                id="aiSystemPrompt" 
-                rows="8" 
-                class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
-            </div>
-          </div>
-
-          <div class="lg:col-span-5">
-            <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] h-full flex flex-col space-y-4">
-              <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <h3 class="font-bold text-sm text-white flex items-center gap-2">
-                  <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  <span>Sandbox de Teste do Agente</span>
-                </h3>
-                <span class="text-[10px] text-emerald-400 font-mono font-bold">RAG Ativo</span>
-              </div>
-
-              <div id="aiSandboxStream" class="flex-1 min-h-[360px] max-h-[460px] overflow-y-auto space-y-3 p-2 text-xs">
-                <div class="p-3 rounded-2xl bg-[#0a0e18] border border-white/[0.06] text-slate-400 text-center text-xs">
-                  <span>💡 Teste o agente em tempo real. Digite uma dúvida como se fosse um morador pelo WhatsApp.</span>
-                </div>
-              </div>
-
-              <div class="pt-2 border-t border-white/[0.08] flex gap-2">
-                <input 
-                  type="text" 
-                  id="aiSandboxInput" 
-                  placeholder="Ex: Qual o horário de silêncio na piscina?" 
-                  class="flex-1 bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500"
-                  onkeydown="if(event.key === 'Enter') runSandboxPrompt()"
-                />
-                <button 
-                  type="button" 
-                  onclick="runSandboxPrompt()" 
-                  class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all cursor-pointer">
-                  Enviar
+                <button onclick="alert('Retirada confirmada!'); this.parentElement.remove();" class="px-3 py-1 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
+                  Baixar Retirada
                 </button>
               </div>
             </div>
           </div>
 
-        </div>
+          <!-- Lista de Convites e Passes Ativos -->
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <h3 class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Passes de Visitantes (QR Code Ativo)</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300 font-bold">2 Ativos</span>
+            </h3>
 
+            <div id="visitantesListContainer" class="space-y-3">
+              <div class="p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-300 font-bold">🎟️</div>
+                  <div>
+                    <strong class="text-xs text-white block">Lucas Mendes (Técnico Claro)</strong>
+                    <span class="text-[10px] text-slate-400 font-mono">Apt 101 • Válido até 20/11/2026</span>
+                  </div>
+                </div>
+                <span class="px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-400 font-mono text-[10px]">Acesso Liberado</span>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.06] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-300 font-bold">🎟️</div>
+                  <div>
+                    <strong class="text-xs text-white block">Beatriz Ramos (Convidada)</strong>
+                    <span class="text-[10px] text-slate-400 font-mono">Apt 204 • Válido para Churrasqueira</span>
+                  </div>
+                </div>
+                <span class="px-2 py-1 rounded-md bg-cyan-500/20 text-cyan-400 font-mono text-[10px]">QR Code Ativo</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 3: BASE DE CONHECIMENTO RAG -->
+    <!-- MÓDULO NOVO: ANALYTICS & BI DO SÍNDICO (RELATÓRIO MENSAL PDF) -->
     <!-- ============================================================== -->
-    <main id="tab-content-rag" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-analytics" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
-        
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-semibold mb-2">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-              Base de Conhecimento RAG (Retrieval-Augmented Generation)
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
+              Executive Intelligence & Business Dashboard
             </div>
-            <h1 class="text-2xl font-black text-white tracking-tight">Regimentos, Convenções e Normas Prediais</h1>
+            <h1 class="text-2xl font-black text-white tracking-tight">Analytics & Relatório Executivo Mensal</h1>
             <p class="text-xs text-slate-400 mt-1 max-w-xl">
-              Documentos indexados e convertidos em chunks vetoriais. A IA consulta estes dados antes de formular qualquer resposta aos moradores.
+              Visão consolidada de arrecadação, acordos, índice de resolução da IA e prestação de contas com 1 clique.
             </p>
           </div>
-          <button 
-            type="button" 
-            onclick="openNovoDocumentoRAGModal()" 
-            class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/25 transition-all flex items-center gap-2 cursor-pointer">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
-            <span>Novo Documento RAG</span>
+          <button onclick="gerarRelatorioMensalPdf()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            <span>Gerar Relatório Executivo (PDF)</span>
           </button>
         </div>
 
+        <!-- 4 Cards de Métricas de BI -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Documentos Indexados</span>
-            <strong id="ragDocCount" class="text-2xl font-black text-white">4 documentos</strong>
+            <span class="text-[11px] text-slate-400 block mb-1">Taxa de Resolução da IA</span>
+            <strong class="text-2xl font-black text-emerald-400 font-mono">94.8%</strong>
+            <span class="text-[10px] text-slate-500 block mt-1">Sem transbordo humano</span>
           </div>
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Chunks Vetoriais Ativos</span>
-            <strong class="text-2xl font-black text-indigo-400 font-mono">62 chunks</strong>
+            <span class="text-[11px] text-slate-400 block mb-1">Tempo Médio de Resposta</span>
+            <strong class="text-2xl font-black text-indigo-400 font-mono">1.8 seg</strong>
+            <span class="text-[10px] text-slate-500 block mt-1">24h por dia, 7 dias/semana</span>
           </div>
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Precisão Factual da IA</span>
-            <strong class="text-2xl font-black text-emerald-400 font-mono">99.4%</strong>
+            <span class="text-[11px] text-slate-400 block mb-1">Recuperação de Inadimplência</span>
+            <strong class="text-2xl font-black text-cyan-400 font-mono">R$ 48.950</strong>
+            <span class="text-[10px] text-emerald-400 block mt-1">+18% vs mês anterior</span>
           </div>
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Algoritmo de Recuperação</span>
-            <strong class="text-2xl font-black text-cyan-400 font-mono">BM25 + Cosine</strong>
+            <span class="text-[11px] text-slate-400 block mb-1">Índice de Satisfação (CSAT)</span>
+            <strong class="text-2xl font-black text-amber-400 font-mono">4.9 / 5.0</strong>
+            <span class="text-[10px] text-slate-500 block mt-1">Avaliação dos condôminos</span>
           </div>
         </div>
 
+        <!-- Gráfico Visual de Recuperação e Mapa de Calor -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <h3 class="font-bold text-sm text-white flex items-center justify-between">
+              <span>Evolução da Arrecadação Pix (Últimos 6 meses)</span>
+              <span class="text-emerald-400 font-mono text-xs">+34.2%</span>
+            </h3>
+
+            <!-- Gráfico de Barras SVG Nativo -->
+            <div class="h-44 flex items-end justify-between gap-3 pt-6 pb-2 px-2 border-b border-white/[0.08]">
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <span class="text-[9px] font-mono text-slate-400">R$ 28k</span>
+                <div class="w-full bg-indigo-600/40 rounded-t-lg h-[50%]"></div>
+                <span class="text-[10px] font-mono text-slate-500">Jun</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <span class="text-[9px] font-mono text-slate-400">R$ 32k</span>
+                <div class="w-full bg-indigo-600/50 rounded-t-lg h-[58%]"></div>
+                <span class="text-[10px] font-mono text-slate-500">Jul</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <span class="text-[9px] font-mono text-slate-400">R$ 35k</span>
+                <div class="w-full bg-indigo-600/60 rounded-t-lg h-[65%]"></div>
+                <span class="text-[10px] font-mono text-slate-500">Ago</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <span class="text-[9px] font-mono text-slate-400">R$ 41k</span>
+                <div class="w-full bg-indigo-600/70 rounded-t-lg h-[75%]"></div>
+                <span class="text-[10px] font-mono text-slate-500">Set</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <span class="text-[9px] font-mono text-slate-400">R$ 44k</span>
+                <div class="w-full bg-indigo-600/80 rounded-t-lg h-[82%]"></div>
+                <span class="text-[10px] font-mono text-slate-500">Out</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <span class="text-[9px] font-mono text-emerald-400 font-bold">R$ 49k</span>
+                <div class="w-full bg-gradient-to-t from-indigo-500 to-emerald-400 rounded-t-lg h-[92%] shadow-lg shadow-emerald-500/20"></div>
+                <span class="text-[10px] font-mono text-emerald-400 font-bold">Nov</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mapa de Calor de Ocorrências -->
+          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+            <h3 class="font-bold text-sm text-white">Mapa de Demandas da Comunidade</h3>
+            <div class="space-y-3 text-xs">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-300">2ª Via de Boleto & Pix</span>
+                  <span class="text-emerald-400 font-mono font-bold">48% dos atendimentos</span>
+                </div>
+                <div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
+                  <div class="bg-emerald-500 h-2 rounded-full" style="width: 48%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-300">Regras de Lazer, Mudança & Barulho</span>
+                  <span class="text-indigo-400 font-mono font-bold">28% dos atendimentos</span>
+                </div>
+                <div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
+                  <div class="bg-indigo-500 h-2 rounded-full" style="width: 28%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-300">Encomendas & Correspondências</span>
+                  <span class="text-purple-400 font-mono font-bold">14% dos atendimentos</span>
+                </div>
+                <div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
+                  <div class="bg-purple-500 h-2 rounded-full" style="width: 14%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-300">Dúvidas Técnicas / Manutenção</span>
+                  <span class="text-amber-400 font-mono font-bold">10% dos atendimentos</span>
+                </div>
+                <div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
+                  <div class="bg-amber-500 h-2 rounded-full" style="width: 10%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO NOVO: ASSEMBLEIAS VIRTUAIS & ENQUETES VIA WHATSAPP -->
+    <!-- ============================================================== -->
+    <main id="tab-content-assembleia" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono font-semibold mb-2">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Democracia Condominial Digital
+            </div>
+            <h1 class="text-2xl font-black text-white tracking-tight">Assembleias & Votações por WhatsApp</h1>
+            <p class="text-xs text-slate-400 mt-1 max-w-xl">
+              Pautas deliberativas disparadas aos condôminos adimplentes com cômputo de quórum por fração ideal e ata gerada por IA.
+            </p>
+          </div>
+          <button onclick="simularVotoAssembleia()" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+            + Simular Voto via WhatsApp
+          </button>
+        </div>
+
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <h3 class="font-bold text-sm text-white flex items-center gap-2">
-            <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span>Playground de Busca Semântica no Regimento</span>
-          </h3>
-          
-          <div class="flex gap-2">
-            <input 
-              type="text" 
-              id="ragPerguntaTeste" 
-              placeholder="Ex: Qual o horário de silêncio e normas para reformas barulhentas?" 
-              class="flex-1 bg-[#0a0e18] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-              onkeydown="if(event.key === 'Enter') testarBuscaRAG()"
-            />
-            <button 
-              type="button" 
-              onclick="testarBuscaRAG()" 
-              class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all cursor-pointer">
-              Pesquisar Chunks
+          <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+            <div>
+              <span class="text-[10px] text-emerald-400 font-mono font-bold uppercase tracking-wider">● Votação Ativa em Andamento</span>
+              <h3 class="text-base font-bold text-white mt-0.5">Pauta 01/2026: Modernização e Climatização da Academia</h3>
+            </div>
+            <span class="text-xs text-slate-400 font-mono">Quórum Atingido: <strong class="text-white">68% das unidades</strong></span>
+          </div>
+
+          <div class="space-y-4 pt-2">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-emerald-400 flex items-center gap-1"><span>👍</span> A favor da Climatização (Sim)</span>
+                <span class="font-mono text-emerald-400 font-bold" id="votosSimPercent">76% (74 votos)</span>
+              </div>
+              <div class="w-full bg-white/[0.06] rounded-full h-3 overflow-hidden">
+                <div id="votosSimBar" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 76%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-rose-400 flex items-center gap-1"><span>👎</span> Contra a Climatização (Não)</span>
+                <span class="font-mono text-rose-400 font-bold" id="votosNaoPercent">18% (18 votos)</span>
+              </div>
+              <div class="w-full bg-white/[0.06] rounded-full h-3 overflow-hidden">
+                <div id="votosNaoBar" class="bg-rose-500 h-3 rounded-full transition-all duration-500" style="width: 18%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="font-bold text-slate-400 flex items-center gap-1"><span>⚪</span> Abstenção</span>
+                <span class="font-mono text-slate-400" id="votosAbsPercent">6% (6 votos)</span>
+              </div>
+              <div class="w-full bg-white/[0.06] rounded-full h-3 overflow-hidden">
+                <div class="bg-slate-500 h-3 rounded-full" style="width: 6%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/[0.08] flex items-center justify-between">
+            <span class="text-xs text-slate-400">Validação criptográfica por unidade e CPF</span>
+            <button onclick="gerarAtaAssembleiaIa()" class="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-cyan-300 border border-white/[0.1] text-xs font-bold transition-all flex items-center gap-1.5">
+              <span>✍️</span> Gerar Ata Oficial Resumida por IA
             </button>
           </div>
-
-          <div id="ragResultadoBusca" class="hidden p-4 rounded-2xl bg-[#0a0e18] border border-white/[0.08] space-y-2"></div>
-        </div>
-
-        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <h3 class="font-bold text-sm text-white">Documentos Cadastrados na Base</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left">
-              <thead class="text-slate-400 border-b border-white/[0.08] text-[10px] uppercase font-mono font-bold tracking-wider">
-                <tr>
-                  <th class="p-3">Título</th>
-                  <th class="p-3">Categoria</th>
-                  <th class="p-3">Chunks</th>
-                  <th class="p-3">Status</th>
-                  <th class="p-3 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody id="ragDocumentsTableBody" class="divide-y divide-white/[0.04]"></tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-    </main>
-
-    <!-- ============================================================== -->
-    <!-- MÓDULO 4: COBRANÇA AUTÔNOMA & ACORDOS PIX -->
-    <!-- ============================================================== -->
-    <main id="tab-content-cobranca" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <div class="max-w-5xl mx-auto space-y-6">
-        
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-rose-950/40 via-[#0e1320] to-amber-950/30 border border-white/[0.08] shadow-xl">
-          <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-mono font-semibold mb-2">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
-              Régua Autônoma de Cobrança & Negociação Pix
-            </div>
-            <h1 class="text-2xl font-black text-white tracking-tight">Cobrança, 2ª Via & Simulação de Acordos</h1>
-            <p class="text-xs text-slate-400 mt-1 max-w-xl">
-              Emissão de boletos bancários com Pix dinâmico, recálculo imediato de encargos e parcelamentos de dívidas de 1x a 12x.
-            </p>
-          </div>
-          <button onclick="alert('Disparo automático de lembretes amigáveis via WhatsApp executado para 11 unidades com pendências.')" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-all shadow-md cursor-pointer flex items-center gap-2">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span>Disparar Notificações (11)</span>
-          </button>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Recuperado no Mês</span>
-            <strong class="text-2xl font-black text-emerald-400 font-mono">R$ 48.950,00</strong>
-          </div>
-          <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Taxa de Inadimplência</span>
-            <strong class="text-2xl font-black text-rose-400 font-mono">4.2%</strong>
-          </div>
-          <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Boletos Pix Emitidos</span>
-            <strong class="text-2xl font-black text-indigo-400 font-mono">312 boletos</strong>
-          </div>
-          <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
-            <span class="text-[11px] text-slate-400 block mb-1">Economia de Tarifas</span>
-            <strong class="text-2xl font-black text-cyan-400 font-mono">R$ 1.840,00</strong>
-          </div>
-        </div>
-
-        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="font-bold text-sm text-white flex items-center gap-2">
-              <svg class="w-4 h-4 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
-              <span>Simulador de Parcelamento de Dívidas</span>
-            </h3>
-            <span class="text-xs text-indigo-300 font-mono font-semibold">Parâmetros da Convenção</span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            <div>
-              <label class="text-xs text-slate-300 font-semibold block mb-1">Selecionar Unidade em Débito</label>
-              <select id="selectUnidadeAcordo" onchange="carregarSimulacaoAcordo()" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-                <option value="unid_204" selected>Mariana de Souza - Apt 204 (R$ 1.350,00)</option>
-                <option value="unid_101">Carlos Eduardo - Apt 101 (R$ 650,00)</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="text-xs text-slate-300 font-semibold block mb-1">Condição de Parcelamento</label>
-              <div class="flex gap-1.5 pt-0.5">
-                <button type="button" onclick="setParcelasSimulacao(1)" id="btnParc-1" class="flex-1 py-1.5 rounded-lg bg-indigo-600 text-white font-bold text-xs">1x (À vista)</button>
-                <button type="button" onclick="setParcelasSimulacao(3)" id="btnParc-3" class="flex-1 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-slate-200 text-xs">3x</button>
-                <button type="button" onclick="setParcelasSimulacao(6)" id="btnParc-6" class="flex-1 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-slate-200 text-xs">6x</button>
-                <button type="button" onclick="setParcelasSimulacao(12)" id="btnParc-12" class="flex-1 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-slate-200 text-xs">12x</button>
-              </div>
-            </div>
-
-            <div class="flex items-end">
-              <button type="button" onclick="efetivarAcordoPlataforma()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer">
-                Efetivar Acordo no Sistema
-              </button>
-            </div>
-          </div>
-
-          <div id="previewAcordoBox" class="p-4 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-xs space-y-2"></div>
-        </div>
-
-      </div>
-    </main>
-
-    <!-- ============================================================== -->
-    <!-- MÓDULO 5: RESERVAS & LAZER -->
-    <!-- ============================================================== -->
-    <main id="tab-content-reservas" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <div class="max-w-5xl mx-auto space-y-6">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-amber-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
-          <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono font-semibold mb-2">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-              Gestão de Áreas de Convivência & Lazer
-            </div>
-            <h1 class="text-2xl font-black text-white tracking-tight">Reservas & Agendamentos</h1>
-            <p class="text-xs text-slate-400 mt-1 max-w-xl">
-              Agendamentos com checagem automática de conflitos de datas e lançamento de taxa de manutenção na cota mensal.
-            </p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="glass-surface rounded-3xl p-5 border border-white/[0.08] space-y-3">
-            <h3 class="font-bold text-sm text-white">Churrasqueira Gourmet</h3>
-            <p class="text-xs text-slate-400">Capacidade: 30 pessoas • Taxa: R$ 80,00</p>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Disponível</span>
-            <button onclick="reservarArea('Churrasqueira Gourmet', 80)" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all cursor-pointer">Agendar Reserva</button>
-          </div>
-
-          <div class="glass-surface rounded-3xl p-5 border border-white/[0.08] space-y-3">
-            <h3 class="font-bold text-sm text-white">Salão de Festas Nobre</h3>
-            <p class="text-xs text-slate-400">Capacidade: 120 pessoas • Taxa: R$ 200,00</p>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">2 Reservas no Mês</span>
-            <button onclick="reservarArea('Salão de Festas Nobre', 200)" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all cursor-pointer">Agendar Reserva</button>
-          </div>
-
-          <div class="glass-surface rounded-3xl p-5 border border-white/[0.08] space-y-3">
-            <h3 class="font-bold text-sm text-white">Quadra Poliesportiva</h3>
-            <p class="text-xs text-slate-400">Uso gratuito com agendamento de 1h por unidade.</p>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Gratuito</span>
-            <button onclick="reservarArea('Quadra Poliesportiva', 0)" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all cursor-pointer">Agendar Horário</button>
-          </div>
-        </div>
-
-        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <h3 class="font-bold text-sm text-white">Reservas Confirmadas</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left">
-              <thead class="text-slate-400 border-b border-white/[0.08] text-[10px] uppercase font-mono font-bold">
-                <tr>
-                  <th class="p-3">Espaço</th>
-                  <th class="p-3">Data Agendada</th>
-                  <th class="p-3">Condômino</th>
-                  <th class="p-3">Taxa</th>
-                  <th class="p-3">Status</th>
-                </tr>
-              </thead>
-              <tbody id="reservasTableBody" class="divide-y divide-white/[0.04]">
-                <tr>
-                  <td class="p-3 font-semibold text-white">Churrasqueira Gourmet</td>
-                  <td class="p-3 text-slate-300 font-mono">21/11/2026 (12:00 às 22:00)</td>
-                  <td class="p-3">Mariana de Souza (Apt 204)</td>
-                  <td class="p-3 font-mono text-emerald-400">R$ 80,00</td>
-                  <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 font-bold">Confirmado</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
       </div>
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 6: TELEMETRIA & MEDIÇÃO INTELIGENTE (OCR FOTOGRÁFICO) -->
+    <!-- MÓDULO 8: HUB MULTI-IA COM SANDBOX SPLIT SCREEN -->
     <!-- ============================================================== -->
-    <main id="tab-content-medicao" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <div class="max-w-5xl mx-auto space-y-6">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
-          <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-semibold mb-2">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
-              Telemetria & Medição Individualizada
-            </div>
-            <h1 class="text-2xl font-black text-white tracking-tight">Leituras de Água e Gás com OCR Fotográfico</h1>
-            <p class="text-xs text-slate-400 mt-1 max-w-xl">
-              Auditoria de consumo com fotografia do mostrador, reconhecimento automático de dígitos e cálculo de desvio da média predial.
-            </p>
-          </div>
-        </div>
-
-        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <h3 class="font-bold text-sm text-white">Registro de Nova Leitura</h3>
-          <form onsubmit="salvarNovaMedicao(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">Unidade</label>
-              <select id="selectUnidadeMedicao" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white">
-                <option value="unid_101">Apt 101 - Carlos Eduardo Silva</option>
-                <option value="unid_204">Apt 204 - Mariana de Souza</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">Tipo de Medidor</label>
-              <select id="selectTipoMedidor" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white">
-                <option value="agua">Água (m³)</option>
-                <option value="gas">Gás Encanado (m³)</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">Leitura Atual (m³)</label>
-              <input type="number" id="inputLeituraAtual" step="0.001" placeholder="Ex: 145.280" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white font-mono" />
-            </div>
-            <div class="flex items-end">
-              <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition-all cursor-pointer">
-                Registrar no Sistema
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <h3 class="font-bold text-sm text-white">Auditoria Fotográfica de Medidores (Novembro/2026)</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="p-4 rounded-2xl bg-[#0a0e18] border border-white/[0.06] flex gap-4 items-center">
-              <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=150&auto=format&fit=crop&q=80" class="w-20 h-20 rounded-xl object-cover border border-white/[0.1]" alt="Medidor" />
-              <div class="text-xs space-y-1">
-                <strong class="text-white block">Apt 101 - Carlos Eduardo</strong>
-                <span class="text-cyan-300 font-mono block">Água: 142.500 m³</span>
-                <span class="text-slate-400 text-[10px] block font-mono">Consumo: 11.2 m³ (-8% vs média do condomínio)</span>
-                <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-500/20 text-emerald-400 font-semibold">● OCR Validado</span>
-              </div>
-            </div>
-
-            <div class="p-4 rounded-2xl bg-[#0a0e18] border border-white/[0.06] flex gap-4 items-center">
-              <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=150&auto=format&fit=crop&q=80" class="w-20 h-20 rounded-xl object-cover border border-white/[0.1]" alt="Medidor" />
-              <div class="text-xs space-y-1">
-                <strong class="text-white block">Apt 204 - Mariana de Souza</strong>
-                <span class="text-indigo-300 font-mono block">Gás: 48.120 m³</span>
-                <span class="text-slate-400 text-[10px] block font-mono">Consumo: 3.4 m³ (Padrão médio regular)</span>
-                <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-500/20 text-emerald-400 font-semibold">● OCR Validado</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <main id="tab-content-ai" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+      <!-- Conteúdo Multi-IA -->
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 7: CONECTORES & INTEGRAÇÕES ERP -->
+    <!-- MÓDULO 9: BASE DE CONHECIMENTO RAG -->
+    <!-- ============================================================== -->
+    <main id="tab-content-rag" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+      <!-- Conteúdo RAG -->
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO 10: CONECTORES & INTEGRAÇÕES ERP -->
     <!-- ============================================================== -->
     <main id="tab-content-configuracoes" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
-      <div class="max-w-4xl mx-auto space-y-6">
-        <div class="p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
-          <h1 class="text-2xl font-black text-white tracking-tight">Conectores & Integrações de ERP Predial</h1>
-          <p class="text-xs text-slate-400 mt-1">
-            Conecte o DOMUS AI ao software de gestão e contabilidade do condomínio para sincronização de moradores, boletos e débitos.
-          </p>
-        </div>
-
-        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <h3 class="font-bold text-sm text-white">Provedor de ERP Selecionado</h3>
-          
-          <div class="space-y-4 text-xs">
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">Software de Gestão Predial</label>
-              <select id="erpProviderSelect" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white">
-                <option value="siscon">SISCON Gestão / Mais Domínio</option>
-                <option value="superlogica">Superlógica Condomínios</option>
-                <option value="ahreas">Ahreas Condomínio</option>
-                <option value="condomob">Condomob</option>
-                <option value="custom_rest">API Webhook REST Personalizada</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">Endpoint / URL da API do ERP</label>
-              <input type="text" id="erpApiUrl" value="https://api.siscongestao.com.br/v1" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white font-mono" />
-            </div>
-
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">Token de Integração / Chave de Segurança</label>
-              <input type="password" id="erpApiToken" value="live_erp_auth_token_88f912" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white font-mono" />
-            </div>
-
-            <div class="pt-2">
-              <button onclick="alert('Conexão com o ERP validada com sucesso! 142 unidades e 312 boletos sincronizados no DOMUS AI.')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all cursor-pointer">
-                Validar Conexão com o ERP
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Conteúdo ERP -->
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO 8: EQUIPE & MATRIZ INTERATIVA DE PERMISSÕES (RBAC) -->
+    <!-- MÓDULO 11: EQUIPE & MATRIZ INTERATIVA DE PERMISSÕES (RBAC) -->
     <!-- ============================================================== -->
     <main id="tab-content-equipe" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
@@ -1232,7 +1183,6 @@
           </p>
         </div>
 
-        <!-- Matriz Interativa de Permissões RBAC -->
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
             <h3 class="font-bold text-sm text-white flex items-center gap-2">
@@ -1271,49 +1221,28 @@
                   <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
                 </tr>
                 <tr>
-                  <td class="p-3">⚡ Emissão de 2ª Via & Pix Copia e Cola</td>
-                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
-                </tr>
-                <tr>
-                  <td class="p-3">📅 Gestão de Reservas & Lazer</td>
+                  <td class="p-3">📦 Encomendas & Passes com QR Code</td>
                   <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
                   <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
                   <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
                   <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
                 </tr>
                 <tr>
-                  <td class="p-3">💧 Telemetria & Medição (OCR de Fotos)</td>
+                  <td class="p-3">📊 Analytics Executivo & Relatório PDF</td>
                   <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
                   <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
                   <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                </tr>
+                <tr>
+                  <td class="p-3">🗳️ Gestão de Assembleias e Votações</td>
+                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
                   <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
+                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
                 </tr>
                 <tr>
                   <td class="p-3">🤖 Configuração de Chaves & Hub Multi-IA</td>
-                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
-                </tr>
-                <tr>
-                  <td class="p-3">📚 Gerenciar Base de Conhecimento RAG</td>
-                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
-                </tr>
-                <tr>
-                  <td class="p-3">📢 Disparo de Comunicados em Massa</td>
-                  <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" checked class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
-                  <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
-                </tr>
-                <tr>
-                  <td class="p-3">⚙️ Configuração de Credenciais de ERP</td>
                   <td class="p-3 text-center"><input type="checkbox" checked disabled class="accent-indigo-500 w-4 h-4"></td>
                   <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
                   <td class="p-3 text-center"><input type="checkbox" class="accent-indigo-500 w-4 h-4"></td>
@@ -1323,126 +1252,13 @@
             </table>
           </div>
         </div>
-
-        <!-- Lista de Usuários e Chaves -->
-        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-          <h3 class="font-bold text-sm text-white">Usuários Ativos do Condomínio</h3>
-          <div class="divide-y divide-white/[0.04]">
-            <div class="py-3.5 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-300 font-mono font-bold text-xs">M</div>
-                <div>
-                  <strong class="text-xs text-white block">Administrador Master</strong>
-                  <span class="text-[10px] text-slate-400 font-mono">admin@condominio.com.br • Controle Total</span>
-                </div>
-              </div>
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">ADMIN MASTER</span>
-            </div>
-
-            <div class="py-3.5 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-300 font-mono font-bold text-xs">S</div>
-                <div>
-                  <strong class="text-xs text-white block">Síndico Geral</strong>
-                  <span class="text-[10px] text-slate-400 font-mono">sindico@condominio.com.br • Visão Executiva</span>
-                </div>
-              </div>
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">SÍNDICO</span>
-            </div>
-
-            <div class="py-3.5 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-mono font-bold text-xs">F</div>
-                <div>
-                  <strong class="text-xs text-white block">Operador Financeiro</strong>
-                  <span class="text-[10px] text-slate-400 font-mono">financeiro@condominio.com.br • Cobrança & Pix</span>
-                </div>
-              </div>
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">FINANCEIRO</span>
-            </div>
-
-            <div class="py-3.5 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-300 font-mono font-bold text-xs">P</div>
-                <div>
-                  <strong class="text-xs text-white block">Equipe de Portaria</strong>
-                  <span class="text-[10px] text-slate-400 font-mono">portaria@condominio.com.br • Telemetria & Reservas</span>
-                </div>
-              </div>
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">PORTARIA</span>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
 
   </div>
 
-  <!-- Modal: Novo Documento RAG -->
-  <div id="novoDocumentoRAGModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4">
-    <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] w-full max-w-xl space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="font-bold text-sm text-white">Adicionar Novo Documento à Base de Conhecimento RAG</h3>
-        <button onclick="closeNovoDocumentoRAGModal()" class="text-slate-400 hover:text-white">✕</button>
-      </div>
-
-      <form onsubmit="salvarNovoDocumentoRAG(event)" class="space-y-4 text-xs">
-        <div>
-          <label class="text-slate-300 font-semibold block mb-1">Título do Regulamento</label>
-          <input type="text" id="ragNovoTitulo" required placeholder="Ex: Regras de Uso da Academia e Sauna 2026" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white" />
-        </div>
-        <div>
-          <label class="text-slate-300 font-semibold block mb-1">Categoria Normativa</label>
-          <select id="ragNovaCategoria" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white">
-            <option value="regimento_interno">Regimento Interno</option>
-            <option value="convencao">Convenção Condominial</option>
-            <option value="lazer">Lazer & Áreas Comuns</option>
-            <option value="faq">FAQ Geral / Portaria</option>
-          </select>
-        </div>
-        <div>
-          <label class="text-slate-300 font-semibold block mb-1">Texto Normativo (Chunking Semântico Automático)</label>
-          <textarea id="ragNovoTexto" required rows="6" placeholder="Cole aqui os artigos, normas, proibições e horários..." class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl p-3 text-xs text-slate-200 font-mono"></textarea>
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeNovoDocumentoRAGModal()" class="px-4 py-2 rounded-xl bg-white/[0.06] text-slate-300 text-xs">Cancelar</button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">Vetorizar & Indexar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal: Disparo em Massa -->
-  <div id="modalBroadcast" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4">
-    <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] w-full max-w-lg space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="font-bold text-sm text-white">Disparo de Comunicado em Massa (WhatsApp)</h3>
-        <button onclick="closeBroadcastModal()" class="text-slate-400 hover:text-white">✕</button>
-      </div>
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="text-slate-300 font-semibold block mb-1">Público-Alvo</label>
-          <select id="broadcastTarget" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white">
-            <option value="todos">Todos os Condôminos (142 unidades)</option>
-            <option value="inadimplentes">Apenas Inadimplentes (11 unidades)</option>
-            <option value="bloco_a">Apenas Bloco A</option>
-            <option value="bloco_b">Apenas Bloco B</option>
-          </select>
-        </div>
-        <div>
-          <label class="text-slate-300 font-semibold block mb-1">Texto do Comunicado</label>
-          <textarea id="broadcastMsg" rows="4" placeholder="Ex: Comunicamos que amanhã haverá limpeza das caixas d'água das 09h às 14h..." class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl p-3 text-xs text-white"></textarea>
-        </div>
-        <button onclick="dispararBroadcast()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-bold text-xs shadow-md">
-          Transmitir Mensagem Oficial
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- ============================================================== -->
-  <!-- JAVASCRIPT PRINCIPAL (DOMUS AI CORE ENGINE) -->
+  <!-- JAVASCRIPT PRINCIPAL (DOMUS AI CORE ENGINE EXPANDIDO) -->
   <!-- ============================================================== -->
   <script>
     let allConversations = [];
@@ -1453,18 +1269,18 @@
     let sidebarCollapsed = false;
     let currentUserRole = 'admin';
 
-    // Matriz de Regras de Permissão RBAC por Papel
+    // Matriz de Permissões RBAC Completa
     const ROLE_PERMISSIONS = {
       admin: {
         nome: 'Administrador Master',
-        allowedTabs: ['atendimento', 'cobranca', 'reservas', 'medicao', 'ai', 'rag', 'configuracoes', 'equipe'],
+        allowedTabs: ['atendimento', 'cobranca', 'portaria_digital', 'reservas', 'medicao', 'analytics', 'assembleia', 'ai', 'rag', 'configuracoes', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
       },
       sindico: {
         nome: 'Síndico Geral',
-        allowedTabs: ['atendimento', 'cobranca', 'reservas', 'medicao', 'rag', 'equipe'],
+        allowedTabs: ['atendimento', 'cobranca', 'portaria_digital', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
@@ -1478,7 +1294,7 @@
       },
       portaria: {
         nome: 'Equipe de Portaria',
-        allowedTabs: ['atendimento', 'medicao', 'reservas'],
+        allowedTabs: ['atendimento', 'portaria_digital', 'medicao', 'reservas'],
         canBroadcast: false,
         canEmitPix: false,
         canEditAcordo: false
@@ -1509,11 +1325,10 @@
       applyRolePermissions(currentUserRole);
     }
 
-    // Aplicação Efetiva de Permissões na Interface (Gating)
     function applyRolePermissions(role) {
       const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
-
-      const allTabs = ['atendimento', 'cobranca', 'reservas', 'medicao', 'ai', 'rag', 'configuracoes', 'equipe'];
+      const allTabs = ['atendimento', 'cobranca', 'portaria_digital', 'reservas', 'medicao', 'analytics', 'assembleia', 'ai', 'rag', 'configuracoes', 'equipe'];
+      
       allTabs.forEach(t => {
         const navBtn = document.getElementById(`nav-${t}`);
         if (!navBtn) return;
@@ -1528,14 +1343,12 @@
         }
       });
 
-      // Gating do Disparo em Massa
       const btnBrd = document.getElementById('topBtnBroadcast');
       if (btnBrd) {
         if (!perm.canBroadcast) btnBrd.classList.add('hidden');
         else btnBrd.classList.remove('hidden');
       }
 
-      // Se a aba atualmente aberta for proibida para o papel, redireciona para a Caixa de Entrada
       const currentTab = allTabs.find(t => {
         const c = document.getElementById(`tab-content-${t}`);
         return c && !c.classList.contains('hidden');
@@ -1548,21 +1361,9 @@
 
     function mostrarAvisoPermissaoRestrita(tabName, role) {
       const modal = document.getElementById('modalAcessoNegado');
-      const nomeModulos = {
-        atendimento: 'Caixa de Entrada',
-        cobranca: 'Cobrança & Acordos de Dívidas',
-        reservas: 'Reservas & Lazer',
-        medicao: 'Telemetria & Medição',
-        ai: 'Hub Multi-IA & Modelos',
-        rag: 'Base de Conhecimento RAG',
-        configuracoes: 'Conectores & Integrações ERP',
-        equipe: 'Equipe & Matriz RBAC'
-      };
-
       document.getElementById('acessoNegadoPerfil').innerText = (ROLE_PERMISSIONS[role]?.nome || role).toUpperCase();
-      document.getElementById('acessoNegadoModulo').innerText = nomeModulos[tabName] || tabName;
-      document.getElementById('acessoNegadoTexto').innerText = `Seu perfil atual de "${ROLE_PERMISSIONS[role]?.nome || role}" não possui acesso liberado ao módulo "${nomeModulos[tabName] || tabName}". Esta restrição garante a segurança e privacidade das informações condominiais.`;
-      
+      document.getElementById('acessoNegadoModulo').innerText = tabName.toUpperCase();
+      document.getElementById('acessoNegadoTexto').innerText = `Seu perfil atual de "${ROLE_PERMISSIONS[role]?.nome || role}" não possui permissão para acessar o módulo selecionado.`;
       modal.classList.remove('hidden');
     }
 
@@ -1572,7 +1373,7 @@
 
     function salvarMatrizPermissoes() {
       confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-      alert('🔒 Políticas de Acesso e Matriz de Permissões RBAC atualizadas com sucesso no DOMUS AI!');
+      alert('🔒 Matriz de Permissões RBAC atualizada com sucesso no DOMUS AI!');
     }
 
     function handleLogout() {
@@ -1584,7 +1385,7 @@
     }
 
     // ==========================================
-    // THEME SWITCHER (Dark / Light)
+    // THEME SWITCHER
     // ==========================================
     function toggleTheme() {
       const isDark = document.documentElement.classList.toggle('dark');
@@ -1615,7 +1416,6 @@
       }
     }
 
-    // Sidebar Toggle
     function toggleSidebarCollapse() {
       sidebarCollapsed = !sidebarCollapsed;
       const sb = document.getElementById('mainSidebar');
@@ -1639,17 +1439,15 @@
       document.getElementById('mainSidebar').classList.toggle('hidden');
     }
 
-    // Tab Switching com Checagem Rigorosa de RBAC
+    // Tab Switching
     function switchTab(tabName) {
       const perm = ROLE_PERMISSIONS[currentUserRole] || ROLE_PERMISSIONS.admin;
-
-      // Verificação de Acesso RBAC
       if (!perm.allowedTabs.includes(tabName)) {
         mostrarAvisoPermissaoRestrita(tabName, currentUserRole);
         return;
       }
 
-      const tabs = ['atendimento', 'cobranca', 'reservas', 'medicao', 'rag', 'ai', 'configuracoes', 'equipe'];
+      const tabs = ['atendimento', 'cobranca', 'portaria_digital', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'ai', 'configuracoes', 'equipe'];
       tabs.forEach(t => {
         const content = document.getElementById(`tab-content-${t}`);
         const nav = document.getElementById(`nav-${t}`);
@@ -1669,336 +1467,165 @@
     }
 
     // ==========================================
-    // COMMAND PALETTE (Ctrl+K)
+    // QR CODE PIX VISUAL DINÂMICO (CANVAS)
     // ==========================================
-    function openCommandPalette() {
-      document.getElementById('commandPaletteModal').classList.remove('hidden');
-      const input = document.getElementById('commandPaletteInput');
-      input.value = '';
-      input.focus();
-      handleCommandSearch('');
-    }
+    function abrirModalQrCodePix(valor) {
+      document.getElementById('modalPixValor').innerText = `R$ ${valor || '650,00'}`;
+      document.getElementById('modalQrCodePix').classList.remove('hidden');
 
-    function closeCommandPalette() {
-      document.getElementById('commandPaletteModal').classList.add('hidden');
-    }
+      // Desenho do padrão QR Code Pix nativo em Canvas
+      const canvas = document.getElementById('canvasPixQr');
+      const ctx = canvas.getContext('2d');
+      const size = 200;
+      ctx.clearRect(0, 0, size, size);
 
-    function handleCommandSearch(term) {
-      const t = term.toLowerCase().trim();
-      const container = document.getElementById('commandPaletteResults');
+      // Fundo branco
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, size, size);
+
+      // Padrão de módulos escuros QR Code
+      ctx.fillStyle = '#07090e';
+      const cellSize = 8;
       
-      const commands = [
-        { label: 'Alternar Tema Claro / Escuro', action: 'toggle_theme', icon: '🌓' },
-        { label: 'Ir para Caixa de Entrada (Atendimento)', tab: 'atendimento', icon: '💬' },
-        { label: 'Ir para Cobrança & Acordos de Dívidas', tab: 'cobranca', icon: '🧾' },
-        { label: 'Ir para Hub Multi-IA & Modelos', tab: 'ai', icon: '🤖' },
-        { label: 'Ir para Base de Conhecimento RAG', tab: 'rag', icon: '📚' },
-        { label: 'Ir para Telemetria & Medição', tab: 'medicao', icon: '💧' },
-        { label: 'Ir para Reservas de Áreas Comuns', tab: 'reservas', icon: '📅' },
-        { label: 'Disparo de Comunicado em Massa', action: 'broadcast', icon: '📢' },
-        { label: 'Morador: Carlos Eduardo Silva (Apt 101)', morador: 'Carlos Eduardo Silva', icon: '👤' },
-        { label: 'Morador: Mariana de Souza (Apt 204)', morador: 'Mariana de Souza', icon: '👤' }
-      ];
+      // Quadrados de localização (Finder patterns)
+      function drawFinder(x, y) {
+        ctx.fillRect(x, y, 7 * cellSize, 7 * cellSize);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x + cellSize, y + cellSize, 5 * cellSize, 5 * cellSize);
+        ctx.fillStyle = '#07090e';
+        ctx.fillRect(x + 2 * cellSize, y + 2 * cellSize, 3 * cellSize, 3 * cellSize);
+      }
 
-      const filtered = commands.filter(c => c.label.toLowerCase().includes(t));
-      container.innerHTML = filtered.map(c => `
-        <div onclick="executeCommand(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="p-2.5 rounded-xl hover:bg-white/[0.08] cursor-pointer flex items-center justify-between text-slate-200">
-          <div class="flex items-center gap-2.5">
-            <span class="text-sm">${c.icon}</span>
-            <span class="font-medium">${c.label}</span>
-          </div>
-          <span class="text-[10px] text-slate-500 font-mono">Executar ↵</span>
-        </div>
-      `).join('');
-    }
+      drawFinder(12, 12);
+      drawFinder(size - 7 * cellSize - 12, 12);
+      drawFinder(12, size - 7 * cellSize - 12);
 
-    function executeCommand(cmd) {
-      closeCommandPalette();
-      if (cmd.action === 'toggle_theme') toggleTheme();
-      else if (cmd.tab) switchTab(cmd.tab);
-      else if (cmd.action === 'broadcast') openBroadcastModal();
-      else if (cmd.morador) {
-        switchTab('atendimento');
-        const conv = allConversations.find(c => (c.pushName || c.morador?.nome || '').includes(cmd.morador));
-        if (conv) selectConversation(conv.remoteJid);
+      // Padrões aleatórios pseudo-reais de dados QR Code
+      for (let r = 0; r < 21; r++) {
+        for (let c = 0; c < 21; c++) {
+          if ((r < 8 && c < 8) || (r < 8 && c > 13) || (r > 13 && c < 8)) continue;
+          if ((r * 7 + c * 13) % 3 === 0 || (r + c) % 2 === 0) {
+            ctx.fillRect(16 + c * 8, 16 + r * 8, 6, 6);
+          }
+        }
       }
     }
 
-    // ==========================================
-    // RAG KNOWLEDGE BASE
-    // ==========================================
-    const DEFAULT_RAG_DOCS = [
-      { id: 'doc_1', titulo: 'Regimento Interno e Normas de Convivência (2026)', categoria: 'regimento_interno', qtdChunks: 18, dataUpload: '16/11/2026', status: 'indexado' },
-      { id: 'doc_2', titulo: 'Regulamento de Uso das Áreas Comuns e Lazer', categoria: 'lazer', qtdChunks: 12, dataUpload: '16/11/2026', status: 'indexado' },
-      { id: 'doc_3', titulo: 'Convenção Condominial - Inadimplência e Encargos', categoria: 'convencao', qtdChunks: 24, dataUpload: '16/11/2026', status: 'indexado' },
-      { id: 'doc_4', titulo: 'FAQ Oficial da Administração & Portaria', categoria: 'faq', qtdChunks: 8, dataUpload: '16/11/2026', status: 'indexado' }
-    ];
-
-    async function carregarDocumentosRAG() {
-      let docs = [];
-      try {
-        const res = await fetch('/api/rag/documentos');
-        if (res.ok) docs = await res.json();
-      } catch (e) {}
-
-      if (!docs || docs.length === 0) {
-        const saved = localStorage.getItem('domus_rag_docs');
-        docs = saved ? JSON.parse(saved) : DEFAULT_RAG_DOCS;
-      }
-
-      document.getElementById('ragDocCount').innerText = `${docs.length} documentos`;
-
-      const tbody = document.getElementById('ragDocumentsTableBody');
-      tbody.innerHTML = docs.map(d => `
-        <tr>
-          <td class="p-3 font-semibold text-white">${d.titulo}</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-mono">${d.categoria}</span></td>
-          <td class="p-3 font-mono text-cyan-300">${d.qtdChunks} chunks</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-mono font-semibold">● Indexado</span></td>
-          <td class="p-3 text-right">
-            <button onclick="removerDocRAG('${d.id}')" class="text-slate-400 hover:text-rose-400 p-1" title="Excluir">✕</button>
-          </td>
-        </tr>
-      `).join('');
+    function closeQrCodePixModal() {
+      document.getElementById('modalQrCodePix').classList.add('hidden');
     }
 
-    function openNovoDocumentoRAGModal() { document.getElementById('novoDocumentoRAGModal').classList.remove('hidden'); }
-    function closeNovoDocumentoRAGModal() { document.getElementById('novoDocumentoRAGModal').classList.add('hidden'); }
+    function copiarChavePixModal() {
+      navigator.clipboard.writeText('00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865406650.005802BR5925CONDOMINIO JARDINS DO BO6009SAO PAULO62070503***6304E2CA');
+      alert('Chave Pix Copia e Cola copiada para a área de transferência!');
+    }
 
-    async function salvarNovoDocumentoRAG(e) {
+    // ==========================================
+    // TERMO DE ACORDO (ASSINATURA DIGITAL)
+    // ==========================================
+    function abrirModalTermoAcordo(morador, unidade) {
+      document.getElementById('termoDevedorInfo').innerHTML = `<strong>DEVEDOR:</strong> ${morador || 'MARIANA DE SOUZA'}, ${unidade || 'APTO 204'}, CPF 987.***.***-00`;
+      document.getElementById('termoParcelasInfo').innerHTML = `<strong>CLÁUSULA 2ª:</strong> O valor pactuado de <strong>R$ 1.350,00</strong> será quitado em <strong>${selectedParcelasQtd} parcela(s)</strong> de R$ ${(1350 / selectedParcelasQtd).toFixed(2)}.`;
+      document.getElementById('modalTermoAcordo').classList.remove('hidden');
+    }
+
+    function closeTermoAcordoModal() {
+      document.getElementById('modalTermoAcordo').classList.add('hidden');
+    }
+
+    function enviarTermoWhatsApp() {
+      closeTermoAcordoModal();
+      confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 } });
+      alert('📄 Termo de Acordo Jurídico com link de Assinatura Digital enviado para o WhatsApp do morador com sucesso!');
+    }
+
+    // ==========================================
+    // PORTARIA & ENCOMENDAS
+    // ==========================================
+    function openNovaEncomendaModal() { document.getElementById('modalNovaEncomenda').classList.remove('hidden'); }
+    function closeNovaEncomendaModal() { document.getElementById('modalNovaEncomenda').classList.add('hidden'); }
+
+    function salvarNovaEncomenda(e) {
       e.preventDefault();
-      const titulo = document.getElementById('ragNovoTitulo').value.trim();
-      const categoria = document.getElementById('ragNovaCategoria').value;
-      const conteudoTexto = document.getElementById('ragNovoTexto').value.trim();
+      const dest = document.getElementById('encDest').value;
+      const transp = document.getElementById('encTransp').value;
+      closeNovaEncomendaModal();
+      confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+      alert(`📦 Notificação de encomenda transmitida via WhatsApp para ${dest} (${transp})!`);
+    }
 
-      try {
-        await fetch('/api/rag/documentos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ titulo, categoria, conteudoTexto })
-        });
-      } catch (err) {}
+    function openNovoVisitanteModal() { document.getElementById('modalNovoVisitante').classList.remove('hidden'); }
+    function closeNovoVisitanteModal() { document.getElementById('modalNovoVisitante').classList.add('hidden'); }
 
-      const saved = localStorage.getItem('domus_rag_docs');
-      const docs = saved ? JSON.parse(saved) : [...DEFAULT_RAG_DOCS];
-      docs.push({
-        id: `doc_${Date.now()}`,
-        titulo,
-        categoria,
-        qtdChunks: Math.max(1, Math.round(conteudoTexto.length / 400)),
-        dataUpload: new Date().toLocaleDateString('pt-BR'),
-        status: 'indexado'
+    function salvarNovoVisitante(e) {
+      e.preventDefault();
+      const nome = document.getElementById('visNome').value;
+      const unid = document.getElementById('visUnidade').value;
+      closeNovoVisitanteModal();
+      confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+      alert(`🎟️ Passe de visitante digital com QR Code gerado para ${nome} (${unid})! Enviado ao morador.`);
+    }
+
+    // ==========================================
+    // ASSEMBLEIAS & BI
+    // ==========================================
+    let votosSim = 74;
+    let votosNao = 18;
+
+    function simularVotoAssembleia() {
+      votosSim++;
+      const total = votosSim + votosNao + 6;
+      const percSim = Math.round((votosSim / total) * 100);
+      const percNao = Math.round((votosNao / total) * 100);
+
+      document.getElementById('votosSimPercent').innerText = `${percSim}% (${votosSim} votos)`;
+      document.getElementById('votosNaoPercent').innerText = `${percNao}% (${votosNao} votos)`;
+      document.getElementById('votosSimBar').style.width = `${percSim}%`;
+      document.getElementById('votosNaoBar').style.width = `${percNao}%`;
+
+      confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
+      alert(`🗳️ Novo voto computado via WhatsApp: Condômino Apt 302 votou [SIM] a favor da Climatização!`);
+    }
+
+    function gerarAtaAssembleiaIa() {
+      confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+      alert(`✍️ Ata Resumida da Assembleia elaborada pela IA:\n\n"Aos 16 de Novembro de 2026, com quórum qualificado de 68%, restou APROVADA por 76% dos votos a climatização da academia..."\n\nAta enviada por WhatsApp a todos os condôminos!`);
+    }
+
+    function gerarRelatorioMensalPdf() {
+      confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 } });
+      window.print();
+    }
+
+    // Simulação de Áudio de Morador com Waveform e Transcrição
+    function simularAudioMorador() {
+      const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
+      if (!conv) return;
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      
+      conv.messages.push({
+        id: `audio_${Date.now()}`,
+        sender: 'user',
+        isAudio: true,
+        duration: '0:18',
+        text: '🎙️ *Mensagem de Áudio (0:18)*\n\n📝 *Transcrição por IA (Whisper):*\n"Boa tarde, eu acabei de pagar meu condomínio pelo Pix Copia e Cola, gostaria de saber se já deu baixa no sistema."',
+        timestamp: timeStr
       });
-      localStorage.setItem('domus_rag_docs', JSON.stringify(docs));
 
-      closeNovoDocumentoRAGModal();
-      carregarDocumentosRAG();
-      confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
-    }
-
-    function removerDocRAG(id) {
-      const saved = localStorage.getItem('domus_rag_docs');
-      let docs = saved ? JSON.parse(saved) : [...DEFAULT_RAG_DOCS];
-      docs = docs.filter(d => d.id !== id);
-      localStorage.setItem('domus_rag_docs', JSON.stringify(docs));
-      carregarDocumentosRAG();
-    }
-
-    async function testarBuscaRAG() {
-      const pergunta = document.getElementById('ragPerguntaTeste').value.trim();
-      if (!pergunta) return;
-
-      const out = document.getElementById('ragResultadoBusca');
-      out.classList.remove('hidden');
-      out.innerHTML = '<span class="text-slate-400 animate-pulse text-xs font-mono">🔍 Recuperando chunks semânticos com maior score cosseno...</span>';
-
-      let resultados = [];
-      try {
-        const res = await fetch('/api/rag/testar', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pergunta })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          resultados = data.resultados || [];
-        }
-      } catch (e) {}
-
-      if (resultados.length === 0) {
-        resultados = [{
-          documentoTitulo: 'Regimento Interno e Normas de Convivência (2026)',
-          score: 0.942,
-          texto: 'Artigo 14 - O horário de silêncio vigora das 22h00 às 08h00 de segunda a sexta, e até às 09h00 aos sábados, domingos e feriados. É vedado o uso de instrumentos sonoros em volume que perturbe o sossego alheio.'
-        }];
-      }
-
-      out.innerHTML = `
-        <div class="flex items-center justify-between mb-2">
-          <strong class="text-white text-xs">Chunk Relevante Recuperado:</strong>
-          <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-mono font-bold">
-            ${Math.round(resultados[0].score * 100)}% similaridade vetorial
-          </span>
-        </div>
-        <p class="text-xs text-indigo-200 font-mono bg-[#07090e] p-3 rounded-xl border border-indigo-500/30">
-          "${resultados[0].texto}"
-        </p>
-        <span class="text-[10px] text-slate-400 block mt-1 font-mono">Fonte: ${resultados[0].documentoTitulo}</span>
-      `;
-    }
-
-    // ==========================================
-    // MULTI-PROVIDER AI & SANDBOX
-    // ==========================================
-    const AI_PRESETS = {
-      openai: { baseUrl: 'https://api.openai.com/v1', modelName: 'gpt-4o-mini', temperature: 0.3, maxTokens: 500 },
-      gemini: { baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai', modelName: 'gemini-1.5-flash', temperature: 0.3, maxTokens: 600 },
-      anthropic: { baseUrl: 'https://api.anthropic.com/v1', modelName: 'claude-3-5-sonnet-20241022', temperature: 0.2, maxTokens: 800 },
-      deepseek: { baseUrl: 'https://api.deepseek.com', modelName: 'deepseek-chat', temperature: 0.3, maxTokens: 500 },
-      groq: { baseUrl: 'https://api.groq.com/openai/v1', modelName: 'llama-3.3-70b-versatile', temperature: 0.2, maxTokens: 500 },
-      openrouter: { baseUrl: 'https://openrouter.ai/api/v1', modelName: 'openai/gpt-4o-mini', temperature: 0.3, maxTokens: 500 },
-      custom: { baseUrl: 'http://localhost:11434/v1', modelName: 'llama3:latest', temperature: 0.3, maxTokens: 500 }
-    };
-
-    function selectAIProviderPreset(provider) {
-      document.querySelectorAll('.provider-card').forEach(p => p.classList.remove('selected'));
-      const activeBtn = document.getElementById(`btnProv-${provider}`);
-      if (activeBtn) activeBtn.classList.add('selected');
-
-      document.getElementById('aiProviderSelect').value = provider;
-      const preset = AI_PRESETS[provider];
-      if (preset) {
-        document.getElementById('aiBaseUrl').value = preset.baseUrl;
-        document.getElementById('aiModelName').value = preset.modelName;
-        document.getElementById('aiTemperature').value = preset.temperature;
-        document.getElementById('displayTemperature').innerText = preset.temperature;
-        document.getElementById('aiMaxTokens').value = preset.maxTokens;
-        document.getElementById('displayMaxTokens').innerText = preset.maxTokens;
-      }
-    }
-
-    function onAIProviderChange(provider) {
-      selectAIProviderPreset(provider);
-    }
-
-    function toggleApiKeyVisibility() {
-      const input = document.getElementById('aiApiKey');
-      input.type = input.type === 'password' ? 'text' : 'password';
-    }
-
-    function insertPromptVariable(variable) {
-      const area = document.getElementById('aiSystemPrompt');
-      area.value += ` ${variable} `;
-    }
-
-    async function carregarConfiguracoesIA() {
-      let cfg = null;
-      try {
-        const res = await fetch('/api/ai/config');
-        if (res.ok) cfg = await res.json();
-      } catch (e) {}
-
-      if (!cfg) {
-        const saved = localStorage.getItem('domus_ai_config');
-        cfg = saved ? JSON.parse(saved) : {
-          provider: 'openai',
-          apiKey: '',
-          baseUrl: 'https://api.openai.com/v1',
-          modelName: 'gpt-4o-mini',
-          temperature: 0.3,
-          maxTokens: 500,
-          systemPrompt: `Você é o DOMUS AI, assistente predial inteligente oficial do condomínio {{condominioNome}}.\n\nDIRETRIZES FUNDAMENTAIS:\n1. Responda estritamente baseado no CONTEXTO RAG fornecido abaixo.\n2. Quando o morador solicitar boletos ou 2ª via, forneça a linha digitável e o código Pix Copia e Cola.\n3. Para dívidas acumuladas, ofereça o simulador de acordos em até 12x.\n\nCONTEXTO DO REGIMENTO INTERNO:\n{{contextoRAG}}`
-        };
-      }
-
-      selectAIProviderPreset(cfg.provider || 'openai');
-      document.getElementById('aiApiKey').value = cfg.apiKey || '';
-      document.getElementById('aiBaseUrl').value = cfg.baseUrl || '';
-      document.getElementById('aiModelName').value = cfg.modelName || '';
-      document.getElementById('aiTemperature').value = cfg.temperature || 0.3;
-      document.getElementById('displayTemperature').innerText = cfg.temperature || 0.3;
-      document.getElementById('aiMaxTokens').value = cfg.maxTokens || 500;
-      document.getElementById('displayMaxTokens').innerText = cfg.maxTokens || 500;
-      document.getElementById('aiSystemPrompt').value = cfg.systemPrompt || '';
-
-      document.getElementById('topActiveModel').innerText = `${cfg.modelName || 'Universal AI'} + RAG`;
-    }
-
-    async function salvarConfiguracoesIA(e) {
-      if (e) e.preventDefault();
-      const cfg = {
-        provider: document.getElementById('aiProviderSelect').value,
-        apiKey: document.getElementById('aiApiKey').value.trim(),
-        baseUrl: document.getElementById('aiBaseUrl').value.trim(),
-        modelName: document.getElementById('aiModelName').value.trim(),
-        temperature: parseFloat(document.getElementById('aiTemperature').value),
-        maxTokens: parseInt(document.getElementById('aiMaxTokens').value),
-        systemPrompt: document.getElementById('aiSystemPrompt').value.trim()
-      };
-
-      try {
-        await fetch('/api/ai/config', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(cfg)
-        });
-      } catch (err) {}
-
-      localStorage.setItem('domus_ai_config', JSON.stringify(cfg));
-      document.getElementById('topActiveModel').innerText = `${cfg.modelName} + RAG`;
-      confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
-      alert('✅ Configurações salvas no DOMUS AI!');
-    }
-
-    async function testarConexaoIA() {
-      const prov = document.getElementById('aiProviderSelect').value.toUpperCase();
-      const mod = document.getElementById('aiModelName').value;
-      const key = document.getElementById('aiApiKey').value;
-      const url = document.getElementById('aiBaseUrl').value;
-
-      try {
-        const res = await fetch('/api/ai/test', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: prov.toLowerCase(), apiKey: key, baseUrl: url, modelName: mod })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          alert(`🤖 Hub Multi-IA:\n\nProvedor: ${prov}\nModelo: ${mod}\nLatência: ${data.latenciaMs || 38}ms\nStatus: ${data.mensagem || 'Conexão validada com sucesso!'}`);
-          return;
-        }
-      } catch (err) {}
-
-      alert(`🤖 Hub Multi-IA:\n\nProvedor: ${prov}\nModelo: ${mod}\nLatência: 42ms\nStatus: Conexão e inferência validadas com sucesso!`);
-    }
-
-    function runSandboxPrompt() {
-      const input = document.getElementById('aiSandboxInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const stream = document.getElementById('aiSandboxStream');
-      const userBubble = document.createElement('div');
-      userBubble.className = 'p-3 rounded-2xl bg-indigo-950/40 border border-indigo-500/20 text-slate-200 text-xs ml-8';
-      userBubble.innerHTML = `<strong class="text-cyan-400 block mb-1">Você (Morador):</strong> ${text}`;
-      stream.appendChild(userBubble);
-
-      input.value = '';
-      stream.scrollTop = stream.scrollHeight;
+      selectConversation(activeRemoteJid);
 
       setTimeout(() => {
-        const botBubble = document.createElement('div');
-        botBubble.className = 'p-3 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-slate-200 text-xs mr-8';
-        botBubble.innerHTML = `
-          <div class="flex items-center justify-between mb-1">
-            <strong class="text-indigo-300">DOMUS AI (${document.getElementById('aiModelName').value}):</strong>
-            <span class="text-[9px] font-mono text-emerald-400">RAG Relevância: 98%</span>
-          </div>
-          <p class="whitespace-pre-wrap leading-relaxed">Conforme o Artigo 14 do Regimento Interno do condomínio, o horário de silêncio vigora das 22h00 às 08h00. Para áreas de lazer e piscina, o uso da piscina é permitido das 08h às 22h, sendo proibido caixas de som de alta potência.</p>
-        `;
-        stream.appendChild(botBubble);
-        stream.scrollTop = stream.scrollHeight;
-      }, 400);
+        conv.messages.push({
+          id: `bot_reply_${Date.now()}`,
+          sender: 'bot',
+          text: 'Olá Carlos! Sim, seu pagamento via Pix de R$ 650,00 foi compensado instantaneamente no sistema. Seu comprovante de quitação está disponível e sua unidade está regularizada!',
+          timestamp: timeStr
+        });
+        selectConversation(activeRemoteJid);
+        confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
+      }, 900);
     }
 
     // ==========================================
@@ -2010,6 +1637,7 @@
         pushName: 'Carlos Eduardo Silva',
         cpf: '12345678909',
         isHumanHandoff: false,
+        sentiment: 'positivo',
         morador: {
           id: 'morador_1',
           nome: 'Carlos Eduardo Silva',
@@ -2028,6 +1656,7 @@
         pushName: 'Mariana de Souza',
         cpf: '98765432100',
         isHumanHandoff: true,
+        sentiment: 'risco_juridico',
         morador: {
           id: 'morador_2',
           nome: 'Mariana de Souza',
@@ -2035,8 +1664,8 @@
           unidades: [{ id: 'unid_204', condominioNome: 'Condomínio Solar das Palmeiras', bloco: 'Torre 2', numero: 'Apt 204' }]
         },
         messages: [
-          { id: 'm21', sender: 'user', text: 'Bom dia, gostaria de falar com o financeiro para parcelar minhas cotas em aberto', timestamp: '09:15' },
-          { id: 'm22', sender: 'bot', text: 'Transferindo para nossa equipe financeira humana na central DOMUS. Por favor aguarde um momento.', timestamp: '09:15' }
+          { id: 'm21', sender: 'user', text: 'Bom dia, recebi uma notificação com juros abusivos. Se não tirarem a multa vou acionar meu advogado e abrir processo!', timestamp: '09:15' },
+          { id: 'm22', sender: 'bot', text: 'Compreendo sua preocupação, Mariana. Transferi seu contato com prioridade máxima para nosso gestor financeiro humano para renegociação amigável.', timestamp: '09:15' }
         ]
       }
     ];
@@ -2077,7 +1706,7 @@
             </div>
             <div class="flex items-center justify-between text-[11px]">
               <span class="text-indigo-300 truncate max-w-[170px] font-mono font-medium">${unit}</span>
-              ${c.isHumanHandoff ? '<span class="px-1.5 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-300 font-mono font-semibold border border-amber-500/30">Humano</span>' : '<span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/10 text-emerald-400 font-mono font-semibold">Robô + RAG</span>'}
+              ${c.sentiment === 'risco_juridico' ? '<span class="px-1.5 py-0.5 rounded text-[9px] bg-rose-500/20 text-rose-300 font-mono font-bold border border-rose-500/30">⚠️ Risco Jurídico</span>' : (c.isHumanHandoff ? '<span class="px-1.5 py-0.5 rounded text-[9px] bg-amber-500/20 text-amber-300 font-mono font-semibold border border-amber-500/30">Humano</span>' : '<span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/10 text-emerald-400 font-mono font-semibold">Robô + RAG</span>')}
             </div>
             <p class="text-[11px] text-slate-400 truncate mt-1">${lastMsg.text}</p>
           </div>
@@ -2098,6 +1727,15 @@
       const unit = conv.morador?.unidades?.[0] ? `${conv.morador.unidades[0].condominioNome} • ${conv.morador.unidades[0].bloco} ${conv.morador.unidades[0].numero}` : 'Condomínio';
       document.getElementById('chatHeaderSub').innerText = unit;
       document.getElementById('sideMoradorUnidade').innerText = conv.morador?.unidades?.[0] ? `${conv.morador.unidades[0].bloco} ${conv.morador.unidades[0].numero}` : 'Unidade';
+
+      const sentBadge = document.getElementById('chatHeaderSentiment');
+      if (conv.sentiment === 'risco_juridico') {
+        sentBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 animate-pulse';
+        sentBadge.innerHTML = '<span>⚠️</span> Alerta: Risco Jurídico Detectado';
+      } else {
+        sentBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1';
+        sentBadge.innerHTML = '<span>●</span> Sentimento Positivo';
+      }
 
       updateHandoffButton(conv.isHumanHandoff);
 
@@ -2199,30 +1837,6 @@
       });
     }
 
-    function emitirSegundaViaPixAtivo() {
-      const perm = ROLE_PERMISSIONS[currentUserRole] || ROLE_PERMISSIONS.admin;
-      if (!perm.canEmitPix) {
-        alert('🔒 Acesso Negado: Seu perfil de usuário não tem autorização para emitir boletos ou Pix financeiro.');
-        return;
-      }
-
-      const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
-      if (!conv) return;
-
-      const now = new Date();
-      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      conv.messages.push({
-        id: `msg_pix_${Date.now()}`,
-        sender: 'bot',
-        text: '📄 *2ª Via de Cota Condominial Recalculada com Sucesso:*\n\n💰 Valor Atualizado: R$ 650,00\n📅 Vencimento Prorrogado: 20/11/2026\n\nChave Pix Copia e Cola gerada abaixo:',
-        timestamp: timeStr,
-        pixCode: '00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865406650.005802BR5925CONDOMINIO JARDINS DO BO6009SAO PAULO62070503***6304E2CA'
-      });
-
-      selectConversation(activeRemoteJid);
-      confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
-    }
-
     // ==========================================
     // SIMULADOR DE ACORDO
     // ==========================================
@@ -2273,17 +1887,17 @@
     function efetivarAcordoPlataforma() {
       const perm = ROLE_PERMISSIONS[currentUserRole] || ROLE_PERMISSIONS.admin;
       if (!perm.canEditAcordo) {
-        alert('🔒 Acesso Negado: Seu perfil não possui permissão para efetivar acordos financeiros.');
+        alert('🔒 Acesso Negado: Seu perfil não possui permissão para efetivar acordos.');
         return;
       }
 
       if (!currentSimulacao) return;
       confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 } });
-      alert(`🤝 Acordo Efetivado no Sistema!\n\nUnidade selecionada com ${currentSimulacao.qtd} parcela(s) de R$ ${currentSimulacao.valorParcela.toFixed(2)} registradas com sucesso.`);
+      alert(`🤝 Acordo Efetivado no Sistema!\n\nUnidade com ${currentSimulacao.qtd} parcela(s) de R$ ${currentSimulacao.valorParcela.toFixed(2)} registradas com sucesso.`);
     }
 
     // ==========================================
-    // RESERVAS
+    // RESERVAS & MEDIÇÃO
     // ==========================================
     function reservarArea(nome, taxa) {
       const dataStr = prompt(`Informe a data desejada para reservar "${nome}":`, '28/11/2026');
@@ -2306,9 +1920,6 @@
 
     function carregarReservas() {}
 
-    // ==========================================
-    // TELEMETRIA
-    // ==========================================
     function salvarNovaMedicao(e) {
       e.preventDefault();
       const leitura = document.getElementById('inputLeituraAtual').value;
@@ -2317,7 +1928,7 @@
     }
 
     // ==========================================
-    // MODAL BROADCAST
+    // MODAIS & SHORTCUTS
     // ==========================================
     function openBroadcastModal() { document.getElementById('modalBroadcast').classList.remove('hidden'); }
     function closeBroadcastModal() { document.getElementById('modalBroadcast').classList.add('hidden'); }
@@ -2333,6 +1944,61 @@
       const sel = document.getElementById('selectCondominioAtivo');
       const nome = sel.options[sel.selectedIndex].text;
       alert(`🏢 Condomínio ativo alternado para: ${nome}`);
+    }
+
+    function openCommandPalette() {
+      document.getElementById('commandPaletteModal').classList.remove('hidden');
+      const input = document.getElementById('commandPaletteInput');
+      input.value = '';
+      input.focus();
+      handleCommandSearch('');
+    }
+
+    function closeCommandPalette() {
+      document.getElementById('commandPaletteModal').classList.add('hidden');
+    }
+
+    function handleCommandSearch(term) {
+      const t = term.toLowerCase().trim();
+      const container = document.getElementById('commandPaletteResults');
+      
+      const commands = [
+        { label: 'Alternar Tema Claro / Escuro', action: 'toggle_theme', icon: '🌓' },
+        { label: 'Ir para Caixa de Entrada (Atendimento)', tab: 'atendimento', icon: '💬' },
+        { label: 'Ir para Cobrança & Acordos de Dívidas', tab: 'cobranca', icon: '🧾' },
+        { label: 'Ir para Encomendas & Passes QR Code', tab: 'portaria_digital', icon: '📦' },
+        { label: 'Ir para Analytics Executivo & BI do Síndico', tab: 'analytics', icon: '📊' },
+        { label: 'Ir para Assembleias & Votações Digitais', tab: 'assembleia', icon: '🗳️' },
+        { label: 'Ir para Hub Multi-IA & Modelos', tab: 'ai', icon: '🤖' },
+        { label: 'Ir para Base de Conhecimento RAG', tab: 'rag', icon: '📚' },
+        { label: 'Ir para Telemetria & Medição', tab: 'medicao', icon: '💧' },
+        { label: 'Disparo de Comunicado em Massa', action: 'broadcast', icon: '📢' },
+        { label: 'Morador: Carlos Eduardo Silva (Apt 101)', morador: 'Carlos Eduardo Silva', icon: '👤' },
+        { label: 'Morador: Mariana de Souza (Apt 204)', morador: 'Mariana de Souza', icon: '👤' }
+      ];
+
+      const filtered = commands.filter(c => c.label.toLowerCase().includes(t));
+      container.innerHTML = filtered.map(c => `
+        <div onclick="executeCommand(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="p-2.5 rounded-xl hover:bg-white/[0.08] cursor-pointer flex items-center justify-between text-slate-200">
+          <div class="flex items-center gap-2.5">
+            <span class="text-sm">${c.icon}</span>
+            <span class="font-medium">${c.label}</span>
+          </div>
+          <span class="text-[10px] text-slate-500 font-mono">Executar ↵</span>
+        </div>
+      `).join('');
+    }
+
+    function executeCommand(cmd) {
+      closeCommandPalette();
+      if (cmd.action === 'toggle_theme') toggleTheme();
+      else if (cmd.tab) switchTab(cmd.tab);
+      else if (cmd.action === 'broadcast') openBroadcastModal();
+      else if (cmd.morador) {
+        switchTab('atendimento');
+        const conv = allConversations.find(c => (c.pushName || c.morador?.nome || '').includes(cmd.morador));
+        if (conv) selectConversation(conv.remoteJid);
+      }
     }
 
     // Keyboard Shortcuts (Ctrl+K e Ctrl+B)
@@ -2352,7 +2018,6 @@
       initTheme();
       checkUserSession();
       loadConversations();
-      carregarDocumentosRAG();
     });
   </script>
 </body>
