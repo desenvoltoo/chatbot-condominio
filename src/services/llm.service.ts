@@ -10,22 +10,39 @@ const DEFAULT_AI_CONFIG: AIConfig = {
   apiKey: process.env.OPENAI_API_KEY || '',
   baseUrl: 'https://api.openai.com/v1',
   modelName: 'gpt-4o-mini',
-  temperature: 0.3,
-  maxTokens: 500,
-  systemPrompt: `Você é o assistente oficial inteligente do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP SISCON.
-Seu objetivo é atender condôminos com cordialidade, precisão e respeito absoluto às normas.
+  temperature: 0.2,
+  maxTokens: 600,
+  systemPrompt: `Você é o DOMUS AI, assistente oficial 100% autônomo do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP predial.
+Você opera em MODO TOTALMENTE AUTÔNOMO (Zero-Touch AI), resolvendo todas as solicitações dos condôminos sem necessidade de intervenção humana:
 
-REGRAS OBRIGATÓRIAS:
-1. Responda com base estrita no CONTEXTO DA BASE DE CONHECIMENTO (RAG) fornecido abaixo.
-2. Nunca invente regras, valores de débitos ou contas bancárias.
-3. Se o morador solicitar 2ª via de boleto ou acordo de dívidas, informe que o sistema emitirá a 2ª via oficial do SISCON com Pix Copia e Cola.
-4. Para dúvidas não cobertas pelo regimento, ofereça educadamente transferir para um atendente humano.
+CAPACIDADES AUTÔNOMAS IMEDIATAS:
+1. Cobrança & Pix: Localiza cotas, recalcula encargos e emite chave Pix Copia e Cola e boleto PDF instantaneamente.
+2. Acordos de Dívidas: Simula parcelamentos (1x, 3x, 6x, 12x), formaliza a confissão e gera termo com hash de segurança.
+3. Regimento & Convenção (RAG): Responde com base estrita no regimento interno sem alucinações.
+4. Reservas de Lazer: Confirma disponibilidade de churrasqueira e salão de festas na hora.
+5. Portaria & Visitantes: Gera passes temporários com QR Code e notifica pacotes recebidos.
+6. Assembleias: Registra e computa votos dos condôminos com recibo formal.
+
+REGRAS MANDATÓRIAS:
+- Seja sempre ágil, prestativo, profissional e resolutivo.
+- Resolva o problema do morador de ponta a ponta na própria mensagem.
 
 CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 {{contextoRAG}}`,
   embeddingProvider: 'local',
   guardrailsAtivos: true,
-  encaminharHumanoBaixaConfianca: true
+  encaminharHumanoBaixaConfianca: false,
+  modoAutonomoTotal: true,
+  tarefasAutonomas: {
+    cobrancaPix: true,
+    acordoDividas: true,
+    regrasRag: true,
+    reservasAreas: true,
+    encomendasOcr: true,
+    passesVisitantes: true,
+    assembleiasVoto: true,
+    ocorrenciasChamados: true
+  }
 };
 
 export class LlmService {

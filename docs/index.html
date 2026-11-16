@@ -1529,54 +1529,156 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         return;
       }
 
-      // Interceptador Global: Atendente Humano (funciona em QUALQUER etapa do fluxo)
-      const termosAtendente = [
-        'atendente', 'humano', 'operador', 'pessoa', 'falar com alguém',
-        'falar com alguem', 'falar com atendente', 'suporte', 'atendimento',
-        'ajuda', 'socorro', 'com atendente', 'moça', 'rapaz', 'falar com gente'
-      ];
-      if (termosAtendente.some(termo => lower.includes(termo)) && botState !== 'ATENDIMENTO_HUMANO') {
-        botState = 'ATENDIMENTO_HUMANO';
-        addMessage(`👤 <strong>Transferindo para Atendente Humano...</strong><br><br>Entendido! Interrompi a consulta anterior e já coloquei você na nossa fila prioritária com a equipe da administradora.<br><br>Um atendente responderá por aqui em breve.<br><br><em>(Digite <strong>MENU</strong> ou <strong>SAIR</strong> para voltar ao robô)</em>`, false, true);
+      // 1. Cobrança & Boleto / Pix
+      if (lower === '1' || lower.includes('boleto') || lower.includes('pix') || lower.includes('pagar') || lower.includes('segunda via')) {
+        botState = 'AGUARDANDO_CPF';
+        addMessage(`📄 Por favor, informe o seu <strong>CPF</strong> para localizarmos as cotas condominiais no sistema predial:`, false, true);
         return;
       }
 
-      if (botState === 'INICIO') {
-        if (lower.includes('boleto') || lower.includes('pix') || lower.includes('segunda via') || lower.includes('pagar')) {
-          botState = 'AGUARDANDO_CPF';
-          addMessage(`📄 Perfeito! Para localizar sua cota condominial, por favor <strong>digite o seu CPF</strong> (ex: 123.456.789-09):`, false, true);
-        } else {
-          botState = 'MENU_PRINCIPAL';
-          sendMenu();
-        }
+      // 2. Acordo & Parcelamento de Dívidas
+      if (lower === '2' || lower.includes('acordo') || lower.includes('parcelar') || lower.includes('parcelamento') || lower.includes('divida') || lower.includes('dívida')) {
+        const acordoHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-indigo-900 text-xs flex items-center gap-1">
+              <span>🤝</span> Simulador de Acordo Autônomo DOMUS AI
+            </div>
+            <p class="text-[11px] text-slate-700">Débito consolidado para a unidade <strong>Apt 101 - Bloco A</strong>: <strong>R$ 1.350,00</strong></p>
+            <div class="space-y-1.5 text-[11px] pt-1">
+              <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 flex justify-between items-center">
+                <span>🔥 <strong>1x à Vista</strong> (10% de desconto nos juros):</span>
+                <strong class="text-emerald-700">R$ 1.215,00</strong>
+              </div>
+              <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center">
+                <span><strong>3x sem juros</strong> de:</span>
+                <strong class="text-slate-800">R$ 450,00 / mês</strong>
+              </div>
+              <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center">
+                <span><strong>6x</strong> de:</span>
+                <strong class="text-slate-800">R$ 235,00 / mês</strong>
+              </div>
+            </div>
+            <div class="pt-2">
+              <button onclick="addMessage('✅ <strong>Acordo em 3x Formalizado com Sucesso pela IA!</strong><br><br>Hash de Autenticidade: <code>sha256:8f4c2e...</code><br>Termo de Confissão de Dívida assinado digitalmente.<br>Os boletos e chaves Pix das parcelas foram gerados!', false, true)" class="w-full py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-xs font-bold transition-all shadow-md">
+                ✍️ Aceitar Acordo em 3x & Gerar Termo Digital
+              </button>
+            </div>
+            <div class="text-[10px] text-slate-400 italic text-center pt-1">Processamento 100% autônomo sem intermediários.</div>
+          </div>
+        `;
+        addMessage(acordoHtml, false, true);
         return;
       }
 
-      if (botState === 'MENU_PRINCIPAL') {
-        if (lower === '1' || lower.includes('boleto') || lower.includes('pix')) {
-          botState = 'AGUARDANDO_CPF';
-          addMessage(`📄 Por favor, informe o seu <strong>CPF</strong> para consultarmos os boletos em aberto:`, false, true);
-        } else if (lower === '2' || lower.includes('ocorrencia') || lower.includes('vazamento') || lower.includes('manuten')) {
-          addMessage(`✅ <strong>Ocorrência Registrada com Sucesso!</strong><br><br>Protocolo: <strong>#MANUT-84920</strong><br>Categoria: Manutenção Predial<br><br>O síndico e o zelador foram notificados. Acompanharemos o atendimento.<br><br>Digite <strong>MENU</strong> para voltar.`, false, true);
-        } else if (lower === '3' || lower.includes('atendente') || lower.includes('humano')) {
-          botState = 'ATENDIMENTO_HUMANO';
-          addMessage(`👤 <strong>Transferindo para Atendente Humano...</strong><br><br>Você está na fila da equipe de atendimento da administradora. Um colaborador responderá por aqui em breve.<br><br><em>(Digite SAIR para retornar ao bot)</em>`, false, true);
-        } else {
-          addMessage(`Opção não reconhecida. Por favor, digite <strong>1</strong> para Boletos, <strong>2</strong> para Ocorrência ou <strong>3</strong> para Atendente.`, false, true);
-        }
+      // 3. Regimento Interno & Convenção (RAG)
+      if (lower === '3' || lower.includes('mudan') || lower.includes('barulho') || lower.includes('silêncio') || lower.includes('silencio') || lower.includes('regra') || lower.includes('regimento') || lower.includes('reforma') || lower.includes('piscina') || lower.includes('cachorro') || lower.includes('pet')) {
+        const ragHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-sky-900 text-xs flex items-center gap-1">
+              <span>📖</span> Base de Conhecimento RAG • Resposta Oficial
+            </div>
+            <div class="p-2.5 rounded-xl bg-sky-50 border border-sky-200 text-[11px] text-sky-950 leading-relaxed">
+              <strong>*Regimento Interno (Art. 24):*</strong><br>
+              Mudanças e reformas com ruído são permitidas aos sábados das <strong>08h às 12h</strong>, mediante agendamento com 48h de antecedência junto à administração para colocação de mantas protetoras no elevador.<br><br>
+              De segunda a sexta-feira, o horário autorizado é das <strong>08h às 18h</strong>. Aos domingos e feriados, reformas e mudanças são expressamente vedadas.
+            </div>
+            <div class="text-[10px] text-slate-500 italic">Fonte: Regimento Interno 2026 • Embasamento Jurídico Oficial</div>
+          </div>
+        `;
+        addMessage(ragHtml, false, true);
+        return;
+      }
+
+      // 4. Reservas de Áreas Comuns
+      if (lower === '4' || lower.includes('reserva') || lower.includes('churrasqu') || lower.includes('salão') || lower.includes('salao') || lower.includes('festa')) {
+        const reservaHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-emerald-900 text-xs flex items-center gap-1">
+              <span>📅</span> Reserva Confirmada com Sucesso pela IA!
+            </div>
+            <div class="border-t border-b border-slate-200 py-1.5 space-y-0.5 text-[11px] text-slate-700">
+              <div><strong>Espaço:</strong> Espaço Gourmet & Churrasqueira 1</div>
+              <div><strong>Data:</strong> Próximo Sábado (12h às 22h)</div>
+              <div><strong>Unidade:</strong> Bloco A - Apt 101 (Carlos Eduardo Silva)</div>
+              <div><strong>Status no ERP:</strong> <span class="text-emerald-700 font-bold">Unidade Adimplente / Liberado</span></div>
+              <div><strong>Taxa de Limpeza:</strong> R$ 80,00 (lançada no próximo boleto)</div>
+              <div><strong>Protocolo:</strong> <code>#RES-77410-DOMUS</code></div>
+            </div>
+            <p class="text-[10px] text-slate-500">A portaria e a zeladoria já foram notificadas da sua lista de convidados.</p>
+          </div>
+        `;
+        addMessage(reservaHtml, false, true);
+        return;
+      }
+
+      // 5. Portaria, Encomendas & Passes QR Code
+      if (lower === '5' || lower.includes('encomenda') || lower.includes('pacote') || lower.includes('visitante') || lower.includes('convite') || lower.includes('portaria')) {
+        const portariaHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-purple-900 text-xs flex items-center gap-1">
+              <span>📦</span> Portaria Digital DOMUS AI
+            </div>
+            <div class="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-[11px] text-purple-950 space-y-1">
+              <div><strong>Encomenda Recebida:</strong> Pacote Amazon Prime (#AMZ-9932)</div>
+              <div><strong>Chegada:</strong> Hoje às 10:15 por Zelador Marcos (Leitura OCR)</div>
+              <div><strong>Token de Retirada Seguro:</strong> <span class="font-mono font-bold text-purple-700 text-xs">RET-4820</span></div>
+            </div>
+            <div class="pt-1">
+              <button onclick="addMessage('🎟️ <strong>Passe QR Code de Visitante Gerado!</strong><br><br>Visitante: Convidado Autorizado<br>Validade: Próximas 24 horas<br>Token: <code>DOMUS-PASS-9931</code><br>Basta apresentar na portaria para liberação imediata da catraca!', false, true)" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-all">
+                🎟️ Gerar Convite / Passe QR Code para Visitante
+              </button>
+            </div>
+          </div>
+        `;
+        addMessage(portariaHtml, false, true);
+        return;
+      }
+
+      // 6. Votação em Assembleia Virtual
+      if (lower === '6' || lower.includes('assembleia') || lower.includes('votar') || lower.includes('pauta')) {
+        const assembleiaHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-purple-900 text-xs flex items-center gap-1">
+              <span>🗳️</span> Assembleia Virtual Aberta • Votação WhatsApp
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-800 space-y-1">
+              <div><strong>Pauta Deliberativa:</strong> Climatização e Modernização da Academia Predial</div>
+              <div><strong>Investimento Previsto:</strong> R$ 24.000,00 (Fundo de Reserva)</div>
+              <div><strong>Quórum Atual:</strong> 68% dos condôminos</div>
+            </div>
+            <div class="flex gap-1.5 pt-1">
+              <button onclick="addMessage('✅ <strong>Seu voto SIM foi computado com sucesso!</strong><br><br>Unidade: Bloco A - Apt 101<br>Recibo Criptográfico: <code>#VOTO-SIM-7410</code><br>Obrigado pela participação democrática!', false, true)" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold">
+                👍 Votar SIM
+              </button>
+              <button onclick="addMessage('❌ <strong>Seu voto NÃO foi computado com sucesso!</strong><br><br>Unidade: Bloco A - Apt 101<br>Recibo Criptográfico: <code>#VOTO-NAO-7411</code>', false, true)" class="flex-1 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold">
+                👎 Votar NÃO
+              </button>
+              <button onclick="addMessage('⚪ <strong>Sua ABSTENÇÃO foi computada com sucesso!</strong><br><br>Recibo: <code>#VOTO-ABS-7412</code>', false, true)" class="flex-1 py-1.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-xs font-bold">
+                Abster
+              </button>
+            </div>
+          </div>
+        `;
+        addMessage(assembleiaHtml, false, true);
+        return;
+      }
+
+      // 7. Voto direto por texto
+      if (['sim', 'nao', 'não', 'abster', 'abstenção'].includes(lower)) {
+        addMessage(`✅ <strong>Seu voto "${userText.toUpperCase()}" foi computado com sucesso pela IA!</strong><br><br>Unidade: Bloco A - Apt 101<br>Recibo Criptográfico Oficial: <code>#VOTO-${userText.toUpperCase()}-SHA256</code><br>Ata atualizada em tempo real!`, false, true);
+        return;
+      }
+
+      // 8. Ocorrência & Manutenção
+      if (lower === '7' || lower.includes('ocorrencia') || lower.includes('ocorrência') || lower.includes('vazamento') || lower.includes('manuten') || lower.includes('luz') || lower.includes('portao')) {
+        addMessage(`✅ <strong>Ocorrência Registrada com Sucesso pela IA!</strong><br><br>Protocolo: <strong>#MANUT-84920</strong><br>Categoria: Manutenção Predial<br><br>O zelador e o síndico foram notificados em tempo real. A equipe técnica já foi acionada!<br><br>Digite <strong>MENU</strong> para voltar.`, false, true);
         return;
       }
 
       if (botState === 'AGUARDANDO_CPF') {
-        if (['ocorrencia', 'ocorrência', 'reclamacao', 'reclamação', 'manutencao', 'manutenção', 'vazamento', 'barulho', 'cano', 'luz'].some(t => lower.includes(t))) {
-          botState = 'MENU_PRINCIPAL';
-          addMessage(`🛠️ <strong>Abertura de Chamado</strong><br><br>Sem problemas! Mudamos de boleto para abertura de chamado.<br>Protocolo <strong>#MANUT-84920</strong> criado com sucesso para o zelador e síndico.<br><br>Digite <strong>MENU</strong> para voltar.`, false, true);
-          return;
-        }
-
         const cleanCpf = userText.replace(/\D/g, '');
         if (cleanCpf.length !== 11 || /^(\d)\1{10}$/.test(cleanCpf)) {
-          addMessage(`⚠️ <strong>CPF inválido.</strong> Por favor, informe um CPF válido com 11 dígitos para consulta de cota condominial.<br><br><em>(Ou digite <strong>ATENDENTE</strong> se preferir falar com um colaborador)</em>`, false, true);
+          addMessage(`⚠️ <strong>CPF inválido.</strong> Por favor, informe um CPF válido com 11 dígitos para consulta de cota condominial.<br><br><em>(Digite <strong>MENU</strong> para voltar às opções)</em>`, false, true);
           return;
         }
 
@@ -1586,7 +1688,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         const boletoHtml = `
           <div class="space-y-2">
             <div class="font-bold text-emerald-800 text-xs flex items-center gap-1">
-              <span>✅</span> Boleto Localizado com Sucesso!
+              <span>✅</span> Boleto Localizado com Sucesso pela IA!
             </div>
             <div class="border-t border-b border-slate-200 py-1.5 space-y-0.5 text-[11px]">
               <div><strong>Titular:</strong> Carlos Eduardo Silva</div>
@@ -1595,7 +1697,7 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
               <div><strong>Unidade:</strong> Bloco A - Apt 101</div>
               <div><strong>Referência:</strong> 11/2026</div>
               <div><strong>Vencimento:</strong> 15/11/2026</div>
-              <div><strong>Valor:</strong> <span class="text-emerald-700 font-bold text-xs">R$ 650,00</span></div>
+              <div><strong>Valor Atualizado:</strong> <span class="text-emerald-700 font-bold text-xs">R$ 650,00</span></div>
             </div>
             
             <div class="pt-1">
@@ -1629,32 +1731,41 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         return;
       }
 
-      if (botState === 'ATENDIMENTO_HUMANO') {
-        if (lower === 'sair') {
-          botState = 'MENU_PRINCIPAL';
-          addMessage(`✅ Atendimento humano encerrado. Digite <strong>MENU</strong> para novas opções.`, false, true);
-        } else {
-          addMessage(`<em>[Mensagem encaminhada para o operador da administradora]</em>`, false, true);
-        }
-      }
+      sendMenu();
     }
 
     function sendMenu() {
       const menuHtml = `
-        👋 Olá! Bem-vindo ao autoatendimento da <strong>Administradora Modelo</strong>.<br><br>
-        Como posso ajudar você hoje?<br>
-        Selecione uma opção rápida abaixo ou digite o número:
+        👋 Olá! Bem-vindo ao <strong>DOMUS AI</strong> — Central de Inteligência Condominial.<br>
+        ⚡ <strong>Piloto Automático 100% Autônomo Ativo: Todas as tarefas são resolvidas sem espera e sem intervenção humana!</strong><br><br>
+        Escolha uma ação rápida abaixo ou digite o número correspondente:
         <div class="mt-2.5 flex flex-col gap-1.5 pt-2 border-t border-slate-100">
           <button onclick="sendQuickMessage('1')" class="w-full text-left py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
-            <span>📄 1. 2ª Via de Boleto / Pix</span>
+            <span>📄 1. 2ª Via de Boleto & Pix Copia e Cola</span>
             <span class="text-emerald-600 font-bold">→</span>
           </button>
-          <button onclick="sendQuickMessage('2')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
-            <span>🛠️ 2. Registrar Ocorrência</span>
-            <span class="text-slate-400 font-bold">→</span>
+          <button onclick="sendQuickMessage('2')" class="w-full text-left py-2 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-semibold rounded-xl text-xs border border-indigo-200 transition-colors flex items-center justify-between">
+            <span>🤝 2. Negociar Acordo de Dívida (Parcelamento SHA-256)</span>
+            <span class="text-indigo-600 font-bold">→</span>
           </button>
-          <button onclick="sendQuickMessage('3')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
-            <span>👤 3. Falar com Atendente</span>
+          <button onclick="sendQuickMessage('3')" class="w-full text-left py-2 px-3 bg-sky-50 hover:bg-sky-100 text-sky-900 font-semibold rounded-xl text-xs border border-sky-200 transition-colors flex items-center justify-between">
+            <span>📖 3. Dúvidas do Regimento Interno (RAG / Convenção)</span>
+            <span class="text-sky-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('4')" class="w-full text-left py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
+            <span>📅 4. Reservar Área Comum (Churrasqueira / Salão)</span>
+            <span class="text-emerald-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('5')" class="w-full text-left py-2 px-3 bg-purple-50 hover:bg-purple-100 text-purple-900 font-semibold rounded-xl text-xs border border-purple-200 transition-colors flex items-center justify-between">
+            <span>📦 5. Encomendas Recebidas & Passes QR Code</span>
+            <span class="text-purple-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('6')" class="w-full text-left py-2 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-semibold rounded-xl text-xs border border-indigo-200 transition-colors flex items-center justify-between">
+            <span>🗳️ 6. Votação em Assembleia Virtual</span>
+            <span class="text-indigo-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('7')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+            <span>🛠️ 7. Registrar Ocorrência / Manutenção</span>
             <span class="text-slate-400 font-bold">→</span>
           </button>
         </div>

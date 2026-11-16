@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOMUS AI — Central Inteligente de Autoatendimento Predial & WhatsApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
+            },
+            wpp: {
+              header: '#005d4b',
+              headerLight: '#075e54',
+              chatBg: '#efeae2',
+              userBubble: '#d9fdd3',
+              botBubble: '#ffffff',
+              checkBlue: '#53bdeb'
+            }
+          },
+          boxShadow: {
+            'glow': '0 0 50px -10px rgba(16, 185, 129, 0.3)',
+            'phone': '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .chat-pattern {
+      background-color: #efeae2;
+      background-image: 
+        radial-gradient(#d4cdc3 1px, transparent 1px),
+        radial-gradient(#d4cdc3 1px, #efeae2 1px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: 4px;
+    }
+    .mesh-gradient {
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 60%);
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .pulse-glow {
+      animation: pulse-subtle 4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-slate-950 overflow-x-hidden">
+
+  <!-- Ambient Background Glow -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-emerald-500/15 via-teal-500/5 to-transparent blur-[120px] rounded-full"></div>
+    <div class="absolute top-[40%] right-[-10%] w-[600px] h-[600px] bg-emerald-600/10 blur-[150px] rounded-full"></div>
+    <div class="absolute bottom-[10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/10 blur-[140px] rounded-full"></div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-50 glass border-b border-slate-800/80 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/25">
+          <div class="w-full h-full bg-slate-950 rounded-[15px] flex items-center justify-center">
+            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight text-white">DOMUS AI</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-cyan-400 border border-indigo-500/20 font-mono uppercase">Enterprise</span>
+          </div>
+          <p class="text-xs text-slate-400">Inteligência Autônoma para Gestão Condominial</p>
+        </div>
+      </div>
+
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-300">
+        <a href="#simulador" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Simulador Ao Vivo
+        </a>
+        <a href="#diferenciais" class="hover:text-emerald-400 transition-colors">Diferenciais</a>
+        <a href="#roi" class="hover:text-emerald-400 transition-colors">Economia Financeira</a>
+        <a href="#como-funciona" class="hover:text-emerald-400 transition-colors">Como Funciona</a>
+        <a href="#questionario" class="hover:text-emerald-400 transition-colors">Integração ERP</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="login.html" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/25 transition-all flex items-center gap-1.5 transform hover:-translate-y-0.5">
+          <span>🔐</span> Acessar DOMUS AI (Login)
+        </a>
+        <a href="painel.html" class="px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-emerald-300 border border-emerald-500/30 font-bold text-xs transition-all flex items-center gap-1.5 shadow-sm">
+          <span>💻</span> Painel Operacional
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden z-10 mesh-gradient border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      
+      <!-- Top Pill -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass border border-emerald-500/30 text-xs font-semibold text-emerald-300 mb-8 shadow-inner">
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        Tecnologia de Autoatendimento Oficial via WhatsApp para Administradoras
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight max-w-5xl mx-auto leading-[1.12]">
+        Elimine o Atendimento Manual e Entregue Boletos em <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200">3 Segundos</span>
+      </h1>
+
+      <p class="mt-6 text-base sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
+        Substitua o trabalho repetitivo de enviar 2ª via e responder dúvidas frequentes por uma central que funciona <strong>24 horas por dia, 7 dias por semana</strong> no número oficial da sua administradora.
+      </p>
+
+      <!-- Key Value Points -->
+      <div class="mt-10 flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-slate-300">
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl glass">
+          <span class="text-emerald-400 font-bold">✓</span> Linha Digitável e Pix Copia e Cola
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl glass">
+          <span class="text-emerald-400 font-bold">✓</span> PDF Oficial Anexado na Hora
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl glass">
+          <span class="text-emerald-400 font-bold">✓</span> Transcrição de Áudio com IA
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-xl glass">
+          <span class="text-emerald-400 font-bold">✓</span> Zero Esforço Técnico (Chave na Mão)
+        </div>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a href="#simulador" class="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition-all shadow-xl shadow-emerald-500/30 transform hover:-translate-y-0.5 flex items-center gap-2">
+          <span>Experimentar Simulador Interativo</span>
+          <span class="text-lg">👇</span>
+        </a>
+        <a href="#roi" class="px-8 py-4 rounded-2xl glass hover:bg-slate-800 text-white font-semibold text-sm transition-all border border-slate-700/80">
+          Calcular Economia Financeira
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 1: Simulador Interativo do WhatsApp (O Coração da Venda) -->
+  <section id="simulador" class="py-20 md:py-28 relative z-10 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Demonstração Prática em Tempo Real
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mt-4 tracking-tight">
+          Veja Como o Seu Morador é Atendido
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base mt-3 leading-relaxed">
+          Sem filas, sem atrito e sem precisar baixar nenhum aplicativo. Teste os atalhos rápidos ou digite suas próprias mensagens diretamente no smartphone abaixo.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        
+        <!-- Left Column: Quick Action Cockpit -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <div class="glass-card rounded-3xl p-6 sm:p-7 border border-slate-800 shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">⚡</span>
+                Cenários Prontos para Teste
+              </h3>
+              <span class="text-[11px] text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                1-Clique
+              </span>
+            </div>
+            
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">
+              Clique nos botões abaixo para simular as situações mais comuns que acontecem diariamente no WhatsApp da sua administradora:
+            </p>
+
+            <div class="space-y-2.5">
+              
+              <!-- Action 0: Página Inicial do WhatsApp -->
+              <button onclick="showChatList()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-emerald-950/70 via-slate-900 to-teal-950/70 hover:from-emerald-900/80 hover:to-teal-900/80 border border-emerald-500/50 hover:border-emerald-400 text-xs text-white transition-all flex items-center justify-between group shadow-md">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base p-1.5 rounded-lg bg-emerald-500/20 text-emerald-300">📱</span>
+                  <div>
+                    <strong class="block text-emerald-300 group-hover:text-emerald-200 transition-colors flex items-center gap-1.5">
+                      Página Inicial do WhatsApp
+                      <span class="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">4 Conversas</span>
+                    </strong>
+                    <span class="text-[11px] text-slate-300">1 Privada (Bot) + 3 Grupos de Condomínios</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-80 group-hover:opacity-100 transition-opacity">Ver Lista →</span>
+              </button>
+
+              <!-- Action 1 -->
+              <button onclick="sendQuickMessage('Olá, gostaria de tirar uma dúvida')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">💬</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">1. Saudação Inicial & Menu Interativo</strong>
+                    <span class="text-[11px] text-slate-400">Exibe botões interativos de autoatendimento</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Testar →</span>
+              </button>
+
+              <!-- Action 2 -->
+              <button onclick="sendQuickMessage('Quero a 2ª via do boleto deste mês')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">📄</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">2. Pedido Direto de 2ª Via</strong>
+                    <span class="text-[11px] text-slate-400">Entende linguagem natural e solicita o CPF</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Testar →</span>
+              </button>
+
+              <!-- Action 3: CPF -->
+              <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">🔑</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">3. Enviar CPF Válido (123.456.789-09)</strong>
+                    <span class="text-[11px] text-slate-400">Gera linha digitável, Pix Copia e Cola e PDF</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Gerar →</span>
+              </button>
+
+              <!-- Action 4: Áudio IA -->
+              <button onclick="simulateAudioMessage()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-purple-950/40 to-slate-900 hover:from-purple-900/50 hover:to-slate-800 border border-purple-500/40 hover:border-purple-400 text-xs text-purple-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">🎙️</span>
+                  <div>
+                    <strong class="block text-purple-200 group-hover:text-purple-100">4. Simular Áudio de Morador (IA)</strong>
+                    <span class="text-[11px] text-purple-300/80">Transcreve a voz e responde na hora</span>
+                  </div>
+                </div>
+                <span class="text-purple-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Ouvir →</span>
+              </button>
+
+              <!-- Action 5: Foto Chamado -->
+              <button onclick="simulatePhotoTicket()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-blue-950/40 to-slate-900 hover:from-blue-900/50 hover:to-slate-800 border border-blue-500/40 hover:border-blue-400 text-xs text-blue-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">📸</span>
+                  <div>
+                    <strong class="block text-blue-200 group-hover:text-blue-100">5. Enviar Foto de Vazamento (Chamado)</strong>
+                    <span class="text-[11px] text-blue-300/80">Registra ocorrência com protocolo e notifica síndico</span>
+                  </div>
+                </div>
+                <span class="text-blue-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Enviar →</span>
+              </button>
+
+              <!-- Action 6: Pagamento Pix -->
+              <button onclick="simulatePixPayment()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-emerald-950/60 to-slate-900 hover:from-emerald-900/70 hover:to-slate-800 border border-emerald-500/50 hover:border-emerald-400 text-xs text-emerald-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">⚡</span>
+                  <div>
+                    <strong class="block text-emerald-300 group-hover:text-emerald-100">6. Simular Pagamento Pix (Baixa Automática)</strong>
+                    <span class="text-[11px] text-emerald-400/80">Autenticação instantânea com confetes na tela</span>
+                  </div>
+                </div>
+                <span class="text-emerald-300 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Pagar →</span>
+              </button>
+
+              <!-- Action 7: Múltiplas Unidades -->
+              <button onclick="simulateMultipleUnits()" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">🏢</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">7. Morador com Múltiplas Unidades</strong>
+                    <span class="text-[11px] text-slate-400">Exibe seletor de condomínio e apartamentos</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Listar →</span>
+              </button>
+
+              <!-- Action 8: Aviso em Grupo de Condomínio -->
+              <button onclick="simulateGroupAnnouncement()" class="w-full text-left p-3 rounded-xl bg-gradient-to-r from-teal-950/60 via-slate-900 to-blue-950/60 hover:from-teal-900/70 hover:to-blue-900/70 border border-teal-500/50 hover:border-teal-400 text-xs text-teal-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base p-1.5 rounded-lg bg-teal-500/20 text-teal-300">📢</span>
+                  <div>
+                    <strong class="block text-teal-300 group-hover:text-teal-100 flex items-center gap-1.5">
+                      8. Disparo de Avisos em Massa
+                      <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">Todos os 3 Grupos</span>
+                    </strong>
+                    <span class="text-[11px] text-teal-300/80">Envia o mesmo comunicado para todos os condomínios</span>
+                  </div>
+                </div>
+                <span class="text-teal-300 text-xs font-bold opacity-80 group-hover:opacity-100 transition-opacity">Disparar →</span>
+              </button>
+
+              <!-- Action 9: Atendente -->
+              <button onclick="sendQuickMessage('Gostaria de falar com um atendente humano')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/60 hover:border-emerald-500/50 text-xs text-slate-200 transition-all flex items-center justify-between group shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-base">👤</span>
+                  <div>
+                    <strong class="block text-slate-100 group-hover:text-emerald-300 transition-colors">9. Falar com Atendente Humano</strong>
+                    <span class="text-[11px] text-slate-400">Funciona a qualquer momento para transbordo imediato</span>
+                  </div>
+                </div>
+                <span class="text-emerald-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">Chamar →</span>
+              </button>
+
+            </div>
+
+            <!-- Bottom Tools -->
+            <div class="mt-6 pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs">
+              <button id="btnSoundToggle" onclick="toggleSound()" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center gap-1.5 font-medium transition-colors">
+                <span>🔊</span> Som: Ativo
+              </button>
+              <button onclick="resetChat()" class="text-rose-400 hover:text-rose-300 font-semibold underline text-xs transition-colors">
+                Reiniciar Conversa ↺
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Proof Metrics Badge -->
+          <div class="p-5 rounded-2xl glass border border-slate-800 flex items-center justify-around text-center">
+            <div>
+              <span class="block text-2xl font-extrabold text-white">3 seg</span>
+              <span class="text-[11px] text-slate-400">Tempo de Resposta</span>
+            </div>
+            <div class="w-px h-8 bg-slate-800"></div>
+            <div>
+              <span class="block text-2xl font-extrabold text-emerald-400">24h x 7d</span>
+              <span class="text-[11px] text-slate-400">Disponibilidade</span>
+            </div>
+            <div class="w-px h-8 bg-slate-800"></div>
+            <div>
+              <span class="block text-2xl font-extrabold text-teal-300">0 Fila</span>
+              <span class="text-[11px] text-slate-400">Nos Dias de Pico</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Realistic iPhone Smartphone Frame -->
+        <div class="lg:col-span-7 flex flex-col items-center">
+          
+          <!-- Top Navigation Switcher for the Simulator -->
+          <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-3 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 shadow-lg text-xs">
+            <button id="pillBtnHome" onclick="showChatList()" class="px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow">
+              <span>📱</span> Início (4 Conversas)
+              <span id="pillUnreadHome" class="hidden px-1.5 py-0.2 rounded-full bg-slate-950 text-emerald-400 text-[10px] font-black">3</span>
+            </button>
+            <button id="pillBtnBot" onclick="openChat('bot')" class="px-2.5 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1">
+              <span>🏢</span> Bot 2ª Via
+            </button>
+            <div class="h-4 w-px bg-slate-800 hidden sm:block"></div>
+            <button id="pillBtnGroup1" onclick="openChat('group1')" class="px-2 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px]">
+              <span>🌿</span> Jardins
+              <span id="pillGroup1Badge" class="hidden w-2 h-2 rounded-full bg-emerald-400"></span>
+            </button>
+            <button id="pillBtnGroup2" onclick="openChat('group2')" class="px-2 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px]">
+              <span>🌊</span> Mar Azul
+              <span id="pillGroup2Badge" class="hidden w-2 h-2 rounded-full bg-emerald-400"></span>
+            </button>
+            <button id="pillBtnGroup3" onclick="openChat('group3')" class="px-2 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px]">
+              <span>🌳</span> Bosque
+              <span id="pillGroup3Badge" class="hidden w-2 h-2 rounded-full bg-emerald-400"></span>
+            </button>
+          </div>
+
+          <div class="relative w-full max-w-[390px]">
+            <!-- Subtle Glow behind the phone -->
+            <div class="absolute -inset-4 bg-gradient-to-tr from-emerald-500/20 to-teal-500/10 rounded-[54px] blur-2xl pointer-events-none"></div>
+
+            <!-- Smartphone Outer Shell (Titanium Style) -->
+            <div class="relative bg-[#1a1f2c] rounded-[48px] p-3 shadow-phone border-4 border-slate-700/80 ring-1 ring-white/10">
+              
+              <!-- Screen Container -->
+              <div class="w-full h-[640px] rounded-[38px] overflow-hidden flex flex-col bg-[#efeae2] relative shadow-inner select-none">
+                
+                <!-- iOS Status Bar & Dynamic Island -->
+                <div class="bg-[#005d4b] px-6 pt-3 pb-2 text-white flex items-center justify-between text-[11px] font-semibold shrink-0 z-20">
+                  <span>09:41</span>
+                  <!-- Dynamic Island -->
+                  <div class="w-24 h-4 bg-black rounded-full flex items-center justify-end px-2 gap-1.5">
+                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs">
+                    <span>5G</span>
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+                    <span>100%</span>
+                  </div>
+                </div>
+
+                <!-- VIEW 1: HOME DE CONVERSAS (WHATSAPP HOME) -->
+                <div id="viewHome" class="flex-1 flex flex-col bg-white overflow-hidden">
+                  
+                  <!-- WhatsApp Top Green Header -->
+                  <div class="bg-[#005d4b] text-white px-4 pt-2 shadow shrink-0">
+                    <div class="flex items-center justify-between pb-2">
+                      <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-base tracking-tight">WhatsApp Business</span>
+                        <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-700/90 text-emerald-200">PRO</span>
+                      </div>
+                      <div class="flex items-center gap-3.5 text-white/90 text-sm">
+                        <button title="Câmera" class="hover:text-white">📷</button>
+                        <button title="Pesquisar" class="hover:text-white">🔍</button>
+                        <button title="Mais Opções" class="hover:text-white">⋮</button>
+                      </div>
+                    </div>
+
+                    <!-- WhatsApp Tabs -->
+                    <div class="flex items-center text-xs font-bold uppercase tracking-wide">
+                      <div class="py-2 px-1 text-white/60">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v1h8v-1zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 16.5a3.5 3.5 0 00-5.48-2.924A5.968 5.968 0 0111 15v1h5v-.5zM3.48 13.576A3.5 3.5 0 001 16.5v.5h5v-1a5.968 5.968 0 01.48-1.424z"/></svg>
+                      </div>
+                      <div class="flex-1 py-2 text-center text-white border-b-2 border-white flex items-center justify-center gap-1 cursor-pointer">
+                        <span>Conversas</span>
+                        <span id="homeTotalBadge" class="hidden px-1.5 py-0.2 bg-white text-[#005d4b] rounded-full text-[10px] font-black leading-tight">3</span>
+                      </div>
+                      <div class="flex-1 py-2 text-center text-emerald-200/70 hover:text-white cursor-pointer">
+                        <span>Atualizações</span>
+                      </div>
+                      <div class="flex-1 py-2 text-center text-emerald-200/70 hover:text-white cursor-pointer">
+                        <span>Chamadas</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Quick Filter Pills Bar -->
+                  <div class="bg-[#f8fafc] px-3 py-1.5 border-b border-slate-200 flex items-center justify-between text-[11px] shrink-0">
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">Todas (4)</span>
+                      <span class="px-2.5 py-0.5 rounded-full bg-white text-slate-600 font-medium border border-slate-200">Não lidas</span>
+                      <span class="px-2.5 py-0.5 rounded-full bg-white text-slate-600 font-medium border border-slate-200">Grupos (3)</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400">Toque p/ abrir</span>
+                  </div>
+
+                  <!-- Chats List Container (4 Chats) -->
+                  <div class="flex-1 overflow-y-auto custom-scrollbar divide-y divide-slate-100 bg-white">
+                    
+                    <!-- Chat Item 1: Conversa Privada (Bot Oficial) -->
+                    <div onclick="openChat('bot')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors group">
+                      <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-extrabold flex items-center justify-center text-xl shadow-sm">
+                          🏢
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white flex items-center justify-center">
+                          <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        </span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                          <div class="flex items-center gap-1 truncate">
+                            <h4 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700 transition-colors truncate">Administradora Modelo</h4>
+                            <span class="text-[9px] font-bold px-1 rounded bg-emerald-100 text-emerald-800">BOT</span>
+                          </div>
+                          <span id="time-bot" class="text-[10px] text-slate-400 font-medium shrink-0">09:41</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <p id="snippet-bot" class="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                            <span class="text-emerald-600 font-semibold">2ª Via:</span> Segue o boleto e chave Pix...
+                          </p>
+                          <span class="text-slate-400 text-xs shrink-0" title="Conversa Fixada">📌</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Chat Item 2: Grupo de Condomínio 1 -->
+                    <div onclick="openChat('group1')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors group">
+                      <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-700 to-teal-800 text-white font-extrabold flex items-center justify-center text-xl shadow-sm">
+                          🌿
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-slate-700 ring-2 ring-white flex items-center justify-center text-[8px] text-white">👥</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                          <h4 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700 transition-colors truncate">Res. Jardins do Bosque [Oficial]</h4>
+                          <span id="time-group1" class="text-[10px] text-slate-400 font-medium shrink-0">09:30</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <p id="snippet-group1" class="text-[11px] text-slate-500 truncate">
+                            Síndico Roberto: Reunião na próxima terça às 19h...
+                          </p>
+                          <span id="badge-group1" class="hidden w-5 h-5 rounded-full bg-[#25d366] text-white text-[10px] font-bold flex items-center justify-center shrink-0 shadow-sm animate-pulse">1</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Chat Item 3: Grupo de Condomínio 2 -->
+                    <div onclick="openChat('group2')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors group">
+                      <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-700 text-white font-extrabold flex items-center justify-center text-xl shadow-sm">
+                          🌊
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-slate-700 ring-2 ring-white flex items-center justify-center text-[8px] text-white">👥</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                          <h4 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700 transition-colors truncate">Cond. Edifício Mar Azul [Avisos]</h4>
+                          <span id="time-group2" class="text-[10px] text-slate-400 font-medium shrink-0">Ontem</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <p id="snippet-group2" class="text-[11px] text-slate-500 truncate">
+                            Zelador: Portão consertado com sucesso...
+                          </p>
+                          <span id="badge-group2" class="hidden w-5 h-5 rounded-full bg-[#25d366] text-white text-[10px] font-bold flex items-center justify-center shrink-0 shadow-sm animate-pulse">1</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Chat Item 4: Grupo de Condomínio 3 -->
+                    <div onclick="openChat('group3')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors group">
+                      <div class="relative shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-600 to-emerald-900 text-white font-extrabold flex items-center justify-center text-xl shadow-sm">
+                          🌳
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-slate-700 ring-2 ring-white flex items-center justify-center text-[8px] text-white">👥</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                          <h4 class="font-bold text-xs text-slate-900 group-hover:text-emerald-700 transition-colors truncate">Cond. Bosque Imperial [Comunicados]</h4>
+                          <span id="time-group3" class="text-[10px] text-slate-400 font-medium shrink-0">Terça</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <p id="snippet-group3" class="text-[11px] text-slate-500 truncate">
+                            Conselho: Novo regulamento da piscina disponível...
+                          </p>
+                          <span id="badge-group3" class="hidden w-5 h-5 rounded-full bg-[#25d366] text-white text-[10px] font-bold flex items-center justify-center shrink-0 shadow-sm animate-pulse">1</span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- WhatsApp Bottom Navigation Bar -->
+                  <div class="bg-[#f0f2f5] border-t border-slate-200 py-1.5 px-6 flex items-center justify-around text-slate-500 text-[10px] font-medium shrink-0">
+                    <button class="flex flex-col items-center text-emerald-700 font-bold">
+                      <span class="text-base">💬</span>
+                      <span>Conversas</span>
+                    </button>
+                    <button class="flex flex-col items-center hover:text-slate-800">
+                      <span class="text-base">⭕</span>
+                      <span>Atualizações</span>
+                    </button>
+                    <button class="flex flex-col items-center hover:text-slate-800">
+                      <span class="text-base">👥</span>
+                      <span>Comunidades</span>
+                    </button>
+                    <button class="flex flex-col items-center hover:text-slate-800">
+                      <span class="text-base">📞</span>
+                      <span>Chamadas</span>
+                    </button>
+                  </div>
+
+                </div>
+
+                <!-- VIEW 2: CHAT ATIVO (CONVERSA ABERTA) -->
+                <div id="viewChat" class="hidden flex-1 flex flex-col bg-[#efeae2] overflow-hidden relative">
+                  
+                  <!-- WhatsApp Top Header -->
+                  <div class="bg-[#005d4b] px-3 py-2 flex items-center justify-between text-white shrink-0 shadow-md border-b border-emerald-900/30 z-10">
+                    <div class="flex items-center gap-2">
+                      <button onclick="showChatList()" class="text-white hover:text-emerald-200 flex items-center gap-0.5 p-1 rounded-lg hover:bg-white/10 transition-colors" title="Voltar para todas as conversas">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                        <span id="backBadge" class="hidden w-4 h-4 rounded-full bg-emerald-400 text-slate-950 text-[9px] font-extrabold flex items-center justify-center">3</span>
+                      </button>
+                      
+                      <!-- Avatar -->
+                      <div class="relative">
+                        <div id="headerAvatar" class="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-50 text-slate-800 font-extrabold flex items-center justify-center text-sm shadow">
+                          🏢
+                        </div>
+                        <span id="headerOnlineDot" class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#005d4b]"></span>
+                      </div>
+                      
+                      <div class="min-w-0 max-w-[170px]">
+                        <div class="flex items-center gap-1">
+                          <h4 id="headerTitle" class="font-bold text-xs leading-tight text-white truncate">Administradora Modelo</h4>
+                          <!-- Verified Badge -->
+                          <svg id="headerVerified" class="w-3.5 h-3.5 text-emerald-300 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        </div>
+                        <p id="headerSubtitle" class="text-[10px] text-emerald-200 truncate">Conta Comercial Oficial • online</p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 text-emerald-100 text-sm">
+                      <button title="Chamada">📞</button>
+                      <button onclick="showChatList()" title="Todas as Conversas" class="text-[11px] bg-emerald-700/60 hover:bg-emerald-600 px-2 py-1 rounded text-white font-medium">Chats</button>
+                    </div>
+                  </div>
+
+                  <!-- Chat Messages Scroll Area -->
+                  <div id="chatHistory" class="flex-1 p-3 overflow-y-auto space-y-3 custom-scrollbar chat-pattern text-slate-800 text-xs">
+                    <!-- Messages injected dynamically via JS -->
+                  </div>
+
+                  <!-- Typing Pulse Indicator -->
+                  <div id="typingIndicator" class="hidden px-4 py-1.5 bg-[#efeae2]/95 text-[11px] text-slate-600 flex items-center gap-2 border-t border-slate-200/50">
+                    <div class="flex gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce"></span>
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style="animation-delay: 0.2s"></span>
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce" style="animation-delay: 0.4s"></span>
+                    </div>
+                    <span id="typingLabel" class="italic text-[10px]">Administradora está digitando...</span>
+                  </div>
+
+                  <!-- WhatsApp Bottom Input Bar -->
+                  <div id="chatBottomBar" class="p-2 bg-[#f0f2f5] border-t border-slate-300 flex items-center gap-2 shrink-0">
+                    <button class="text-slate-500 hover:text-slate-700 text-lg px-1">😊</button>
+                    <button onclick="simulatePhotoTicket()" class="text-slate-500 hover:text-slate-700 text-lg px-1" title="Anexar Foto">📎</button>
+                    <input 
+                      type="text" 
+                      id="chatInput" 
+                      placeholder="Mensagem" 
+                      class="flex-1 bg-white rounded-full px-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none border border-slate-300 shadow-sm"
+                      onkeydown="if(event.key === 'Enter') handleUserInput()"
+                    >
+                    <button 
+                      onclick="handleUserInput()" 
+                      class="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center transition-colors shadow-md shrink-0">
+                      <svg class="w-4 h-4 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                      </svg>
+                    </button>
+                  </div>
+
+                </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section: Diferenciais Exclusivos -->
+  <section id="diferenciais" class="py-20 md:py-28 relative z-10 border-b border-slate-800/80 bg-slate-900/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Tecnologia Superior
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mt-4 tracking-tight">
+          Diferenciais Exclusivos do Nosso Sistema
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base mt-3 leading-relaxed">
+          Projetado especialmente para os desafios reais de administradoras de condomínios que buscam excelência operacional e redução de custos.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        
+        <!-- Card 1 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-emerald-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            ⚡
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">Segunda Via em 3 Segundos</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Entrega imediata com linha digitável clicável, chave Pix Copia e Cola dinâmica e arquivo PDF oficial do boleto gerado diretamente pelo seu ERP.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-teal-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            📢
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-teal-300 transition-colors">Disparo de Avisos em Grupos</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Envie comunicados de manutenção, falta d'água e convocações de assembleia simultaneamente para os grupos oficiais de WhatsApp de todos os prédios.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-purple-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            🎙️
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-purple-300 transition-colors">Transcrição de Áudios por IA</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Condôminos que preferem mandar mensagens de voz são compreendidos automaticamente por IA, que transcreve e resolve o pedido sem intervenção humana.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-blue-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            🏢
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-blue-300 transition-colors">Múltiplas Unidades & Investidores</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Identifica quando o proprietário possui mais de um imóvel ou vagas extras de garagem e apresenta um seletor rápido para emissão de cada cota.
+          </p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-rose-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            ⚖️
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-rose-300 transition-colors">Trava de Inadimplência Crítica</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Bloqueio automático para unidades em cobrança judicial ou acordos quebrados, direcionando o morador com mensagem personalizada para o setor jurídico.
+          </p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="glass-card p-7 rounded-3xl border border-slate-800 hover:border-amber-500/40 transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-xl mb-5 group-hover:scale-110 transition-transform">
+            🔄
+          </div>
+          <h3 class="text-base font-bold text-white group-hover:text-amber-300 transition-colors">Transbordo Sem Fricção</h3>
+          <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+            Se o morador mudar de ideia ou solicitar atendimento humano a qualquer momento, o robô interrompe o fluxo e transfere com todo o histórico intacto.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 2: Calculadora de Retorno sobre Investimento (ROI) -->
+  <section id="roi" class="py-20 md:py-28 relative z-10 bg-slate-950/80 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Estudo de Viabilidade Financeira
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mt-4 tracking-tight">
+          Quanto a Sua Administradora Economiza?
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base mt-3 leading-relaxed">
+          Arraste o slider abaixo para calcular a economia líquida direta ao substituir o processo manual repetitivo pelo autoatendimento inteligente.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
+        
+        <!-- Controls Column -->
+        <div class="lg:col-span-6 glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xl space-y-6">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <label class="text-xs font-semibold text-slate-300">Custo Salarial Mensal da Equipe Dedicada:</label>
+              <span id="labelSalario" class="text-lg font-extrabold text-emerald-400 font-mono">R$ 4.000,00</span>
+            </div>
+            
+            <input 
+              type="range" 
+              id="sliderSalario" 
+              min="2000" 
+              max="15000" 
+              step="500" 
+              value="4000" 
+              class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              oninput="updateRoiCalculation()"
+            >
+            
+            <div class="flex justify-between text-[11px] text-slate-500 mt-2 font-mono">
+              <span>R$ 2.000</span>
+              <span class="text-slate-400">R$ 4.000 (Atual)</span>
+              <span>R$ 15.000+</span>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3 text-xs">
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Custo Real da Operação (CLT + Encargos ~1.65x):</span>
+              <strong id="custoRealClt" class="text-slate-200 font-mono text-sm">R$ 6.600,00 / mês</strong>
+            </div>
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Custo Anual da Operação Manual:</span>
+              <strong id="custoAnualManual" class="text-rose-400 font-mono text-sm">R$ 79.200,00 / ano</strong>
+            </div>
+            <div class="flex justify-between items-center text-slate-400 border-t border-slate-800 pt-2.5">
+              <span>Janela de Atendimento Manual:</span>
+              <strong class="text-amber-400">Apenas 44h / semana</strong>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-500 italic">
+            * O cálculo inclui FGTS, INSS patronal, provisão de férias, 13º salário e benefícios da operação manual.
+          </p>
+        </div>
+
+        <!-- Profit & Highlights Column -->
+        <div class="lg:col-span-6 bg-gradient-to-br from-emerald-950/60 via-slate-900 to-[#0c1424] p-8 rounded-3xl border border-emerald-500/40 shadow-glow space-y-6 relative overflow-hidden">
+          <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl"></div>
+
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <span>💰</span> Economia Anual Estimada no seu Caixa
+            </span>
+            <div id="economiaAnual" class="text-4xl sm:text-6xl font-extrabold text-white mt-2 tracking-tight font-mono text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">
+              R$ 61.200,00
+            </div>
+            <p class="text-xs text-slate-300 mt-2">
+              Dinheiro que deixa de ser gasto em rotinas manuais e vai direto para a margem de lucro da sua administradora.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3.5 pt-4 border-t border-slate-800">
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold block">Velocidade de Envio</span>
+              <strong class="text-emerald-400 text-xs sm:text-sm">De 35 min ➔ 3 seg</strong>
+            </div>
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold block">Disponibilidade</span>
+              <strong class="text-emerald-400 text-xs sm:text-sm">24h x 7d (168h/sem)</strong>
+            </div>
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold block">Fila nos Vencimentos</span>
+              <strong class="text-emerald-400 text-xs sm:text-sm">Zero Fila de Espera</strong>
+            </div>
+            <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold block">Satisfação Síndicos</span>
+              <strong class="text-emerald-400 text-xs sm:text-sm">Atendimento Imediato</strong>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 3: Solução Chave na Mão (Turnkey - Sem Esforço Técnico) -->
+  <section id="como-funciona" class="py-20 md:py-28 relative z-10 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Implementação 100% Gerenciada
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mt-4 tracking-tight">
+          Solução Chave na Mão: Cuidamos de Tudo
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base mt-3 leading-relaxed">
+          Você não precisa programar, configurar servidores ou entender de tecnologia. Nossa equipe entrega a solução pronta, conectada ao seu ERP e rodando no seu número oficial.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 relative hover:border-emerald-500/40 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+            🔌
+          </div>
+          <h3 class="text-lg font-bold text-white">1. Integração com o seu ERP</h3>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Fazemos a homologação técnica com o software de condomínios que você já utiliza (Superlógica, Ahreas, Group, Condomob ou outro), puxando os dados financeiros de forma automática.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 relative hover:border-teal-500/40 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+            ⚡
+          </div>
+          <h3 class="text-lg font-bold text-white">2. Ativação Rápida no WhatsApp</h3>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            O morador continua falando no mesmo número que já conhece. O sistema é ativado sem interrupções e com mensagens personalizadas com o nome da sua administradora.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 relative hover:border-blue-500/40 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-2xl mb-6 shadow-inner">
+            🛡️
+          </div>
+          <h3 class="text-lg font-bold text-white">3. Suporte Contínuo & LGPD</h3>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Cuidamos da estabilidade, backups e segurança da informação em conformidade com a LGPD, além de treinamento completo para os seus atendentes assumirem chamados complexos.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Banner de Fechamento -->
+      <div class="relative bg-gradient-to-r from-emerald-950/80 via-slate-900 to-teal-950/70 rounded-3xl p-8 sm:p-12 border border-emerald-500/40 text-center max-w-4xl mx-auto shadow-glow">
+        <h3 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Pronto para modernizar sua administradora?
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-300 mt-4 max-w-xl mx-auto leading-relaxed">
+          Economize milhares de reais todo mês, valorize a imagem da sua empresa junto aos síndicos e tenha a tecnologia mais elogiada do mercado condominial.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="#simulador" class="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition-all shadow-lg shadow-emerald-500/30 transform hover:-translate-y-0.5">
+            Testar Simulador no WhatsApp Acima 👆
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 4: Questionário de Integração ERP -->
+  <section id="questionario" class="py-20 md:py-28 relative z-10 bg-slate-950/80 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            Documentação de Homologação
+          </span>
+          <h2 class="text-2xl md:text-4xl font-extrabold text-white mt-3 tracking-tight">
+            Questionário Técnico para o Fornecedor do ERP
+          </h2>
+          <p class="text-slate-400 text-xs sm:text-sm mt-2 max-w-2xl">
+            Basta copiar o questionário abaixo e encaminhar ao suporte técnico do seu sistema de gestão para liberar as credenciais de API.
+          </p>
+        </div>
+        <button 
+          onclick="copyQuestionnaire()" 
+          id="btnCopyQuest" 
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-lg shadow-emerald-600/30 shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          Copiar Questionário Completo
+        </button>
+      </div>
+
+      <div class="bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed shadow-xl custom-scrollbar" style="max-height: 400px;">
+        <pre id="questionnaireContent" class="whitespace-pre-wrap">
+# 📋 Questionário Técnico de Integração para a Empresa do ERP
+
+Prezado(a) responsável técnico(a),
+
+Estamos integrando a Central Inteligente de Autoatendimento WhatsApp para a nossa administradora de condomínios.
+Para homologarmos a comunicação via API com seu sistema, precisamos das seguintes definições técnicas:
+
+---
+
+1. DISPONIBILIDADE E DOCUMENTAÇÃO DA API
+- O sistema possui API REST (ou Web Services) disponível para integração externa?
+- Onde podemos acessar a documentação técnica dos endpoints (Swagger, Postman Collection ou portal)?
+- A administradora já possui acesso liberado a essa API no plano contratado, ou é necessária a contratação de algum módulo adicional?
+
+2. AUTENTICAÇÃO E CREDENCIAIS
+- Qual é o método de autenticação utilizado pela API?
+  [ ] Chave de API estática (x-api-key ou token)
+  [ ] OAuth 2.0 (Client ID / Client Secret / Bearer Token)
+  [ ] Usuário e Senha com geração de token de sessão
+- Como é feito o isolamento por condomínio? (Token único ou individual?)
+
+3. CONSULTA DE MORADORES E UNIDADES (LGPD)
+- Existe endpoint para buscar titular/morador pelo CPF/CNPJ?
+- O retorno informa a lista de condomínios, blocos e unidades vinculadas a esse CPF?
+- É possível obter o número de telefone celular cadastrado para conferência de segurança?
+
+4. MÓDULO FINANCEIRO: EMISSÃO DE BOLETOS E PIX (PRIORITÁRIO)
+- Existe endpoint para consultar os boletos em aberto (a vencer e vencidos) de uma unidade ou morador?
+- Quando o boleto está vencido, a API permite gerar 2ª via atualizada com recálculo automático de juros e multa?
+- O que a API retorna na consulta do boleto?
+  [ ] Linha digitável / Código de barras (texto para copiar e colar)
+  [ ] Código Pix Copia e Cola (chave dinâmica / payload EMV)
+  [ ] Link direto do PDF ou arquivo em Base64 para envio no WhatsApp
+  [ ] Data de vencimento e valor original/atualizado
+
+5. OUTROS RECURSOS (RESERVAS E OCORRÊNCIAS)
+- Existe endpoint para consultar disponibilidade de áreas comuns (salão de festas, churrasqueira) e realizar agendamentos?
+- Existe endpoint para abertura de ocorrências/chamados de moradores (com envio de texto e fotos anexas)?
+
+6. AMBIENTE DE TESTES (SANDBOX) E RATE LIMIT
+- É fornecido um ambiente de testes (Sandbox / Homologação) com dados fictícios?
+- Há limite de requisições por minuto/hora (Rate Limit)?
+        </pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 5: Perguntas Frequentes & Quebra de Objeções -->
+  <section class="py-20 md:py-24 relative z-10 border-b border-slate-800/80">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          Tire Suas Dúvidas
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-3 tracking-tight">
+          Perguntas Frequentes de Gestores de Condomínio
+        </h2>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Q1 -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-emerald-400">❓</span> Existe algum risco de banimento do WhatsApp da administradora?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-2.5 leading-relaxed">
+            <strong>Não há risco.</strong> O sistema funciona estritamente no modelo receptivo (<em>inbound</em>), ou seja, é o morador quem entra em contato com o condomínio para solicitar o serviço. As políticas da Meta penalizam envio de spam e mensagens em massa não solicitadas, mas estimulam e priorizam canais de atendimento e autoatendimento ao consumidor.
+          </p>
+        </div>
+
+        <!-- Q2 -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-emerald-400">❓</span> E se o morador estiver com várias cotas atrasadas ou em cobrança jurídica?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-2.5 leading-relaxed">
+            O robô possui uma <strong>trava inteligente de inadimplência</strong>. Se o morador possuir mais de 2 cotas em aberto ou estiver com status de "Cobrança Jurídica" no seu ERP, o sistema bloqueia a emissão automática do boleto comum e transfere o atendimento diretamente para o setor de acordos/jurídico da sua administradora, evitando que ele pague apenas o mês atual e ignore a dívida antiga.
+          </p>
+        </div>
+
+        <!-- Q3 -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-emerald-400">❓</span> Como o robô atende moradores que possuem mais de uma unidade ou vaga de garagem?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-2.5 leading-relaxed">
+            Ao digitar o CPF, o sistema lista automaticamente todas as unidades vinculadas àquele proprietário (ex: <em>Apt 101, Apt 404 ou Vaga 12</em>) em um menu interativo, permitindo que ele escolha com 1 clique de qual unidade deseja emitir a cota condominial.
+          </p>
+        </div>
+
+        <!-- Q4 -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="text-emerald-400">❓</span> Podemos fazer um período de teste/piloto na nossa carteira?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 mt-2.5 leading-relaxed">
+            <strong>Com certeza.</strong> Recomendamos iniciar com um piloto de 15 dias em 2 ou 3 condomínios selecionados da sua carteira. Dessa forma, você e os síndicos validam a satisfação dos moradores e o alívio imediato na sua equipe antes de estender para os demais prédios.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 bg-slate-950 border-t border-slate-800 text-xs text-slate-500 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-300">CondoBot Enterprise</span> • Autoatendimento Inteligente para Administradoras de Condomínios
+      </div>
+      <p>© 2026 Todos os direitos reservados • Sistema Homologado</p>
+    </div>
+  </footer>
+
+  <!-- Modal do Boleto PDF Demonstrativo -->
+  <div id="pdfModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white text-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative animate-scale">
+      <div class="flex justify-between items-center border-b pb-4 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📄</span>
+          <h4 class="font-bold text-sm text-slate-900">Boleto Cota Condominial - 11/2026</h4>
+        </div>
+        <button onclick="closePdfModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">✕</button>
+      </div>
+      <div class="space-y-3 text-xs border border-dashed border-slate-300 p-5 rounded-2xl bg-slate-50 font-mono">
+        <div class="flex justify-between border-b pb-2">
+          <span><strong>Banco:</strong> 237 - Bradesco S.A.</span>
+          <span><strong>Vencimento:</strong> 15/11/2026</span>
+        </div>
+        <div><strong>Beneficiário:</strong> Condomínio Residencial Jardins do Bosque</div>
+        <div><strong>Pagador:</strong> Carlos Eduardo Silva (CPF: ***.456.789-**)</div>
+        <div><strong>Unidade:</strong> Bloco A - Apartamento 101</div>
+        <div class="flex justify-between border-t pt-2 font-bold text-sm text-emerald-700">
+          <span>Valor a Pagar:</span>
+          <span>R$ 650,00</span>
+        </div>
+        <div class="pt-2 text-[10px] text-slate-500 break-all">
+          <strong>Linha Digitável:</strong> 23793.38128 60000.123456 01000.650004 1 95420000065000
+        </div>
+        <div class="pt-3 text-center text-slate-400 text-xs">
+          [ Código de Barras Registrado ]<br>
+          ||||| | |||| || ||| ||||||| ||| ||||| ||||||
+        </div>
+      </div>
+      <div class="mt-5 flex justify-end gap-2">
+        <button onclick="closePdfModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 glass text-emerald-300 px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold transform translate-y-20 opacity-0 transition-all duration-300 z-50 border border-emerald-500/40 flex items-center gap-2">
+    <span>✓</span> <span id="toastMsg">Copiado com sucesso!</span>
+  </div>
+
+  <!-- JavaScript do Simulador e Interações -->
+  <script>
+    const chatHistory = document.getElementById('chatHistory');
+    const chatInput = document.getElementById('chatInput');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+
+    let currentView = 'home'; // 'home' | 'chat'
+    let activeChatId = 'bot'; // 'bot' | 'group1' | 'group2' | 'group3'
+    let botState = 'INICIO';
+    let soundEnabled = true;
+
+    // Estrutura de dados das conversas (1 privada com o bot + 3 grupos de condomínio)
+    const chatsData = {
+      bot: {
+        id: 'bot',
+        type: 'private',
+        name: 'Administradora Modelo',
+        avatar: '🏢',
+        subtitle: 'Conta Comercial Oficial • online',
+        isVerified: true,
+        isOnline: true,
+        time: '09:41',
+        unreadCount: 0,
+        lastSnippet: 'Segunda via de boleto, Pix e atendimento 24h',
+        messages: []
+      },
+      group1: {
+        id: 'group1',
+        type: 'group',
+        name: 'Res. Jardins do Bosque [Oficial]',
+        condoName: 'Residencial Jardins do Bosque',
+        avatar: '🌿',
+        subtitle: '142 participantes • Você e outros',
+        isVerified: false,
+        isOnline: false,
+        time: '09:30',
+        unreadCount: 0,
+        lastSnippet: 'Síndico Roberto: Reunião na próxima terça às 19h...',
+        messages: []
+      },
+      group2: {
+        id: 'group2',
+        type: 'group',
+        name: 'Cond. Edifício Mar Azul [Avisos]',
+        condoName: 'Condomínio Edifício Mar Azul',
+        avatar: '🌊',
+        subtitle: '98 participantes • Você e outros',
+        isVerified: false,
+        isOnline: false,
+        time: 'Ontem',
+        unreadCount: 0,
+        lastSnippet: 'Zelador: Portão consertado com sucesso...',
+        messages: []
+      },
+      group3: {
+        id: 'group3',
+        type: 'group',
+        name: 'Cond. Bosque Imperial [Comunicados]',
+        condoName: 'Condomínio Bosque Imperial',
+        avatar: '🌳',
+        subtitle: '210 participantes • Você e outros',
+        isVerified: false,
+        isOnline: false,
+        time: 'Terça',
+        unreadCount: 0,
+        lastSnippet: 'Conselho: Novo regulamento da piscina disponível...',
+        messages: []
+      }
+    };
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('btnSoundToggle');
+      if (soundEnabled) {
+        btn.innerHTML = '<span>🔊</span> Som: Ativo';
+        btn.className = 'px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center gap-1.5 font-medium transition-colors';
+        playPopSound(false);
+      } else {
+        btn.innerHTML = '<span>🔇</span> Som: Mudo';
+        btn.className = 'px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 border border-slate-700 flex items-center gap-1.5 font-medium transition-colors';
+      }
+    }
+
+    function playPopSound(isUser = false) {
+      if (!soundEnabled) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        if (isUser) {
+          osc.frequency.setValueAtTime(520, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(780, ctx.currentTime + 0.07);
+        } else {
+          osc.frequency.setValueAtTime(660, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
+        }
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2800);
+    }
+
+    function updateGroupListItem(gId, snippet, timeStr, hasUnread) {
+      const snipEl = document.getElementById(`snippet-${gId}`);
+      if (snipEl) snipEl.innerHTML = snippet;
+      const tEl = document.getElementById(`time-${gId}`);
+      if (tEl) tEl.textContent = timeStr;
+      const bEl = document.getElementById(`badge-${gId}`);
+      if (bEl) {
+        if (hasUnread) {
+          bEl.classList.remove('hidden');
+          bEl.textContent = '1';
+        } else {
+          bEl.classList.add('hidden');
+        }
+      }
+      const pillDot = document.getElementById(`pill${gId.charAt(0).toUpperCase() + gId.slice(1)}Badge`);
+      if (pillDot) {
+        if (hasUnread) pillDot.classList.remove('hidden');
+        else pillDot.classList.add('hidden');
+      }
+    }
+
+    function updateTotalBadges() {
+      const totalUnread = (chatsData.group1.unreadCount || 0) + (chatsData.group2.unreadCount || 0) + (chatsData.group3.unreadCount || 0) + (chatsData.bot.unreadCount || 0);
+      
+      const homeTotalBadge = document.getElementById('homeTotalBadge');
+      if (homeTotalBadge) {
+        if (totalUnread > 0) {
+          homeTotalBadge.textContent = totalUnread;
+          homeTotalBadge.classList.remove('hidden');
+        } else {
+          homeTotalBadge.classList.add('hidden');
+        }
+      }
+
+      const backBadge = document.getElementById('backBadge');
+      if (backBadge) {
+        if (totalUnread > 0) {
+          backBadge.textContent = totalUnread;
+          backBadge.classList.remove('hidden');
+        } else {
+          backBadge.classList.add('hidden');
+        }
+      }
+
+      const pillUnreadHome = document.getElementById('pillUnreadHome');
+      if (pillUnreadHome) {
+        if (totalUnread > 0) {
+          pillUnreadHome.textContent = totalUnread;
+          pillUnreadHome.classList.remove('hidden');
+        } else {
+          pillUnreadHome.classList.add('hidden');
+        }
+      }
+    }
+
+    function updatePillNav() {
+      const pillBtnHome = document.getElementById('pillBtnHome');
+      const pillBtnBot = document.getElementById('pillBtnBot');
+      const pillBtnGroup1 = document.getElementById('pillBtnGroup1');
+      const pillBtnGroup2 = document.getElementById('pillBtnGroup2');
+      const pillBtnGroup3 = document.getElementById('pillBtnGroup3');
+
+      const inactivePill = 'px-2 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px]';
+      const activePill = 'px-2 py-1.5 rounded-xl font-bold bg-emerald-500 text-slate-950 shadow transition-all flex items-center gap-1 text-[11px]';
+
+      if (pillBtnHome) {
+        pillBtnHome.className = (currentView === 'home') 
+          ? 'px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow text-xs' 
+          : 'px-3 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1.5 text-xs';
+      }
+
+      if (pillBtnBot) {
+        pillBtnBot.className = (currentView === 'chat' && activeChatId === 'bot')
+          ? 'px-2.5 py-1.5 rounded-xl font-bold bg-emerald-500 text-slate-950 shadow transition-all flex items-center gap-1 text-xs'
+          : 'px-2.5 py-1.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1 text-xs';
+      }
+
+      if (pillBtnGroup1) pillBtnGroup1.className = (currentView === 'chat' && activeChatId === 'group1') ? activePill : inactivePill;
+      if (pillBtnGroup2) pillBtnGroup2.className = (currentView === 'chat' && activeChatId === 'group2') ? activePill : inactivePill;
+      if (pillBtnGroup3) pillBtnGroup3.className = (currentView === 'chat' && activeChatId === 'group3') ? activePill : inactivePill;
+    }
+
+    function showChatList() {
+      currentView = 'home';
+      document.getElementById('viewHome').classList.remove('hidden');
+      document.getElementById('viewChat').classList.add('hidden');
+      updatePillNav();
+      updateTotalBadges();
+    }
+
+    function openChat(chatId) {
+      currentView = 'chat';
+      activeChatId = chatId;
+      const data = chatsData[chatId];
+      if (!data) return;
+
+      // Zera contador de não lidas deste chat ao abrir
+      data.unreadCount = 0;
+      updateGroupListItem(chatId, data.lastSnippet || '', data.time || '09:41', false);
+      updateTotalBadges();
+
+      // Configura cabeçalho da conversa
+      document.getElementById('headerAvatar').textContent = data.avatar;
+      document.getElementById('headerTitle').textContent = data.name;
+      document.getElementById('headerSubtitle').textContent = data.subtitle;
+
+      const headerVerified = document.getElementById('headerVerified');
+      if (headerVerified) {
+        if (data.isVerified) headerVerified.classList.remove('hidden');
+        else headerVerified.classList.add('hidden');
+      }
+
+      const headerOnlineDot = document.getElementById('headerOnlineDot');
+      if (headerOnlineDot) {
+        if (data.isOnline) headerOnlineDot.classList.remove('hidden');
+        else headerOnlineDot.classList.add('hidden');
+      }
+
+      // Renderiza as mensagens acumuladas desta conversa
+      renderChatMessages(chatId);
+
+      document.getElementById('viewHome').classList.add('hidden');
+      document.getElementById('viewChat').classList.remove('hidden');
+      updatePillNav();
+    }
+
+    function renderChatMessages(chatId) {
+      chatHistory.innerHTML = '';
+      const list = chatsData[chatId]?.messages || [];
+
+      list.forEach(item => {
+        if (item.isSystem) {
+          const sysDiv = document.createElement('div');
+          sysDiv.className = 'flex justify-center my-1';
+          sysDiv.innerHTML = `<span class="bg-[#e1f3fb] text-[#1f4a5c] text-[10px] px-2.5 py-1 rounded-lg text-center shadow-xs border border-sky-100 max-w-[90%] leading-tight">${item.text}</span>`;
+          chatHistory.appendChild(sysDiv);
+          return;
+        }
+
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `flex ${item.isUser ? 'justify-end' : 'justify-start'}`;
+
+        const bubble = document.createElement('div');
+        bubble.className = `max-w-[85%] rounded-2xl p-3 shadow-sm text-xs leading-relaxed ${
+          item.isUser 
+            ? 'bg-[#d9fdd3] text-slate-900 rounded-tr-none' 
+            : 'bg-white text-slate-900 rounded-tl-none border border-slate-100'
+        }`;
+
+        if (item.senderName && !item.isUser && chatId !== 'bot') {
+          const senderEl = document.createElement('div');
+          senderEl.className = 'text-[10px] font-bold text-emerald-800 mb-1 flex items-center gap-1';
+          senderEl.innerHTML = `<span>👤</span> ${item.senderName}`;
+          bubble.appendChild(senderEl);
+        }
+
+        const contentEl = document.createElement('div');
+        if (item.isHtml) {
+          contentEl.innerHTML = item.text;
+        } else {
+          contentEl.innerText = item.text;
+        }
+        bubble.appendChild(contentEl);
+
+        const timeSpan = document.createElement('div');
+        timeSpan.className = 'text-[10px] text-slate-400 mt-1 flex items-center justify-end gap-1 font-mono';
+        timeSpan.innerHTML = `${item.timeStr || '09:41'} ${item.isUser ? '<span class="text-[#53bdeb]">✓✓</span>' : ''}`;
+        bubble.appendChild(timeSpan);
+
+        msgDiv.appendChild(bubble);
+        chatHistory.appendChild(msgDiv);
+      });
+
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    function addChatMessage(chatId, text, isUser = false, isHtml = false, senderName = '') {
+      playPopSound(isUser);
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      const msgObj = { text, isUser, isHtml, senderName, timeStr };
+      if (!chatsData[chatId]) return;
+      chatsData[chatId].messages.push(msgObj);
+      chatsData[chatId].time = timeStr;
+
+      if (currentView === 'chat' && activeChatId === chatId) {
+        renderChatMessages(chatId);
+      } else {
+        chatsData[chatId].unreadCount = (chatsData[chatId].unreadCount || 0) + 1;
+        const cleanPreview = isHtml ? text.replace(/<[^>]*>?/gm, '').slice(0, 35) + '...' : text.slice(0, 35) + '...';
+        chatsData[chatId].lastSnippet = cleanPreview;
+        updateGroupListItem(chatId, cleanPreview, timeStr, true);
+        updateTotalBadges();
+      }
+    }
+
+    // Função de compatibilidade com os testes do painel esquerdo
+    function addMessage(text, isUser = false, isHtml = false) {
+      if (currentView !== 'chat' || activeChatId !== 'bot') {
+        openChat('bot');
+      }
+      addChatMessage('bot', text, isUser, isHtml, isUser ? 'Você' : 'Administradora Modelo');
+    }
+
+    function setTyping(active) {
+      if (active) {
+        typingIndicator.classList.remove('hidden');
+      } else {
+        typingIndicator.classList.add('hidden');
+      }
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    function sendQuickMessage(text) {
+      if (currentView !== 'chat' || activeChatId !== 'bot') {
+        openChat('bot');
+      }
+      chatInput.value = text;
+      handleUserInput();
+    }
+
+    function handleUserInput() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      chatInput.value = '';
+
+      if (activeChatId === 'bot') {
+        addMessage(text, true);
+        setTyping(true);
+
+        setTimeout(() => {
+          processBotLogic(text);
+          setTyping(false);
+        }, 650);
+      } else {
+        // Morador enviou mensagem dentro do grupo de condomínio
+        addChatMessage(activeChatId, text, true, false, 'Você');
+        const lower = text.toLowerCase();
+
+        // Se pedir boleto no grupo, o sistema protege os dados (LGPD) e direciona pro privado!
+        if (['boleto', 'pix', 'segunda via', 'pagar', 'cota', 'mensalidade', 'recibo'].some(k => lower.includes(k))) {
+          setTyping(true);
+          setTimeout(() => {
+            setTyping(false);
+            const lgpdHtml = `
+              <div class="space-y-1.5 p-1">
+                <div class="flex items-center gap-1.5 text-amber-800 font-bold text-xs">
+                  <span>🔒</span> Proteção de Dados (LGPD)
+                </div>
+                <div class="text-[11px] text-slate-800 leading-tight">
+                  Por segurança e sigilo bancário, <strong>não enviamos boletos em grupos públicos</strong>.
+                </div>
+                <div class="pt-1">
+                  <button onclick="openChat('bot'); sendQuickMessage('Quero a 2ª via do boleto deste mês')" class="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                    <span>🏢</span> Abrir Chat Privado do Bot (2ª Via em 3s)
+                  </button>
+                </div>
+              </div>
+            `;
+            addChatMessage(activeChatId, lgpdHtml, false, true, 'Administradora Modelo');
+          }, 600);
+        } else {
+          setTyping(true);
+          setTimeout(() => {
+            setTyping(false);
+            addChatMessage(activeChatId, 'Mensagem recebida pela administração do condomínio! 👍', false, false, 'Síndico');
+          }, 700);
+        }
+      }
+    }
+
+    function processBotLogic(userText) {
+      const lower = userText.toLowerCase();
+
+      // Reset / Menu
+      if (['menu', 'inicio', 'voltar', 'olá', 'ola', 'oi'].includes(lower) && botState !== 'INICIO') {
+        botState = 'MENU_PRINCIPAL';
+        sendMenu();
+        return;
+      }
+
+      // 1. Cobrança & Boleto / Pix
+      if (lower === '1' || lower.includes('boleto') || lower.includes('pix') || lower.includes('pagar') || lower.includes('segunda via')) {
+        botState = 'AGUARDANDO_CPF';
+        addMessage(`📄 Por favor, informe o seu <strong>CPF</strong> para localizarmos as cotas condominiais no sistema predial:`, false, true);
+        return;
+      }
+
+      // 2. Acordo & Parcelamento de Dívidas
+      if (lower === '2' || lower.includes('acordo') || lower.includes('parcelar') || lower.includes('parcelamento') || lower.includes('divida') || lower.includes('dívida')) {
+        const acordoHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-indigo-900 text-xs flex items-center gap-1">
+              <span>🤝</span> Simulador de Acordo Autônomo DOMUS AI
+            </div>
+            <p class="text-[11px] text-slate-700">Débito consolidado para a unidade <strong>Apt 101 - Bloco A</strong>: <strong>R$ 1.350,00</strong></p>
+            <div class="space-y-1.5 text-[11px] pt-1">
+              <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 flex justify-between items-center">
+                <span>🔥 <strong>1x à Vista</strong> (10% de desconto nos juros):</span>
+                <strong class="text-emerald-700">R$ 1.215,00</strong>
+              </div>
+              <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center">
+                <span><strong>3x sem juros</strong> de:</span>
+                <strong class="text-slate-800">R$ 450,00 / mês</strong>
+              </div>
+              <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center">
+                <span><strong>6x</strong> de:</span>
+                <strong class="text-slate-800">R$ 235,00 / mês</strong>
+              </div>
+            </div>
+            <div class="pt-2">
+              <button onclick="addMessage('✅ <strong>Acordo em 3x Formalizado com Sucesso pela IA!</strong><br><br>Hash de Autenticidade: <code>sha256:8f4c2e...</code><br>Termo de Confissão de Dívida assinado digitalmente.<br>Os boletos e chaves Pix das parcelas foram gerados!', false, true)" class="w-full py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-xs font-bold transition-all shadow-md">
+                ✍️ Aceitar Acordo em 3x & Gerar Termo Digital
+              </button>
+            </div>
+            <div class="text-[10px] text-slate-400 italic text-center pt-1">Processamento 100% autônomo sem intermediários.</div>
+          </div>
+        `;
+        addMessage(acordoHtml, false, true);
+        return;
+      }
+
+      // 3. Regimento Interno & Convenção (RAG)
+      if (lower === '3' || lower.includes('mudan') || lower.includes('barulho') || lower.includes('silêncio') || lower.includes('silencio') || lower.includes('regra') || lower.includes('regimento') || lower.includes('reforma') || lower.includes('piscina') || lower.includes('cachorro') || lower.includes('pet')) {
+        const ragHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-sky-900 text-xs flex items-center gap-1">
+              <span>📖</span> Base de Conhecimento RAG • Resposta Oficial
+            </div>
+            <div class="p-2.5 rounded-xl bg-sky-50 border border-sky-200 text-[11px] text-sky-950 leading-relaxed">
+              <strong>*Regimento Interno (Art. 24):*</strong><br>
+              Mudanças e reformas com ruído são permitidas aos sábados das <strong>08h às 12h</strong>, mediante agendamento com 48h de antecedência junto à administração para colocação de mantas protetoras no elevador.<br><br>
+              De segunda a sexta-feira, o horário autorizado é das <strong>08h às 18h</strong>. Aos domingos e feriados, reformas e mudanças são expressamente vedadas.
+            </div>
+            <div class="text-[10px] text-slate-500 italic">Fonte: Regimento Interno 2026 • Embasamento Jurídico Oficial</div>
+          </div>
+        `;
+        addMessage(ragHtml, false, true);
+        return;
+      }
+
+      // 4. Reservas de Áreas Comuns
+      if (lower === '4' || lower.includes('reserva') || lower.includes('churrasqu') || lower.includes('salão') || lower.includes('salao') || lower.includes('festa')) {
+        const reservaHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-emerald-900 text-xs flex items-center gap-1">
+              <span>📅</span> Reserva Confirmada com Sucesso pela IA!
+            </div>
+            <div class="border-t border-b border-slate-200 py-1.5 space-y-0.5 text-[11px] text-slate-700">
+              <div><strong>Espaço:</strong> Espaço Gourmet & Churrasqueira 1</div>
+              <div><strong>Data:</strong> Próximo Sábado (12h às 22h)</div>
+              <div><strong>Unidade:</strong> Bloco A - Apt 101 (Carlos Eduardo Silva)</div>
+              <div><strong>Status no ERP:</strong> <span class="text-emerald-700 font-bold">Unidade Adimplente / Liberado</span></div>
+              <div><strong>Taxa de Limpeza:</strong> R$ 80,00 (lançada no próximo boleto)</div>
+              <div><strong>Protocolo:</strong> <code>#RES-77410-DOMUS</code></div>
+            </div>
+            <p class="text-[10px] text-slate-500">A portaria e a zeladoria já foram notificadas da sua lista de convidados.</p>
+          </div>
+        `;
+        addMessage(reservaHtml, false, true);
+        return;
+      }
+
+      // 5. Portaria, Encomendas & Passes QR Code
+      if (lower === '5' || lower.includes('encomenda') || lower.includes('pacote') || lower.includes('visitante') || lower.includes('convite') || lower.includes('portaria')) {
+        const portariaHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-purple-900 text-xs flex items-center gap-1">
+              <span>📦</span> Portaria Digital DOMUS AI
+            </div>
+            <div class="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-[11px] text-purple-950 space-y-1">
+              <div><strong>Encomenda Recebida:</strong> Pacote Amazon Prime (#AMZ-9932)</div>
+              <div><strong>Chegada:</strong> Hoje às 10:15 por Zelador Marcos (Leitura OCR)</div>
+              <div><strong>Token de Retirada Seguro:</strong> <span class="font-mono font-bold text-purple-700 text-xs">RET-4820</span></div>
+            </div>
+            <div class="pt-1">
+              <button onclick="addMessage('🎟️ <strong>Passe QR Code de Visitante Gerado!</strong><br><br>Visitante: Convidado Autorizado<br>Validade: Próximas 24 horas<br>Token: <code>DOMUS-PASS-9931</code><br>Basta apresentar na portaria para liberação imediata da catraca!', false, true)" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-all">
+                🎟️ Gerar Convite / Passe QR Code para Visitante
+              </button>
+            </div>
+          </div>
+        `;
+        addMessage(portariaHtml, false, true);
+        return;
+      }
+
+      // 6. Votação em Assembleia Virtual
+      if (lower === '6' || lower.includes('assembleia') || lower.includes('votar') || lower.includes('pauta')) {
+        const assembleiaHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-purple-900 text-xs flex items-center gap-1">
+              <span>🗳️</span> Assembleia Virtual Aberta • Votação WhatsApp
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-800 space-y-1">
+              <div><strong>Pauta Deliberativa:</strong> Climatização e Modernização da Academia Predial</div>
+              <div><strong>Investimento Previsto:</strong> R$ 24.000,00 (Fundo de Reserva)</div>
+              <div><strong>Quórum Atual:</strong> 68% dos condôminos</div>
+            </div>
+            <div class="flex gap-1.5 pt-1">
+              <button onclick="addMessage('✅ <strong>Seu voto SIM foi computado com sucesso!</strong><br><br>Unidade: Bloco A - Apt 101<br>Recibo Criptográfico: <code>#VOTO-SIM-7410</code><br>Obrigado pela participação democrática!', false, true)" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold">
+                👍 Votar SIM
+              </button>
+              <button onclick="addMessage('❌ <strong>Seu voto NÃO foi computado com sucesso!</strong><br><br>Unidade: Bloco A - Apt 101<br>Recibo Criptográfico: <code>#VOTO-NAO-7411</code>', false, true)" class="flex-1 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold">
+                👎 Votar NÃO
+              </button>
+              <button onclick="addMessage('⚪ <strong>Sua ABSTENÇÃO foi computada com sucesso!</strong><br><br>Recibo: <code>#VOTO-ABS-7412</code>', false, true)" class="flex-1 py-1.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-xs font-bold">
+                Abster
+              </button>
+            </div>
+          </div>
+        `;
+        addMessage(assembleiaHtml, false, true);
+        return;
+      }
+
+      // 7. Voto direto por texto
+      if (['sim', 'nao', 'não', 'abster', 'abstenção'].includes(lower)) {
+        addMessage(`✅ <strong>Seu voto "${userText.toUpperCase()}" foi computado com sucesso pela IA!</strong><br><br>Unidade: Bloco A - Apt 101<br>Recibo Criptográfico Oficial: <code>#VOTO-${userText.toUpperCase()}-SHA256</code><br>Ata atualizada em tempo real!`, false, true);
+        return;
+      }
+
+      // 8. Ocorrência & Manutenção
+      if (lower === '7' || lower.includes('ocorrencia') || lower.includes('ocorrência') || lower.includes('vazamento') || lower.includes('manuten') || lower.includes('luz') || lower.includes('portao')) {
+        addMessage(`✅ <strong>Ocorrência Registrada com Sucesso pela IA!</strong><br><br>Protocolo: <strong>#MANUT-84920</strong><br>Categoria: Manutenção Predial<br><br>O zelador e o síndico foram notificados em tempo real. A equipe técnica já foi acionada!<br><br>Digite <strong>MENU</strong> para voltar.`, false, true);
+        return;
+      }
+
+      if (botState === 'AGUARDANDO_CPF') {
+        const cleanCpf = userText.replace(/\D/g, '');
+        if (cleanCpf.length !== 11 || /^(\d)\1{10}$/.test(cleanCpf)) {
+          addMessage(`⚠️ <strong>CPF inválido.</strong> Por favor, informe um CPF válido com 11 dígitos para consulta de cota condominial.<br><br><em>(Digite <strong>MENU</strong> para voltar às opções)</em>`, false, true);
+          return;
+        }
+
+        botState = 'MENU_PRINCIPAL';
+        const masked = `***.${cleanCpf.slice(3,6)}.${cleanCpf.slice(6,9)}-**`;
+        
+        const boletoHtml = `
+          <div class="space-y-2">
+            <div class="font-bold text-emerald-800 text-xs flex items-center gap-1">
+              <span>✅</span> Boleto Localizado com Sucesso pela IA!
+            </div>
+            <div class="border-t border-b border-slate-200 py-1.5 space-y-0.5 text-[11px]">
+              <div><strong>Titular:</strong> Carlos Eduardo Silva</div>
+              <div><strong>CPF:</strong> ${masked}</div>
+              <div><strong>Condomínio:</strong> Residencial Jardins do Bosque</div>
+              <div><strong>Unidade:</strong> Bloco A - Apt 101</div>
+              <div><strong>Referência:</strong> 11/2026</div>
+              <div><strong>Vencimento:</strong> 15/11/2026</div>
+              <div><strong>Valor Atualizado:</strong> <span class="text-emerald-700 font-bold text-xs">R$ 650,00</span></div>
+            </div>
+            
+            <div class="pt-1">
+              <span class="text-[10px] text-slate-500 font-semibold block mb-1">Linha Digitável:</span>
+              <div class="p-1.5 bg-slate-100 rounded text-[10px] font-mono break-all text-slate-700">
+                23793.38128 60000.123456 01000.650004 1 95420000065000
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 pt-2">
+              <button onclick="copyToClipboard('23793381286000012345601000650004195420000065000', 'Linha digitável copiada!')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-[10px] font-semibold flex items-center gap-1">
+                📋 Copiar Código
+              </button>
+              <button onclick="copyToClipboard('00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865406650.005802BR5925ADMINISTRADORA6009SAOPAULO62070503***6304E2CA', 'Código Pix Copia e Cola copiado!')" class="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[10px] font-semibold flex items-center gap-1">
+                💰 Copiar Pix
+              </button>
+              <button onclick="openPdfModal()" class="px-2.5 py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded-lg text-[10px] font-semibold flex items-center gap-1">
+                📄 Ver Boleto PDF
+              </button>
+              <button onclick="simulatePixPayment()" class="w-full mt-1 px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md">
+                ⚡ Simular Pagamento Pix Imediato
+              </button>
+            </div>
+            <div class="text-[10px] text-slate-400 pt-1 italic text-center">
+              Digite MENU para voltar a outras opções.
+            </div>
+          </div>
+        `;
+
+        addMessage(boletoHtml, false, true);
+        return;
+      }
+
+      sendMenu();
+    }
+
+    function sendMenu() {
+      const menuHtml = `
+        👋 Olá! Bem-vindo ao <strong>DOMUS AI</strong> — Central de Inteligência Condominial.<br>
+        ⚡ <strong>Piloto Automático 100% Autônomo Ativo: Todas as tarefas são resolvidas sem espera e sem intervenção humana!</strong><br><br>
+        Escolha uma ação rápida abaixo ou digite o número correspondente:
+        <div class="mt-2.5 flex flex-col gap-1.5 pt-2 border-t border-slate-100">
+          <button onclick="sendQuickMessage('1')" class="w-full text-left py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
+            <span>📄 1. 2ª Via de Boleto & Pix Copia e Cola</span>
+            <span class="text-emerald-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('2')" class="w-full text-left py-2 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-semibold rounded-xl text-xs border border-indigo-200 transition-colors flex items-center justify-between">
+            <span>🤝 2. Negociar Acordo de Dívida (Parcelamento SHA-256)</span>
+            <span class="text-indigo-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('3')" class="w-full text-left py-2 px-3 bg-sky-50 hover:bg-sky-100 text-sky-900 font-semibold rounded-xl text-xs border border-sky-200 transition-colors flex items-center justify-between">
+            <span>📖 3. Dúvidas do Regimento Interno (RAG / Convenção)</span>
+            <span class="text-sky-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('4')" class="w-full text-left py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
+            <span>📅 4. Reservar Área Comum (Churrasqueira / Salão)</span>
+            <span class="text-emerald-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('5')" class="w-full text-left py-2 px-3 bg-purple-50 hover:bg-purple-100 text-purple-900 font-semibold rounded-xl text-xs border border-purple-200 transition-colors flex items-center justify-between">
+            <span>📦 5. Encomendas Recebidas & Passes QR Code</span>
+            <span class="text-purple-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('6')" class="w-full text-left py-2 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-semibold rounded-xl text-xs border border-indigo-200 transition-colors flex items-center justify-between">
+            <span>🗳️ 6. Votação em Assembleia Virtual</span>
+            <span class="text-indigo-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('7')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+            <span>🛠️ 7. Registrar Ocorrência / Manutenção</span>
+            <span class="text-slate-400 font-bold">→</span>
+          </button>
+        </div>
+      `;
+      addMessage(menuHtml, false, true);
+    }
+
+    function simulateAudioMessage() {
+      openChat('bot');
+      const audioHtml = `
+        <div class="space-y-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center text-xs shadow">▶</div>
+            <div class="flex-1">
+              <div class="h-1.5 bg-emerald-300 rounded-full w-full overflow-hidden">
+                <div class="bg-emerald-800 h-full w-2/3"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-emerald-900 mt-1 font-mono">
+                <span>0:08</span>
+                <span>Mensagem de Voz</span>
+              </div>
+            </div>
+          </div>
+          <div class="p-2 bg-emerald-100/80 rounded-xl text-[11px] text-emerald-950 border border-emerald-300/60 leading-tight">
+            🤖 <strong>Transcrição Automática (IA):</strong><br>
+            <em>"Boa tarde, sou o Carlos do Bloco A Apt 101, gostaria da 2ª via do boleto do condomínio de novembro, por favor!"</em>
+          </div>
+        </div>
+      `;
+      addMessage(audioHtml, true, true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        addMessage(`🎙️ <strong>Áudio processado pela IA!</strong><br>Olá, Carlos! Localizei sua solicitação de cota condominial para o <strong>Bloco A - Apt 101</strong>:`, false, true);
+        
+        setTimeout(() => {
+          sendQuickMessage('123.456.789-09');
+        }, 400);
+      }, 1000);
+    }
+
+    function simulatePhotoTicket() {
+      openChat('bot');
+      const photoHtml = `
+        <div class="space-y-1.5">
+          <div class="rounded-xl overflow-hidden bg-slate-800 border border-slate-700 p-2 text-center text-slate-300">
+            <div class="w-full h-24 bg-slate-700/80 rounded-lg flex flex-col items-center justify-center text-xs text-slate-300">
+              <span class="text-3xl mb-1">🚰</span>
+              <span>Foto: Vazamento na Garagem</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-900 font-medium">
+            "Vazamento grave no encanamento da garagem do Bloco B, próximo à vaga 14. Está pingando em cima dos carros!"
+          </p>
+        </div>
+      `;
+      addMessage(photoHtml, true, true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        const ticketHtml = `
+          ✅ <strong>Ocorrência Prioritária Registrada!</strong><br><br>
+          📸 <strong>Foto anexada com sucesso</strong><br>
+          📋 <strong>Protocolo:</strong> #MANUT-91823<br>
+          🏢 <strong>Local:</strong> Garagem - Bloco B (Vaga 14)<br>
+          🚨 <strong>Status:</strong> Notificação automática enviada via WhatsApp para o zelador e síndico.<br><br>
+          <em>Obrigado por avisar a administração!</em>
+        `;
+        addMessage(ticketHtml, false, true);
+      }, 1000);
+    }
+
+    function simulatePixPayment() {
+      openChat('bot');
+      showToast('Processando pagamento Pix...');
+      setTyping(true);
+
+      try {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      } catch(e) {}
+
+      setTimeout(() => {
+        setTyping(false);
+        const confirmHtml = `
+          <div class="space-y-2 p-1">
+            <div class="flex items-center gap-2 text-emerald-800 font-extrabold text-xs">
+              <span class="text-lg">🎉</span> PAGAMENTO PIX CONFIRMADO!
+            </div>
+            <div class="border-t border-b border-emerald-200 py-2 space-y-1 text-[11px] text-emerald-950">
+              <div><strong>Valor Pago:</strong> R$ 650,00</div>
+              <div><strong>Data / Hora:</strong> Hoje às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</div>
+              <div><strong>Comprovante:</strong> #PIX-${Math.floor(100000 + Math.random() * 900000)}</div>
+              <div><strong>Status no ERP:</strong> <span class="bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded font-bold">QUITADO (Baixa Automática)</span></div>
+            </div>
+            <div class="text-[10px] text-emerald-800 font-semibold">
+              ✓ Comprovante autenticado. A baixa financeira foi realizada automaticamente no ERP!
+            </div>
+          </div>
+        `;
+        addMessage(confirmHtml, false, true);
+      }, 700);
+    }
+
+    function simulateMultipleUnits() {
+      openChat('bot');
+      addMessage('Olá! Gostaria de consultar meus boletos.', true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        const multiHtml = `
+          👋 Olá, <strong>Roberto Guimarães</strong>!<br><br>
+          Identifiquei <strong>3 unidades ativas</strong> vinculadas ao seu CPF.<br>
+          De qual imóvel você deseja emitir o boleto?
+          <div class="mt-2.5 flex flex-col gap-1.5 pt-2 border-t border-slate-100">
+            <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-950 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
+              <div>
+                <strong class="block text-emerald-900">🏢 Res. Jardins do Bosque</strong>
+                <span class="text-[10px] text-emerald-700">Bloco A - Apartamento 101</span>
+              </div>
+              <span class="text-emerald-600 font-bold">Escolher →</span>
+            </button>
+            <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+              <div>
+                <strong class="block text-slate-900">🏢 Edifício Solar das Palmeiras</strong>
+                <span class="text-[10px] text-slate-600">Torre 2 - Apartamento 404</span>
+              </div>
+              <span class="text-slate-400 font-bold">Escolher →</span>
+            </button>
+            <button onclick="sendQuickMessage('123.456.789-09')" class="w-full text-left p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+              <div>
+                <strong class="block text-slate-900">🚗 Edifício Solar das Palmeiras</strong>
+                <span class="text-[10px] text-slate-600">Vaga Extra de Garagem Nº 12</span>
+              </div>
+              <span class="text-slate-400 font-bold">Escolher →</span>
+            </button>
+          </div>
+        `;
+        addMessage(multiHtml, false, true);
+      }, 700);
+    }
+
+    function simulateDelinquentResident() {
+      openChat('bot');
+      addMessage('Gostaria do boleto do Apt 502 por favor (CPF 999.888.777-66)', true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        const lockHtml = `
+          <div class="space-y-2 p-1">
+            <div class="flex items-center gap-1.5 text-amber-800 font-bold text-xs">
+              <span class="text-base">⚖️</span> Aviso de Cobrança Administrativa
+            </div>
+            <div class="border-t border-b border-amber-200 py-2 space-y-1 text-[11px] text-amber-950 leading-relaxed">
+              <div>Olá, <strong>Marcos Ferreira</strong>. Constam pendências anteriores ajuizadas ou em renegociação para a unidade <strong>Apt 502</strong>.</div>
+              <div class="p-2 bg-amber-100 rounded-lg text-amber-900 text-[10px] font-semibold mt-1">
+                🔒 <em>Por normas contratuais da convenção, a emissão avulsa está bloqueada para garantir a unificação dos débitos com condições especiais.</em>
+              </div>
+            </div>
+            <div class="pt-1">
+              <button onclick="sendQuickMessage('Gostaria de falar com um atendente humano')" class="w-full py-2 bg-amber-700 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-colors">
+                👤 Falar com Setor de Acordos da Administradora
+              </button>
+            </div>
+          </div>
+        `;
+        addMessage(lockHtml, false, true);
+      }, 800);
+    }
+
+    function simulateSwitchFromBoletoToAttendant() {
+      openChat('bot');
+      addMessage('Quero a 2ª via do boleto deste mês por favor', true);
+      setTyping(true);
+
+      setTimeout(() => {
+        setTyping(false);
+        botState = 'AGUARDANDO_CPF';
+        addMessage(`📄 Perfeito! Para localizar sua cota condominial, por favor <strong>digite o seu CPF</strong> (apenas números):`, false, true);
+
+        setTimeout(() => {
+          addMessage('Na verdade prefiro falar direto com um atendente humano, pode ser?', true);
+          setTyping(true);
+
+          setTimeout(() => {
+            setTyping(false);
+            botState = 'ATENDIMENTO_HUMANO';
+            addMessage(`👤 <strong>Transferindo para Atendente Humano...</strong><br><br>Entendido! Cancelei a consulta de CPF e já coloquei você na nossa fila com a equipe da administradora.<br><br>Um atendente responderá por aqui em instantes.<br><br><em>(Digite <strong>MENU</strong> para voltar ao robô a qualquer momento)</em>`, false, true);
+          }, 650);
+        }, 1100);
+      }, 700);
+    }
+
+    // DISPARO DE AVISOS EM MASSA PARA TODOS OS 3 GRUPOS SIMULTANEAMENTE!
+    function simulateGroupAnnouncement() {
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const groups = ['group1', 'group2', 'group3'];
+
+      groups.forEach(gId => {
+        const condoName = chatsData[gId].condoName;
+        const announcementHtml = `
+          <div class="space-y-2 p-1">
+            <div class="flex items-center gap-1.5 text-blue-900 font-extrabold text-xs">
+              <span>📢</span> COMUNICADO OFICIAL DA ADMINISTRAÇÃO
+            </div>
+            <div class="border-t border-b border-blue-200 py-2 space-y-1.5 text-[11px] text-blue-950 leading-relaxed">
+              <div class="font-bold text-slate-700">🏢 ${condoName} (Todos os Blocos)</div>
+              <div class="font-extrabold text-blue-900 text-xs">💧 Manutenção Preventiva: Limpeza das Caixas d'Água</div>
+              <div>Prezados condôminos, informamos que na próxima <strong>quarta-feira (18/11)</strong>, das <strong>08h00 às 14h00</strong>, realizaremos a desinfecção semestral dos reservatórios superiores.</div>
+              <div class="p-2 bg-amber-50 rounded-lg text-amber-900 text-[10px] border border-amber-200 font-medium">
+                ⚠️ <em>Haverá interrupção temporária no fornecimento de água. Solicitamos que mantenham os registros fechados no período.</em>
+              </div>
+            </div>
+            <div class="text-[10px] text-slate-500 flex justify-between items-center pt-1">
+              <span>✓ Enviado para todos os moradores</span>
+              <span class="text-emerald-700 font-bold">Oficial • ${timeStr}</span>
+            </div>
+          </div>
+        `;
+
+        chatsData[gId].messages.push({
+          text: announcementHtml,
+          isUser: false,
+          isHtml: true,
+          senderName: 'Administradora Modelo (Oficial)',
+          timeStr: timeStr
+        });
+        chatsData[gId].unreadCount = 1;
+        chatsData[gId].time = 'Agora';
+        chatsData[gId].lastSnippet = `📢 Comunicado: Limpeza das Caixas d'Água...`;
+
+        updateGroupListItem(gId, `<span class="text-blue-600 font-semibold">📢 Comunicado:</span> Limpeza das caixas d'água...`, 'Agora', true);
+      });
+
+      updateTotalBadges();
+      playPopSound(false);
+
+      // Dispara confetes comemorativos
+      try {
+        confetti({
+          particleCount: 85,
+          spread: 75,
+          origin: { y: 0.55 }
+        });
+      } catch(e) {}
+
+      showToast('📢 Aviso disparado para todos os 3 condomínios (450 moradores notificados no WhatsApp)!');
+
+      // Se o usuário estiver dentro de um dos grupos, exibe a mensagem na hora
+      if (currentView === 'chat' && groups.includes(activeChatId)) {
+        renderChatMessages(activeChatId);
+        chatsData[activeChatId].unreadCount = 0;
+        updateGroupListItem(activeChatId, chatsData[activeChatId].lastSnippet, 'Agora', false);
+        updateTotalBadges();
+      } else {
+        // Mostra a tela inicial de conversas com todos os 3 grupos com badge verde!
+        showChatList();
+      }
+    }
+
+    function copyToClipboard(text, msg) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(msg);
+      });
+    }
+
+    function copyQuestionnaire() {
+      const content = document.getElementById('questionnaireContent').innerText;
+      navigator.clipboard.writeText(content).then(() => {
+        const btn = document.getElementById('btnCopyQuest');
+        btn.innerHTML = '✓ Questionário Copiado!';
+        showToast('Questionário copiado para a área de transferência!');
+        setTimeout(() => {
+          btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copiar Questionário Completo';
+        }, 3000);
+      });
+    }
+
+    function openPdfModal() {
+      document.getElementById('pdfModal').classList.remove('hidden');
+    }
+
+    function closePdfModal() {
+      document.getElementById('pdfModal').classList.add('hidden');
+    }
+
+    function initAllChats() {
+      // 1. Bot de Autoatendimento
+      chatsData.bot.messages = [];
+      const menuHtml = `
+        👋 Olá! Bem-vindo ao autoatendimento da <strong>Administradora Modelo</strong>.<br><br>
+        Como posso ajudar você hoje?<br>
+        Selecione uma opção rápida abaixo ou digite o número:
+        <div class="mt-2.5 flex flex-col gap-1.5 pt-2 border-t border-slate-100">
+          <button onclick="sendQuickMessage('1')" class="w-full text-left py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-semibold rounded-xl text-xs border border-emerald-200 transition-colors flex items-center justify-between">
+            <span>📄 1. 2ª Via de Boleto / Pix</span>
+            <span class="text-emerald-600 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('2')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+            <span>🛠️ 2. Registrar Ocorrência</span>
+            <span class="text-slate-400 font-bold">→</span>
+          </button>
+          <button onclick="sendQuickMessage('3')" class="w-full text-left py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200 transition-colors flex items-center justify-between">
+            <span>👤 3. Falar com Atendente</span>
+            <span class="text-slate-400 font-bold">→</span>
+          </button>
+        </div>
+      `;
+      chatsData.bot.messages.push({
+        text: menuHtml,
+        isUser: false,
+        isHtml: true,
+        senderName: 'Administradora Modelo',
+        timeStr: '09:41'
+      });
+      chatsData.bot.unreadCount = 0;
+
+      // 2. Grupo 1: Res. Jardins do Bosque
+      chatsData.group1.messages = [
+        {
+          text: '🔒 As mensagens e chamadas deste grupo são protegidas com a criptografia de ponta a ponta.',
+          isUser: false,
+          isHtml: false,
+          isSystem: true,
+          timeStr: '08:00'
+        },
+        {
+          text: 'Bom dia a todos os moradores! Lembrando que a reunião de prestação de contas será na próxima terça às 19h30 no salão de festas.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Síndico Roberto (Bloco B)',
+          timeStr: '08:30'
+        },
+        {
+          text: 'Bom dia Síndico! Terá votação sobre a pintura da fachada externa também?',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Carlos Eduardo (Apt 101)',
+          timeStr: '09:15'
+        },
+        {
+          text: 'Sim, o orçamento completo da pintura será apresentado pela administradora na reunião.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Síndico Roberto (Bloco B)',
+          timeStr: '09:30'
+        }
+      ];
+      chatsData.group1.unreadCount = 0;
+      updateGroupListItem('group1', 'Síndico Roberto: O orçamento completo da...', '09:30', false);
+
+      // 3. Grupo 2: Cond. Edifício Mar Azul
+      chatsData.group2.messages = [
+        {
+          text: '🔒 As mensagens e chamadas deste grupo são protegidas com a criptografia de ponta a ponta.',
+          isUser: false,
+          isHtml: false,
+          isSystem: true,
+          timeStr: '08:00'
+        },
+        {
+          text: 'Informamos que a troca das molas do portão de veículos da garagem foi concluída com sucesso. Portão operando normalmente.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Zelador Marcos',
+          timeStr: 'Ontem'
+        },
+        {
+          text: 'Excelente! Muito obrigada pela rapidez no conserto, Marcos.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Mariana (Apt 42)',
+          timeStr: 'Ontem'
+        }
+      ];
+      chatsData.group2.unreadCount = 0;
+      updateGroupListItem('group2', 'Mariana: Excelente! Muito obrigada pela rapidez...', 'Ontem', false);
+
+      // 4. Grupo 3: Cond. Bosque Imperial
+      chatsData.group3.messages = [
+        {
+          text: '🔒 Somente administradores e síndicos podem enviar mensagens neste grupo de comunicados.',
+          isUser: false,
+          isHtml: false,
+          isSystem: true,
+          timeStr: '08:00'
+        },
+        {
+          text: 'Prezados condôminos, a agenda para reserva das churrasqueiras no mês de dezembro já se encontra disponível no portal da administradora.',
+          isUser: false,
+          isHtml: false,
+          senderName: 'Síndica Patrícia',
+          timeStr: 'Terça'
+        }
+      ];
+      chatsData.group3.unreadCount = 0;
+      updateGroupListItem('group3', 'Síndica Patrícia: A agenda para reserva das churrasqueiras...', 'Terça', false);
+
+      updateTotalBadges();
+    }
+
+    function resetChat() {
+      initAllChats();
+      showChatList();
+      botState = 'INICIO';
+      showToast('Conversas reiniciadas!');
+    }
+
+    function updateRoiCalculation() {
+      const salario = parseFloat(document.getElementById('sliderSalario').value);
+      const labelSalario = document.getElementById('labelSalario');
+      const custoRealClt = document.getElementById('custoRealClt');
+      const custoAnualManual = document.getElementById('custoAnualManual');
+      const economiaAnual = document.getElementById('economiaAnual');
+
+      const realMensal = salario * 1.65;
+      const anualManual = realMensal * 12;
+      const economiaLiquida = Math.max(0, anualManual - 18000);
+
+      const f = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+      labelSalario.textContent = f(salario);
+      custoRealClt.textContent = `${f(realMensal)} / mês`;
+      custoAnualManual.textContent = `${f(anualManual)} / ano`;
+      economiaAnual.textContent = f(economiaLiquida);
+    }
+
+    // Inicialização da aplicação
+    window.addEventListener('DOMContentLoaded', () => {
+      initAllChats();
+      showChatList();
+      updateRoiCalculation();
+    });
+  </script>
+</body>
+</html>

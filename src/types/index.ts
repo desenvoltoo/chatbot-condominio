@@ -238,6 +238,17 @@ export interface AIConfig {
   embeddingProvider: 'openai' | 'gemini' | 'local';
   guardrailsAtivos: boolean;
   encaminharHumanoBaixaConfianca: boolean;
+  modoAutonomoTotal: boolean;
+  tarefasAutonomas?: {
+    cobrancaPix: boolean;
+    acordoDividas: boolean;
+    regrasRag: boolean;
+    reservasAreas: boolean;
+    encomendasOcr: boolean;
+    passesVisitantes: boolean;
+    assembleiasVoto: boolean;
+    ocorrenciasChamados: boolean;
+  };
 }
 
 export interface DocumentoRAG {

@@ -37,7 +37,7 @@ export class BotOrchestrator {
       return;
     }
 
-    // Interceptador Global para Atendimento Humano
+    // Interceptador Global para Atendimento Humano / Modo 100% Autônomo
     const termosAtendente = [
       'atendente',
       'humano',
@@ -50,12 +50,20 @@ export class BotOrchestrator {
       'ajuda',
     ];
     if (termosAtendente.some((termo) => lowerText.includes(termo)) && session.state !== 'ATENDIMENTO_HUMANO') {
+      const isAutonomo = true; // DOMUS AI opera em modo 100% autônomo
+      if (isAutonomo && !lowerText.includes('operador humano') && !lowerText.includes('urgente')) {
+        await this.evolutionService.sendText(
+          remoteJid,
+          '🤖 *Central de Inteligência DOMUS AI (Modo 100% Autônomo)*\n\nSou a IA autônoma do condomínio e posso resolver sua solicitação **imediatamente, sem filas de espera e sem intervenção humana**!\n\nPosso realizar para você agora mesmo:\n• *1* - 📄 Emitir 2ª via de boleto com Pix Copia e Cola\n• *2* - 🤝 Simular e fechar acordo de parcelamento de débito\n• *3* - 💧 Consultar medição de água/gás\n• *4* - 📅 Reservar salão de festas ou churrasqueira\n• *5* - 📖 Tirar dúvidas do Regimento Interno e Convenção\n• *6* - 🛠️ Registrar chamado de manutenção\n\n_Basta digitar o número ou o que você precisa!_'
+        );
+        return;
+      }
       session.state = 'ATENDIMENTO_HUMANO';
       this.sessionManager.setHumanHandoff(remoteJid, true);
       this.sessionManager.updateSession(session);
       await this.evolutionService.sendText(
         remoteJid,
-        '👤 *Transferindo para Atendente Humano...*\n\nEntendi! Interrompi o fluxo anterior e notifiquei nossa equipe operacional no painel.\n\nUm de nossos colaboradores responderá por aqui em instantes.\n\n_Para retornar ao autoatendimento a qualquer momento, digite *MENU* ou *SAIR*._'
+        '👤 *Transferindo para Atendente Humano...*\n\nEntendi! Notifiquei nossa equipe operacional no painel.\n\nUm de nossos colaboradores responderá por aqui em instantes.\n\n_Para retornar ao autoatendimento a qualquer momento, digite *MENU* ou *SAIR*._'
       );
       return;
     }
@@ -109,18 +117,19 @@ export class BotOrchestrator {
     this.sessionManager.updateSession(session);
 
     const mensagem = [
-      `👋 Olá, *${nome}*! Bem-vindo(a) à Central de Autoatendimento WhatsApp conectada ao *SISCON Condomínios*.`,
+      `👋 Olá, *${nome}*! Bem-vindo(a) ao *DOMUS AI* — Inteligência Condominial Autônoma.`,
+      `⚡ *Piloto Automático 100% Ativo: Todas as tarefas são resolvidas sem espera e sem intervenção humana!*`,
       ``,
-      `Como posso ajudar você hoje? Digite o número da opção desejada:`,
+      `Como posso ajudar você agora? Digite o número ou descreva o que precisa:`,
       ``,
-      `*1* - 📄 2ª Via de Boleto & Pix Copia e Cola`,
-      `*2* - 🤝 Negociação & Parcelamento de Débito (Acordo SISCON)`,
-      `*3* - 💧 Leitura de Água e Gás (SISCON Medição)`,
+      `*1* - 📄 2ª Via de Boleto & Pix Copia e Cola (Recálculo Automático)`,
+      `*2* - 🤝 Negociação & Acordo de Débito (Termo Jurídico SHA-256)`,
+      `*3* - 💧 Telemetria & Medição (Água e Gás)`,
       `*4* - 📅 Reservas de Áreas Comuns (Churrasqueira/Salão)`,
-      `*5* - 📜 Certidão de Nada Consta / Quitação Anual`,
-      `*6* - 🛠️ Abertura de Ocorrência / Manutenção`,
-      `*7* - 👤 Falar com Atendente Humano`,
-      `*8* - 📢 Mural de Avisos e Comunicados Oficiais`,
+      `*5* - 📖 Dúvidas do Regimento Interno & Convenção (RAG)`,
+      `*6* - 📦 Notificação de Encomendas & Passes de Visitantes com QR Code`,
+      `*7* - 🗳️ Votação em Assembleia Virtual`,
+      `*8* - 🛠️ Abertura de Chamado / Manutenção Predial`,
       ``,
       `_A qualquer momento, digite *MENU* para retornar ao início._`
     ].join('\n');
