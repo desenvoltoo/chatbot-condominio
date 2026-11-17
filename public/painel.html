@@ -681,7 +681,9 @@
     <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-lg w-full border border-indigo-500/30 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
         <div class="flex items-center gap-2.5">
-          <span class="text-2xl">✨</span>
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
           <div>
             <h3 class="font-bold text-base text-white">Como Usar o DOMUS AI em 3 Passos</h3>
             <span class="text-xs text-slate-400">Guia de 30 segundos para síndicos e administradoras</span>
@@ -692,8 +694,8 @@
 
       <div class="space-y-3.5">
         <div class="p-4 rounded-2xl bg-white/[0.03] border border-indigo-500/20 flex gap-3.5 items-start">
-          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-xl shrink-0">
-            💬
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-300 shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <div>
             <h4 class="font-bold text-sm text-white mb-0.5">1. Mensagens chegam sozinhas do WhatsApp</h4>
@@ -704,8 +706,8 @@
         </div>
 
         <div class="p-4 rounded-2xl bg-white/[0.03] border border-emerald-500/20 flex gap-3.5 items-start">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0">
-            🤖
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="8" rx="2"/><path d="M12 2v6"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/></svg>
           </div>
           <div>
             <h4 class="font-bold text-sm text-white mb-0.5">2. A IA responde e resolve 90% das demandas</h4>
@@ -716,8 +718,8 @@
         </div>
 
         <div class="p-4 rounded-2xl bg-white/[0.03] border border-purple-500/20 flex gap-3.5 items-start">
-          <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-xl shrink-0">
-            ⚡
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
           <div>
             <h4 class="font-bold text-sm text-white mb-0.5">3. Ações em 1 Clique sempre recomendadas</h4>
@@ -730,8 +732,9 @@
 
       <div class="flex items-center justify-between pt-2 border-t border-white/[0.08]">
         <span class="text-xs text-slate-400">Simples, rápido e sem complicações.</span>
-        <button onclick="concluirTour()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold text-xs shadow-lg transition-all cursor-pointer">
-          🎉 Entendi! Começar a Usar
+        <button onclick="concluirTour()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold text-xs shadow-lg transition-all cursor-pointer flex items-center gap-2">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Entendi! Começar a Usar</span>
         </button>
       </div>
     </div>
@@ -743,8 +746,10 @@
   <div id="modalAjudaRapida" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeAjudaModal()">
     <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-lg w-full border border-white/[0.12] shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">❓</span>
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </div>
           <div>
             <h3 class="font-bold text-sm text-white">Central de Dúvidas & Ajuda Rápida</h3>
             <span class="text-[10px] text-slate-400">Respostas diretas para as dúvidas mais comuns</span>
@@ -754,42 +759,54 @@
       </div>
 
       <div class="space-y-2.5 text-xs max-h-96 overflow-y-auto pr-1">
-        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer group">
           <summary class="font-bold text-white flex items-center justify-between">
-            <span>📄 Como a IA aprende as regras do meu prédio?</span>
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Como a IA aprende as regras do meu prédio?
+            </span>
             <span class="text-slate-400 text-xs">▼</span>
           </summary>
-          <p class="text-slate-300 mt-2 leading-relaxed">
+          <p class="text-slate-300 mt-2 leading-relaxed pl-5.5">
             Ela lê os documentos enviados na aba <strong>"Base de Conhecimento RAG"</strong> (Convenção, Regimento Interno, Atas em PDF). Basta arrastar os arquivos para lá.
           </p>
         </details>
 
-        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer group">
           <summary class="font-bold text-white flex items-center justify-between">
-            <span>⚡ Como enviar 2ª via do boleto para um morador?</span>
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Como enviar 2ª via do boleto para um morador?
+            </span>
             <span class="text-slate-400 text-xs">▼</span>
           </summary>
-          <p class="text-slate-300 mt-2 leading-relaxed">
-            Abra a conversa do morador e clique no botão verde <strong>"⚡ Enviar Boleto Pix (1 Clique)"</strong> no topo do chat, ou use o botão <strong>"Ver QR Code Pix"</strong> no painel lateral.
+          <p class="text-slate-300 mt-2 leading-relaxed pl-5.5">
+            Abra a conversa do morador e clique no botão verde <strong>"Enviar Boleto Pix (1 Clique)"</strong> no topo do chat, ou use o botão <strong>"Ver QR Code Pix"</strong> no painel lateral.
           </p>
         </details>
 
-        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer group">
           <summary class="font-bold text-white flex items-center justify-between">
-            <span>🤖 Como mudar o modelo da IA (OpenAI, Gemini, Groq)?</span>
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="8" rx="2"/><path d="M12 2v6"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/></svg>
+              Como mudar o modelo da IA (OpenAI, Gemini, Groq)?
+            </span>
             <span class="text-slate-400 text-xs">▼</span>
           </summary>
-          <p class="text-slate-300 mt-2 leading-relaxed">
+          <p class="text-slate-300 mt-2 leading-relaxed pl-5.5">
             Na barra lateral, clique em <strong>"Hub Multi-IA"</strong>, selecione seu provedor e cole a sua chave de API. Salva na hora sem complicações.
           </p>
         </details>
 
-        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer">
+        <details class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] cursor-pointer group">
           <summary class="font-bold text-white flex items-center justify-between">
-            <span>🤝 A IA pode fechar acordos de inadimplência sozinha?</span>
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              A IA pode fechar acordos de inadimplência sozinha?
+            </span>
             <span class="text-slate-400 text-xs">▼</span>
           </summary>
-          <p class="text-slate-300 mt-2 leading-relaxed">
+          <p class="text-slate-300 mt-2 leading-relaxed pl-5.5">
             Sim! Com o modo autônomo ativado, a IA simula parcelamentos de 1x a 12x dentro das regras parametrizadas e gera o Termo de Acordo com assinatura digital.
           </p>
         </details>
@@ -797,7 +814,10 @@
 
       <div class="pt-2 border-t border-white/[0.08] flex justify-between items-center text-xs">
         <span class="text-slate-400">Atalho rápido: <kbd class="px-1.5 py-0.5 rounded bg-white/[0.08] font-mono text-[10px]">Ctrl + K</kbd></span>
-        <button onclick="openQuickTourModal(); closeAjudaModal();" class="text-indigo-400 hover:underline font-bold">Fazer Tour de 30s →</button>
+        <button onclick="openQuickTourModal(); closeAjudaModal();" class="text-indigo-400 hover:underline font-bold flex items-center gap-1">
+          <span>Fazer Tour de 30s</span>
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -809,8 +829,8 @@
     <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-lg w-full border border-indigo-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-lg">
-            📢
+          <div class="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
           </div>
           <div>
             <h3 class="font-bold text-sm text-white">Disparo de Comunicado em Massa</h3>
@@ -824,10 +844,10 @@
       <div class="space-y-1.5 text-xs">
         <label class="text-slate-300 font-semibold block">Público de Destino:</label>
         <select id="broadcastPublico" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white">
-          <option value="todos">🏢 Todos os Moradores (142 unidades)</option>
-          <option value="bloco_a">📍 Bloco A (72 unidades)</option>
-          <option value="bloco_b">📍 Bloco B (70 unidades)</option>
-          <option value="inadimplentes">⚠️ Apenas Unidades com Pendência (11 unidades)</option>
+          <option value="todos">Todos os Moradores (142 unidades)</option>
+          <option value="bloco_a">Bloco A (72 unidades)</option>
+          <option value="bloco_b">Bloco B (70 unidades)</option>
+          <option value="inadimplentes">Apenas Unidades com Pendência (11 unidades)</option>
         </select>
       </div>
 
@@ -835,17 +855,21 @@
       <div class="space-y-1.5 text-xs">
         <label class="text-slate-300 font-semibold block">Modelos Prontos (1 Clique):</label>
         <div class="grid grid-cols-2 gap-2 text-[11px]">
-          <button type="button" onclick="carregarModeloBroadcast('elevador')" class="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] text-left truncate cursor-pointer">
-            🛗 Manutenção Elevador
+          <button type="button" onclick="carregarModeloBroadcast('elevador')" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] flex items-center gap-2 cursor-pointer transition-colors">
+            <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 10 3-3 3 3"/><path d="m9 14 3 3 3-3"/></svg>
+            <span class="truncate">Manutenção Elevador</span>
           </button>
-          <button type="button" onclick="carregarModeloBroadcast('agua')" class="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] text-left truncate cursor-pointer">
-            💧 Limpeza Caixa d'Água
+          <button type="button" onclick="carregarModeloBroadcast('agua')" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] flex items-center gap-2 cursor-pointer transition-colors">
+            <svg class="w-3.5 h-3.5 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <span class="truncate">Limpeza Caixa d'Água</span>
           </button>
-          <button type="button" onclick="carregarModeloBroadcast('assembleia')" class="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] text-left truncate cursor-pointer">
-            🗳️ Convocação Assembleia
+          <button type="button" onclick="carregarModeloBroadcast('assembleia')" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] flex items-center gap-2 cursor-pointer transition-colors">
+            <svg class="w-3.5 h-3.5 text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+            <span class="truncate">Convocação Assembleia</span>
           </button>
-          <button type="button" onclick="carregarModeloBroadcast('boleto')" class="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] text-left truncate cursor-pointer">
-            📄 Boletos Disponíveis
+          <button type="button" onclick="carregarModeloBroadcast('boleto')" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.06] flex items-center gap-2 cursor-pointer transition-colors">
+            <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span class="truncate">Boletos Disponíveis</span>
           </button>
         </div>
       </div>
@@ -872,8 +896,8 @@
           <button type="button" onclick="closeBroadcastModal()" class="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-slate-300 text-xs font-semibold cursor-pointer">
             Cancelar
           </button>
-          <button type="button" onclick="dispararBroadcast()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-xs shadow-lg flex items-center gap-1.5 cursor-pointer">
-            <span>📢</span>
+          <button type="button" onclick="dispararBroadcast()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-xs shadow-lg flex items-center gap-2 cursor-pointer transition-all">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             <span>Disparar Agora</span>
           </button>
         </div>
@@ -956,8 +980,9 @@
         </div>
         <div class="flex gap-2">
           <button onclick="closeTermoAcordoModal()" class="px-3.5 py-2 rounded-xl bg-white/[0.06] text-slate-300 text-xs font-semibold cursor-pointer">Fechar</button>
-          <button onclick="imprimirTermoAcordo()" class="px-3.5 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] text-slate-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
-            <span>🖨️</span> Salvar PDF / Imprimir
+          <button onclick="imprimirTermoAcordo()" class="px-3.5 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] text-slate-200 text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            Salvar PDF / Imprimir
           </button>
           <button onclick="enviarTermoWhatsApp()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
@@ -1084,9 +1109,9 @@
   <div id="modalSaqueSplit" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) fecharModalSaqueSplit()">
     <div class="glass-surface rounded-3xl w-full max-w-md p-6 border border-emerald-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
-            💸
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
           <div>
             <h3 class="font-bold text-white text-sm">Transferência Pix do Split Adm</h3>
@@ -1122,7 +1147,8 @@
           Cancelar
         </button>
         <button onclick="confirmarSaqueSplitPix()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-          <span>✓</span> Transferir Agora
+          <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Transferir Agora</span>
         </button>
       </div>
     </div>
@@ -1135,8 +1161,8 @@
     <div class="glass-surface rounded-3xl w-full max-w-lg p-6 border border-purple-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-300 text-lg">
-            🗳️
+          <div class="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-300">
+            <svg class="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
           </div>
           <div>
             <h3 class="font-bold text-white text-sm">Criar Nova Assembleia ou Votação</h3>
@@ -1203,8 +1229,9 @@
         <button onclick="fecharModalCriarAssembleia()" class="flex-1 py-2.5 rounded-xl border border-white/[0.1] hover:bg-white/[0.05] text-slate-300 font-bold text-xs transition-all cursor-pointer">
           Cancelar
         </button>
-        <button onclick="salvarNovaAssembleia()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-          <span>🚀</span> Publicar e Disparar
+        <button onclick="salvarNovaAssembleia()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span>Publicar e Disparar</span>
         </button>
       </div>
     </div>
@@ -1366,8 +1393,8 @@
     <div class="glass-surface rounded-3xl w-full max-w-lg p-6 border border-amber-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg">
-            🛠️
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
           </div>
           <div>
             <h3 class="font-bold text-white text-sm">Nova Ordem de Serviço (Zeladoria)</h3>
@@ -1391,12 +1418,12 @@
           <div>
             <label class="block text-slate-300 font-bold mb-1">Categoria do Reparo:</label>
             <select id="novaOsCategoria" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
-              <option value="💡 Elétrica & Iluminação">💡 Elétrica & Iluminação</option>
-              <option value="🚰 Hidráulica & Vazamentos">🚰 Hidráulica & Vazamentos</option>
-              <option value="🚪 Portões & Acesso">🚪 Portões & Acesso</option>
-              <option value="🛗 Elevadores">🛗 Elevadores</option>
-              <option value="🏊 Áreas de Lazer & Academia">🏊 Áreas de Lazer & Academia</option>
-              <option value="🌿 Jardinagem & Paisagismo">🌿 Jardinagem & Paisagismo</option>
+              <option value="Elétrica & Iluminação">Elétrica & Iluminação</option>
+              <option value="Hidráulica & Vazamentos">Hidráulica & Vazamentos</option>
+              <option value="Portões & Acesso">Portões & Acesso</option>
+              <option value="Elevadores">Elevadores</option>
+              <option value="Áreas de Lazer & Academia">Áreas de Lazer & Academia</option>
+              <option value="Jardinagem & Paisagismo">Jardinagem & Paisagismo</option>
             </select>
           </div>
         </div>
@@ -1405,9 +1432,9 @@
           <div>
             <label class="block text-slate-300 font-bold mb-1">Nível de Urgência:</label>
             <select id="novaOsUrgencia" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
-              <option value="🟢 Baixa (Rotina preventiva)">🟢 Baixa (Rotina preventiva)</option>
-              <option value="🟡 Média (Atendimento em até 24h)" selected>🟡 Média (Atendimento em até 24h)</option>
-              <option value="🚨 Alta / Emergencial (Urgente)">🚨 Alta / Emergencial (Urgente)</option>
+              <option value="Baixa (Rotina preventiva)">Baixa (Rotina preventiva)</option>
+              <option value="Média (Atendimento em até 24h)" selected>Média (Atendimento em até 24h)</option>
+              <option value="Alta / Emergencial (Urgente)">Alta / Emergencial (Urgente)</option>
             </select>
           </div>
           <div>
@@ -1438,8 +1465,9 @@
         <button onclick="fecharModalNovaManutencao()" class="flex-1 py-2.5 rounded-xl border border-white/[0.1] hover:bg-white/[0.05] text-slate-300 font-bold text-xs transition-all cursor-pointer">
           Cancelar
         </button>
-        <button onclick="salvarNovaOrdemServico()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs shadow-lg shadow-amber-600/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-          <span>🛠️</span> Criar e Despachar OS
+        <button onclick="salvarNovaOrdemServico()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs shadow-lg shadow-amber-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <span>Criar e Despachar OS</span>
         </button>
       </div>
     </div>
@@ -2148,32 +2176,38 @@
         <div class="p-4 border-b border-white/[0.08] space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-slate-300">Situação Financeira</span>
-            <span id="sideFinanceiroBadge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              ● Regular
+            <span id="sideFinanceiroBadge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Regular
             </span>
           </div>
 
-          <div class="p-3 rounded-2xl bg-[#101524] border border-white/[0.06] space-y-2 text-xs">
-            <div class="flex justify-between">
-              <span id="sideFinanceiroLabel" class="text-slate-400">Cota Atual:</span>
-              <strong id="sideFinanceiroValor" class="text-white font-mono">R$ 650,00</strong>
+          <!-- Obsidian Card Finanças do Morador -->
+          <div class="p-3.5 rounded-2xl bg-gradient-to-br from-[#131b2e] via-[#0c1220] to-[#080d18] border border-indigo-500/20 shadow-lg relative overflow-hidden space-y-2 text-xs group">
+            <div class="absolute -right-4 -top-4 w-16 h-16 bg-indigo-500/10 rounded-full blur-xl pointer-events-none"></div>
+            <div class="flex items-center justify-between pb-1.5 border-b border-white/[0.06]">
+              <div class="flex items-center gap-1.5 text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                DOMUS PAY
+              </div>
+              <span id="sideFinanceiroSplit" class="text-emerald-400 font-mono text-[10px] font-bold" title="Split automático de pagamento configurado em 3%">Split 3%</span>
             </div>
-            <div class="flex justify-between">
+            <div class="flex justify-between items-baseline pt-1">
+              <span id="sideFinanceiroLabel" class="text-slate-400 text-[11px]">Cota Atual:</span>
+              <strong id="sideFinanceiroValor" class="text-white font-mono text-base font-extrabold tracking-tight">R$ 650,00</strong>
+            </div>
+            <div class="flex justify-between text-[11px]">
               <span class="text-slate-400">Vencimento:</span>
               <span id="sideFinanceiroVenc" class="text-slate-300 font-mono">15/11/2026</span>
-            </div>
-            <div class="flex justify-between" title="Split automático de pagamento configurado em 3%">
-              <span class="text-slate-400">Split Adm (3%):</span>
-              <span id="sideFinanceiroSplit" class="text-emerald-400 font-mono text-[10px]">R$ 19,50 (3%)</span>
             </div>
           </div>
 
           <div class="space-y-2 pt-1">
-            <button id="btnSidePix" onclick="abrirModalQrCodePix('650.00')" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
+            <button id="btnSidePix" onclick="abrirModalQrCodePix('650.00')" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span>Exibir QR Code Pix Dinâmico</span>
             </button>
-            <button onclick="switchTab('cobranca')" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
+            <button onclick="switchTab('cobranca')" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
               <span>Simulador de Acordos →</span>
             </button>
@@ -2182,21 +2216,27 @@
 
         <div class="p-4 space-y-2.5 text-xs">
           <span class="text-xs font-bold text-slate-300 block">Ações Rápidas de Portaria</span>
-          <button onclick="openNovoVisitanteModal()" class="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-cyan-300 border border-white/[0.08] text-xs font-medium text-left px-3 flex items-center justify-between">
-            <span>🎟️ Gerar Convite QR Code</span>
-            <span>→</span>
+          <button onclick="openNovoVisitanteModal()" class="w-full py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-cyan-300 border border-white/[0.08] text-xs font-medium text-left px-3.5 flex items-center justify-between transition-colors">
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h.01"/><path d="M17 7h.01"/><path d="M7 17h.01"/><path d="M17 17h.01"/></svg>
+              Gerar Convite QR Code
+            </span>
+            <span class="text-slate-400">→</span>
           </button>
-          <button onclick="openNovaEncomendaModal()" class="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-purple-300 border border-white/[0.08] text-xs font-medium text-left px-3 flex items-center justify-between">
-            <span>📦 Notificar Encomenda</span>
-            <span>→</span>
+          <button onclick="openNovaEncomendaModal()" class="w-full py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-purple-300 border border-white/[0.08] text-xs font-medium text-left px-3.5 flex items-center justify-between transition-colors">
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+              Notificar Encomenda
+            </span>
+            <span class="text-slate-400">→</span>
           </button>
         </div>
 
         <!-- Linha do Tempo 360° do Morador (Life-Events & Histórico Vivo) -->
         <div class="p-4 border-t border-white/[0.08] space-y-3 text-xs">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-              <span>⏱️</span>
+            <span class="text-xs font-bold text-slate-300 flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               Linha do Tempo 360°
             </span>
             <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30">Histórico Vivo</span>
@@ -2225,7 +2265,8 @@
             </p>
           </div>
           <button onclick="executarReguaCobranca()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-2 shrink-0 cursor-pointer">
-            <span>⚡</span> Executar Régua de Cobrança Agora
+            <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Executar Régua de Cobrança Agora</span>
           </button>
         </div>
 
