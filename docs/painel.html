@@ -83,7 +83,7 @@
     }
 
     /* ============================================================== */
-    /* 1. MODO CLARO (APPDOMUS SAAS THEME - WARM SAND & CRISP CARDS)   */
+    /* 1. MODO CLARO (APPDOMUS SAAS THEME - HIGH CONTRAST & CRISP)     */
     /* ============================================================== */
     html:not(.dark) body {
       background-color: #F8F7F4 !important;
@@ -97,6 +97,7 @@
     html:not(.dark) #mainContentArea,
     html:not(.dark) main[id^="tab-content-"] {
       background-color: #F8F7F4 !important;
+      color: #0F172A !important;
     }
     html:not(.dark) header {
       background-color: #FFFFFF !important;
@@ -104,51 +105,58 @@
       color: #0F172A !important;
     }
 
-    /* Cards e Superfícies no Modo Claro */
+    /* BANNER DE SANDBOX / DEMO NO MODO CLARO */
+    html:not(.dark) #envStatusBanner {
+      background-color: #FEF3C7 !important;
+      border-bottom: 1px solid #FCD34D !important;
+      color: #78350F !important;
+    }
+    html:not(.dark) #envStatusBanner span,
+    html:not(.dark) #envStatusBanner strong,
+    html:not(.dark) #envStatusBanner div {
+      color: #78350F !important;
+    }
+    html:not(.dark) #envStatusBanner .bg-amber-500\/20,
+    html:not(.dark) #envStatusBanner .bg-amber-200\/80 {
+      background-color: #FDE68A !important;
+      border-color: #D97706 !important;
+      color: #78350F !important;
+      font-weight: 800 !important;
+    }
+    html:not(.dark) #envStatusBanner a {
+      background-color: #0F172A !important;
+      color: #FFFFFF !important;
+    }
+
+    /* TODOS OS CARDS E SUPERFÍCIES NO MODO CLARO */
     html:not(.dark) .app-card,
     html:not(.dark) .glass-surface,
     html:not(.dark) .bg-card,
     html:not(.dark) .bg-panel,
     html:not(.dark) .bg-surface,
     html:not(.dark) .bg-white,
-    html:not(.dark) .bg-[#07090e],
-    html:not(.dark) .bg-[#0a0e18],
-    html:not(.dark) .bg-[#0b0f19],
-    html:not(.dark) .bg-[#0e1320],
-    html:not(.dark) .bg-[#0e131f],
-    html:not(.dark) .bg-[#101524],
-    html:not(.dark) .bg-[#121826],
-    html:not(.dark) .bg-[#161e30],
-    html:not(.dark) .bg-[#181938],
-    html:not(.dark) .bg-[#1b2438] {
-      background-color: #FFFFFF !important;
-      border: 1px solid #E2E8F0 !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.02) !important;
-      color: #0F172A !important;
-    }
-
-    /* Gradientes removidos de cards no modo claro */
-    html:not(.dark) [class*="bg-gradient-to-"]:not(button):not(.btn) {
-      background-image: none !important;
+    html:not(.dark) [class*="bg-[#0"],
+    html:not(.dark) [class*="bg-[#1"],
+    html:not(.dark) [class*="bg-black/"],
+    html:not(.dark) [class*="bg-slate-900/"] {
       background-color: #FFFFFF !important;
       border-color: #E2E8F0 !important;
       color: #0F172A !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.02) !important;
     }
 
-    /* Bordas no modo claro */
-    html:not(.dark) [class*="border-white/"],
+    /* BORDAS NO MODO CLARO */
+    html:not(.dark) [class*="border-white"],
     html:not(.dark) .border-slate-800,
     html:not(.dark) .border-slate-700 {
       border-color: #E2E8F0 !important;
     }
 
-    /* Tipografia de Cabeçalhos no Modo Claro */
+    /* TIPOGRAFIA NO MODO CLARO */
     html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, 
     html:not(.dark) h4, html:not(.dark) h5, html:not(.dark) h6 {
       color: #0F172A !important;
     }
-
-    /* Textos secundários e neutros no Modo Claro */
     html:not(.dark) .text-slate-900,
     html:not(.dark) .text-slate-800 {
       color: #0F172A !important;
@@ -162,21 +170,169 @@
       color: #64748B !important;
     }
 
-    /* Converter textos brancos legados DENTRO de cards/tabelas para escuro */
-    html:not(.dark) .app-card:not([class*="bg-slate-9"]):not([class*="bg-indigo"]):not([class*="bg-emerald"]) .text-white,
-    html:not(.dark) .glass-surface .text-white,
-    html:not(.dark) table .text-white,
-    html:not(.dark) table thead .text-white {
+    /* ============================================================== */
+    /* CHAT & ATENDIMENTO NO MODO CLARO (ALTO CONTRASTE WHATSAPP PRO)  */
+    /* ============================================================== */
+    html:not(.dark) #tab-content-atendimento {
+      background-color: #F8F7F4 !important;
+    }
+    html:not(.dark) #tab-content-atendimento aside {
+      background-color: #FFFFFF !important;
+      border-right: 1px solid #E2E8F0 !important;
+    }
+    html:not(.dark) #tab-content-atendimento aside .border-b,
+    html:not(.dark) #tab-content-atendimento aside [class*="border-white"] {
+      border-color: #E2E8F0 !important;
+    }
+    html:not(.dark) #filterCondominioSelect,
+    html:not(.dark) #searchConversationInput {
+      background-color: #F8FAFC !important;
+      border: 1px solid #CBD5E1 !important;
       color: #0F172A !important;
     }
+    html:not(.dark) #searchConversationInput::placeholder {
+      color: #94A3B8 !important;
+    }
+    html:not(.dark) #conversationsList {
+      background-color: #FFFFFF !important;
+    }
+    html:not(.dark) #conversationsList > div {
+      border-bottom: 1px solid #F1F5F9 !important;
+    }
+    html:not(.dark) #conversationsList > div:hover {
+      background-color: #F8FAFC !important;
+    }
+    html:not(.dark) #conversationsList .text-white {
+      color: #0F172A !important;
+    }
+    html:not(.dark) #conversationsList .text-slate-400 {
+      color: #64748B !important;
+    }
+    html:not(.dark) #tab-content-atendimento section {
+      background-color: #F8F7F4 !important;
+    }
+    html:not(.dark) #tab-content-atendimento section > div:first-child {
+      background-color: #FFFFFF !important;
+      border-bottom: 1px solid #E2E8F0 !important;
+    }
+    html:not(.dark) #chatHeaderName {
+      color: #0F172A !important;
+      font-weight: 800 !important;
+    }
+    html:not(.dark) #chatHeaderSub {
+      color: #64748B !important;
+    }
+    html:not(.dark) #smartActionBanner {
+      background: #EEF2FF !important;
+      border-bottom: 1px solid #C7D2FE !important;
+    }
+    html:not(.dark) #smartActionText {
+      color: #1E1B4B !important;
+      font-weight: 600 !important;
+    }
+    html:not(.dark) #smartActionText strong {
+      color: #0F172A !important;
+    }
+    html:not(.dark) #chatMessagesStream {
+      background-color: #F8F7F4 !important;
+    }
 
-    /* GARANTIA ABSOLUTA DE TEXTO BRANCO EM BOTÕES E ELEMENTOS ESCUROS NO MODO CLARO */
+    /* BALÕES DE CHAT NO MODO CLARO */
+    html:not(.dark) .chat-bubble-user {
+      background-color: #FFFFFF !important;
+      border: 1px solid #CBD5E1 !important;
+      color: #0F172A !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    }
+    html:not(.dark) .chat-bubble-user p {
+      color: #0F172A !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+    }
+    html:not(.dark) .chat-bubble-user span.text-slate-400,
+    html:not(.dark) .chat-bubble-user span.text-slate-500 {
+      color: #64748B !important;
+    }
+    html:not(.dark) .chat-bubble-user [class*="bg-black"] {
+      background-color: #F8FAFC !important;
+      border: 1px solid #E2E8F0 !important;
+    }
+    html:not(.dark) .chat-bubble-user [class*="bg-indigo-950"] {
+      background-color: #EEF2FF !important;
+      border: 1px solid #C7D2FE !important;
+      color: #1E1B4B !important;
+    }
+    html:not(.dark) .chat-bubble-user [class*="bg-indigo-950"] p {
+      color: #1E1B4B !important;
+    }
+
+    html:not(.dark) .chat-bubble-agent {
+      background-color: #0F172A !important;
+      border: 1px solid #1E293B !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15) !important;
+    }
+    html:not(.dark) .chat-bubble-agent p {
+      color: #FFFFFF !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+    }
+    html:not(.dark) .chat-bubble-agent * {
+      color: #FFFFFF !important;
+    }
+    html:not(.dark) .chat-bubble-agent .text-cyan-300,
+    html:not(.dark) .chat-bubble-agent .text-cyan-400 {
+      color: #38BDF8 !important;
+    }
+    html:not(.dark) .chat-bubble-agent .text-emerald-400 {
+      color: #34D399 !important;
+    }
+    html:not(.dark) .chat-bubble-agent .text-indigo-400 {
+      color: #A5B4FC !important;
+    }
+
+    /* BARRA INFERIOR DE ENVIO NO MODO CLARO */
+    html:not(.dark) #tab-content-atendimento section > div:last-child {
+      background-color: #FFFFFF !important;
+      border-top: 1px solid #E2E8F0 !important;
+    }
+    html:not(.dark) #chatInputText {
+      background-color: #FFFFFF !important;
+      border: 1px solid #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+    html:not(.dark) #chatInputText::placeholder {
+      color: #94A3B8 !important;
+    }
+    html:not(.dark) [class*="bg-black/50"] {
+      background-color: #F8FAFC !important;
+      border-color: #CBD5E1 !important;
+      color: #334155 !important;
+    }
+
+    /* DOSSIÊ LATERAL NO MODO CLARO */
+    html:not(.dark) #dossieLateral {
+      background-color: #FFFFFF !important;
+      border-left: 1px solid #E2E8F0 !important;
+      color: #0F172A !important;
+    }
+    html:not(.dark) #dossieLateral .text-white {
+      color: #0F172A !important;
+    }
+    html:not(.dark) #dossieLateral [class*="bg-[#"] {
+      background-color: #F8FAFC !important;
+      border: 1px solid #E2E8F0 !important;
+    }
+
+    /* BOTÕES ESCUROS PRESERVAM TEXTO BRANCO NO MODO CLARO */
     html:not(.dark) button.bg-slate-900,
     html:not(.dark) button.bg-slate-900 *,
     html:not(.dark) button.bg-indigo-600,
     html:not(.dark) button.bg-indigo-600 *,
     html:not(.dark) button.bg-slate-800,
     html:not(.dark) button.bg-slate-800 *,
+    html:not(.dark) button.bg-emerald-600,
+    html:not(.dark) button.bg-emerald-600 *,
     html:not(.dark) .btn-primary,
     html:not(.dark) .btn-primary *,
     html:not(.dark) .nav-item-active,
@@ -190,7 +346,7 @@
       color: #FFFFFF !important;
     }
 
-    /* Pílula Ativa Sidebar em Modo Claro */
+    /* PÍLULAS DA SIDEBAR NO MODO CLARO */
     html:not(.dark) .nav-item-active,
     html:not(.dark) button[id^="nav-"].nav-item-active {
       background-color: #0F172A !important;
@@ -216,7 +372,7 @@
       color: #64748B !important;
     }
 
-    /* Inputs e Selects em Modo Claro */
+    /* INPUTS, SELECTS E TEXTAREAS NO MODO CLARO */
     html:not(.dark) input:not([type="checkbox"]):not([type="radio"]),
     html:not(.dark) textarea,
     html:not(.dark) select {
@@ -230,7 +386,7 @@
       color: #94A3B8 !important;
     }
 
-    /* Tabelas no Modo Claro */
+    /* TABELAS NO MODO CLARO */
     html:not(.dark) table {
       width: 100% !important;
       border-collapse: collapse !important;
@@ -250,7 +406,7 @@
       background-color: #F8FAFC !important;
     }
 
-    /* Badges de Status no Modo Claro */
+    /* STATUS BADGES NO MODO CLARO */
     html:not(.dark) .badge-status-green {
       background-color: #ECFDF5 !important;
       color: #047857 !important;
@@ -270,7 +426,7 @@
       font-weight: 600 !important;
     }
 
-    /* Pílulas de Filtro no Modo Claro */
+    /* PÍLULAS DE FILTRO NO MODO CLARO */
     html:not(.dark) .filter-pill-active {
       background-color: #0F172A !important;
       color: #FFFFFF !important;
@@ -287,7 +443,7 @@
       border-color: #94A3B8 !important;
     }
 
-    /* Floating WhatsApp Card & Bottom Pill no Modo Claro */
+    /* FLOATING WHATSAPP CARD & BOTTOM PILL NO MODO CLARO */
     html:not(.dark) .floating-assistant-card {
       background-color: #FFFFFF !important;
       border: 1px solid #E2E8F0 !important;
@@ -334,6 +490,11 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
       color: #F8FAFC !important;
     }
+    html.dark #envStatusBanner {
+      background-color: rgba(120, 53, 15, 0.3) !important;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.25) !important;
+      color: #FDE68A !important;
+    }
     /* Todas as superfícies / cards ficam com elegante Dark Slate */
     html.dark .app-card,
     html.dark .glass-surface,
@@ -341,16 +502,8 @@
     html.dark .bg-panel,
     html.dark .bg-surface,
     html.dark .bg-white,
-    html.dark .bg-[#07090e],
-    html.dark .bg-[#0a0e18],
-    html.dark .bg-[#0b0f19],
-    html.dark .bg-[#0e1320],
-    html.dark .bg-[#0e131f],
-    html.dark .bg-[#101524],
-    html.dark .bg-[#121826],
-    html.dark .bg-[#161e30],
-    html.dark .bg-[#181938],
-    html.dark .bg-[#1b2438],
+    html.dark [class*="bg-[#0"],
+    html.dark [class*="bg-[#1"],
     html.dark .bg-[#F6F3EE],
     html.dark .bg-[#F8F7F4] {
       background-color: #151D2D !important;
@@ -374,7 +527,7 @@
     html.dark .border-slate-200/80,
     html.dark .border-slate-200/90,
     html.dark .border-slate-100,
-    html.dark [class*="border-white/"] {
+    html.dark [class*="border-white"] {
       border-color: rgba(255, 255, 255, 0.08) !important;
     }
     html.dark h1, html.dark h2, html.dark h3, 
@@ -473,6 +626,17 @@
     html.dark .filter-pill-inactive:hover {
       background-color: #1E293B !important;
       color: #FFFFFF !important;
+    }
+    /* Balões de Chat no Modo Escuro */
+    html.dark .chat-bubble-user {
+      background-color: #1E293B !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      color: #F8FAFC !important;
+    }
+    html.dark .chat-bubble-agent {
+      background-color: #111625 !important;
+      border: 1px solid rgba(99, 102, 241, 0.3) !important;
+      color: #F8FAFC !important;
     }
     /* Floating Assistant & Notification Pill em Modo Escuro */
     html.dark .floating-assistant-card {
@@ -1934,12 +2098,12 @@
     <!-- ============================================================== -->
     <main id="tab-content-atendimento" class="flex-1 min-w-0 w-full flex overflow-hidden hidden">
       <!-- Coluna 1: Lista de Conversas & Filtros Avançados -->
-      <aside class="w-80 md:w-88 bg-[#0a0e18] border-r border-white/[0.08] flex flex-col shrink-0">
-        <div class="p-3 border-b border-white/[0.08] space-y-2.5">
+      <aside class="w-80 md:w-88 bg-white dark:bg-[#0a0e18] border-r border-slate-200 dark:border-white/[0.08] flex flex-col shrink-0">
+        <div class="p-3 border-b border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#0a0e18] space-y-2.5">
           <!-- Linha 1: Título e Status WhatsApp Live -->
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="font-bold text-xs text-white uppercase tracking-wider font-mono">Atendimentos</span>
+              <span class="font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider font-mono">Atendimentos</span>
               <span id="chatTotalCountBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">5 conversas</span>
             </div>
             <span class="flex items-center gap-1.5 text-[10px] text-emerald-400 font-mono">
@@ -1950,7 +2114,7 @@
 
           <!-- Seletor Rápido de Condomínio -->
           <div>
-            <select id="filterCondominioSelect" onchange="setCondoFilter(this.value)" class="w-full bg-[#101524] border border-white/[0.08] rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-indigo-500 cursor-pointer">
+            <select id="filterCondominioSelect" onchange="setCondoFilter(this.value)" class="w-full bg-slate-50 dark:bg-[#101524] border border-slate-200 dark:border-white/[0.08] rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-300 focus:outline-none focus:border-indigo-500 cursor-pointer font-medium">
               <option value="todos">Todos os Condomínios (Carteira Geral)</option>
               <option value="Residencial Jardins do Bosque">Residencial Jardins do Bosque</option>
               <option value="Condomínio Solar das Palmeiras">Condomínio Solar das Palmeiras</option>
@@ -1964,7 +2128,7 @@
               type="text" 
               id="searchConversationInput" 
               placeholder="Buscar por morador, ap, telefone..." 
-              class="w-full bg-[#101524] border border-white/[0.08] rounded-xl pl-9 pr-8 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all font-sans"
+              class="w-full bg-slate-50 dark:bg-[#101524] border border-slate-200 dark:border-white/[0.08] rounded-xl pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all font-sans font-medium"
               oninput="filterConversations()"
             />
             <svg class="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -1973,11 +2137,11 @@
 
           <!-- Chips de Filtro Segmentado -->
           <div class="flex items-center gap-1 overflow-x-auto pb-0.5 custom-scrollbar text-[11px]">
-            <button onclick="setFilter('todos')" class="px-2.5 py-1 rounded-lg bg-indigo-600/30 text-indigo-300 font-semibold border border-indigo-500/40 text-xs shrink-0 transition-all cursor-pointer" id="btnFilter_todos">Todos</button>
-            <button onclick="setFilter('bot')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer" id="btnFilter_bot">IA Ativa</button>
-            <button onclick="setFilter('humano')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer" id="btnFilter_humano">Humano</button>
-            <button onclick="setFilter('pendentes')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer" id="btnFilter_pendentes">Pendentes</button>
-            <button onclick="setFilter('inadimplentes')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer" id="btnFilter_inadimplentes">Inadimplentes</button>
+            <button onclick="setFilter('todos')" class="px-2.5 py-1 rounded-lg bg-slate-900 dark:bg-indigo-600/30 text-white dark:text-indigo-300 font-semibold border border-slate-900 dark:border-indigo-500/40 text-xs shrink-0 transition-all cursor-pointer" id="btnFilter_todos">Todos</button>
+            <button onclick="setFilter('bot')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/[0.03] hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-700 dark:text-slate-400 text-xs shrink-0 border border-slate-200 dark:border-white/[0.06] transition-all cursor-pointer font-medium" id="btnFilter_bot">IA Ativa</button>
+            <button onclick="setFilter('humano')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/[0.03] hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-700 dark:text-slate-400 text-xs shrink-0 border border-slate-200 dark:border-white/[0.06] transition-all cursor-pointer font-medium" id="btnFilter_humano">Humano</button>
+            <button onclick="setFilter('pendentes')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/[0.03] hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-700 dark:text-slate-400 text-xs shrink-0 border border-slate-200 dark:border-white/[0.06] transition-all cursor-pointer font-medium" id="btnFilter_pendentes">Pendentes</button>
+            <button onclick="setFilter('inadimplentes')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/[0.03] hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-700 dark:text-slate-400 text-xs shrink-0 border border-slate-200 dark:border-white/[0.06] transition-all cursor-pointer font-medium" id="btnFilter_inadimplentes">Inadimplentes</button>
           </div>
         </div>
 
@@ -1985,9 +2149,9 @@
       </aside>
 
       <!-- Coluna 2: Chat ao Vivo & Cockpit de Controle -->
-      <section class="flex-1 flex flex-col bg-[#07090e] relative overflow-hidden">
+      <section class="flex-1 flex flex-col bg-[#F8F7F4] dark:bg-[#07090e] relative overflow-hidden">
         <!-- Header da Conversa Ativa -->
-        <div class="px-4 md:px-6 py-3 border-b border-white/[0.08] bg-[#0b0f19] flex items-center justify-between shrink-0 gap-3">
+        <div class="px-4 md:px-6 py-3 border-b border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#0b0f19] flex items-center justify-between shrink-0 gap-3">
           <div class="flex items-center gap-3 min-w-0">
             <div class="relative shrink-0">
               <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[1.5px] shadow-sm">
@@ -1997,7 +2161,7 @@
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <h2 id="chatHeaderName" class="font-bold text-sm text-white truncate cursor-pointer hover:text-indigo-300 transition-colors" onclick="toggleDossieLateral(true)" title="Clique para ver o Dossiê 360°">Carlos Eduardo Silva</h2>
+                <h2 id="chatHeaderName" class="font-bold text-sm text-slate-900 dark:text-white truncate cursor-pointer hover:text-indigo-600 transition-colors" onclick="toggleDossieLateral(true)" title="Clique para ver o Dossiê 360°">Carlos Eduardo Silva</h2>
                 <span id="chatHeaderBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
                   Em Dia
                 </span>
@@ -2011,7 +2175,7 @@
                   Risco Jurídico
                 </span>
               </div>
-              <p id="chatHeaderSub" class="text-[11px] text-slate-400 truncate mt-0.5">Residencial Jardins do Bosque • Apt 101 - Bloco A</p>
+              <p id="chatHeaderSub" class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Residencial Jardins do Bosque • Apt 101 - Bloco A</p>
             </div>
           </div>
 
@@ -2059,14 +2223,14 @@
         </div>
 
         <!-- BANNER DE AÇÃO RECOMENDADA PELA IA (DISCRETO & INTELIGENTE) -->
-        <div id="smartActionBanner" class="px-4 py-2 bg-gradient-to-r from-indigo-950/40 via-slate-900/60 to-transparent border-b border-indigo-500/20 flex flex-wrap items-center justify-between gap-2 transition-all">
+        <div id="smartActionBanner" class="px-4 py-2 bg-indigo-50 dark:bg-gradient-to-r dark:from-indigo-950/40 dark:via-slate-900/60 dark:to-transparent border-b border-indigo-200 dark:border-indigo-500/20 flex flex-wrap items-center justify-between gap-2 transition-all">
           <div class="flex items-center gap-2 text-xs truncate">
             <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
             <span class="font-bold text-indigo-300 shrink-0 flex items-center gap-1">
               <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               Sugestão IA:
             </span>
-            <span id="smartActionText" class="text-slate-300 truncate">Morador solicitou 2ª via da cota (<strong>R$ 650,00</strong>).</span>
+            <span id="smartActionText" class="text-indigo-950 dark:text-slate-300 truncate font-medium">Morador solicitou 2ª via da cota (<strong>R$ 650,00</strong>).</span>
           </div>
           <div class="flex items-center gap-1.5 shrink-0" id="smartActionButtons">
             <button id="btnSmartActionPrimary" onclick="executarAcaoSugerida('pix')" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
@@ -2159,7 +2323,7 @@
             type="text" 
             id="chatInputText" 
             placeholder="Digite uma mensagem ou digite '/' para comandos rápidos..." 
-            class="flex-1 bg-[#07090e] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all font-sans"
+            class="flex-1 bg-slate-50 dark:bg-[#07090e] border border-slate-300 dark:border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all font-sans font-medium"
             oninput="handleChatInput(event)"
             onkeydown="handleChatKeyDown(event)"
           />
@@ -4756,7 +4920,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
       // Ambiente Sandbox / Demonstração
       if (banner) {
-        banner.className = 'bg-amber-950/40 border-b border-amber-500/25 px-4 py-2 text-xs flex items-center justify-between text-amber-200 transition-all';
+        banner.id = 'envStatusBanner'; banner.className = 'bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-500/25 px-4 py-2 text-xs flex items-center justify-between text-amber-900 dark:text-amber-200 transition-all';
         banner.innerHTML = `
           <div class="flex items-center gap-2">
             <span class="text-amber-400">⚠️</span>
@@ -7409,41 +7573,32 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         const isFinOk = c.statusFinanceiro === 'regular';
 
         return `
-          <div onclick="selectConversation('${c.remoteJid}')" class="p-3 cursor-pointer transition-all flex items-start gap-3 border-b border-white/[0.04] ${isActive ? 'bg-indigo-950/40 border-l-4 border-indigo-500' : 'hover:bg-white/[0.03]'}">
+          <div onclick="selectConversation('${c.remoteJid}')" class="p-3 cursor-pointer transition-all flex items-start gap-3 border-b border-slate-100 dark:border-white/[0.04] ${isActive ? 'bg-indigo-50 dark:bg-indigo-950/50 border-l-4 border-indigo-600 shadow-2xs' : 'hover:bg-slate-50 dark:hover:bg-white/[0.03]'}">
             <div class="relative shrink-0 mt-0.5">
-              <img src="${avatarUrl}" class="w-10 h-10 rounded-full object-cover border border-white/10" alt="${c.pushName || 'Morador'}" />
-              <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0a0e18] ${c.isHumanHandoff ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}" title="${c.isHumanHandoff ? 'Operador Humano Ativo' : 'IA Autônoma Ativa'}"></span>
+              <img src="${avatarUrl}" class="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-white/10" alt="${c.pushName || 'Morador'}" />
+              <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-[#0a0e18] ${c.isHumanHandoff ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}" title="${c.isHumanHandoff ? 'Operador Humano Ativo' : 'IA Autônoma Ativa'}"></span>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center justify-between gap-1 mb-0.5">
-                <span class="font-bold text-xs text-white truncate">${c.pushName || c.morador?.nome || 'Condômino'}</span>
-                <span class="text-[10px] text-slate-500 font-mono shrink-0">${lastMsg.timestamp || ''}</span>
+                <span class="font-bold text-xs text-slate-900 dark:text-white truncate">${c.pushName || c.morador?.nome || 'Condômino'}</span>
+                <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono shrink-0">${lastMsg.timestamp || ''}</span>
               </div>
               <div class="flex items-center justify-between text-[11px] gap-1 mb-1">
-                <span class="text-indigo-300 font-mono font-semibold text-[10px] truncate">${unit}</span>
-                ${isFinOk ? '<span class="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/15 text-emerald-400 font-mono font-bold shrink-0 border border-emerald-500/20">● Em Dia</span>' : '<span class="px-1.5 py-0.2 rounded text-[9px] bg-rose-500/20 text-rose-300 font-mono font-bold shrink-0 border border-rose-500/30">⚠️ Débito</span>'}
+                <span class="text-indigo-600 dark:text-indigo-300 font-mono font-semibold text-[10px] truncate">${unit}</span>
+                ${isFinOk ? '<span class="px-1.5 py-0.2 rounded text-[9px] bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-400 font-mono font-bold shrink-0 border border-emerald-300 dark:border-emerald-500/20">● Em Dia</span>' : '<span class="px-1.5 py-0.2 rounded text-[9px] bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300 font-mono font-bold shrink-0 border border-rose-300 dark:border-rose-500/30">⚠️ Débito</span>'}
               </div>
               <div class="flex items-center justify-between gap-2">
                 ${lastMsg.isAudio ? `
-                  <p class="text-[11px] text-cyan-300 truncate flex-1 flex items-center gap-1 font-medium">
-                    <span class="px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 font-mono text-[9px] font-bold shrink-0">🎙️ ${lastMsg.duration || '0:22'}</span>
+                  <p class="text-[11px] text-cyan-700 dark:text-cyan-300 truncate flex-1 flex items-center gap-1 font-medium">
+                    <span class="px-1.5 py-0.2 rounded bg-cyan-100 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-200 font-mono text-[9px] font-bold shrink-0">🎙️ ${lastMsg.duration || '0:22'}</span>
                     <span class="truncate">${lastMsg.audioSummary || 'Nota de voz recebida'}</span>
                   </p>
                 ` : `
-                  <p class="text-[11px] text-slate-400 truncate flex-1">${lastMsg.text}</p>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-400 truncate flex-1 leading-snug">${lastMsg.text}</p>
                 `}
-                ${c.sentiment === 'risco_juridico' ? '<span class="px-1 py-0.2 rounded text-[8px] bg-rose-500/30 text-rose-200 font-mono font-bold shrink-0 border border-rose-500/40">Jurídico</span>' : (c.isHumanHandoff ? '<span class="px-1 py-0.2 rounded text-[8px] bg-amber-500/20 text-amber-300 font-mono font-bold shrink-0">Humano</span>' : '<span class="px-1 py-0.2 rounded text-[8px] bg-indigo-500/20 text-indigo-300 font-mono font-bold shrink-0">IA</span>')}
+                ${c.sentiment === 'risco_juridico' ? '<span class="px-1 py-0.2 rounded text-[8px] bg-rose-100 dark:bg-rose-500/30 text-rose-800 dark:text-rose-200 font-mono font-bold shrink-0 border border-rose-300 dark:border-rose-500/40">Jurídico</span>' : (c.isHumanHandoff ? '<span class="px-1 py-0.2 rounded text-[8px] bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 font-mono font-bold shrink-0">Humano</span>' : '<span class="px-1 py-0.2 rounded text-[8px] bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300 font-mono font-bold shrink-0">IA</span>')}
               </div>
-              ${c.status === 'waiting_human' ? `
-                <div class="mt-1.5 flex items-center gap-1 text-[9px] font-mono text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                  <span>Aguardando Atendente • SLA: ${calcularEsperaMinutos(c.slaStartedAt || c.lastInteraction)} min</span>
-                </div>
-              ` : (c.status === 'in_service' && c.assignedOperator ? `
-                <div class="mt-1.5 flex items-center gap-1 text-[9px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/25">
-                  <span>👤 Em Atendimento: ${c.assignedOperator}</span>
-                </div>
-              ` : '')}
+              ${c.status === 'waiting_human' ? '<div class="mt-1 text-[10px] text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1"><span>⚠️ Aguardando Operador</span></div>' : ''}
             </div>
           </div>
         `;
@@ -7552,50 +7707,50 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
           if (m.isAudio) {
             return `
-              <div class="flex flex-col items-start">
-                <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md chat-bubble-user text-slate-200 border border-cyan-500/20">
+              <div class="flex flex-col items-start mb-3">
+                <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md chat-bubble-user border border-slate-200 dark:border-cyan-500/20">
                   <div class="flex items-center justify-between gap-4 mb-2">
-                    <div class="flex items-center gap-1.5 font-bold text-[10px] text-cyan-300">
-                      <svg class="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                    <div class="flex items-center gap-1.5 font-bold text-[10px] text-cyan-600 dark:text-cyan-300">
+                      <svg class="w-3 h-3 text-cyan-500 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
                       <span>Áudio WhatsApp</span>
-                      <span class="px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 font-mono text-[9px]">${m.duration || '0:22'}</span>
+                      <span class="px-1.5 py-0.2 rounded bg-cyan-100 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-200 font-mono text-[9px]">${m.duration || '0:22'}</span>
                     </div>
                     <div class="flex items-center gap-1">
-                      <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
-                      <span class="text-cyan-400 font-mono text-[9px]">✓✓</span>
+                      <span class="text-[9px] text-slate-400 dark:text-slate-500 font-mono">${m.timestamp || ''}</span>
+                      <span class="text-cyan-600 dark:text-cyan-400 font-mono text-[9px]">✓✓</span>
                     </div>
                   </div>
 
                   <!-- Waveform Player Interativo -->
-                  <div class="flex items-center gap-3 p-2.5 rounded-xl bg-black/40 border border-white/[0.08]">
-                    <button onclick="showToast('Áudio em Reprodução', 'Reproduzindo áudio do morador com velocidade normal (1.0x).', 'info')" class="w-7 h-7 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black flex items-center justify-center font-bold text-[11px] shrink-0 transition-transform active:scale-95 shadow cursor-pointer">
-                      <svg class="w-3.5 h-3.5 text-black ml-0.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/[0.08]">
+                    <button onclick="showToast('Áudio em Reprodução', 'Reproduzindo áudio do morador com velocidade normal (1.0x).', 'info')" class="w-7 h-7 rounded-full bg-cyan-500 hover:bg-cyan-400 text-white dark:text-black flex items-center justify-center font-bold text-[11px] shrink-0 transition-transform active:scale-95 shadow cursor-pointer">
+                      <svg class="w-3.5 h-3.5 ml-0.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </button>
                     <div class="flex-1 flex items-center gap-1 h-5">
-                      <span class="w-1 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
-                      <span class="w-1 h-4 bg-cyan-400 rounded-full"></span>
-                      <span class="w-1 h-2 bg-cyan-500/60 rounded-full"></span>
-                      <span class="w-1 h-5 bg-cyan-300 rounded-full"></span>
-                      <span class="w-1 h-3 bg-cyan-400 rounded-full animate-pulse"></span>
-                      <span class="w-1 h-4 bg-cyan-400 rounded-full"></span>
-                      <span class="w-1 h-1.5 bg-cyan-500/60 rounded-full"></span>
-                      <span class="w-1 h-5 bg-cyan-400 rounded-full"></span>
-                      <span class="w-1 h-2 bg-cyan-500/40 rounded-full"></span>
+                      <span class="w-1 h-2 bg-cyan-500 rounded-full animate-pulse"></span>
+                      <span class="w-1 h-4 bg-cyan-500 rounded-full"></span>
+                      <span class="w-1 h-2 bg-cyan-400 rounded-full"></span>
+                      <span class="w-1 h-5 bg-cyan-600 rounded-full"></span>
+                      <span class="w-1 h-3 bg-cyan-500 rounded-full animate-pulse"></span>
+                      <span class="w-1 h-4 bg-cyan-500 rounded-full"></span>
+                      <span class="w-1 h-1.5 bg-cyan-400 rounded-full"></span>
+                      <span class="w-1 h-5 bg-cyan-500 rounded-full"></span>
+                      <span class="w-1 h-2 bg-cyan-400 rounded-full"></span>
                     </div>
-                    <span class="text-[10px] text-slate-400 font-mono shrink-0">${m.duration || '0:22'}</span>
+                    <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono shrink-0">${m.duration || '0:22'}</span>
                   </div>
 
                   <!-- Resumo Executivo CondoVolto AI -->
-                  <div class="mt-2.5 p-2.5 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-indigo-100">
-                    <div class="flex items-center gap-1.5 text-[10px] font-bold text-cyan-300 mb-1">
-                      <svg class="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  <div class="mt-2.5 p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-500/30 text-indigo-950 dark:text-indigo-100">
+                    <div class="flex items-center gap-1.5 text-[10px] font-bold text-indigo-700 dark:text-cyan-300 mb-1">
+                      <svg class="w-3 h-3 text-indigo-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                       <span>Resumo Executivo CondoVolto AI:</span>
                     </div>
-                    <p class="text-xs text-white font-medium leading-relaxed">${m.audioSummary || 'Morador solicita confirmação de baixa do Pix no sistema.'}</p>
+                    <p class="text-xs text-slate-800 dark:text-white font-medium leading-relaxed">${m.audioSummary || 'Morador solicita confirmação de baixa do Pix no sistema.'}</p>
                     
-                    <details class="mt-2 text-[10px] text-slate-400">
-                      <summary class="hover:text-indigo-300 cursor-pointer font-mono font-semibold">Ver Transcrição Whisper Completa...</summary>
-                      <p class="mt-1.5 p-2 rounded-lg bg-black/50 text-slate-300 italic border border-white/5 font-sans">${m.audioTranscription || m.text || ''}</p>
+                    <details class="mt-2 text-[10px] text-slate-500 dark:text-slate-400">
+                      <summary class="hover:text-indigo-600 dark:hover:text-indigo-300 cursor-pointer font-mono font-semibold">Ver Transcrição Whisper Completa...</summary>
+                      <p class="mt-1.5 p-2 rounded-lg bg-white dark:bg-black/50 text-slate-700 dark:text-slate-300 italic border border-slate-200 dark:border-white/5 font-sans">${m.audioTranscription || m.text || ''}</p>
                     </details>
                   </div>
                 </div>
@@ -7604,24 +7759,24 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           }
 
           return `
-            <div class="flex flex-col ${isUser ? 'items-start' : 'items-end'}">
-              <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md ${isUser ? 'chat-bubble-user text-slate-200' : 'chat-bubble-agent text-indigo-100'}">
-                <div class="flex items-center justify-between gap-4 mb-1">
-                  <span class="font-bold text-[10px] ${isUser ? 'text-slate-400' : 'text-cyan-300 font-mono'}">${isUser ? 'Condômino' : 'CondoVolto AI'}</span>
+            <div class="flex flex-col ${isUser ? 'items-start' : 'items-end'} mb-3">
+              <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-sm ${isUser ? 'chat-bubble-user' : 'chat-bubble-agent'}">
+                <div class="flex items-center justify-between gap-4 mb-1.5">
+                  <span class="font-bold text-[10px] ${isUser ? 'text-slate-500 dark:text-slate-400 font-mono' : 'text-cyan-400 font-mono'}">${isUser ? 'Condômino' : 'CondoVolto AI'}</span>
                   <div class="flex items-center gap-1">
-                    <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
-                    <span class="text-indigo-400 font-mono text-[9px]">✓✓</span>
+                    <span class="text-[9px] opacity-70 font-mono">${m.timestamp || ''}</span>
+                    <span class="${isUser ? 'text-indigo-600 dark:text-indigo-400' : 'text-emerald-400'} font-mono text-[9px]">✓✓</span>
                   </div>
                 </div>
-                <p class="whitespace-pre-wrap leading-relaxed">${m.text}</p>
+                <p class="whitespace-pre-wrap leading-relaxed font-sans font-medium text-xs sm:text-[13px]">${m.text}</p>
 
                 ${m.pixCode ? `
-                  <div class="mt-3 p-3 rounded-xl bg-black/60 border border-emerald-500/30 text-emerald-300">
+                  <div class="mt-3 p-3 rounded-xl bg-slate-50 dark:bg-black/60 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300">
                     <div class="flex items-center justify-between mb-1.5">
-                      <span class="text-[10px] font-mono font-bold uppercase tracking-wider">Pix Copia e Cola Oficial:</span>
-                      <button onclick="navigator.clipboard.writeText('${m.pixCode}'); showToast('Pix Copiado!', 'Chave Pix Copia e Cola copiada com sucesso.', 'success')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-bold text-[10px] cursor-pointer">Copiar Chave</button>
+                      <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Pix Copia e Cola Oficial:</span>
+                      <button onclick="navigator.clipboard.writeText('${m.pixCode}'); showToast('Pix Copiado!', 'Chave Pix Copia e Cola copiada com sucesso.', 'success')" class="px-2 py-0.5 rounded bg-emerald-600 text-white hover:bg-emerald-500 font-bold text-[10px] cursor-pointer shadow-2xs">Copiar Chave</button>
                     </div>
-                    <input readonly value="${m.pixCode}" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded px-2 py-1 text-[10px] font-mono text-slate-300" />
+                    <input readonly value="${m.pixCode}" class="w-full bg-white dark:bg-[#0a0e18] border border-slate-200 dark:border-white/[0.08] rounded px-2 py-1 text-[10px] font-mono text-slate-800 dark:text-slate-300 select-all" />
                   </div>
                 ` : ''}
               </div>
