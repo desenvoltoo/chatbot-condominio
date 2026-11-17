@@ -64,6 +64,11 @@ export interface ChatMessage {
   mediaUrl?: string;
   mediaType?: 'pdf' | 'image' | 'audio';
   read?: boolean;
+  pixCode?: string;
+  isAudio?: boolean | number;
+  duration?: string;
+  audioSummary?: string;
+  audioTranscription?: string;
 }
 
 export interface UserSession {
@@ -71,6 +76,9 @@ export interface UserSession {
   pushName?: string;
   state: SessionState;
   cpf?: string;
+  cpfFormatted?: string;
+  telefone?: string;
+  avatar?: string;
   morador?: Morador;
   selectedUnidadeId?: string;
   boletosDisponiveis?: Boleto[];
@@ -79,6 +87,18 @@ export interface UserSession {
   messages?: ChatMessage[];
   npsRating?: number;
   isHumanHandoff?: boolean;
+  status?: 'waiting_human' | 'in_service' | 'ai' | 'closed';
+  assignedOperator?: string;
+  slaStartedAt?: string;
+  statusFinanceiro?: 'regular' | 'inadimplente' | 'acordo_ativo';
+  statusFinanceiroLabel?: string;
+  statusFinanceiroBadgeClass?: string;
+  cotaLabel?: string;
+  cotaValor?: string;
+  cotaVenc?: string;
+  splitAdm?: string;
+  pixValor?: string;
+  notasInternas?: string[];
 }
 
 export interface WebhookMessage {

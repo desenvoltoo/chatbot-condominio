@@ -9,6 +9,7 @@ import { RagService } from '../services/rag.service.js';
 import { DbService } from '../services/db.service.js';
 import { requireAuth } from '../middlewares/auth.middleware.js';
 import { formatarMensagemPix, gerarPayloadPix } from '../utils/pix.util.js';
+import { EventsService } from '../services/events.service.js';
 
 export function createApiRouter(orchestrator: BotOrchestrator): Router {
   const router = Router();
@@ -151,9 +152,48 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   // 5. GESTÃO DE SESSÕES & CONVERSAS WHATSAPP
   // ==========================================
 
+  // Streaming em tempo real (Server-Sent Events) para atualização imediata do painel
+  router.get('/events', (req: Request, res: Response) => {
+    const token = (req.query.token as string) || (req.headers['authorization']?.replace('Bearer ', ''));
+    if (!token) {
+      return res.status(401).json({ error: 'Token de autenticação ausente' });
+    }
+
+    if (token !== 'sandbox-demo-token') {
+      const user = authService.verifyToken(token);
+      if (!user) {
+        return res.status(403).json({ error: 'Token inválido ou expirado' });
+      }
+    }
+
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    if (typeof (res as any).flushHeaders === 'function') {
+      (res as any).flushHeaders();
+    }
+
+    EventsService.getInstance().addClient(res);
+  });
+
   router.get('/conversas', requireAuth(), (_req: Request, res: Response) => {
     const sessions = orchestrator.getSessionManager().getAllSessions();
     res.json(sessions);
+  });
+
+  router.get('/conversas/stats', requireAuth(), (_req: Request, res: Response) => {
+    const sessions = orchestrator.getSessionManager().getAllSessions();
+    const stats = {
+      total: sessions.length,
+      aguardandoHumano: sessions.filter(s => s.status === 'waiting_human' || (s.isHumanHandoff && !s.assignedOperator)).length,
+      emAtendimento: sessions.filter(s => s.status === 'in_service' || (s.isHumanHandoff && s.assignedOperator)).length,
+      comIA: sessions.filter(s => !s.isHumanHandoff && s.status !== 'closed').length,
+      concluidos: sessions.filter(s => s.status === 'closed').length,
+      inadimplentes: sessions.filter(s => s.statusFinanceiro === 'inadimplente').length,
+      connectedClients: EventsService.getInstance().getConnectedClientsCount()
+    };
+    res.json(stats);
   });
 
   router.get('/conversas/:remoteJid', requireAuth(), (req: Request, res: Response) => {
@@ -188,12 +228,63 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     res.json({ success: true, timestamp: timeStr });
   });
 
-  router.post('/conversas/:remoteJid/transferir', requireAuth(), (req: Request, res: Response) => {
+  router.post('/conversas/:remoteJid/transferir', requireAuth(), async (req: Request, res: Response) => {
     const { remoteJid } = req.params;
-    const { isHuman } = req.body;
+    const { acao, isHuman } = req.body;
+    const user = (req as any).user;
+    const operadorNome = user?.nome || 'Operador';
 
-    orchestrator.getSessionManager().setHumanHandoff(remoteJid, Boolean(isHuman));
+    const sessionManager = orchestrator.getSessionManager();
+
+    if (acao === 'finalizar' || acao === 'fechar') {
+      sessionManager.setTicketStatus(remoteJid, 'closed', operadorNome);
+      try {
+        await evolutionService.sendText(
+          remoteJid,
+          '✅ *Atendimento Encerrado:*\nSeu chamado foi finalizado pela administração do condomínio.\nCaso precise de algo mais, basta nos enviar uma nova mensagem!'
+        );
+      } catch (e) {}
+      return res.json({ success: true, status: 'closed', message: 'Atendimento finalizado com sucesso.' });
+    }
+
+    if (acao === 'assumir' || isHuman === true || acao === 'humano') {
+      sessionManager.setTicketStatus(remoteJid, 'in_service', operadorNome);
+      try {
+        await evolutionService.sendText(
+          remoteJid,
+          `👤 *Atendimento Humano:*\nO operador *${operadorNome}* assumiu esta conversa e está à sua disposição!`
+        );
+      } catch (e) {}
+      return res.json({ success: true, status: 'in_service', assignedOperator: operadorNome });
+    }
+
+    if (acao === 'devolver_ia' || isHuman === false || acao === 'bot') {
+      sessionManager.setTicketStatus(remoteJid, 'ai');
+      try {
+        await evolutionService.sendText(
+          remoteJid,
+          '🤖 *DOMUS AI Reativado:*\nVocê está novamente conversando com o assistente inteligente autônomo do condomínio.\nComo posso ajudar você agora?'
+        );
+      } catch (e) {}
+      return res.json({ success: true, status: 'ai' });
+    }
+
+    sessionManager.setHumanHandoff(remoteJid, Boolean(isHuman), operadorNome);
     res.json({ success: true, isHumanHandoff: Boolean(isHuman) });
+  });
+
+  router.post('/conversas/:remoteJid/nota', requireAuth(), (req: Request, res: Response) => {
+    const { remoteJid } = req.params;
+    const { texto } = req.body;
+    const user = (req as any).user;
+    const operadorNome = user?.nome || 'Operador';
+
+    if (!texto || !texto.trim()) {
+      return res.status(400).json({ error: 'Texto da nota é obrigatório' });
+    }
+
+    orchestrator.getSessionManager().addNotaInterna(remoteJid, operadorNome, texto.trim());
+    res.json({ success: true, message: 'Nota interna registrada.' });
   });
 
   // ==========================================

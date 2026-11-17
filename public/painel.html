@@ -2344,6 +2344,24 @@
           </button>
         </div>
 
+        <!-- Bloco de Notas Internas da Administração / Atendimento -->
+        <div class="p-4 border-t border-white/[0.08] space-y-2.5 text-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+              Notas Internas da Equipe
+            </span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/25">Supervisão</span>
+          </div>
+          <div id="sideMoradorNotas" class="space-y-1.5 max-h-28 overflow-y-auto text-[11px] text-slate-400 custom-scrollbar">
+            <p class="italic text-slate-500">Nenhuma anotação registrada ainda.</p>
+          </div>
+          <div class="flex gap-1.5 pt-1">
+            <input type="text" id="inputNotaInterna" placeholder="Anotação interna..." class="flex-1 bg-[#101524] border border-white/[0.08] rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" />
+            <button onclick="salvarNotaInternaMorador()" class="px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shrink-0 cursor-pointer">Salvar</button>
+          </div>
+        </div>
+
         <!-- Linha do Tempo 360° do Morador (Life-Events & Histórico Vivo) -->
         <div class="p-4 border-t border-white/[0.08] space-y-3 text-xs">
           <div class="flex items-center justify-between">
@@ -5780,12 +5798,119 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
     ];
 
-    async function loadConversations() {
+    let realtimeEventSource = null;
+
+    function initRealtimeStream() {
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (!token || isSandbox) {
+        console.log('[Realtime] Modo Sandbox ativo: eventos operam localmente.');
+        return;
+      }
+
+      if (realtimeEventSource) {
+        realtimeEventSource.close();
+      }
+
       try {
-        const res = await fetch('/api/conversas');
-        if (res.ok) allConversations = await res.json();
-        else allConversations = [...STATIC_SEED_CONVERSATIONS];
-      } catch (err) {
+        realtimeEventSource = new EventSource(`/api/events?token=${encodeURIComponent(token)}`);
+
+        realtimeEventSource.onopen = () => {
+          console.log('🟢 [Realtime] Stream SSE conectado com o servidor DOMUS AI.');
+        };
+
+        realtimeEventSource.onmessage = (e) => {
+          try {
+            const event = JSON.parse(e.data);
+            handleRealtimeEvent(event);
+          } catch (err) {
+            console.warn('[Realtime] Erro ao parsear evento SSE:', err);
+          }
+        };
+
+        realtimeEventSource.onerror = (err) => {
+          console.warn('[Realtime] Conexão SSE instável, tentando reconectar...');
+        };
+      } catch (e) {
+        console.warn('[Realtime] Falha ao inicializar EventSource:', e);
+      }
+    }
+
+    function handleRealtimeEvent(event) {
+      if (!event || !event.type) return;
+
+      if (event.type === 'new_message') {
+        const { remoteJid, data } = event;
+        const msg = data?.message;
+        let conv = allConversations.find(c => c.remoteJid === remoteJid);
+
+        if (!conv && data?.session) {
+          allConversations.unshift(data.session);
+          conv = data.session;
+        }
+
+        if (conv && msg) {
+          if (!conv.messages) conv.messages = [];
+          if (!conv.messages.some(m => m.id === msg.id)) {
+            conv.messages.push(msg);
+          }
+          conv.lastInteraction = new Date();
+          allConversations = [conv, ...allConversations.filter(c => c.remoteJid !== remoteJid)];
+          renderConversationsList();
+
+          if (activeRemoteJid === remoteJid) {
+            renderActiveConversationStream(conv);
+          } else {
+            showToast(`Nova Mensagem: ${conv.pushName || 'Morador'}`, (msg.text || '').slice(0, 50) + '...', 'info');
+          }
+        }
+      } else if (event.type === 'handoff_changed' || event.type === 'ticket_status') {
+        const { remoteJid, data } = event;
+        const conv = allConversations.find(c => c.remoteJid === remoteJid);
+        if (conv) {
+          if (data?.session) {
+            Object.assign(conv, data.session);
+          } else {
+            if (typeof data?.isHuman === 'boolean') conv.isHumanHandoff = data.isHuman;
+            if (data?.status) conv.status = data.status;
+            if (data?.operatorName) conv.assignedOperator = data.operatorName;
+          }
+          renderConversationsList();
+          if (activeRemoteJid === remoteJid) {
+            updateHandoffButton(conv.isHumanHandoff);
+            updateSmartActionBanner(conv);
+          }
+        }
+      }
+    }
+
+    function calcularEsperaMinutos(dateStr) {
+      if (!dateStr) return '5';
+      const diff = Date.now() - new Date(dateStr).getTime();
+      return Math.max(1, Math.round(diff / 60000));
+    }
+
+    async function loadConversations() {
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (token && !isSandbox) {
+        try {
+          const res = await fetch('/api/conversas', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          if (res.ok) {
+            allConversations = await res.json();
+          } else {
+            allConversations = [...STATIC_SEED_CONVERSATIONS];
+          }
+        } catch (err) {
+          allConversations = [...STATIC_SEED_CONVERSATIONS];
+        }
+      } else {
         allConversations = [...STATIC_SEED_CONVERSATIONS];
       }
 
@@ -5793,6 +5918,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (allConversations.length > 0 && !activeRemoteJid) {
         selectConversation(allConversations[0].remoteJid);
       }
+      initRealtimeStream();
     }
 
     function renderConversationsList() {
@@ -5808,17 +5934,28 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
         // Filtro de Status
         if (currentFilter === 'humano') return c.isHumanHandoff;
-        if (currentFilter === 'bot') return !c.isHumanHandoff;
-        if (currentFilter === 'pendentes') return c.isPendente || c.isHumanHandoff;
+        if (currentFilter === 'bot') return !c.isHumanHandoff && c.status !== 'closed';
+        if (currentFilter === 'pendentes') return c.status === 'waiting_human' || c.isHumanHandoff;
         if (currentFilter === 'inadimplentes') return c.statusFinanceiro === 'inadimplente';
         return true;
       });
 
-      // Atualiza badge de total
+      // Atualiza badge de total e contadores dos filtros
       const totalBadge = document.getElementById('chatTotalCountBadge');
       if (totalBadge) {
         totalBadge.innerText = `${filtered.length} ${filtered.length === 1 ? 'conversa' : 'conversas'}`;
       }
+
+      const btnTodos = document.getElementById('btnFilter_todos');
+      if (btnTodos) btnTodos.innerText = `Todos (${allConversations.length})`;
+      const btnBot = document.getElementById('btnFilter_bot');
+      if (btnBot) btnBot.innerText = `IA (${allConversations.filter(c => !c.isHumanHandoff && c.status !== 'closed').length})`;
+      const btnHumano = document.getElementById('btnFilter_humano');
+      if (btnHumano) btnHumano.innerText = `Humano (${allConversations.filter(c => c.isHumanHandoff).length})`;
+      const btnPendentes = document.getElementById('btnFilter_pendentes');
+      if (btnPendentes) btnPendentes.innerText = `Aguardando (${allConversations.filter(c => c.status === 'waiting_human').length})`;
+      const btnInadimplentes = document.getElementById('btnFilter_inadimplentes');
+      if (btnInadimplentes) btnInadimplentes.innerText = `Inadimplentes (${allConversations.filter(c => c.statusFinanceiro === 'inadimplente').length})`;
 
       if (filtered.length === 0) {
         container.innerHTML = `
@@ -5866,6 +6003,16 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
                 `}
                 ${c.sentiment === 'risco_juridico' ? '<span class="px-1 py-0.2 rounded text-[8px] bg-rose-500/30 text-rose-200 font-mono font-bold shrink-0 border border-rose-500/40">Jurídico</span>' : (c.isHumanHandoff ? '<span class="px-1 py-0.2 rounded text-[8px] bg-amber-500/20 text-amber-300 font-mono font-bold shrink-0">Humano</span>' : '<span class="px-1 py-0.2 rounded text-[8px] bg-indigo-500/20 text-indigo-300 font-mono font-bold shrink-0">IA</span>')}
               </div>
+              ${c.status === 'waiting_human' ? `
+                <div class="mt-1.5 flex items-center gap-1 text-[9px] font-mono text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                  <span>Aguardando Atendente • SLA: ${calcularEsperaMinutos(c.slaStartedAt || c.lastInteraction)} min</span>
+                </div>
+              ` : (c.status === 'in_service' && c.assignedOperator ? `
+                <div class="mt-1.5 flex items-center gap-1 text-[9px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/25">
+                  <span>👤 Em Atendimento: ${c.assignedOperator}</span>
+                </div>
+              ` : '')}
             </div>
           </div>
         `;
@@ -5958,8 +6105,9 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         btnSidePix.setAttribute('onclick', `abrirModalQrCodePix('${pixVal}')`);
       }
 
-      // 3. Atualiza Linha do Tempo 360° do Morador
+      // 3. Atualiza Linha do Tempo 360° do Morador e Notas Internas
       renderMoradorTimeline(remoteJid);
+      renderNotasInternas(conv);
 
       // 4. Atualiza controles de IA / Handoff
       updateHandoffButton(conv.isHumanHandoff);
@@ -6053,14 +6201,49 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
     }
 
-    function toggleHumanHandoff() {
+    async function toggleHumanHandoff() {
       const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
       if (!conv) return;
 
-      conv.isHumanHandoff = !conv.isHumanHandoff;
+      const newHandoff = !conv.isHumanHandoff;
+      conv.isHumanHandoff = newHandoff;
+      conv.status = newHandoff ? 'in_service' : 'ai';
+      if (newHandoff) {
+        const userRaw = localStorage.getItem('domus_auth_user');
+        const user = userRaw ? JSON.parse(userRaw) : null;
+        conv.assignedOperator = user?.nome || 'Operador';
+      } else {
+        conv.assignedOperator = undefined;
+      }
+
       updateHandoffButton(conv.isHumanHandoff);
       updateSmartActionBanner(conv);
       renderConversationsList();
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (token && !isSandbox) {
+        try {
+          await fetch(`/api/conversas/${encodeURIComponent(activeRemoteJid)}/transferir`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              isHuman: newHandoff,
+              acao: newHandoff ? 'assumir' : 'devolver_ia'
+            })
+          });
+          showToast(newHandoff ? 'Atendimento Assumido' : 'Devolvido à IA', newHandoff ? 'Você agora responde diretamente a este morador.' : 'A inteligência artificial retomou o diálogo autônomo.', 'success');
+          return;
+        } catch (e) {
+          console.warn('[Handoff] Backend offline:', e);
+        }
+      }
+
+      showToast(newHandoff ? '[Modo Sandbox] Operador Assumiu' : '[Modo Sandbox] Devolvido à IA', 'Status do atendimento atualizado no painel.', 'info');
     }
 
     function updateHandoffButton(isHuman) {
@@ -6187,12 +6370,92 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       renderConversationsList();
     }
 
-    function concluirAtendimentoAtual() {
+    async function concluirAtendimentoAtual() {
       const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
       if (!conv) return;
+
+      conv.status = 'closed';
+      conv.isHumanHandoff = false;
       conv.isPendente = false;
-      showToast('Atendimento Concluído', `Conversa com ${conv.pushName || 'morador'} foi marcada como resolvida.`, 'success');
       renderConversationsList();
+      updateHandoffButton(false);
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (token && !isSandbox) {
+        try {
+          await fetch(`/api/conversas/${encodeURIComponent(activeRemoteJid)}/transferir`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ acao: 'finalizar' })
+          });
+          showToast('Atendimento Finalizado!', `Chamado de ${conv.pushName || 'morador'} concluído com sucesso e notificado no WhatsApp.`, 'success');
+          return;
+        } catch (e) {}
+      }
+
+      showToast('Atendimento Concluído', `Conversa com ${conv.pushName || 'morador'} foi marcada como resolvida.`, 'success');
+    }
+
+    async function salvarNotaInternaMorador() {
+      const input = document.getElementById('inputNotaInterna');
+      const texto = input ? input.value.trim() : '';
+      if (!texto || !activeRemoteJid) return;
+
+      const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
+      if (!conv) return;
+
+      if (!conv.notasInternas) conv.notasInternas = [];
+      const autor = currentUserRole?.toUpperCase() || 'OPERADOR';
+      const timestamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const notaFormatada = `[${timestamp} - ${autor}]: ${texto}`;
+      conv.notasInternas.push(notaFormatada);
+      input.value = '';
+      renderNotasInternas(conv);
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (token && !isSandbox) {
+        try {
+          await fetch(`/api/conversas/${encodeURIComponent(activeRemoteJid)}/nota`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ texto })
+          });
+          showToast('Nota Salva', 'Anotação interna gravada no dossiê do condomínio.', 'success');
+          return;
+        } catch (e) {}
+      }
+      showToast('[Modo Sandbox] Nota Salva', 'Anotação gravada localmente.', 'info');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+      });
+    }
+
+    function renderNotasInternas(conv) {
+      const container = document.getElementById('sideMoradorNotas');
+      if (!container) return;
+      if (!conv || !conv.notasInternas || conv.notasInternas.length === 0) {
+        container.innerHTML = '<p class="italic text-slate-500">Nenhuma anotação registrada ainda.</p>';
+        return;
+      }
+      container.innerHTML = conv.notasInternas.map(n => `
+        <div class="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05] text-[11px] text-slate-300 font-sans">
+          ${escapeHtml(n)}
+        </div>
+      `).join('');
     }
 
     function toggleAttachmentMenu() {

@@ -24,11 +24,47 @@ export class BotOrchestrator {
     return this.sisconService;
   }
 
+  async reply(remoteJid: string, text: string): Promise<void> {
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    this.sessionManager.addMessage(remoteJid, {
+      id: `msg_bot_${Date.now()}`,
+      sender: 'bot',
+      text,
+      timestamp: timeStr,
+    });
+    try {
+      await this.evolutionService.sendText(remoteJid, text);
+    } catch (err: any) {
+      console.warn('[BotOrchestrator] Falha no envio WhatsApp:', err.message);
+    }
+  }
+
   async processIncomingMessage(remoteJid: string, text: string, pushName?: string): Promise<void> {
     const rawText = text.trim();
     const lowerText = rawText.toLowerCase();
     const session = this.sessionManager.getSession(remoteJid, pushName);
     const nomeUsuario = pushName || 'Condômino(a)';
+
+    // 1. Registra no histórico da sessão e emite evento SSE em tempo real
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    this.sessionManager.addMessage(remoteJid, {
+      id: `msg_user_${Date.now()}`,
+      sender: 'user',
+      text: rawText,
+      timestamp: timeStr,
+    });
+
+    // 2. Análise proativa de risco jurídico
+    const termosJuridicos = ['advogado', 'processo', 'justiça', 'juizado', 'procon', 'danos morais'];
+    if (termosJuridicos.some((t) => lowerText.includes(t))) {
+      session.tempData = { ...session.tempData, sentiment: 'risco_juridico' };
+      session.status = 'waiting_human';
+      session.isHumanHandoff = true;
+      if (!session.slaStartedAt) session.slaStartedAt = new Date().toISOString();
+      this.sessionManager.updateSession(session);
+    }
 
     // Comandos globais de reinício
     if (['menu', 'inicio', 'voltar', 'cancelar', 'ola', 'olá', 'oi'].includes(lowerText) && session.state !== 'INICIO') {
@@ -52,7 +88,7 @@ export class BotOrchestrator {
     if (termosAtendente.some((termo) => lowerText.includes(termo)) && session.state !== 'ATENDIMENTO_HUMANO') {
       const isAutonomo = true; // DOMUS AI opera em modo 100% autônomo
       if (isAutonomo && !lowerText.includes('operador humano') && !lowerText.includes('urgente')) {
-        await this.evolutionService.sendText(
+        await this.reply(
           remoteJid,
           '🤖 *Central de Inteligência DOMUS AI (Modo 100% Autônomo)*\n\nSou a IA autônoma do condomínio e posso resolver sua solicitação **imediatamente, sem filas de espera e sem intervenção humana**!\n\nPosso realizar para você agora mesmo:\n• *1* - 📄 Emitir 2ª via de boleto com Pix Copia e Cola\n• *2* - 🤝 Simular e fechar acordo de parcelamento de débito\n• *3* - 💧 Consultar medição de água/gás\n• *4* - 📅 Reservar salão de festas ou churrasqueira\n• *5* - 📖 Tirar dúvidas do Regimento Interno e Convenção\n• *6* - 🛠️ Registrar chamado de manutenção\n\n_Basta digitar o número ou o que você precisa!_'
         );
@@ -61,7 +97,7 @@ export class BotOrchestrator {
       session.state = 'ATENDIMENTO_HUMANO';
       this.sessionManager.setHumanHandoff(remoteJid, true);
       this.sessionManager.updateSession(session);
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         '👤 *Transferindo para Atendente Humano...*\n\nEntendi! Notifiquei nossa equipe operacional no painel.\n\nUm de nossos colaboradores responderá por aqui em instantes.\n\n_Para retornar ao autoatendimento a qualquer momento, digite *MENU* ou *SAIR*._'
       );
@@ -97,7 +133,7 @@ export class BotOrchestrator {
         if (lowerText === 'sair' || lowerText === 'finalizar') {
           this.sessionManager.setHumanHandoff(remoteJid, false);
           this.sessionManager.resetSession(remoteJid);
-          await this.evolutionService.sendText(
+          await this.reply(
             remoteJid,
             '✅ Atendimento humano encerrado. Se precisar de algo mais, basta mandar uma nova mensagem!'
           );
@@ -134,7 +170,7 @@ export class BotOrchestrator {
       `_A qualquer momento, digite *MENU* para retornar ao início._`
     ].join('\n');
 
-    await this.evolutionService.sendText(remoteJid, mensagem);
+    await this.reply(remoteJid, mensagem);
   }
 
   private async handleInicio(remoteJid: string, text: string, nome: string): Promise<void> {
@@ -144,7 +180,7 @@ export class BotOrchestrator {
       session.tempData = { destinoAposCpf: 'boleto' };
       this.sessionManager.updateSession(session);
 
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `📄 Perfeito! Para localizar sua cota condominial no SISCON, por favor *digite o seu CPF* (apenas números ou com pontos):`
       );
@@ -157,7 +193,7 @@ export class BotOrchestrator {
       session.tempData = { destinoAposCpf: 'acordo' };
       this.sessionManager.updateSession(session);
 
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `🤝 Vamos simular um acordo de débito! Para verificar as pendências no SISCON, por favor *digite o seu CPF*:`
       );
@@ -174,7 +210,7 @@ export class BotOrchestrator {
       session.tempData = { destinoAposCpf: 'boleto' };
       this.sessionManager.updateSession(session);
 
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `📄 Por favor, informe o seu *CPF* (apenas números ou com pontuação) para consultarmos seus débitos no SISCON:`
       );
@@ -185,7 +221,7 @@ export class BotOrchestrator {
       session.tempData = { destinoAposCpf: 'acordo' };
       this.sessionManager.updateSession(session);
 
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `🤝 *Simulador de Acordo SISCON*\n\nPor favor, informe o seu *CPF* para localizarmos as cotas em aberto e montar as opções de parcelamento:`
       );
@@ -207,7 +243,7 @@ export class BotOrchestrator {
       session.state = 'AGUARDANDO_DESCRICAO_OCORRENCIA';
       this.sessionManager.updateSession(session);
 
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `🛠️ *Registro de Ocorrência / Chamado*\n\nPor favor, digite uma descrição detalhada do problema (ex: vazamento no hall, lâmpada queimada na garagem, portão travado, etc.):`
       );
@@ -218,7 +254,7 @@ export class BotOrchestrator {
       this.sessionManager.setHumanHandoff(remoteJid, true);
       this.sessionManager.updateSession(session);
 
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `👤 Você foi transferido para a fila de atendimento operacional humano.\n\nUm de nossos atendentes entrará em contato em instantes.\n\n_Para encerrar a fila a qualquer momento, digite *SAIR*._`
       );
@@ -234,9 +270,9 @@ export class BotOrchestrator {
         `----------------------------------------`,
         `Digite *MENU* para retornar ao início.`
       ].join('\n\n');
-      await this.evolutionService.sendText(remoteJid, texto);
+      await this.reply(remoteJid, texto);
     } else {
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `Opção não reconhecida. Por favor, digite um número de *1 a 8* ou envie *MENU* para ver as opções.`
       );
@@ -247,21 +283,21 @@ export class BotOrchestrator {
     const cpfLimpo = limparCpf(text);
 
     if (!validarCpf(cpfLimpo)) {
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `⚠️ *CPF inválido.* O número digitado não confere.\n\nPor favor, digite o CPF novamente com 11 números:`
       );
       return;
     }
 
-    await this.evolutionService.sendText(
+    await this.reply(
       remoteJid,
       `🔎 Localizando cadastro com o CPF *${mascararCpf(cpfLimpo)}* no SISCON... Aguarde um instante.`
     );
 
     const morador = await this.sisconService.buscarMoradorPorCpf(cpfLimpo);
     if (!morador || morador.unidades.length === 0) {
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `❌ Não encontramos nenhuma unidade cadastrada para este CPF no SISCON.\n\nCaso tenha adquirido o imóvel recentemente ou seja inquilino, digite *7* para falar com um atendente.`
       );
@@ -287,7 +323,7 @@ export class BotOrchestrator {
     this.sessionManager.updateSession(session);
 
     if (boletos.length === 0) {
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `🎉 Parabéns, *${morador.nome}*!\nNão consta nenhum débito em aberto no SISCON para a unidade *${unidadePrincipal.condominioNome} - ${unidadePrincipal.numero}*.\n\nDigite *MENU* para retornar ao início ou *5* para emitir sua Certidão de Nada Consta.`
       );
@@ -317,7 +353,7 @@ export class BotOrchestrator {
       `📎 _Estou enviando o arquivo PDF do boleto logo abaixo..._`
     ].join('\n');
 
-    await this.evolutionService.sendText(remoteJid, textoBoleto);
+    await this.reply(remoteJid, textoBoleto);
 
     if (boleto.pdfUrl) {
       await this.evolutionService.sendMedia(
@@ -331,7 +367,7 @@ export class BotOrchestrator {
     session.state = 'MENU_PRINCIPAL';
     this.sessionManager.updateSession(session);
 
-    await this.evolutionService.sendText(
+    await this.reply(
       remoteJid,
       `Precisa de mais alguma coisa? Digite *MENU* para ver as opções ou *SAIR* para finalizar.`
     );
@@ -366,7 +402,7 @@ export class BotOrchestrator {
       `Digite o número da opção desejada (ex: *1*, *2*, *3*, *4*...) ou digite *MENU* para cancelar:`
     ].join('\n');
 
-    await this.evolutionService.sendText(remoteJid, msg);
+    await this.reply(remoteJid, msg);
   }
 
   private async handleSimulandoAcordo(remoteJid: string, text: string, session: any): Promise<void> {
@@ -374,7 +410,7 @@ export class BotOrchestrator {
     const simulacao = session.tempData?.simulacao;
 
     if (!simulacao || isNaN(optIndex) || optIndex < 0 || optIndex >= simulacao.opcoes.length) {
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `Opção inválida. Digite o número de uma das opções acima (ex: *1*, *2*, *3*...) ou digite *MENU* para voltar.`
       );
@@ -385,7 +421,7 @@ export class BotOrchestrator {
     const morador = session.morador;
     const unidadeId = session.selectedUnidadeId || 'unid_101';
 
-    await this.evolutionService.sendText(
+    await this.reply(
       remoteJid,
       `⏳ Processando seu acordo de ${opcaoEscolhida.parcelas}x no SISCON... Aguarde um momento.`
     );
@@ -419,7 +455,7 @@ export class BotOrchestrator {
       `Digite *MENU* para retornar ao início.`
     ].join('\n');
 
-    await this.evolutionService.sendText(remoteJid, msgAcordo);
+    await this.reply(remoteJid, msgAcordo);
 
     session.state = 'MENU_PRINCIPAL';
     this.sessionManager.updateSession(session);
@@ -454,7 +490,7 @@ export class BotOrchestrator {
       `Digite *MENU* para voltar às opções.`
     ].join('\n');
 
-    await this.evolutionService.sendText(remoteJid, msg);
+    await this.reply(remoteJid, msg);
   }
 
   // ==========================================
@@ -479,7 +515,7 @@ export class BotOrchestrator {
       `Digite o número do espaço (ex: *1*, *2*, *3*) ou *MENU* para cancelar:`
     ].join('\n');
 
-    await this.evolutionService.sendText(remoteJid, msg);
+    await this.reply(remoteJid, msg);
   }
 
   private async handleReservandoArea(remoteJid: string, text: string, session: any): Promise<void> {
@@ -489,7 +525,7 @@ export class BotOrchestrator {
     if (etapa === 'escolher_area') {
       const idx = parseInt(text.trim(), 10) - 1;
       if (isNaN(idx) || idx < 0 || idx >= areas.length) {
-        await this.evolutionService.sendText(remoteJid, 'Espaço inválido. Digite um número de *1 a 3* ou *MENU*.');
+        await this.reply(remoteJid, 'Espaço inválido. Digite um número de *1 a 3* ou *MENU*.');
         return;
       }
 
@@ -497,7 +533,7 @@ export class BotOrchestrator {
       session.tempData = { ...session.tempData, areaEscolhida, etapaReserva: 'informar_data' };
       this.sessionManager.updateSession(session);
 
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `📍 Você selecionou: *${areaEscolhida.nome}*\n\nPor favor, digite a *data desejada* no formato *DD/MM/AAAA* (ex: 25/11/2026):`
       );
@@ -526,14 +562,14 @@ export class BotOrchestrator {
       );
 
       if (!resultado.sucesso) {
-        await this.evolutionService.sendText(
+        await this.reply(
           remoteJid,
           `⚠️ ${resultado.mensagem}\n\nPor favor, digite outra data (DD/MM/AAAA) ou digite *MENU* para cancelar.`
         );
         return;
       }
 
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `🎉 *Reserva confirmada no SISCON!*\n\n${resultado.mensagem}\n\nDigite *MENU* para retornar ao início.`
       );
@@ -557,7 +593,7 @@ export class BotOrchestrator {
     );
 
     if (!cert.aprovado) {
-      await this.evolutionService.sendText(
+      await this.reply(
         remoteJid,
         `⚠️ *Emissão Indisponível*\n\n${cert.mensagem}\n\nDigite *1* para emitir a 2ª via ou *2* para simular um acordo de parcelamento.`
       );
@@ -579,7 +615,7 @@ export class BotOrchestrator {
       `Digite *MENU* para voltar ao menu principal.`
     ].join('\n');
 
-    await this.evolutionService.sendText(remoteJid, msg);
+    await this.reply(remoteJid, msg);
   }
 
   private async handleRegistroOcorrencia(remoteJid: string, text: string, session: any): Promise<void> {
@@ -589,7 +625,7 @@ export class BotOrchestrator {
     session.state = 'MENU_PRINCIPAL';
     this.sessionManager.updateSession(session);
 
-    await this.evolutionService.sendText(
+    await this.reply(
       remoteJid,
       `✅ *Ocorrência registrada no SISCON com sucesso!*\n\nProtocolo: *#${ocorrencia.id.slice(-6)}*\nData: ${new Date().toLocaleDateString('pt-BR')}\n\nO chamado foi gravado no painel da administração e direcionado para a equipe responsável.\n\nDigite *MENU* para retornar ao início.`
     );

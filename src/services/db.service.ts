@@ -37,9 +37,38 @@ export class DbService {
         selectedUnidadeId TEXT,
         isHumanHandoff INTEGER DEFAULT 0,
         sentiment TEXT DEFAULT 'neutro',
-        lastInteraction TEXT NOT NULL
+        lastInteraction TEXT NOT NULL,
+        status TEXT DEFAULT 'ai',
+        assignedOperator TEXT,
+        slaStartedAt TEXT,
+        statusFinanceiro TEXT,
+        cotaValor TEXT,
+        pixValor TEXT,
+        avatar TEXT,
+        telefone TEXT,
+        notasInternasJson TEXT
       );
     `);
+
+    // Migrações seguras caso colunas não existam em banco pré-existente
+    const colunasExtras = [
+      'status TEXT DEFAULT "ai"',
+      'assignedOperator TEXT',
+      'slaStartedAt TEXT',
+      'statusFinanceiro TEXT',
+      'cotaValor TEXT',
+      'pixValor TEXT',
+      'avatar TEXT',
+      'telefone TEXT',
+      'notasInternasJson TEXT'
+    ];
+    for (const col of colunasExtras) {
+      try {
+        this.db.exec(`ALTER TABLE sessions ADD COLUMN ${col};`);
+      } catch (e) {
+        // Coluna já existe
+      }
+    }
 
     // 2. Tabela de Mensagens do Chat
     this.db.exec(`
@@ -100,8 +129,10 @@ export class DbService {
   public saveSession(session: UserSession) {
     const stmt = this.db.prepare(`
       INSERT INTO sessions (
-        remoteJid, pushName, state, cpf, moradorJson, selectedUnidadeId, isHumanHandoff, sentiment, lastInteraction
+        remoteJid, pushName, state, cpf, moradorJson, selectedUnidadeId, isHumanHandoff, sentiment, lastInteraction,
+        status, assignedOperator, slaStartedAt, statusFinanceiro, cotaValor, pixValor, avatar, telefone, notasInternasJson
       ) VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?
       )
       ON CONFLICT(remoteJid) DO UPDATE SET
@@ -112,7 +143,16 @@ export class DbService {
         selectedUnidadeId = excluded.selectedUnidadeId,
         isHumanHandoff = excluded.isHumanHandoff,
         sentiment = excluded.sentiment,
-        lastInteraction = excluded.lastInteraction;
+        lastInteraction = excluded.lastInteraction,
+        status = excluded.status,
+        assignedOperator = excluded.assignedOperator,
+        slaStartedAt = excluded.slaStartedAt,
+        statusFinanceiro = excluded.statusFinanceiro,
+        cotaValor = excluded.cotaValor,
+        pixValor = excluded.pixValor,
+        avatar = excluded.avatar,
+        telefone = excluded.telefone,
+        notasInternasJson = excluded.notasInternasJson;
     `);
 
     stmt.run(
@@ -124,7 +164,16 @@ export class DbService {
       session.selectedUnidadeId || null,
       session.isHumanHandoff ? 1 : 0,
       session.tempData?.sentiment || 'neutro',
-      session.lastInteraction instanceof Date ? session.lastInteraction.toISOString() : new Date().toISOString()
+      session.lastInteraction instanceof Date ? session.lastInteraction.toISOString() : new Date().toISOString(),
+      session.status || (session.isHumanHandoff ? 'waiting_human' : 'ai'),
+      session.assignedOperator || null,
+      session.slaStartedAt || null,
+      session.statusFinanceiro || 'regular',
+      session.cotaValor || 'R$ 650,00',
+      session.pixValor || '650.00',
+      session.avatar || null,
+      session.telefone || null,
+      session.notasInternas ? JSON.stringify(session.notasInternas) : null
     );
   }
 
@@ -144,6 +193,15 @@ export class DbService {
       selectedUnidadeId: row.selectedUnidadeId,
       isHumanHandoff: Boolean(row.isHumanHandoff),
       lastInteraction: new Date(row.lastInteraction),
+      status: row.status || (row.isHumanHandoff ? 'waiting_human' : 'ai'),
+      assignedOperator: row.assignedOperator || undefined,
+      slaStartedAt: row.slaStartedAt || undefined,
+      statusFinanceiro: row.statusFinanceiro || 'regular',
+      cotaValor: row.cotaValor || 'R$ 650,00',
+      pixValor: row.pixValor || '650.00',
+      avatar: row.avatar || undefined,
+      telefone: row.telefone || undefined,
+      notasInternas: row.notasInternasJson ? JSON.parse(row.notasInternasJson) : [],
       messages,
       tempData: {
         sentiment: row.sentiment || 'neutro'
@@ -166,6 +224,15 @@ export class DbService {
         selectedUnidadeId: row.selectedUnidadeId,
         isHumanHandoff: Boolean(row.isHumanHandoff),
         lastInteraction: new Date(row.lastInteraction),
+        status: row.status || (row.isHumanHandoff ? 'waiting_human' : 'ai'),
+        assignedOperator: row.assignedOperator || undefined,
+        slaStartedAt: row.slaStartedAt || undefined,
+        statusFinanceiro: row.statusFinanceiro || 'regular',
+        cotaValor: row.cotaValor || 'R$ 650,00',
+        pixValor: row.pixValor || '650.00',
+        avatar: row.avatar || undefined,
+        telefone: row.telefone || undefined,
+        notasInternas: row.notasInternasJson ? JSON.parse(row.notasInternasJson) : [],
         messages,
         tempData: {
           sentiment: row.sentiment || 'neutro'
@@ -178,7 +245,7 @@ export class DbService {
   // OPERAÇÕES DE MENSAGEM
   // ==========================================
 
-  public saveMessage(remoteJid: string, msg: ChatMessage & { isAudio?: boolean; duration?: string; audioSummary?: string; audioTranscription?: string; pixCode?: string }) {
+  public saveMessage(remoteJid: string, msg: ChatMessage) {
     const stmt = this.db.prepare(`
       INSERT INTO messages (
         id, remoteJid, sender, text, timestamp, mediaUrl, mediaType, pixCode, isAudio, duration, audioSummary, audioTranscription, createdAt
