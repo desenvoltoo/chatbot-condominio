@@ -86,11 +86,11 @@ export class BotOrchestrator {
       'ajuda',
     ];
     if (termosAtendente.some((termo) => lowerText.includes(termo)) && session.state !== 'ATENDIMENTO_HUMANO') {
-      const isAutonomo = true; // DOMUS AI opera em modo 100% autônomo
+      const isAutonomo = true; // ZELORIS AI opera em modo autônomo com supervisão
       if (isAutonomo && !lowerText.includes('operador humano') && !lowerText.includes('urgente')) {
         await this.reply(
           remoteJid,
-          '🤖 *Central de Inteligência DOMUS AI (Modo 100% Autônomo)*\n\nSou a IA autônoma do condomínio e posso resolver sua solicitação **imediatamente, sem filas de espera e sem intervenção humana**!\n\nPosso realizar para você agora mesmo:\n• *1* - 📄 Emitir 2ª via de boleto com Pix Copia e Cola\n• *2* - 🤝 Simular e fechar acordo de parcelamento de débito\n• *3* - 💧 Consultar medição de água/gás\n• *4* - 📅 Reservar salão de festas ou churrasqueira\n• *5* - 📖 Tirar dúvidas do Regimento Interno e Convenção\n• *6* - 🛠️ Registrar chamado de manutenção\n\n_Basta digitar o número ou o que você precisa!_'
+          '🤖 *Central de Inteligência ZELORIS AI*\n\nSou o assistente operacional inteligente do condomínio e posso resolver sua solicitação **imediatamente, sem filas de espera**!\n\nPosso realizar para você agora mesmo:\n• *1* - 📄 Emitir 2ª via de boleto com Pix Copia e Cola\n• *2* - 🤝 Simular e fechar acordo de parcelamento de débito\n• *3* - 💧 Consultar medição de água/gás\n• *4* - 📅 Reservar salão de festas ou churrasqueira\n• *5* - 📖 Tirar dúvidas do Regimento Interno e Convenção com citação de artigos\n• *6* - 🛠️ Registrar chamado de manutenção\n\n_Basta digitar o número ou o que você precisa!_'
         );
         return;
       }
@@ -153,7 +153,7 @@ export class BotOrchestrator {
     this.sessionManager.updateSession(session);
 
     const mensagem = [
-      `👋 Olá, *${nome}*! Bem-vindo(a) ao *DOMUS AI* — Inteligência Condominial Autônoma.`,
+      `👋 Olá, *${nome}*! Bem-vindo(a) ao *ZELORIS AI* — Inteligência Operacional Condominial.`,
       `⚡ *Piloto Automático 100% Ativo: Todas as tarefas são resolvidas sem espera e sem intervenção humana!*`,
       ``,
       `Como posso ajudar você agora? Digite o número ou descreva o que precisa:`,

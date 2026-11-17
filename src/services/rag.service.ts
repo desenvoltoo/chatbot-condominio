@@ -79,7 +79,7 @@ Artigo 31 - E permitida a permanencia de animais de pequeno e medio porte nas un
       'Regulamento de Uso das Areas Comuns e Lazer',
       'geral',
       `TITULO I - DA CHURRASQUEIRA E ESPACO GOURMET
-Artigo 12 - A reserva do Espaco Gourmet & Churrasqueira pode ser feita com ate 60 dias de antecedencia. O valor da taxa de uso e de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado automaticamente no proximo boleto condominial via DOMUS AI. O horario limite para termino de eventos e desligamento de som e as 22h00. Cancelamentos sem onus devem ser solicitados com 48h de antecedencia.
+Artigo 12 - A reserva do Espaco Gourmet & Churrasqueira pode ser feita com ate 60 dias de antecedencia. O valor da taxa de uso e de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado automaticamente no proximo boleto condominial via ZELORIS AI. O horario limite para termino de eventos e desligamento de som e as 22h00. Cancelamentos sem onus devem ser solicitados com 48h de antecedencia.
 
 TITULO II - DO SALAO DE FESTAS NOBRE
 Artigo 15 - O Salao de Festas suporta capacidade maxima de 80 pessoas sentadas. A taxa de locacao e de R$ 350,00 (inclusa taxa de limpeza profissional). A lista de convidados deve ser enviada para a portaria ate 24h antes do evento para controle de acesso biometrico/facial.
@@ -95,7 +95,7 @@ Artigo 20 - A piscina funciona de terca a domingo das 08h00 as 21h00. As segunda
 O nao pagamento da cota condominial ordinaria ou extraordinaria ate a data de seu vencimento sujeita o devedor a incidencia de multa moratoria irrevogavel de 2% (dois por cento) sobre o debito atualizado, acrescida de juros moratorios de 1% (um por cento) ao mes calculados pro rata die, bem como atualizacao monetaria pelo indice oficial IPCA/IBGE.
 
 CLAUSULA 35 - DOS ACORDOS E PARCELAMENTOS
-Fica a Administradora e o Sindico autorizados a firmar acordos amigaveis com devedores atraves do sistema DOMUS AI em ate 12 (doze) parcelas mensais e sucessivas, com entrada minima correspondente a primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplencia superior a 30 dias.`
+Fica a Administradora e o Sindico autorizados a firmar acordos amigaveis com devedores atraves do sistema ZELORIS AI em ate 12 (doze) parcelas mensais e sucessivas, com entrada minima correspondente a primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplencia superior a 30 dias.`
     );
 
     this.adicionarDocumento(

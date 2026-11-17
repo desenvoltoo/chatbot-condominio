@@ -86,7 +86,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       const novo = authService.criarUsuario({
         nome: nomeFinal,
         email,
-        senhaPlana: senha || 'domus123',
+        senhaPlana: senha || 'zeloris123',
         role,
         cargo: cargo || (role === 'admin' ? 'Administrador do Sistema' : role === 'sindico' ? 'Síndico Geral' : 'Operador'),
         condominioIds: condominioIds || ['*']
@@ -329,7 +329,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       try {
         await evolutionService.sendText(
           remoteJid,
-          '🤖 *DOMUS AI Reativado:*\nVocê está novamente conversando com o assistente inteligente autônomo do condomínio.\nComo posso ajudar você agora?'
+          '🤖 *ZELORIS AI Reativado:*\nVocê está novamente conversando com o assistente inteligente autônomo do condomínio.\nComo posso ajudar você agora?'
         );
       } catch (e) {}
       return res.json({ success: true, status: 'ai' });
@@ -373,7 +373,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       nomeBeneficiario: nomeFinal,
       cidadeBeneficiario: cidadeFinal,
       valor: Number(valor),
-      txid: txid || `DOMUS${Date.now().toString().slice(-6)}`
+      txid: txid || `ZELORIS${Date.now().toString().slice(-6)}`
     });
 
     res.json({
@@ -407,7 +407,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     const val = Number(valor);
     const splitAdm = parseFloat((val * 0.03).toFixed(2));
     const splitCond = parseFloat((val - splitAdm).toFixed(2));
-    const txid = `DOMUS${Date.now().toString().slice(-8)}`;
+    const txid = `ZELORIS${Date.now().toString().slice(-8)}`;
     const brCode = gerarPayloadPix({
       chave: 'financeiro@condominio.com.br',
       nomeBeneficiario: 'CONDOMINIO RESIDENCIAL',
@@ -613,7 +613,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     if (taxaTotal > 0) {
       const splitAdm = parseFloat((taxaTotal * 0.03).toFixed(2));
       const splitCond = parseFloat((taxaTotal - splitAdm).toFixed(2));
-      const txidRes = `DOMUS${proto.replace(/[^A-Za-z0-9]/g, '')}`;
+      const txidRes = `ZELORIS${proto.replace(/[^A-Za-z0-9]/g, '')}`;
       const cobrancaRes: Cobranca = {
         id: `cbr_res_${Date.now()}`,
         unidadeId,
@@ -639,7 +639,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
 
     // Notificação WhatsApp
     if (novaReserva.remoteJid) {
-      const msgReserva = `📅 *RESERVA CONFIRMADA — DOMUS AI*\n\n` +
+      const msgReserva = `📅 *RESERVA CONFIRMADA — ZELORIS AI*\n\n` +
         `• *Espaço:* ${novaReserva.areaNome}\n` +
         `• *Data:* ${novaReserva.dataReserva} (${novaReserva.periodo})\n` +
         `• *Protocolo:* \`${proto}\`\n` +
@@ -799,7 +799,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
 
     const targetJid = osConcluida.remoteJid || (osConcluida.solicitanteTelefone ? `${osConcluida.solicitanteTelefone}@s.whatsapp.net` : null);
     if (targetJid) {
-      const msgMorador = `✅ *CHAMADO CONCLUÍDO — DOMUS AI*\n\n` +
+      const msgMorador = `✅ *CHAMADO CONCLUÍDO — ZELORIS AI*\n\n` +
         `Olá, *${osConcluida.solicitanteNome}*!\n` +
         `Informamos que o chamado *${osConcluida.codigo}* (${osConcluida.titulo}) foi finalizado com sucesso pela zeladoria.\n\n` +
         (osConcluida.fotoDepoisUrl ? `📸 *Foto da Vistoria:* ${osConcluida.fotoDepoisUrl}\n` : '') +
@@ -855,7 +855,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
 
       if (remoteJid) {
         const primeiraParcela = acordo.boletosGerados[0];
-        const msgAcordo = `🤝 *ACORDO DE DÍVIDAS FIRMADO — DOMUS AI*\n\n` +
+        const msgAcordo = `🤝 *ACORDO DE DÍVIDAS FIRMADO — ZELORIS AI*\n\n` +
           `✅ *Protocolo:* \`${acordo.id}\`\n` +
           `📅 *Data:* ${acordo.dataAcordo}\n` +
           `📊 *Plano:* ${acordo.qtdParcelas}x de R$ ${acordo.valorParcela.toFixed(2)}\n\n` +
@@ -945,7 +945,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       reservasConfirmadasMes: reservasMes,
       totalTransacionado: metricasFin.totalTransacionado,
       saldoSplitAdm: metricasFin.saldoSplitAdm,
-      erpConectado: 'DOMUS ERP Integrado (Nativo)',
+      erpConectado: 'ZELORIS ERP Integrado (Nativo)',
       bancoAtivo: `${cfg.bancoIntegrado.toUpperCase()} (Conexão Bancária Direta)`,
       statusConexaoErp: 'Ativo & Sincronizado',
     });
@@ -1004,7 +1004,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
 
     dbService.logAudit(
       user?.id || 'admin',
-      user?.email || 'admin@domus.condo',
+      user?.email || 'admin@zeloris.com.br',
       `SUPERVISAO_${status.toUpperCase()}`,
       `Pendência ${id} (${respondida.tipo}) ${status} por ${user?.name}. Justificativa: ${justificativa || 'Nenhuma'}`
     );

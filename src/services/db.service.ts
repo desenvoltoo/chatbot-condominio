@@ -14,7 +14,13 @@ export class DbService {
       fs.mkdirSync(dataDir, { recursive: true });
     }
 
-    const dbPath = path.join(dataDir, 'domus.db');
+    const dbPath = path.join(dataDir, 'zeloris.db');
+    const legacyPath = path.join(dataDir, 'domus.db');
+    if (!fs.existsSync(dbPath) && fs.existsSync(legacyPath)) {
+      try {
+        fs.copyFileSync(legacyPath, dbPath);
+      } catch (e) {}
+    }
     this.db = new DatabaseSync(dbPath);
     this.initTables();
   }
@@ -1014,8 +1020,8 @@ export class DbService {
           vencimento: 'Hoje (17/11/2026)',
           valor: 650.00,
           linhaDigitavel: '34191.79001 01043.510047 91020.150008 1 95380000065000',
-          txid: 'DOMUS101NOV26',
-          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 650.00, txid: 'DOMUS101NOV26' }),
+          txid: 'ZELORIS101NOV26',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 650.00, txid: 'ZELORIS101NOV26' }),
           status: 'aberto',
           splitCondominio: 630.50,
           splitAdministradora: 19.50,
@@ -1032,8 +1038,8 @@ export class DbService {
           vencimento: '10/10/2026 (Vencido)',
           valor: 1350.00,
           linhaDigitavel: '34191.79001 01043.510047 91020.150008 2 95380000135000',
-          txid: 'DOMUS204OUT26',
-          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 1350.00, txid: 'DOMUS204OUT26' }),
+          txid: 'ZELORIS204OUT26',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 1350.00, txid: 'ZELORIS204OUT26' }),
           status: 'vencido',
           splitCondominio: 1309.50,
           splitAdministradora: 40.50,
@@ -1050,8 +1056,8 @@ export class DbService {
           vencimento: '16/11/2026',
           valor: 150.00,
           linhaDigitavel: '34191.79001 01043.510047 91020.150008 3 95380000015000',
-          txid: 'DOMUS304RES15',
-          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 150.00, txid: 'DOMUS304RES15' }),
+          txid: 'ZELORIS304RES15',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 150.00, txid: 'ZELORIS304RES15' }),
           status: 'pago',
           pagoEm: '2026-11-16T17:42:00.000Z',
           formaPagamento: 'pix',
@@ -1071,8 +1077,8 @@ export class DbService {
           vencimento: '16/11/2026',
           valor: 380.00,
           linhaDigitavel: '34191.79001 01043.510047 91020.150008 4 95380000038000',
-          txid: 'DOMUS112AC2',
-          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 380.00, txid: 'DOMUS112AC2' }),
+          txid: 'ZELORIS112AC2',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 380.00, txid: 'ZELORIS112AC2' }),
           status: 'pago',
           pagoEm: '2026-11-16T14:15:00.000Z',
           formaPagamento: 'pix',
@@ -1091,8 +1097,8 @@ export class DbService {
           vencimento: '17/11/2026',
           valor: 650.00,
           linhaDigitavel: '34191.79001 01043.510047 91020.150008 5 95380000065000',
-          txid: 'DOMUS401NOV26',
-          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 650.00, txid: 'DOMUS401NOV26' }),
+          txid: 'ZELORIS401NOV26',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 650.00, txid: 'ZELORIS401NOV26' }),
           status: 'pago',
           pagoEm: '2026-11-17T09:31:00.000Z',
           formaPagamento: 'pix',

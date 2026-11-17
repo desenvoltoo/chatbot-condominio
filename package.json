@@ -1,7 +1,7 @@
 {
-  "name": "chatbot-condominio",
-  "version": "1.0.0",
-  "description": "Sistema de autoatendimento WhatsApp para administradora de condomínios com emissão de boletos, Pix e chamados",
+  "name": "zeloris-ai",
+  "version": "2.5.0",
+  "description": "ZELORIS AI — Plataforma Operacional de Inteligência Condominial com autoatendimento WhatsApp, split Pix no BACEN e supervisão humano-no-loop",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

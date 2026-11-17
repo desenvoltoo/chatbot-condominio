@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DOMUS AI — Central Operacional de Inteligência Condominial</title>
+  <title>ZELORIS AI — Central Operacional de Inteligência Condominial</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -649,16 +649,16 @@
     }
 
     /* Toast em Modo Claro */
-    html:not(.dark) .domus-toast {
+    html:not(.dark) .zeloris-toast, html:not(.dark) .domus-toast {
       background-color: #ffffff !important;
       color: #0f172a !important;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
       border-width: 1.5px !important;
     }
-    html:not(.dark) .domus-toast strong {
+    html:not(.dark) .zeloris-toast strong, html:not(.dark) .domus-toast strong {
       color: #0f172a !important;
     }
-    html:not(.dark) .domus-toast p {
+    html:not(.dark) .zeloris-toast p, html:not(.dark) .domus-toast p {
       color: #334155 !important;
     }
   </style>
@@ -686,7 +686,7 @@
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
           <div>
-            <h3 class="font-bold text-base text-white">Como Usar o DOMUS AI em 3 Passos</h3>
+            <h3 class="font-bold text-base text-white">Como Usar o ZELORIS AI em 3 Passos</h3>
             <span class="text-xs text-slate-400">Guia de 30 segundos para síndicos e administradoras</span>
           </div>
         </div>
@@ -1131,7 +1131,7 @@
       <div class="space-y-3 text-xs">
         <div>
           <label class="block text-slate-300 font-bold mb-1">Chave Pix Favorecida (Administradora):</label>
-          <input type="text" id="inputPixChaveAdm" value="financeiro@domusadministradora.com.br" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+          <input type="text" id="inputPixChaveAdm" value="financeiro@zelorisadministradora.com.br" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
         </div>
         <div>
           <label class="block text-slate-300 font-bold mb-1">Valor do Saque (R$):</label>
@@ -1565,7 +1565,7 @@
               <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
               AO VIVO • APURAÇÃO EM TEMPO REAL
             </span>
-            <span class="text-xs text-slate-400 font-mono">DOMUS AI Democracy Engine</span>
+            <span class="text-xs text-slate-400 font-mono">ZELORIS AI Democracy Engine</span>
           </div>
           <h1 class="text-2xl md:text-3xl font-black text-white mt-1 tracking-tight">Condomínio Residencial Jardins do Bosque</h1>
         </div>
@@ -1726,7 +1726,7 @@
           <span>Navegar: <kbd class="px-1.5 py-0.5 rounded bg-white/[0.08] text-slate-400 font-mono text-[10px]">↑</kbd> <kbd class="px-1.5 py-0.5 rounded bg-white/[0.08] text-slate-400 font-mono text-[10px]">↓</kbd></span>
           <span>Executar: <kbd class="px-1.5 py-0.5 rounded bg-white/[0.08] text-slate-400 font-mono text-[10px]">ENTER</kbd></span>
         </div>
-        <span class="text-cyan-400 font-mono">DOMUS Spotlight</span>
+        <span class="text-cyan-400 font-mono">ZELORIS Spotlight</span>
       </div>
     </div>
   </div>
@@ -1778,7 +1778,7 @@
 
         <div>
           <label class="block text-slate-300 font-bold mb-1">Senha Inicial de Acesso:</label>
-          <input type="password" id="novoUsuarioSenha" placeholder="Padrão: domus123" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+          <input type="password" id="novoUsuarioSenha" placeholder="Padrão: zeloris123" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
         </div>
 
         <div class="flex items-center gap-2 pt-2">
@@ -1801,7 +1801,7 @@
   <!-- ============================================================== -->
   <aside id="mainSidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[#0a0e18] border-r border-white/[0.08] flex flex-col shrink-0 transition-all duration-300 select-none -translate-x-full md:translate-x-0 md:static shadow-2xl md:shadow-none">
     
-    <!-- Header da Sidebar / Logo DOMUS AI -->
+    <!-- Header da Sidebar / Logo ZELORIS AI -->
     <div class="p-4 border-b border-white/[0.08] flex items-center justify-between">
       <div class="flex items-center gap-3 overflow-hidden">
         <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-600 to-cyan-400 p-[1px] shadow-md shadow-indigo-500/20 shrink-0">
@@ -1813,8 +1813,8 @@
         </div>
         <div class="sidebar-text truncate">
           <div class="flex items-center gap-1.5">
-            <span class="font-black text-sm tracking-tight text-white block">DOMUS AI</span>
-            <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">v2.4</span>
+            <span class="font-black text-sm tracking-tight text-white block">ZELORIS AI</span>
+            <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">v2.5</span>
           </div>
           <span class="text-[10px] text-cyan-400 font-mono font-semibold tracking-wider block -mt-0.5">Enterprise Platform</span>
         </div>
@@ -2449,7 +2449,7 @@
             <div class="flex items-center justify-between pb-1.5 border-b border-white/[0.06]">
               <div class="flex items-center gap-1.5 text-[10px] font-mono text-slate-400 uppercase tracking-wider">
                 <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-                DOMUS PAY
+                ZELORIS PAY
               </div>
               <span id="sideFinanceiroSplit" class="text-emerald-400 font-mono text-[10px] font-bold" title="Split automático de pagamento configurado em 3%">Split 3%</span>
             </div>
@@ -2636,7 +2636,7 @@
             <div class="space-y-3 text-xs" id="acordosAtivosList">
               <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-2">
                 <div class="flex items-center justify-between">
-                  <span class="font-bold text-white">Acordo #DOMUS-9481</span>
+                  <span class="font-bold text-white">Acordo #ZELORIS-9481</span>
                   <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-700 font-bold border border-emerald-500/20">Em Dia</span>
                 </div>
                 <p class="text-slate-300 text-xs">Apt 304 - Roberta Pires</p>
@@ -2648,7 +2648,7 @@
 
               <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-2">
                 <div class="flex items-center justify-between">
-                  <span class="font-bold text-white">Acordo #DOMUS-9210</span>
+                  <span class="font-bold text-white">Acordo #ZELORIS-9210</span>
                   <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-700 font-bold border border-emerald-500/20">Em Dia</span>
                 </div>
                 <p class="text-slate-300 text-xs">Apt 112 - Fernando Dias</p>
@@ -2668,7 +2668,7 @@
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
             <div>
               <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono font-bold uppercase tracking-wider mb-1">
-                <span>🏦</span> DOMUS Fintech & Liquidação Bancária
+                <span>🏦</span> ZELORIS Fintech & Liquidação Bancária
               </div>
               <h3 class="text-lg font-black text-white flex items-center gap-2">
                 Conta Digital & Split Automático (3%)
@@ -3497,7 +3497,7 @@
         <div class="p-6 rounded-3xl bg-gradient-to-r from-indigo-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-semibold mb-2">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            DOMUS Autonomous Engine • Governança & Human-in-the-Loop
+            ZELORIS Autonomous Engine • Governança & Human-in-the-Loop
           </div>
           <h1 class="text-2xl font-black text-white tracking-tight">Hub Multi-IA & Central de Governança Autônoma</h1>
           <p class="text-xs text-slate-400 mt-1 max-w-2xl">
@@ -3759,8 +3759,8 @@
 
             <div class="space-y-2 pt-2">
               <label class="text-slate-400 font-semibold block text-xs">System Prompt Principal do Agente Condominial Autônomo:</label>
-              <textarea id="aiSystemPrompt" rows="6" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl p-3 text-xs text-white font-mono">Você é o DOMUS AI, assistente oficial 100% autônomo do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP predial.
-Você opera em MODO TOTALMENTE AUTÔNOMO (Zero-Touch AI), resolvendo todas as solicitações dos condôminos sem necessidade de intervenção humana:
+              <textarea id="aiSystemPrompt" rows="6" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl p-3 text-xs text-white font-mono">Você é o ZELORIS AI, assistente inteligente oficial do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP predial.
+Você opera com alta autonomia e precisão operacional, resolvendo as solicitações dos condôminos com base estrita nos regulamentos do condomínio:
 
 CAPACIDADES AUTÔNOMAS IMEDIATAS:
 1. Cobrança & Pix: Localiza cotas, recalcula encargos e emite chave Pix Copia e Cola e boleto PDF instantaneamente.
@@ -3975,7 +3975,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             </div>
             <h1 class="text-2xl font-black text-white tracking-tight">Conectores de ERP & Webhooks</h1>
             <p class="text-xs text-slate-400 mt-1">
-              Pluge as credenciais do seu ERP condominial (DOMUS ERP Nativo, Superlógica, Ahreas ou Condomob) e gateways de mensageria do WhatsApp.
+              Pluge as credenciais do seu ERP condominial (ZELORIS ERP Nativo, Superlógica, Ahreas ou Condomob) e gateways de mensageria do WhatsApp.
             </p>
           </div>
           <button onclick="testarConexaoErp()" id="btnTestConnection" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
@@ -3992,7 +3992,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
               <div>
                 <label class="text-slate-400 block mb-1 font-semibold">Sistema ERP Ativo</label>
                 <select id="cfgErpProvider" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white">
-                  <option value="domus_erp" selected>DOMUS ERP Integrado (Nativo)</option>
+                  <option value="zeloris_erp" selected>ZELORIS ERP Integrado (Nativo)</option>
                   <option value="superlogica">Superlógica Condomínios</option>
                   <option value="ahreas">Ahreas Condomínios</option>
                   <option value="condomob">Condomob</option>
@@ -4013,7 +4013,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
               <div>
                 <label class="text-slate-400 block mb-1 font-semibold">API Base URL</label>
-                <input type="text" id="cfgErpBaseUrl" value="https://api.domuscondo.com.br/v1" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+                <input type="text" id="cfgErpBaseUrl" value="https://api.zeloriscondo.com.br/v1" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
               </div>
 
               <div>
@@ -4023,7 +4023,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
               <div>
                 <label class="text-slate-400 block mb-1 font-semibold">Client ID</label>
-                <input type="text" id="cfgErpClientId" value="domus_erp_client" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
+                <input type="text" id="cfgErpClientId" value="zeloris_erp_client" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-white font-mono">
               </div>
 
               <div>
@@ -4194,9 +4194,20 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
   </div>
 
   <!-- ============================================================== -->
-  <!-- JAVASCRIPT PRINCIPAL (DOMUS AI CORE ENGINE EXPANDIDO) -->
+  <!-- JAVASCRIPT PRINCIPAL (ZELORIS AI CORE ENGINE EXPANDIDO) -->
   <!-- ============================================================== -->
   <script>
+    function getAuthToken() {
+      return localStorage.getItem('zeloris_auth_token') || localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+    }
+    function getAuthUser() {
+      return localStorage.getItem('zeloris_auth_user') || localStorage.getItem('domus_auth_user') || localStorage.getItem('siscon_auth_user');
+    }
+    function isSandboxMode() {
+      const token = getAuthToken();
+      return localStorage.getItem('zeloris_demo_mode') === 'true' || localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+    }
+
     let allConversations = [];
     let activeRemoteJid = null;
     let currentFilter = 'todos';
@@ -4240,23 +4251,27 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     // Autenticação & Sessão
     function checkUserSession() {
-      const userRaw = localStorage.getItem('domus_auth_user') || localStorage.getItem('siscon_auth_user');
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isDemo = localStorage.getItem('domus_demo_mode') === 'true';
+      const userRaw = localStorage.getItem('zeloris_auth_user') || localStorage.getItem('domus_auth_user') || localStorage.getItem('siscon_auth_user');
+      const token = localStorage.getItem('zeloris_auth_token') || localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isDemo = localStorage.getItem('zeloris_demo_mode') === 'true' || localStorage.getItem('domus_demo_mode') === 'true';
 
       if (!userRaw && !token && !isDemo) {
         // Inicializa sessão sandbox padrão para exploração imediata
-        localStorage.setItem('domus_demo_mode', 'true');
-        localStorage.setItem('domus_auth_token', 'sandbox-demo-token');
-        localStorage.setItem('domus_auth_user', JSON.stringify({
+        const demoUser = JSON.stringify({
           id: 'usr_demo_admin',
           nome: 'Administrador Demo',
           role: 'admin',
           avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces'
-        }));
+        });
+        localStorage.setItem('zeloris_demo_mode', 'true');
+        localStorage.setItem('domus_demo_mode', 'true');
+        localStorage.setItem('zeloris_auth_token', 'sandbox-demo-token');
+        localStorage.setItem('domus_auth_token', 'sandbox-demo-token');
+        localStorage.setItem('zeloris_auth_user', demoUser);
+        localStorage.setItem('domus_auth_user', demoUser);
       }
 
-      const activeUserRaw = localStorage.getItem('domus_auth_user') || localStorage.getItem('siscon_auth_user');
+      const activeUserRaw = localStorage.getItem('zeloris_auth_user') || localStorage.getItem('domus_auth_user') || localStorage.getItem('siscon_auth_user');
       if (activeUserRaw) {
         try {
           const user = JSON.parse(activeUserRaw);
@@ -4285,8 +4300,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     async function checkEnvironmentStatus() {
       const banner = document.getElementById('envNoticeBanner');
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isDemo = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isDemo = isSandboxMode();
 
       // Testar conectividade com backend Node.js
       try {
@@ -4454,6 +4469,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span class="font-semibold text-[11px]">Supervisionado</span><span class="text-amber-500/30 text-[10px]">•</span><span class="font-mono text-[10px] opacity-75">38ms</span><span class="hidden" id="topActiveModel">GPT-4o-mini + RAG</span>';
         }
       }
+      localStorage.setItem('zeloris_autonomia_total', enabled ? 'true' : 'false');
       localStorage.setItem('domus_autonomia_total', enabled ? 'true' : 'false');
       confetti({ particleCount: 30, spread: 60 });
       showToast(
@@ -4490,8 +4506,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const btn = document.getElementById('btnTestAIConnection');
       btn.innerHTML = '<span>⏳</span> Testando Conexão...';
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
 
       if (token && !isSandbox) {
         try {
@@ -4558,7 +4574,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         titulo: 'Regulamento de Uso das Áreas Comuns e Lazer',
         chunks: [
           {
-            texto: 'TÍTULO I - DA CHURRASQUEIRA E ESPAÇO GOURMET (Art. 12): A reserva da Churrasqueira e Espaço Gourmet pode ser feita com até 60 dias de antecedência. O valor da taxa de uso é de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado no próximo boleto condominial via DOMUS AI. Horário limite para término de eventos e som às 22h00. Cancelamentos sem ônus com 48h de antecedência.',
+            texto: 'TÍTULO I - DA CHURRASQUEIRA E ESPAÇO GOURMET (Art. 12): A reserva da Churrasqueira e Espaço Gourmet pode ser feita com até 60 dias de antecedência. O valor da taxa de uso é de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado no próximo boleto condominial via ZELORIS AI. Horário limite para término de eventos e som às 22h00. Cancelamentos sem ônus com 48h de antecedência.',
             keywords: ['churrasqueira', 'espaco gourmet', 'reserva', 'taxa', 'limpeza', 'aluguel', 'evento', 'som', 'artigo 12', '150', '100']
           },
           {
@@ -4579,7 +4595,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             keywords: ['multa', 'juros', 'atraso', 'inadimplencia', 'encargos', 'ipca', 'vencimento', 'boleto', 'taxa condominial', 'clausula 34', '2%', '1%']
           },
           {
-            texto: 'CLÁUSULA 35 - DOS ACORDOS E PARCELAMENTOS: Fica a Administradora e o Síndico autorizados a firmar acordos amigáveis com devedores através do sistema DOMUS AI em até 12 (doze) parcelas mensais e sucessivas, com entrada mínima correspondente à primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplência superior a 30 dias.',
+            texto: 'CLÁUSULA 35 - DOS ACORDOS E PARCELAMENTOS: Fica a Administradora e o Síndico autorizados a firmar acordos amigáveis com devedores através do sistema ZELORIS AI em até 12 (doze) parcelas mensais e sucessivas, com entrada mínima correspondente à primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplência superior a 30 dias.',
             keywords: ['acordo', 'parcelamento', 'parcelas', 'renegociacao', 'divida', 'devedor', 'clausula 35', '12x', 'entrada']
           }
         ]
@@ -4643,8 +4659,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         </div>
       `;
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
       let data = null;
 
       if (token && !isSandbox) {
@@ -4723,7 +4739,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // ==========================================
     // MULTI-CONDOMÍNIO (FASE 5)
     // ==========================================
-    let currentCondominioId = localStorage.getItem('domus_condo_ativo') || 'condo_1';
+    let currentCondominioId = localStorage.getItem('zeloris_condo_ativo') || localStorage.getItem('domus_condo_ativo') || 'condo_1';
     let condominiosCadastrados = [
       { id: 'condo_1', nome: 'Condomínio Residencial Jardins do Bosque', unidadesQtd: 240, cnpj: '12.345.678/0001-90' },
       { id: 'condo_2', nome: 'Edifício Solar dos Pinheiros', unidadesQtd: 84, cnpj: '98.765.432/0001-10' },
@@ -4732,7 +4748,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     async function carregarCondominios() {
       const select = document.getElementById('selectCondominioAtivo');
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch('/api/condominios', {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -4756,6 +4772,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function trocarCondominioAtivo(condoId) {
       currentCondominioId = condoId;
+      localStorage.setItem('zeloris_condo_ativo', condoId);
       localStorage.setItem('domus_condo_ativo', condoId);
       const condo = condominiosCadastrados.find(c => c.id === condoId);
       const nomeCondo = condo ? condo.nome : 'Condomínio Selecionado';
@@ -4775,7 +4792,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const badge = document.getElementById('badgeQtdPendencias');
       if (!container) return;
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch(`/api/supervisao/pendencias?condominioId=${encodeURIComponent(currentCondominioId)}&status=pendente`, {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -4869,7 +4886,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         if (justificativa === null) return;
       }
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch(`/api/supervisao/pendencias/${encodeURIComponent(id)}/responder`, {
           method: 'POST',
@@ -4903,7 +4920,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const tbody = document.getElementById('tabelaDecisoesIABody');
       if (!tbody) return;
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch(`/api/ai/decisions?condominioId=${encodeURIComponent(currentCondominioId)}&limit=30`, {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -5009,7 +5026,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const tbody = document.getElementById('tabelaMembrosEquipeBody');
       if (!tbody) return;
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch('/api/auth/usuarios', {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -5023,7 +5040,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           {
             id: 'usr_admin',
             nome: 'Administrador Master',
-            email: 'admin@domuscondo.com.br',
+            email: 'admin@zeloriscondo.com.br',
             role: 'admin',
             cargo: 'Head de Operações Prediais',
             avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
@@ -5137,14 +5154,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const email = document.getElementById('novoUsuarioEmail').value.trim();
       const role = document.getElementById('novoUsuarioRole').value;
       const cargo = document.getElementById('novoUsuarioCargo').value.trim();
-      const senha = document.getElementById('novoUsuarioSenha').value.trim() || 'domus123';
+      const senha = document.getElementById('novoUsuarioSenha').value.trim() || 'zeloris123';
 
       if (!nome || !email) {
         showToast('Atenção', 'Nome e e-mail são obrigatórios.', 'warning');
         return;
       }
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch('/api/auth/usuarios', {
           method: 'POST',
@@ -5186,7 +5203,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     async function toggleUsuarioAtivo(id) {
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch(`/api/auth/usuarios/${encodeURIComponent(id)}/toggle-ativo`, {
           method: 'PUT',
@@ -5210,7 +5227,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     async function removerUsuario(id) {
       if (!confirm('Deseja realmente remover este usuário da equipe? O acesso será revogado imediatamente.')) return;
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch(`/api/auth/usuarios/${encodeURIComponent(id)}`, {
           method: 'DELETE',
@@ -5234,8 +5251,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function testarConexaoErp() {
       const erp = document.getElementById('cfgErpProvider').value.toUpperCase();
       const banco = document.getElementById('cfgBancoIntegrado').value.toUpperCase();
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
 
       if (isSandbox) {
         showToast('[Modo Sandbox] Conexão ERP Simulada', `Ambiente de demonstração: para sincronizar ${erp} e ${banco} com Webhook real, preencha as credenciais da API no servidor.`, 'info');
@@ -5253,8 +5270,12 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     function handleLogout() {
+      localStorage.removeItem('zeloris_auth_token');
+      localStorage.removeItem('zeloris_auth_user');
+      localStorage.removeItem('zeloris_demo_mode');
       localStorage.removeItem('domus_auth_token');
       localStorage.removeItem('domus_auth_user');
+      localStorage.removeItem('domus_demo_mode');
       localStorage.removeItem('siscon_auth_token');
       localStorage.removeItem('siscon_auth_user');
       window.location.href = 'login.html';
@@ -5265,6 +5286,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // ==========================================
     function toggleTheme() {
       const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('zeloris_theme', isDark ? 'dark' : 'light');
       localStorage.setItem('domus_theme', isDark ? 'dark' : 'light');
       updateThemeUI(isDark);
     }
@@ -5282,7 +5304,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     function initTheme() {
-      const savedTheme = localStorage.getItem('domus_theme') || 'dark';
+      const savedTheme = localStorage.getItem('zeloris_theme') || localStorage.getItem('domus_theme') || 'dark';
       if (savedTheme === 'light') {
         document.documentElement.classList.remove('dark');
         updateThemeUI(false);
@@ -5414,7 +5436,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         .toUpperCase()
         .slice(0, 15);
 
-      const txidLimpo = (txid || 'DOMUS' + Math.floor(Math.random() * 89999 + 10000)).replace(/[^A-Za-z0-9]/g, '').slice(0, 25);
+      const txidLimpo = (txid || 'ZELORIS' + Math.floor(Math.random() * 89999 + 10000)).replace(/[^A-Za-z0-9]/g, '').slice(0, 25);
       const valorStr = (Number(valor) || 650.00).toFixed(2);
 
       const part26 = formatEMV('00', 'BR.GOV.BCB.PIX') + formatEMV('01', chave || 'financeiro@condominio.com.br');
@@ -5450,7 +5472,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         nomeBeneficiario: 'CONDOMINIO JARDINS DO BOSQUE',
         cidadeBeneficiario: 'SAO PAULO',
         valor: valNum,
-        txid: 'DOMUS' + Date.now().toString().slice(-8)
+        txid: 'ZELORIS' + Date.now().toString().slice(-8)
       });
 
       const canvas = document.getElementById('canvasPixQr');
@@ -5489,7 +5511,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           nomeBeneficiario: 'CONDOMINIO JARDINS DO BOSQUE',
           cidadeBeneficiario: 'SAO PAULO',
           valor: 650.00,
-          txid: 'DOMUS' + Date.now().toString().slice(-8)
+          txid: 'ZELORIS' + Date.now().toString().slice(-8)
         });
       }
       navigator.clipboard.writeText(currentPixPayload);
@@ -5545,7 +5567,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         <html lang="pt-BR">
         <head>
           <meta charset="UTF-8">
-          <title>Termo de Confissão e Parcelamento de Dívida — DOMUS AI</title>
+          <title>Termo de Confissão e Parcelamento de Dívida — ZELORIS AI</title>
           <style>
             body { font-family: "Times New Roman", Times, serif; font-size: 14px; line-height: 1.6; color: #111; padding: 40px; margin: 0; }
             .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px; }
@@ -5562,7 +5584,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         <body>
           <div class="header">
             <h1>Instrumento Particular de Confissão de Dívida e Parcelamento</h1>
-            <p>Condomínio Residencial Jardins do Bosque • Plataforma DOMUS AI</p>
+            <p>Condomínio Residencial Jardins do Bosque • Plataforma ZELORIS AI</p>
           </div>
           <div class="section">
             <p><strong>CREDOR:</strong> CONDOMÍNIO RESIDENCIAL JARDINS DO BOSQUE, pessoa jurídica de direito privado, inscrito no CNPJ sob o nº 12.345.678/0001-90, representado por seu Síndico em exercício.</p>
@@ -5575,14 +5597,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           <div class="section">
             <div class="section-title">CLÁUSULA SEGUNDA — DA FORMA DE PAGAMENTO</div>
             <p>${parcelas}</p>
-            <p>Os pagamentos serão efetuados pontualmente via QR Code Pix ou boleto bancário emitidos pela plataforma DOMUS AI com vencimento a cada 30 (trinta) dias subsequentes.</p>
+            <p>Os pagamentos serão efetuados pontualmente via QR Code Pix ou boleto bancário emitidos pela plataforma ZELORIS AI com vencimento a cada 30 (trinta) dias subsequentes.</p>
           </div>
           <div class="section">
             <div class="section-title">CLÁUSULA TERCEIRA — DO INADIMPLEMENTO E PENALIDADES</div>
             <p>O não pagamento de qualquer das parcelas no seu respectivo vencimento acarretará o vencimento antecipado de todas as parcelas vincendas, com incidência de multa de 2%, juros de 1% ao mês e correção monetária pelo IPCA/IBGE, além de honorários advocatícios e protesto extrajudicial.</p>
           </div>
           <div class="stamp">
-            🔒 Documento gerado e autenticado digitalmente pelo DOMUS AI Enterprise sob Hash SHA-256: ${Math.random().toString(36).substring(2)}${Date.now().toString(36)}. Validade jurídica nos termos da MP 2.200-2/2001.
+            🔒 Documento gerado e autenticado digitalmente pelo ZELORIS AI Enterprise sob Hash SHA-256: ${Math.random().toString(36).substring(2)}${Date.now().toString(36)}. Validade jurídica nos termos da MP 2.200-2/2001.
           </div>
           <div class="signature-box">
             <div class="signature-line">Condomínio Residencial Jardins do Bosque<br><strong>(Síndico / Administração)</strong></div>
@@ -5639,7 +5661,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     async function carregarManutencoes() {
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch('/api/manutencoes', {
           headers: { 'Authorization': `Bearer ${token || 'sandbox-demo-token'}` }
@@ -5746,7 +5768,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     async function despacharOsZelador(osId, osCodigo, zelador) {
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch(`/api/manutencoes/${osId}/despachar`, {
           method: 'POST',
@@ -5770,7 +5792,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const fotoUrl = prompt('Confirmação de Vistoria: Insira a URL da foto do reparo concluído:', 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop&q=80');
       if (fotoUrl === null) return;
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch(`/api/manutencoes/${osId}/concluir`, {
           method: 'POST',
@@ -5812,7 +5834,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const urgenciaSlug = urgenciaRaw.includes('Alta') ? 'alta' :
         urgenciaRaw.includes('Baixa') ? 'baixa' : 'media';
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch('/api/manutencoes', {
           method: 'POST',
@@ -6198,10 +6220,10 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     async function confirmarSaqueSplitPix() {
       const val = document.getElementById('inputPixValorSaque')?.value || '4455.00';
-      const chave = document.getElementById('inputPixChaveAdm')?.value || 'financeiro@domusadministradora.com.br';
+      const chave = document.getElementById('inputPixChaveAdm')?.value || 'financeiro@zelorisadministradora.com.br';
       fecharModalSaqueSplit();
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch('/api/financeiro/saque-split', {
           method: 'POST',
@@ -6449,7 +6471,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       ],
       '5511955555555@s.whatsapp.net': [
         { time: 'Ontem 19:40', icon: '📋', dotClass: 'bg-amber-400', title: 'Negociação de Dívida', desc: 'Morador solicitou parcelamento em 6x no Pix após perda de emprego.' },
-        { time: '15/08/2026', icon: '⚠️', dotClass: 'bg-rose-400', title: 'Inadimplência 90 dias', desc: 'Total em aberto de R$ 2.450,00 com split DOMUS PAY ativo.' }
+        { time: '15/08/2026', icon: '⚠️', dotClass: 'bg-rose-400', title: 'Inadimplência 90 dias', desc: 'Total em aberto de R$ 2.450,00 com split ZELORIS PAY ativo.' }
       ]
     };
 
@@ -6458,7 +6480,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (!container) return;
 
       const events = MORADOR_TIMELINES[remoteJid] || [
-        { time: 'Hoje', icon: '💬', dotClass: 'bg-indigo-400', title: 'Interação WhatsApp', desc: 'Atendimento registrado na plataforma DOMUS AI.' }
+        { time: 'Hoje', icon: '💬', dotClass: 'bg-indigo-400', title: 'Interação WhatsApp', desc: 'Atendimento registrado na plataforma ZELORIS AI.' }
       ];
 
       container.innerHTML = events.map(e => `
@@ -6500,7 +6522,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         duration = '0:22';
         summary = 'Morador confirma pagamento Pix de R$ 650,00 e solicita comprovante de quitação.';
         transcription = 'Boa tarde, pessoal da administração. Acabei de realizar o pagamento da cota de condomínio pelo Pix Copia e Cola. Gostaria de saber se já consta baixado no sistema predial.';
-        replyText = 'Olá Carlos! Sim, seu pagamento via Pix de R$ 650,00 foi identificado instantaneamente pelo gateway DOMUS PAY. Sua unidade está 100% regularizada e sem pendências!';
+        replyText = 'Olá Carlos! Sim, seu pagamento via Pix de R$ 650,00 foi identificado instantaneamente pelo gateway ZELORIS PAY. Sua unidade está 100% regularizada e sem pendências!';
       } else if (activeRemoteJid.includes('777777777')) {
         duration = '0:28';
         summary = 'Morador solicita esclarecimento sobre o orçamento extraordinário da fachada.';
@@ -6702,8 +6724,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     let realtimeEventSource = null;
 
     function initRealtimeStream() {
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
 
       if (!token || isSandbox) {
         console.log('[Realtime] Modo Sandbox ativo: eventos operam localmente.');
@@ -6718,7 +6740,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         realtimeEventSource = new EventSource(`/api/events?token=${encodeURIComponent(token)}`);
 
         realtimeEventSource.onopen = () => {
-          console.log('🟢 [Realtime] Stream SSE conectado com o servidor DOMUS AI.');
+          console.log('🟢 [Realtime] Stream SSE conectado com o servidor ZELORIS AI.');
         };
 
         realtimeEventSource.onmessage = (e) => {
@@ -6809,8 +6831,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     async function loadConversations() {
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
 
       if (token && !isSandbox) {
         try {
@@ -7071,11 +7093,11 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
                     <span class="text-[10px] text-slate-400 font-mono shrink-0">${m.duration || '0:22'}</span>
                   </div>
 
-                  <!-- Resumo Executivo DOMUS AI -->
+                  <!-- Resumo Executivo ZELORIS AI -->
                   <div class="mt-2.5 p-2.5 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-indigo-100">
                     <div class="flex items-center gap-1.5 text-[10px] font-bold text-cyan-300 mb-1">
                       <svg class="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                      <span>Resumo Executivo DOMUS AI:</span>
+                      <span>Resumo Executivo ZELORIS AI:</span>
                     </div>
                     <p class="text-xs text-white font-medium leading-relaxed">${m.audioSummary || 'Morador solicita confirmação de baixa do Pix no sistema.'}</p>
                     
@@ -7093,7 +7115,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             <div class="flex flex-col ${isUser ? 'items-start' : 'items-end'}">
               <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md ${isUser ? 'chat-bubble-user text-slate-200' : 'chat-bubble-agent text-indigo-100'}">
                 <div class="flex items-center justify-between gap-4 mb-1">
-                  <span class="font-bold text-[10px] ${isUser ? 'text-slate-400' : 'text-cyan-300 font-mono'}">${isUser ? 'Condômino' : 'DOMUS AI'}</span>
+                  <span class="font-bold text-[10px] ${isUser ? 'text-slate-400' : 'text-cyan-300 font-mono'}">${isUser ? 'Condômino' : 'ZELORIS AI'}</span>
                   <div class="flex items-center gap-1">
                     <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
                     <span class="text-indigo-400 font-mono text-[9px]">✓✓</span>
@@ -7126,7 +7148,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       conv.isHumanHandoff = newHandoff;
       conv.status = newHandoff ? 'in_service' : 'ai';
       if (newHandoff) {
-        const userRaw = localStorage.getItem('domus_auth_user');
+        const userRaw = getAuthUser();
         const user = userRaw ? JSON.parse(userRaw) : null;
         conv.assignedOperator = user?.nome || 'Operador';
       } else {
@@ -7137,8 +7159,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       updateSmartActionBanner(conv);
       renderConversationsList();
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
 
       if (token && !isSandbox) {
         try {
@@ -7235,8 +7257,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       input.value = '';
       selectConversation(activeRemoteJid);
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
 
       if (token && !isSandbox) {
         try {
@@ -7297,8 +7319,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       renderConversationsList();
       updateHandoffButton(false);
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
 
       if (token && !isSandbox) {
         try {
@@ -7334,8 +7356,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       input.value = '';
       renderNotasInternas(conv);
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
-      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      const token = getAuthToken();
+      const isSandbox = isSandboxMode();
 
       if (token && !isSandbox) {
         try {
@@ -7536,7 +7558,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function confirmarAcordoSelecionado() {
       confetti({ particleCount: 70, spread: 70 });
       const opt = currentSimulacao?.opcoes?.find(o => o.parcelas === selectedParcelasQtd) || currentSimulacao?.opcoes?.[0] || { parcelas: 3, valorParcela: 470.25 };
-      const proto = `#DOMUS-ACORDO-${Math.floor(100000 + Math.random() * 900000)}`;
+      const proto = `#ZELORIS-ACORDO-${Math.floor(100000 + Math.random() * 900000)}`;
       
       const acordosList = document.getElementById('acordosAtivosList');
       if (acordosList) {
@@ -7567,7 +7589,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // OPERAÇÕES FINANCEIRAS & CONCILIAÇÃO BANCÁRIA (FASE 3)
     // ==========================================
     async function carregarCobrancasFintech() {
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const [resCobrancas, resMetricas] = await Promise.all([
           fetch('/api/financeiro/cobrancas', {
@@ -7638,7 +7660,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     async function simularLiquidacaoBancaria(cobrancaId) {
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         showToast('Processando Webhook...', 'Simulando liquidação instantânea via Banco Central...', 'info');
         const res = await fetch('/api/financeiro/pix/simular-pagamento', {
@@ -7667,7 +7689,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // RESERVAS DE ÁREAS COMUNS & LAZER (FASE 3)
     // ==========================================
     async function carregarReservas() {
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const [resAreas, resReservas] = await Promise.all([
           fetch('/api/reservas/areas', { headers: { 'Authorization': `Bearer ${token || 'sandbox-demo-token'}` } }),
@@ -7788,7 +7810,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         return;
       }
 
-      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const token = getAuthToken();
       try {
         const res = await fetch('/api/reservas', {
           method: 'POST',
@@ -7983,7 +8005,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       toast.id = id;
       toast.setAttribute('role', 'status');
       toast.setAttribute('aria-live', 'polite');
-      toast.className = `pointer-events-auto p-3.5 rounded-2xl border shadow-2xl backdrop-blur-md transition-all duration-300 transform translate-x-8 opacity-0 flex items-start gap-3 text-xs ${borders[type] || borders.success} domus-toast`;
+      toast.className = `pointer-events-auto p-3.5 rounded-2xl border shadow-2xl backdrop-blur-md transition-all duration-300 transform translate-x-8 opacity-0 flex items-start gap-3 text-xs ${borders[type] || borders.success} zeloris-toast domus-toast`;
       toast.innerHTML = `
         ${svgs[type] || svgs.success}
         <div class="flex-1 min-w-0 pr-1">
@@ -8064,6 +8086,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // 4. Modo Simples vs Avançado (Toggle de Complexidade)
     function toggleModoSimples() {
       const isSimples = document.body.classList.toggle('modo-simples');
+      localStorage.setItem('zeloris_modo_simples', isSimples ? 'true' : 'false');
       localStorage.setItem('domus_modo_simples', isSimples ? 'true' : 'false');
       updateModoSimplesUI(isSimples);
     }
@@ -8087,7 +8110,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     function initModoSimples() {
-      const saved = localStorage.getItem('domus_modo_simples');
+      const saved = localStorage.getItem('zeloris_modo_simples') || localStorage.getItem('domus_modo_simples');
       if (saved === 'true') {
         document.body.classList.add('modo-simples');
         updateModoSimplesUI(true);
@@ -8104,7 +8127,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function concluirTour() {
       closeQuickTourModal();
       confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
-      showToast('Pronto para Usar!', 'Você conheceu o básico do DOMUS AI. Qualquer dúvida, use o botão "Precisa de Ajuda?".', 'success');
+      showToast('Pronto para Usar!', 'Você conheceu o básico do ZELORIS AI. Qualquer dúvida, use o botão "Precisa de Ajuda?".', 'success');
     }
 
     // 6. Central de Ajuda & Dúvidas

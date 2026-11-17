@@ -54,7 +54,7 @@ export class EventsService {
     const initialEvent: DashboardEvent = {
       type: 'connected',
       data: {
-        message: 'Conectado ao fluxo em tempo real do DOMUS AI',
+        message: 'Conectado ao fluxo em tempo real do ZELORIS AI',
         connectedClients: this.clients.size
       },
       timestamp: new Date().toISOString()
