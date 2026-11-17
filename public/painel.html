@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,20 +20,23 @@
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            canvas: '#07090e',
-            panel: '#0e131f',
-            card: '#121826',
-            surface: '#161e30',
-            borderDim: 'rgba(255, 255, 255, 0.07)',
+            canvas: '#F6F3EE',
+            panel: '#FFFFFF',
+            card: '#FFFFFF',
+            surface: '#F9FAFB',
+            borderDim: '#E5E7EB',
             brand: {
-              DEFAULT: '#6366f1',
-              hover: '#4f46e5',
-              glow: 'rgba(99, 102, 241, 0.25)',
-              cyan: '#06b6d4',
-              mint: '#10b981',
+              DEFAULT: '#111827',
+              hover: '#1F2937',
+              glow: 'rgba(17, 24, 39, 0.08)',
+              cyan: '#0284C7',
+              mint: '#10B981',
+              indigo: '#4F46E5',
             }
           }
         }
+      }
+    }
       }
     }
   </script>
@@ -661,7 +664,615 @@
     html:not(.dark) .condovolto-toast p, html:not(.dark) .domus-toast p {
       color: #334155 !important;
     }
+  
+    /* ============================================================== */
+    /* APPDOMUS CLEAN LIGHT SAAS DESIGN SYSTEM (CondoVolto AI)        */
+    /* ============================================================== */
+    :root {
+      --dm-bg: #F6F3EE;
+      --dm-card: #FFFFFF;
+      --dm-border: #E5E7EB;
+      --dm-text-main: #111827;
+      --dm-text-sub: #4B5563;
+      --dm-text-muted: #6B7280;
+    }
+
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      background-color: #F6F3EE !important;
+      color: #111827 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    /* Scrollbars clean */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F1ECE4; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+    /* Layout Containers & Responsiveness */
+    #mainSidebar {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    #mainContentArea {
+      min-width: 0 !important;
+      background-color: #F6F3EE !important;
+    }
+
+    main[id^="tab-content-"] {
+      min-width: 0 !important;
+      width: 100% !important;
+      background-color: #F6F3EE !important;
+      box-sizing: border-box !important;
+    }
+
+    header {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      min-width: 0 !important;
+    }
+
+    /* All Cards, Panels and Surfaces */
+    .glass-surface,
+    .bg-\[\#07090e\],
+    .bg-\[\#0a0e18\],
+    .bg-\[\#0b0f19\],
+    .bg-\[\#0e1320\],
+    .bg-\[\#101524\],
+    .bg-\[\#121826\],
+    .bg-\[\#161e30\],
+    .bg-canvas,
+    .bg-panel,
+    .bg-card,
+    .bg-surface {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    /* Gradient card overrides to clean cards */
+    [class*="bg-gradient-to-"] {
+      background-image: none !important;
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
+    /* Borders */
+    [class*="border-white\/"] {
+      border-color: #E5E7EB !important;
+    }
+    .border-slate-800, .border-slate-700 {
+      border-color: #E5E7EB !important;
+    }
+
+    /* Typography */
+    .text-white, .text-slate-100, .text-slate-200 {
+      color: #111827 !important;
+    }
+    .text-slate-300, .text-slate-400 {
+      color: #4B5563 !important;
+    }
+    .text-slate-500 {
+      color: #6B7280 !important;
+    }
+
+    /* Inputs, Textareas, Selects */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      background-color: #FFFFFF !important;
+      border: 1px solid #D1D5DB !important;
+      color: #111827 !important;
+      border-radius: 10px !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #9CA3AF !important;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #111827 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.1) !important;
+    }
+
+    /* Sidebar Navigation Items - AppDomus Style */
+    .nav-item-active,
+    button[id^="nav-"].active {
+      background: #111827 !important;
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      border-radius: 8px !important;
+      border-left: none !important;
+    }
+    .nav-item-active svg,
+    button[id^="nav-"].active svg {
+      color: #FFFFFF !important;
+    }
+    .nav-item-active span,
+    button[id^="nav-"].active span {
+      color: #FFFFFF !important;
+    }
+
+    button[id^="nav-"]:not(.nav-item-active) {
+      color: #4B5563 !important;
+      border-radius: 8px !important;
+      transition: all 0.12s ease !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active):hover {
+      background-color: #F3F4F6 !important;
+      color: #111827 !important;
+    }
+
+    /* Status Pills and Badges matching AppDomus chips */
+    .badge-green,
+    [class*="bg-emerald-500\/10"],
+    [class*="bg-emerald-950\/"] {
+      background-color: #E7F6EC !important;
+      color: #1F6B35 !important;
+      border: 1px solid #A7F3D0 !important;
+    }
+    .text-emerald-400, .text-emerald-300 {
+      color: #1F6B35 !important;
+    }
+
+    .badge-amber,
+    [class*="bg-amber-500\/10"],
+    [class*="bg-amber-950\/"] {
+      background-color: #FFF4D6 !important;
+      color: #8A5A00 !important;
+      border: 1px solid #FDE68A !important;
+    }
+    .text-amber-400, .text-amber-300 {
+      color: #8A5A00 !important;
+    }
+
+    .badge-red,
+    [class*="bg-rose-500\/10"],
+    [class*="bg-rose-950\/"],
+    [class*="bg-red-500\/10"] {
+      background-color: #FDE8E4 !important;
+      color: #A63A1E !important;
+      border: 1px solid #FECDD3 !important;
+    }
+    .text-rose-400, .text-rose-300, .text-red-400 {
+      color: #A63A1E !important;
+    }
+
+    .badge-cyan,
+    [class*="bg-cyan-500\/10"],
+    [class*="bg-cyan-950\/"] {
+      background-color: #E0F2FE !important;
+      color: #0369A1 !important;
+      border: 1px solid #BAE6FD !important;
+    }
+    .text-cyan-400, .text-cyan-300 {
+      color: #0369A1 !important;
+    }
+
+    .badge-indigo,
+    [class*="bg-indigo-500\/10"],
+    [class*="bg-indigo-950\/"] {
+      background-color: #EEF2FF !important;
+      color: #4338CA !important;
+      border: 1px solid #C7D2FE !important;
+    }
+    .text-indigo-400, .text-indigo-300 {
+      color: #4338CA !important;
+    }
+
+    /* Tables clean styling */
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    thead, th {
+      background-color: #F9FAFB !important;
+      color: #6B7280 !important;
+      font-size: 11.5px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    tbody tr {
+      background-color: #FFFFFF !important;
+      border-top: 1px solid #F3F4F6 !important;
+      color: #111827 !important;
+      transition: background 0.12s !important;
+    }
+    tbody tr:hover {
+      background-color: #F9FAFB !important;
+    }
+
+    /* Banner notices clean styling */
+    #envNoticeBanner {
+      background-color: #FFFBEB !important;
+      border-color: #FDE68A !important;
+      color: #92400E !important;
+    }
+    #envNoticeBanner strong {
+      color: #78350F !important;
+    }
+
+    /* Responsive Grid Fix to prevent page cut-off */
+    @media (max-width: 1280px) {
+      .grid-cols-3,
+      [class*="md:grid-cols-3"],
+      [class*="lg:grid-cols-3"] {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .grid-cols-2,
+      [class*="md:grid-cols-2"],
+      [class*="lg:grid-cols-2"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* Atendimento / Chat responsiveness */
+    #tab-content-atendimento {
+      min-width: 0 !important;
+      width: 100% !important;
+    }
+    @media (max-width: 1200px) {
+      #sideDossieMorador:not(.hidden) {
+        position: fixed !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        z-index: 50 !important;
+        width: 320px !important;
+        background: #FFFFFF !important;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15) !important;
+      }
+    }
+
+    /* Chat Bubbles Clean */
+    .chat-bubble-user {
+      background: #DCF8C6 !important;
+      border: 1px solid #C4E9A7 !important;
+      color: #111827 !important;
+    }
+    .chat-bubble-agent {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+    }
+
   </style>
+
+  <!-- APPDOMUS MASTER CLEAN DESIGN SYSTEM & 100% RESPONSIVENESS OVERRIDES -->
+  <style id="appdomus-clean-design-system">
+    :root {
+      --dm-canvas: #F6F3EE;
+      --dm-card: #FFFFFF;
+      --dm-border: #E5E7EB;
+      --dm-border-subtle: #F3F4F6;
+      --dm-text-main: #111827;
+      --dm-text-sub: #4B5563;
+      --dm-text-muted: #6B7280;
+      --dm-primary: #111827;
+    }
+
+    /* Force Clean Canvas Base */
+    html, body {
+      max-width: 100vw !important;
+      width: 100% !important;
+      overflow-x: hidden !important;
+      background-color: #F6F3EE !important;
+      color: #111827 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    }
+
+    /* Scrollbars clean */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F1ECE4; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+    /* Layout Structure & Zero Cut-off Responsiveness */
+    #mainSidebar {
+      background-color: #FFFFFF !important;
+      border-right: 1px solid #E5E7EB !important;
+      box-shadow: 1px 0 2px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    #mainContentArea {
+      min-width: 0 !important;
+      width: 100% !important;
+      flex: 1 1 0% !important;
+      overflow-x: hidden !important;
+      background-color: #F6F3EE !important;
+    }
+
+    main[id^="tab-content-"] {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      background-color: #F6F3EE !important;
+      box-sizing: border-box !important;
+    }
+
+    header {
+      background-color: #FFFFFF !important;
+      border-bottom: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+    }
+
+    /* All Cards, Panels, Modals and Surfaces */
+    .glass-surface,
+    .bg-\[\#07090e\],
+    .bg-\[\#0a0e18\],
+    .bg-\[\#0b0f19\],
+    .bg-\[\#0e1320\],
+    .bg-\[\#0e131f\],
+    .bg-\[\#101524\],
+    .bg-\[\#121826\],
+    .bg-\[\#161e30\],
+    .bg-\[\#181938\],
+    .bg-\[\#1b2438\],
+    .bg-canvas,
+    .bg-panel,
+    .bg-card,
+    .bg-surface,
+    .bg-black\/20,
+    .bg-black\/30,
+    .bg-black\/40,
+    .bg-white\/\[0\.02\],
+    .bg-white\/\[0\.03\],
+    .bg-white\/\[0\.04\],
+    .bg-white\/\[0\.05\] {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    /* Override dark gradient cards to clean white cards */
+    [class*="bg-gradient-to-"] {
+      background-image: none !important;
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
+    /* Borders */
+    [class*="border-white\/"],
+    .border-slate-800,
+    .border-slate-700,
+    .border-slate-600 {
+      border-color: #E5E7EB !important;
+    }
+
+    /* Typography Hierarchy */
+    h1, h2, h3, h4, h5, h6 {
+      color: #111827 !important;
+      font-weight: 700 !important;
+    }
+
+    .text-white, .text-slate-100, .text-slate-200 {
+      color: #111827 !important;
+    }
+    .text-slate-300, .text-slate-400 {
+      color: #4B5563 !important;
+    }
+    .text-slate-500 {
+      color: #6B7280 !important;
+    }
+
+    /* Keep crisp white text on intentionally dark buttons, badges & active nav */
+    .bg-indigo-600, .bg-indigo-600 *,
+    .bg-indigo-700, .bg-indigo-700 *,
+    .bg-slate-900, .bg-slate-900 *,
+    .bg-black, .bg-black *,
+    .bg-gray-900, .bg-gray-900 *,
+    .nav-item-active, .nav-item-active *,
+    button[id^="nav-"].active, button[id^="nav-"].active *,
+    #topBtnBroadcast, #topBtnBroadcast * {
+      color: #FFFFFF !important;
+    }
+
+    /* Sidebar Navigation Items - AppDomus Style */
+    .nav-item-active,
+    button[id^="nav-"].nav-item-active {
+      background-color: #111827 !important;
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      border-radius: 10px !important;
+      border-left: none !important;
+    }
+    .nav-item-active svg,
+    .nav-item-active span {
+      color: #FFFFFF !important;
+    }
+
+    button[id^="nav-"]:not(.nav-item-active) {
+      color: #4B5563 !important;
+      border-radius: 10px !important;
+      transition: all 0.15s ease !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active):hover {
+      background-color: #F3F4F6 !important;
+      color: #111827 !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active) svg {
+      color: #6B7280 !important;
+    }
+
+    /* Inputs, Selects, Textareas - Clean White Fields */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      background-color: #FFFFFF !important;
+      border: 1px solid #D1D5DB !important;
+      color: #111827 !important;
+      border-radius: 10px !important;
+      font-weight: 500 !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #9CA3AF !important;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #111827 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.08) !important;
+    }
+
+    /* AppDomus Chip Badges */
+    .badge-green,
+    [class*="bg-emerald-500/10"],
+    [class*="bg-emerald-500/15"],
+    [class*="bg-emerald-500/20"],
+    [class*="bg-emerald-950"] {
+      background-color: #E7F6EC !important;
+      color: #1F6B35 !important;
+      border: 1px solid #A7F3D0 !important;
+    }
+    .text-emerald-400, .text-emerald-300, .text-emerald-500 {
+      color: #1F6B35 !important;
+    }
+
+    .badge-amber,
+    [class*="bg-amber-500/10"],
+    [class*="bg-amber-500/15"],
+    [class*="bg-amber-500/20"],
+    [class*="bg-amber-950"] {
+      background-color: #FFF4D6 !important;
+      color: #8A5A00 !important;
+      border: 1px solid #FDE68A !important;
+    }
+    .text-amber-400, .text-amber-300, .text-amber-500 {
+      color: #8A5A00 !important;
+    }
+
+    .badge-red,
+    [class*="bg-rose-500/10"],
+    [class*="bg-rose-500/15"],
+    [class*="bg-rose-500/20"],
+    [class*="bg-rose-950"],
+    [class*="bg-red-500/10"] {
+      background-color: #FDE8E4 !important;
+      color: #A63A1E !important;
+      border: 1px solid #FECDD3 !important;
+    }
+    .text-rose-400, .text-rose-300, .text-red-400 {
+      color: #A63A1E !important;
+    }
+
+    .badge-cyan,
+    [class*="bg-cyan-500/10"],
+    [class*="bg-cyan-500/15"],
+    [class*="bg-cyan-500/20"],
+    [class*="bg-cyan-950"] {
+      background-color: #E0F2FE !important;
+      color: #0369A1 !important;
+      border: 1px solid #BAE6FD !important;
+    }
+    .text-cyan-400, .text-cyan-300 {
+      color: #0369A1 !important;
+    }
+
+    .badge-indigo,
+    [class*="bg-indigo-500/10"],
+    [class*="bg-indigo-500/15"],
+    [class*="bg-indigo-500/20"],
+    [class*="bg-indigo-950"] {
+      background-color: #EEF2FF !important;
+      color: #4338CA !important;
+      border: 1px solid #C7D2FE !important;
+    }
+    .text-indigo-400, .text-indigo-300 {
+      color: #4338CA !important;
+    }
+
+    /* Tables Clean Styling */
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    thead, th {
+      background-color: #F9FAFB !important;
+      color: #6B7280 !important;
+      font-size: 11.5px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    tbody tr {
+      background-color: #FFFFFF !important;
+      border-top: 1px solid #F3F4F6 !important;
+      color: #111827 !important;
+      transition: background 0.12s !important;
+    }
+    tbody tr:hover {
+      background-color: #F9FAFB !important;
+    }
+
+    /* Clean Environment / Sandbox Notice Banner */
+    #envNoticeBanner {
+      background-color: #FFFBEB !important;
+      border-color: #FDE68A !important;
+      color: #92400E !important;
+    }
+    #envNoticeBanner strong {
+      color: #78350F !important;
+    }
+
+    /* Responsiveness Rules - Prevent Any Horizontal Cut-Off */
+    @media (max-width: 1280px) {
+      .grid-cols-3,
+      [class*="md:grid-cols-3"],
+      [class*="lg:grid-cols-3"] {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+      }
+      #topAutonomiaBadge {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .grid-cols-2,
+      [class*="md:grid-cols-2"],
+      [class*="lg:grid-cols-2"] {
+        grid-template-columns: 1fr !important;
+      }
+      #sideDossieMorador:not(.hidden) {
+        position: fixed !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        z-index: 50 !important;
+        width: 320px !important;
+        background: #FFFFFF !important;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15) !important;
+      }
+    }
+
+    /* Chat Bubbles Clean AppDomus */
+    .chat-bubble-user {
+      background: #E7F6EC !important;
+      border: 1px solid #A7F3D0 !important;
+      color: #111827 !important;
+    }
+    .chat-bubble-agent {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    }
+  </style>
+
 </head>
 <body class="min-h-screen flex h-screen overflow-hidden selection:bg-brand selection:text-white relative">
 
@@ -2044,7 +2655,7 @@
   <!-- ============================================================== -->
   <!-- MAIN WORKSPACE CONTAINER -->
   <!-- ============================================================== -->
-  <div id="mainContentArea" class="flex-1 flex flex-col h-screen overflow-hidden">
+  <div id="mainContentArea" class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#F6F3EE]">
 
     <!-- Topbar Executivo Minimalista estilo Linear / Raycast -->
     <header class="bg-[#0b0f19] border-b border-white/[0.08] px-4 md:px-6 py-2 flex items-center justify-between shrink-0 z-20 gap-3">
@@ -2067,7 +2678,7 @@
       </div>
 
       <!-- Lado Direito: Seletor Multi-Condomínio + Status + Disparo + Ações Rápidas -->
-      <div class="flex items-center gap-2 shrink-0">
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap justify-end max-w-[60vw]">
         <!-- Seletor Multi-Condomínio (White-Label) -->
         <div class="relative hidden sm:flex items-center">
           <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-indigo-500/40 text-xs transition-colors">
@@ -2155,7 +2766,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO 1: CAIXA DE ENTRADA OMNICHANNEL (COM ÁUDIO & SENTIMENTO) -->
     <!-- ============================================================== -->
-    <main id="tab-content-atendimento" class="flex-1 flex overflow-hidden">
+    <main id="tab-content-atendimento" class="flex-1 min-w-0 w-full flex overflow-hidden">
       <!-- Coluna 1: Lista de Conversas & Filtros Avançados -->
       <aside class="w-80 md:w-88 bg-[#0a0e18] border-r border-white/[0.08] flex flex-col shrink-0">
         <div class="p-3 border-b border-white/[0.08] space-y-2.5">
@@ -2239,7 +2850,7 @@
           </div>
 
           <!-- Controles de Atendimento no Header -->
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap justify-end max-w-[60vw]">
             <!-- Toggle Autonomia IA vs Humano -->
             <button 
               id="btnToggleHandoff" 
@@ -2528,7 +3139,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO 2: COBRANÇA & ACORDOS DE DÍVIDAS -->
     <!-- ============================================================== -->
-    <main id="tab-content-cobranca" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-cobranca" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-6xl mx-auto space-y-6">
 
         <!-- Header -->
@@ -2737,7 +3348,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO NOVO: PORTARIA DIGITAL & ENCOMENDAS COM OCR -->
     <!-- ============================================================== -->
-    <main id="tab-content-portaria_digital" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-portaria_digital" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
           <div>
@@ -2877,7 +3488,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO 4: RESERVAS DE ÁREAS COMUNS & LAZER -->
     <!-- ============================================================== -->
-    <main id="tab-content-reservas" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-reservas" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-6xl mx-auto space-y-6">
 
         <!-- Header -->
@@ -2936,7 +3547,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO 5: TELEMETRIA & MEDIÇÃO INDIVIDUAL (ÁGUA E GÁS) -->
     <!-- ============================================================== -->
-    <main id="tab-content-medicao" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-medicao" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-6xl mx-auto space-y-6">
 
         <!-- Header -->
@@ -3083,7 +3694,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO NOVO: MANUTENÇÃO PREDIAL & ZELADORIA INTELIGENTE -->
     <!-- ============================================================== -->
-    <main id="tab-content-manutencao" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-manutencao" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
         
         <!-- Header -->
@@ -3257,7 +3868,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO NOVO: RELATÓRIO MENSAL E PRESTAÇÃO DE CONTAS -->
     <!-- ============================================================== -->
-    <main id="tab-content-analytics" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-analytics" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
           <div>
@@ -3407,7 +4018,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO NOVO: ASSEMBLEIAS VIRTUAIS & ENQUETES VIA WHATSAPP -->
     <!-- ============================================================== -->
-    <main id="tab-content-assembleia" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-assembleia" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
           <div>
@@ -3490,7 +4101,7 @@
     <!-- ============================================================== -->
     <!-- MÓDULO 8: HUB MULTI-IA COM PILOTO AUTOMÁTICO 100% AUTÔNOMO -->
     <!-- ============================================================== -->
-    <main id="tab-content-ai" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-ai" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
 
         <!-- Header do Módulo -->
@@ -3794,7 +4405,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     <!-- ============================================================== -->
     <!-- MÓDULO 9: BASE DE CONHECIMENTO RAG VETORIAL -->
     <!-- ============================================================== -->
-    <main id="tab-content-rag" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-rag" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-6xl mx-auto space-y-6">
 
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
@@ -3964,7 +4575,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     <!-- ============================================================== -->
     <!-- MÓDULO 10: CONECTORES DE ERP & WEBHOOKS -->
     <!-- ============================================================== -->
-    <main id="tab-content-configuracoes" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-configuracoes" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-4xl mx-auto space-y-6">
 
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-[#0e1320] to-indigo-950/30 border border-white/[0.08] shadow-xl">
@@ -4067,7 +4678,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     <!-- ============================================================== -->
     <!-- MÓDULO 11: EQUIPE & MATRIZ INTERATIVA DE PERMISSÕES (RBAC) -->
     <!-- ============================================================== -->
-    <main id="tab-content-equipe" class="flex-1 overflow-y-auto p-6 bg-[#07090e] hidden">
+    <main id="tab-content-equipe" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
         <div class="p-6 rounded-3xl bg-gradient-to-r from-indigo-950/40 via-[#0e1320] to-purple-950/30 border border-white/[0.08] shadow-xl">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-semibold mb-2">
@@ -4865,7 +5476,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
                 ${p.descricao}
               </p>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap justify-end max-w-[60vw]">
               <button onclick="responderSupervisao('${p.id}', 'rejeitado')" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold transition-all cursor-pointer">
                 ✕ Rejeitar
               </button>
@@ -5304,12 +5915,12 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     function initTheme() {
-      const savedTheme = localStorage.getItem('condovolto_theme') || localStorage.getItem('domus_theme') || 'dark';
-      if (savedTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('condovolto_theme', 'light');
+      localStorage.setItem('domus_theme', 'light');
+      updateThemeUI(false);
+    } else {
         document.documentElement.classList.remove('dark');
-        updateThemeUI(false);
-      } else {
-        document.documentElement.classList.add('dark');
         updateThemeUI(true);
       }
     }
@@ -5579,8 +6190,616 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             .signature-line { width: 45%; border-top: 1px solid #000; text-align: center; padding-top: 5px; font-size: 12px; }
             .stamp { margin-top: 30px; font-size: 11px; color: #666; border: 1px dashed #999; padding: 10px; text-align: center; }
             @media print { .no-print { display: none; } }
-          </style>
-        </head>
+          
+    /* ============================================================== */
+    /* APPDOMUS CLEAN LIGHT SAAS DESIGN SYSTEM (CondoVolto AI)        */
+    /* ============================================================== */
+    :root {
+      --dm-bg: #F6F3EE;
+      --dm-card: #FFFFFF;
+      --dm-border: #E5E7EB;
+      --dm-text-main: #111827;
+      --dm-text-sub: #4B5563;
+      --dm-text-muted: #6B7280;
+    }
+
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      background-color: #F6F3EE !important;
+      color: #111827 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    /* Scrollbars clean */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F1ECE4; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+    /* Layout Containers & Responsiveness */
+    #mainSidebar {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    #mainContentArea {
+      min-width: 0 !important;
+      background-color: #F6F3EE !important;
+    }
+
+    main[id^="tab-content-"] {
+      min-width: 0 !important;
+      width: 100% !important;
+      background-color: #F6F3EE !important;
+      box-sizing: border-box !important;
+    }
+
+    header {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      min-width: 0 !important;
+    }
+
+    /* All Cards, Panels and Surfaces */
+    .glass-surface,
+    .bg-\[\#07090e\],
+    .bg-\[\#0a0e18\],
+    .bg-\[\#0b0f19\],
+    .bg-\[\#0e1320\],
+    .bg-\[\#101524\],
+    .bg-\[\#121826\],
+    .bg-\[\#161e30\],
+    .bg-canvas,
+    .bg-panel,
+    .bg-card,
+    .bg-surface {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    /* Gradient card overrides to clean cards */
+    [class*="bg-gradient-to-"] {
+      background-image: none !important;
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
+    /* Borders */
+    [class*="border-white\/"] {
+      border-color: #E5E7EB !important;
+    }
+    .border-slate-800, .border-slate-700 {
+      border-color: #E5E7EB !important;
+    }
+
+    /* Typography */
+    .text-white, .text-slate-100, .text-slate-200 {
+      color: #111827 !important;
+    }
+    .text-slate-300, .text-slate-400 {
+      color: #4B5563 !important;
+    }
+    .text-slate-500 {
+      color: #6B7280 !important;
+    }
+
+    /* Inputs, Textareas, Selects */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      background-color: #FFFFFF !important;
+      border: 1px solid #D1D5DB !important;
+      color: #111827 !important;
+      border-radius: 10px !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #9CA3AF !important;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #111827 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.1) !important;
+    }
+
+    /* Sidebar Navigation Items - AppDomus Style */
+    .nav-item-active,
+    button[id^="nav-"].active {
+      background: #111827 !important;
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      border-radius: 8px !important;
+      border-left: none !important;
+    }
+    .nav-item-active svg,
+    button[id^="nav-"].active svg {
+      color: #FFFFFF !important;
+    }
+    .nav-item-active span,
+    button[id^="nav-"].active span {
+      color: #FFFFFF !important;
+    }
+
+    button[id^="nav-"]:not(.nav-item-active) {
+      color: #4B5563 !important;
+      border-radius: 8px !important;
+      transition: all 0.12s ease !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active):hover {
+      background-color: #F3F4F6 !important;
+      color: #111827 !important;
+    }
+
+    /* Status Pills and Badges matching AppDomus chips */
+    .badge-green,
+    [class*="bg-emerald-500\/10"],
+    [class*="bg-emerald-950\/"] {
+      background-color: #E7F6EC !important;
+      color: #1F6B35 !important;
+      border: 1px solid #A7F3D0 !important;
+    }
+    .text-emerald-400, .text-emerald-300 {
+      color: #1F6B35 !important;
+    }
+
+    .badge-amber,
+    [class*="bg-amber-500\/10"],
+    [class*="bg-amber-950\/"] {
+      background-color: #FFF4D6 !important;
+      color: #8A5A00 !important;
+      border: 1px solid #FDE68A !important;
+    }
+    .text-amber-400, .text-amber-300 {
+      color: #8A5A00 !important;
+    }
+
+    .badge-red,
+    [class*="bg-rose-500\/10"],
+    [class*="bg-rose-950\/"],
+    [class*="bg-red-500\/10"] {
+      background-color: #FDE8E4 !important;
+      color: #A63A1E !important;
+      border: 1px solid #FECDD3 !important;
+    }
+    .text-rose-400, .text-rose-300, .text-red-400 {
+      color: #A63A1E !important;
+    }
+
+    .badge-cyan,
+    [class*="bg-cyan-500\/10"],
+    [class*="bg-cyan-950\/"] {
+      background-color: #E0F2FE !important;
+      color: #0369A1 !important;
+      border: 1px solid #BAE6FD !important;
+    }
+    .text-cyan-400, .text-cyan-300 {
+      color: #0369A1 !important;
+    }
+
+    .badge-indigo,
+    [class*="bg-indigo-500\/10"],
+    [class*="bg-indigo-950\/"] {
+      background-color: #EEF2FF !important;
+      color: #4338CA !important;
+      border: 1px solid #C7D2FE !important;
+    }
+    .text-indigo-400, .text-indigo-300 {
+      color: #4338CA !important;
+    }
+
+    /* Tables clean styling */
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    thead, th {
+      background-color: #F9FAFB !important;
+      color: #6B7280 !important;
+      font-size: 11.5px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    tbody tr {
+      background-color: #FFFFFF !important;
+      border-top: 1px solid #F3F4F6 !important;
+      color: #111827 !important;
+      transition: background 0.12s !important;
+    }
+    tbody tr:hover {
+      background-color: #F9FAFB !important;
+    }
+
+    /* Banner notices clean styling */
+    #envNoticeBanner {
+      background-color: #FFFBEB !important;
+      border-color: #FDE68A !important;
+      color: #92400E !important;
+    }
+    #envNoticeBanner strong {
+      color: #78350F !important;
+    }
+
+    /* Responsive Grid Fix to prevent page cut-off */
+    @media (max-width: 1280px) {
+      .grid-cols-3,
+      [class*="md:grid-cols-3"],
+      [class*="lg:grid-cols-3"] {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .grid-cols-2,
+      [class*="md:grid-cols-2"],
+      [class*="lg:grid-cols-2"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* Atendimento / Chat responsiveness */
+    #tab-content-atendimento {
+      min-width: 0 !important;
+      width: 100% !important;
+    }
+    @media (max-width: 1200px) {
+      #sideDossieMorador:not(.hidden) {
+        position: fixed !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        z-index: 50 !important;
+        width: 320px !important;
+        background: #FFFFFF !important;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15) !important;
+      }
+    }
+
+    /* Chat Bubbles Clean */
+    .chat-bubble-user {
+      background: #DCF8C6 !important;
+      border: 1px solid #C4E9A7 !important;
+      color: #111827 !important;
+    }
+    .chat-bubble-agent {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+    }
+
+  </style>
+        
+  <!-- APPDOMUS MASTER CLEAN DESIGN SYSTEM & 100% RESPONSIVENESS OVERRIDES -->
+  <style id="appdomus-clean-design-system">
+    :root {
+      --dm-canvas: #F6F3EE;
+      --dm-card: #FFFFFF;
+      --dm-border: #E5E7EB;
+      --dm-border-subtle: #F3F4F6;
+      --dm-text-main: #111827;
+      --dm-text-sub: #4B5563;
+      --dm-text-muted: #6B7280;
+      --dm-primary: #111827;
+    }
+
+    /* Force Clean Canvas Base */
+    html, body {
+      max-width: 100vw !important;
+      width: 100% !important;
+      overflow-x: hidden !important;
+      background-color: #F6F3EE !important;
+      color: #111827 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    }
+
+    /* Scrollbars clean */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F1ECE4; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+    /* Layout Structure & Zero Cut-off Responsiveness */
+    #mainSidebar {
+      background-color: #FFFFFF !important;
+      border-right: 1px solid #E5E7EB !important;
+      box-shadow: 1px 0 2px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    #mainContentArea {
+      min-width: 0 !important;
+      width: 100% !important;
+      flex: 1 1 0% !important;
+      overflow-x: hidden !important;
+      background-color: #F6F3EE !important;
+    }
+
+    main[id^="tab-content-"] {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      background-color: #F6F3EE !important;
+      box-sizing: border-box !important;
+    }
+
+    header {
+      background-color: #FFFFFF !important;
+      border-bottom: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+    }
+
+    /* All Cards, Panels, Modals and Surfaces */
+    .glass-surface,
+    .bg-\[\#07090e\],
+    .bg-\[\#0a0e18\],
+    .bg-\[\#0b0f19\],
+    .bg-\[\#0e1320\],
+    .bg-\[\#0e131f\],
+    .bg-\[\#101524\],
+    .bg-\[\#121826\],
+    .bg-\[\#161e30\],
+    .bg-\[\#181938\],
+    .bg-\[\#1b2438\],
+    .bg-canvas,
+    .bg-panel,
+    .bg-card,
+    .bg-surface,
+    .bg-black\/20,
+    .bg-black\/30,
+    .bg-black\/40,
+    .bg-white\/\[0\.02\],
+    .bg-white\/\[0\.03\],
+    .bg-white\/\[0\.04\],
+    .bg-white\/\[0\.05\] {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    /* Override dark gradient cards to clean white cards */
+    [class*="bg-gradient-to-"] {
+      background-image: none !important;
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
+    /* Borders */
+    [class*="border-white\/"],
+    .border-slate-800,
+    .border-slate-700,
+    .border-slate-600 {
+      border-color: #E5E7EB !important;
+    }
+
+    /* Typography Hierarchy */
+    h1, h2, h3, h4, h5, h6 {
+      color: #111827 !important;
+      font-weight: 700 !important;
+    }
+
+    .text-white, .text-slate-100, .text-slate-200 {
+      color: #111827 !important;
+    }
+    .text-slate-300, .text-slate-400 {
+      color: #4B5563 !important;
+    }
+    .text-slate-500 {
+      color: #6B7280 !important;
+    }
+
+    /* Keep crisp white text on intentionally dark buttons, badges & active nav */
+    .bg-indigo-600, .bg-indigo-600 *,
+    .bg-indigo-700, .bg-indigo-700 *,
+    .bg-slate-900, .bg-slate-900 *,
+    .bg-black, .bg-black *,
+    .bg-gray-900, .bg-gray-900 *,
+    .nav-item-active, .nav-item-active *,
+    button[id^="nav-"].active, button[id^="nav-"].active *,
+    #topBtnBroadcast, #topBtnBroadcast * {
+      color: #FFFFFF !important;
+    }
+
+    /* Sidebar Navigation Items - AppDomus Style */
+    .nav-item-active,
+    button[id^="nav-"].nav-item-active {
+      background-color: #111827 !important;
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      border-radius: 10px !important;
+      border-left: none !important;
+    }
+    .nav-item-active svg,
+    .nav-item-active span {
+      color: #FFFFFF !important;
+    }
+
+    button[id^="nav-"]:not(.nav-item-active) {
+      color: #4B5563 !important;
+      border-radius: 10px !important;
+      transition: all 0.15s ease !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active):hover {
+      background-color: #F3F4F6 !important;
+      color: #111827 !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active) svg {
+      color: #6B7280 !important;
+    }
+
+    /* Inputs, Selects, Textareas - Clean White Fields */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      background-color: #FFFFFF !important;
+      border: 1px solid #D1D5DB !important;
+      color: #111827 !important;
+      border-radius: 10px !important;
+      font-weight: 500 !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #9CA3AF !important;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #111827 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.08) !important;
+    }
+
+    /* AppDomus Chip Badges */
+    .badge-green,
+    [class*="bg-emerald-500/10"],
+    [class*="bg-emerald-500/15"],
+    [class*="bg-emerald-500/20"],
+    [class*="bg-emerald-950"] {
+      background-color: #E7F6EC !important;
+      color: #1F6B35 !important;
+      border: 1px solid #A7F3D0 !important;
+    }
+    .text-emerald-400, .text-emerald-300, .text-emerald-500 {
+      color: #1F6B35 !important;
+    }
+
+    .badge-amber,
+    [class*="bg-amber-500/10"],
+    [class*="bg-amber-500/15"],
+    [class*="bg-amber-500/20"],
+    [class*="bg-amber-950"] {
+      background-color: #FFF4D6 !important;
+      color: #8A5A00 !important;
+      border: 1px solid #FDE68A !important;
+    }
+    .text-amber-400, .text-amber-300, .text-amber-500 {
+      color: #8A5A00 !important;
+    }
+
+    .badge-red,
+    [class*="bg-rose-500/10"],
+    [class*="bg-rose-500/15"],
+    [class*="bg-rose-500/20"],
+    [class*="bg-rose-950"],
+    [class*="bg-red-500/10"] {
+      background-color: #FDE8E4 !important;
+      color: #A63A1E !important;
+      border: 1px solid #FECDD3 !important;
+    }
+    .text-rose-400, .text-rose-300, .text-red-400 {
+      color: #A63A1E !important;
+    }
+
+    .badge-cyan,
+    [class*="bg-cyan-500/10"],
+    [class*="bg-cyan-500/15"],
+    [class*="bg-cyan-500/20"],
+    [class*="bg-cyan-950"] {
+      background-color: #E0F2FE !important;
+      color: #0369A1 !important;
+      border: 1px solid #BAE6FD !important;
+    }
+    .text-cyan-400, .text-cyan-300 {
+      color: #0369A1 !important;
+    }
+
+    .badge-indigo,
+    [class*="bg-indigo-500/10"],
+    [class*="bg-indigo-500/15"],
+    [class*="bg-indigo-500/20"],
+    [class*="bg-indigo-950"] {
+      background-color: #EEF2FF !important;
+      color: #4338CA !important;
+      border: 1px solid #C7D2FE !important;
+    }
+    .text-indigo-400, .text-indigo-300 {
+      color: #4338CA !important;
+    }
+
+    /* Tables Clean Styling */
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    thead, th {
+      background-color: #F9FAFB !important;
+      color: #6B7280 !important;
+      font-size: 11.5px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    tbody tr {
+      background-color: #FFFFFF !important;
+      border-top: 1px solid #F3F4F6 !important;
+      color: #111827 !important;
+      transition: background 0.12s !important;
+    }
+    tbody tr:hover {
+      background-color: #F9FAFB !important;
+    }
+
+    /* Clean Environment / Sandbox Notice Banner */
+    #envNoticeBanner {
+      background-color: #FFFBEB !important;
+      border-color: #FDE68A !important;
+      color: #92400E !important;
+    }
+    #envNoticeBanner strong {
+      color: #78350F !important;
+    }
+
+    /* Responsiveness Rules - Prevent Any Horizontal Cut-Off */
+    @media (max-width: 1280px) {
+      .grid-cols-3,
+      [class*="md:grid-cols-3"],
+      [class*="lg:grid-cols-3"] {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+      }
+      #topAutonomiaBadge {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .grid-cols-2,
+      [class*="md:grid-cols-2"],
+      [class*="lg:grid-cols-2"] {
+        grid-template-columns: 1fr !important;
+      }
+      #sideDossieMorador:not(.hidden) {
+        position: fixed !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        z-index: 50 !important;
+        width: 320px !important;
+        background: #FFFFFF !important;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15) !important;
+      }
+    }
+
+    /* Chat Bubbles Clean AppDomus */
+    .chat-bubble-user {
+      background: #E7F6EC !important;
+      border: 1px solid #A7F3D0 !important;
+      color: #111827 !important;
+    }
+    .chat-bubble-agent {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    }
+  </style>
+
+</head>
         <body>
           <div class="header">
             <h1>Instrumento Particular de Confissão de Dívida e Parcelamento</h1>
@@ -6127,7 +7346,615 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     .signatures { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 36px; text-align: center; }
     .sig-line { border-top: 1px solid #94a3b8; padding-top: 6px; font-size: 11px; color: #475569; font-weight: 600; }
     @media print { body { padding: 16px; } }
+  
+    /* ============================================================== */
+    /* APPDOMUS CLEAN LIGHT SAAS DESIGN SYSTEM (CondoVolto AI)        */
+    /* ============================================================== */
+    :root {
+      --dm-bg: #F6F3EE;
+      --dm-card: #FFFFFF;
+      --dm-border: #E5E7EB;
+      --dm-text-main: #111827;
+      --dm-text-sub: #4B5563;
+      --dm-text-muted: #6B7280;
+    }
+
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+      background-color: #F6F3EE !important;
+      color: #111827 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    /* Scrollbars clean */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F1ECE4; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+    /* Layout Containers & Responsiveness */
+    #mainSidebar {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    #mainContentArea {
+      min-width: 0 !important;
+      background-color: #F6F3EE !important;
+    }
+
+    main[id^="tab-content-"] {
+      min-width: 0 !important;
+      width: 100% !important;
+      background-color: #F6F3EE !important;
+      box-sizing: border-box !important;
+    }
+
+    header {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      min-width: 0 !important;
+    }
+
+    /* All Cards, Panels and Surfaces */
+    .glass-surface,
+    .bg-\[\#07090e\],
+    .bg-\[\#0a0e18\],
+    .bg-\[\#0b0f19\],
+    .bg-\[\#0e1320\],
+    .bg-\[\#101524\],
+    .bg-\[\#121826\],
+    .bg-\[\#161e30\],
+    .bg-canvas,
+    .bg-panel,
+    .bg-card,
+    .bg-surface {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    /* Gradient card overrides to clean cards */
+    [class*="bg-gradient-to-"] {
+      background-image: none !important;
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
+    /* Borders */
+    [class*="border-white\/"] {
+      border-color: #E5E7EB !important;
+    }
+    .border-slate-800, .border-slate-700 {
+      border-color: #E5E7EB !important;
+    }
+
+    /* Typography */
+    .text-white, .text-slate-100, .text-slate-200 {
+      color: #111827 !important;
+    }
+    .text-slate-300, .text-slate-400 {
+      color: #4B5563 !important;
+    }
+    .text-slate-500 {
+      color: #6B7280 !important;
+    }
+
+    /* Inputs, Textareas, Selects */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      background-color: #FFFFFF !important;
+      border: 1px solid #D1D5DB !important;
+      color: #111827 !important;
+      border-radius: 10px !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #9CA3AF !important;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #111827 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.1) !important;
+    }
+
+    /* Sidebar Navigation Items - AppDomus Style */
+    .nav-item-active,
+    button[id^="nav-"].active {
+      background: #111827 !important;
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      border-radius: 8px !important;
+      border-left: none !important;
+    }
+    .nav-item-active svg,
+    button[id^="nav-"].active svg {
+      color: #FFFFFF !important;
+    }
+    .nav-item-active span,
+    button[id^="nav-"].active span {
+      color: #FFFFFF !important;
+    }
+
+    button[id^="nav-"]:not(.nav-item-active) {
+      color: #4B5563 !important;
+      border-radius: 8px !important;
+      transition: all 0.12s ease !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active):hover {
+      background-color: #F3F4F6 !important;
+      color: #111827 !important;
+    }
+
+    /* Status Pills and Badges matching AppDomus chips */
+    .badge-green,
+    [class*="bg-emerald-500\/10"],
+    [class*="bg-emerald-950\/"] {
+      background-color: #E7F6EC !important;
+      color: #1F6B35 !important;
+      border: 1px solid #A7F3D0 !important;
+    }
+    .text-emerald-400, .text-emerald-300 {
+      color: #1F6B35 !important;
+    }
+
+    .badge-amber,
+    [class*="bg-amber-500\/10"],
+    [class*="bg-amber-950\/"] {
+      background-color: #FFF4D6 !important;
+      color: #8A5A00 !important;
+      border: 1px solid #FDE68A !important;
+    }
+    .text-amber-400, .text-amber-300 {
+      color: #8A5A00 !important;
+    }
+
+    .badge-red,
+    [class*="bg-rose-500\/10"],
+    [class*="bg-rose-950\/"],
+    [class*="bg-red-500\/10"] {
+      background-color: #FDE8E4 !important;
+      color: #A63A1E !important;
+      border: 1px solid #FECDD3 !important;
+    }
+    .text-rose-400, .text-rose-300, .text-red-400 {
+      color: #A63A1E !important;
+    }
+
+    .badge-cyan,
+    [class*="bg-cyan-500\/10"],
+    [class*="bg-cyan-950\/"] {
+      background-color: #E0F2FE !important;
+      color: #0369A1 !important;
+      border: 1px solid #BAE6FD !important;
+    }
+    .text-cyan-400, .text-cyan-300 {
+      color: #0369A1 !important;
+    }
+
+    .badge-indigo,
+    [class*="bg-indigo-500\/10"],
+    [class*="bg-indigo-950\/"] {
+      background-color: #EEF2FF !important;
+      color: #4338CA !important;
+      border: 1px solid #C7D2FE !important;
+    }
+    .text-indigo-400, .text-indigo-300 {
+      color: #4338CA !important;
+    }
+
+    /* Tables clean styling */
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    thead, th {
+      background-color: #F9FAFB !important;
+      color: #6B7280 !important;
+      font-size: 11.5px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    tbody tr {
+      background-color: #FFFFFF !important;
+      border-top: 1px solid #F3F4F6 !important;
+      color: #111827 !important;
+      transition: background 0.12s !important;
+    }
+    tbody tr:hover {
+      background-color: #F9FAFB !important;
+    }
+
+    /* Banner notices clean styling */
+    #envNoticeBanner {
+      background-color: #FFFBEB !important;
+      border-color: #FDE68A !important;
+      color: #92400E !important;
+    }
+    #envNoticeBanner strong {
+      color: #78350F !important;
+    }
+
+    /* Responsive Grid Fix to prevent page cut-off */
+    @media (max-width: 1280px) {
+      .grid-cols-3,
+      [class*="md:grid-cols-3"],
+      [class*="lg:grid-cols-3"] {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .grid-cols-2,
+      [class*="md:grid-cols-2"],
+      [class*="lg:grid-cols-2"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* Atendimento / Chat responsiveness */
+    #tab-content-atendimento {
+      min-width: 0 !important;
+      width: 100% !important;
+    }
+    @media (max-width: 1200px) {
+      #sideDossieMorador:not(.hidden) {
+        position: fixed !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        z-index: 50 !important;
+        width: 320px !important;
+        background: #FFFFFF !important;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15) !important;
+      }
+    }
+
+    /* Chat Bubbles Clean */
+    .chat-bubble-user {
+      background: #DCF8C6 !important;
+      border: 1px solid #C4E9A7 !important;
+      color: #111827 !important;
+    }
+    .chat-bubble-agent {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+    }
+
   </style>
+
+  <!-- APPDOMUS MASTER CLEAN DESIGN SYSTEM & 100% RESPONSIVENESS OVERRIDES -->
+  <style id="appdomus-clean-design-system">
+    :root {
+      --dm-canvas: #F6F3EE;
+      --dm-card: #FFFFFF;
+      --dm-border: #E5E7EB;
+      --dm-border-subtle: #F3F4F6;
+      --dm-text-main: #111827;
+      --dm-text-sub: #4B5563;
+      --dm-text-muted: #6B7280;
+      --dm-primary: #111827;
+    }
+
+    /* Force Clean Canvas Base */
+    html, body {
+      max-width: 100vw !important;
+      width: 100% !important;
+      overflow-x: hidden !important;
+      background-color: #F6F3EE !important;
+      color: #111827 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    }
+
+    /* Scrollbars clean */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F1ECE4; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+    /* Layout Structure & Zero Cut-off Responsiveness */
+    #mainSidebar {
+      background-color: #FFFFFF !important;
+      border-right: 1px solid #E5E7EB !important;
+      box-shadow: 1px 0 2px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    #mainContentArea {
+      min-width: 0 !important;
+      width: 100% !important;
+      flex: 1 1 0% !important;
+      overflow-x: hidden !important;
+      background-color: #F6F3EE !important;
+    }
+
+    main[id^="tab-content-"] {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      background-color: #F6F3EE !important;
+      box-sizing: border-box !important;
+    }
+
+    header {
+      background-color: #FFFFFF !important;
+      border-bottom: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+    }
+
+    /* All Cards, Panels, Modals and Surfaces */
+    .glass-surface,
+    .bg-\[\#07090e\],
+    .bg-\[\#0a0e18\],
+    .bg-\[\#0b0f19\],
+    .bg-\[\#0e1320\],
+    .bg-\[\#0e131f\],
+    .bg-\[\#101524\],
+    .bg-\[\#121826\],
+    .bg-\[\#161e30\],
+    .bg-\[\#181938\],
+    .bg-\[\#1b2438\],
+    .bg-canvas,
+    .bg-panel,
+    .bg-card,
+    .bg-surface,
+    .bg-black\/20,
+    .bg-black\/30,
+    .bg-black\/40,
+    .bg-white\/\[0\.02\],
+    .bg-white\/\[0\.03\],
+    .bg-white\/\[0\.04\],
+    .bg-white\/\[0\.05\] {
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    /* Override dark gradient cards to clean white cards */
+    [class*="bg-gradient-to-"] {
+      background-image: none !important;
+      background-color: #FFFFFF !important;
+      border-color: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
+    /* Borders */
+    [class*="border-white\/"],
+    .border-slate-800,
+    .border-slate-700,
+    .border-slate-600 {
+      border-color: #E5E7EB !important;
+    }
+
+    /* Typography Hierarchy */
+    h1, h2, h3, h4, h5, h6 {
+      color: #111827 !important;
+      font-weight: 700 !important;
+    }
+
+    .text-white, .text-slate-100, .text-slate-200 {
+      color: #111827 !important;
+    }
+    .text-slate-300, .text-slate-400 {
+      color: #4B5563 !important;
+    }
+    .text-slate-500 {
+      color: #6B7280 !important;
+    }
+
+    /* Keep crisp white text on intentionally dark buttons, badges & active nav */
+    .bg-indigo-600, .bg-indigo-600 *,
+    .bg-indigo-700, .bg-indigo-700 *,
+    .bg-slate-900, .bg-slate-900 *,
+    .bg-black, .bg-black *,
+    .bg-gray-900, .bg-gray-900 *,
+    .nav-item-active, .nav-item-active *,
+    button[id^="nav-"].active, button[id^="nav-"].active *,
+    #topBtnBroadcast, #topBtnBroadcast * {
+      color: #FFFFFF !important;
+    }
+
+    /* Sidebar Navigation Items - AppDomus Style */
+    .nav-item-active,
+    button[id^="nav-"].nav-item-active {
+      background-color: #111827 !important;
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      border-radius: 10px !important;
+      border-left: none !important;
+    }
+    .nav-item-active svg,
+    .nav-item-active span {
+      color: #FFFFFF !important;
+    }
+
+    button[id^="nav-"]:not(.nav-item-active) {
+      color: #4B5563 !important;
+      border-radius: 10px !important;
+      transition: all 0.15s ease !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active):hover {
+      background-color: #F3F4F6 !important;
+      color: #111827 !important;
+    }
+    button[id^="nav-"]:not(.nav-item-active) svg {
+      color: #6B7280 !important;
+    }
+
+    /* Inputs, Selects, Textareas - Clean White Fields */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      background-color: #FFFFFF !important;
+      border: 1px solid #D1D5DB !important;
+      color: #111827 !important;
+      border-radius: 10px !important;
+      font-weight: 500 !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #9CA3AF !important;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #111827 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.08) !important;
+    }
+
+    /* AppDomus Chip Badges */
+    .badge-green,
+    [class*="bg-emerald-500/10"],
+    [class*="bg-emerald-500/15"],
+    [class*="bg-emerald-500/20"],
+    [class*="bg-emerald-950"] {
+      background-color: #E7F6EC !important;
+      color: #1F6B35 !important;
+      border: 1px solid #A7F3D0 !important;
+    }
+    .text-emerald-400, .text-emerald-300, .text-emerald-500 {
+      color: #1F6B35 !important;
+    }
+
+    .badge-amber,
+    [class*="bg-amber-500/10"],
+    [class*="bg-amber-500/15"],
+    [class*="bg-amber-500/20"],
+    [class*="bg-amber-950"] {
+      background-color: #FFF4D6 !important;
+      color: #8A5A00 !important;
+      border: 1px solid #FDE68A !important;
+    }
+    .text-amber-400, .text-amber-300, .text-amber-500 {
+      color: #8A5A00 !important;
+    }
+
+    .badge-red,
+    [class*="bg-rose-500/10"],
+    [class*="bg-rose-500/15"],
+    [class*="bg-rose-500/20"],
+    [class*="bg-rose-950"],
+    [class*="bg-red-500/10"] {
+      background-color: #FDE8E4 !important;
+      color: #A63A1E !important;
+      border: 1px solid #FECDD3 !important;
+    }
+    .text-rose-400, .text-rose-300, .text-red-400 {
+      color: #A63A1E !important;
+    }
+
+    .badge-cyan,
+    [class*="bg-cyan-500/10"],
+    [class*="bg-cyan-500/15"],
+    [class*="bg-cyan-500/20"],
+    [class*="bg-cyan-950"] {
+      background-color: #E0F2FE !important;
+      color: #0369A1 !important;
+      border: 1px solid #BAE6FD !important;
+    }
+    .text-cyan-400, .text-cyan-300 {
+      color: #0369A1 !important;
+    }
+
+    .badge-indigo,
+    [class*="bg-indigo-500/10"],
+    [class*="bg-indigo-500/15"],
+    [class*="bg-indigo-500/20"],
+    [class*="bg-indigo-950"] {
+      background-color: #EEF2FF !important;
+      color: #4338CA !important;
+      border: 1px solid #C7D2FE !important;
+    }
+    .text-indigo-400, .text-indigo-300 {
+      color: #4338CA !important;
+    }
+
+    /* Tables Clean Styling */
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    thead, th {
+      background-color: #F9FAFB !important;
+      color: #6B7280 !important;
+      font-size: 11.5px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    tbody tr {
+      background-color: #FFFFFF !important;
+      border-top: 1px solid #F3F4F6 !important;
+      color: #111827 !important;
+      transition: background 0.12s !important;
+    }
+    tbody tr:hover {
+      background-color: #F9FAFB !important;
+    }
+
+    /* Clean Environment / Sandbox Notice Banner */
+    #envNoticeBanner {
+      background-color: #FFFBEB !important;
+      border-color: #FDE68A !important;
+      color: #92400E !important;
+    }
+    #envNoticeBanner strong {
+      color: #78350F !important;
+    }
+
+    /* Responsiveness Rules - Prevent Any Horizontal Cut-Off */
+    @media (max-width: 1280px) {
+      .grid-cols-3,
+      [class*="md:grid-cols-3"],
+      [class*="lg:grid-cols-3"] {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+      }
+      #topAutonomiaBadge {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .grid-cols-2,
+      [class*="md:grid-cols-2"],
+      [class*="lg:grid-cols-2"] {
+        grid-template-columns: 1fr !important;
+      }
+      #sideDossieMorador:not(.hidden) {
+        position: fixed !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        z-index: 50 !important;
+        width: 320px !important;
+        background: #FFFFFF !important;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15) !important;
+      }
+    }
+
+    /* Chat Bubbles Clean AppDomus */
+    .chat-bubble-user {
+      background: #E7F6EC !important;
+      border: 1px solid #A7F3D0 !important;
+      color: #111827 !important;
+    }
+    .chat-bubble-agent {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    }
+  </style>
+
 </head>
 <body>
   <div class="header">

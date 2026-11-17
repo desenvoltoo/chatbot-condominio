@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,26 +18,28 @@
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            canvas: '#07090e',
-            panel: '#0e131f',
-            card: '#121826',
-            surface: '#161e30',
-            borderDim: 'rgba(255, 255, 255, 0.07)',
+            canvas: '#F6F3EE',
+            panel: '#FFFFFF',
+            card: '#FFFFFF',
+            surface: '#F9FAFB',
+            borderDim: '#E5E7EB',
             brand: {
-              DEFAULT: '#6366f1',
-              hover: '#4f46e5',
-              glow: 'rgba(99, 102, 241, 0.25)',
-              accent: '#06b6d4',
+              DEFAULT: '#111827',
+              hover: '#1F2937',
+              glow: 'rgba(17, 24, 39, 0.08)',
+              accent: '#0284C7',
             }
           }
         }
       }
     }
+      }
+    }
   </script>
   <style>
     body {
-      background-color: #07090e;
-      color: #f1f5f9;
+      background-color: #F6F3EE; color: #111827;
+      color: #111827;
       font-family: 'Plus Jakarta Sans', sans-serif;
       transition: background-color 0.25s ease, color 0.25s ease;
     }
@@ -178,7 +180,102 @@
       outline: 2px solid #2563eb !important;
       outline-offset: 2px !important;
     }
+  
+      body {
+        background-color: #F6F3EE !important;
+        color: #111827 !important;
+      }
+      .bg-\[\#0a0e18\], .bg-\[\#0b0f19\], .bg-\[\#0e1320\], .bg-\[\#121826\], .glass-surface {
+        background-color: #FFFFFF !important;
+        border-color: #E5E7EB !important;
+        color: #111827 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 10px 25px -5px rgba(0,0,0,0.05) !important;
+      }
+      [class*="border-white\/"] {
+        border-color: #E5E7EB !important;
+      }
+      .text-white, .text-slate-100, .text-slate-200 {
+        color: #111827 !important;
+      }
+      .text-slate-300, .text-slate-400 {
+        color: #4B5563 !important;
+      }
+      input {
+        background-color: #FFFFFF !important;
+        border: 1px solid #D1D5DB !important;
+        color: #111827 !important;
+      }
+      input:focus {
+        border-color: #111827 !important;
+        outline: none !important;
+      }
+      .mesh-ambient, .grid-lines {
+        display: none !important;
+      }
+      button[type="submit"] {
+        background: #111827 !important;
+        color: #FFFFFF !important;
+      }
+    
   </style>
+
+  <!-- APPDOMUS LOGIN CLEAN STYLES -->
+  <style id="appdomus-login-clean">
+    html, body {
+      background-color: #F6F3EE !important;
+      color: #111827 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    .glass-surface {
+      background-color: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+      color: #111827 !important;
+    }
+    .role-btn {
+      background-color: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      color: #4B5563 !important;
+    }
+    .role-btn:hover {
+      background-color: #F9FAFB !important;
+      border-color: #D1D5DB !important;
+    }
+    .role-btn.active {
+      background-color: #111827 !important;
+      border-color: #111827 !important;
+      color: #FFFFFF !important;
+    }
+    .role-btn.active * {
+      color: #FFFFFF !important;
+    }
+    input {
+      background-color: #FFFFFF !important;
+      border: 1px solid #D1D5DB !important;
+      color: #111827 !important;
+    }
+    input:focus {
+      border-color: #111827 !important;
+      box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.1) !important;
+    }
+    .text-white, .text-slate-100, .text-slate-200 {
+      color: #111827 !important;
+    }
+    .text-slate-400, .text-slate-300 {
+      color: #4B5563 !important;
+    }
+    button[type="submit"] {
+      background-color: #111827 !important;
+      color: #FFFFFF !important;
+    }
+    button[type="submit"]:hover {
+      background-color: #1F2937 !important;
+    }
+    button[type="submit"] * {
+      color: #FFFFFF !important;
+    }
+  </style>
+
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-brand selection:text-white relative overflow-x-hidden">
 
@@ -440,7 +537,7 @@
         document.documentElement.classList.remove('dark');
         updateThemeUI(false);
       } else {
-        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('dark');
         updateThemeUI(true);
       }
     }

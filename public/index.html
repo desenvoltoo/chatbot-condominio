@@ -910,6 +910,90 @@
         display: none;
       }
     }
+  
+    /* Ensure 100% responsiveness without any horizontal clipping */
+    html, body {
+      max-width: 100vw !important;
+      overflow-x: hidden !important;
+      width: 100% !important;
+    }
+
+    .ds-wrap {
+      max-width: 100% !important;
+      padding: 0 16px !important;
+      box-sizing: border-box !important;
+    }
+
+    @media (max-width: 1280px) {
+      .ds-chat {
+        right: 0 !important;
+        top: -30px !important;
+      }
+      .ds-ev {
+        left: 0 !important;
+        bottom: -20px !important;
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .ds-float {
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .ds-floats {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 14px !important;
+        margin-top: 16px !important;
+      }
+    }
+
+    @media (max-width: 860px) {
+      #simGrid {
+        grid-template-columns: 1fr !important;
+      }
+      .ds-floats {
+        grid-template-columns: 1fr !important;
+      }
+      .dm-nav {
+        padding: 0 16px !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ds-body {
+        grid-template-columns: 1fr !important;
+        min-height: auto !important;
+      }
+      .ds-side {
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        padding: 8px !important;
+        gap: 6px !important;
+        border-right: none !important;
+        border-bottom: 1px solid #E5E7EB !important;
+      }
+      .ds-side:after, .ds-logo, .ds-suite, .ds-grp {
+        display: none !important;
+      }
+      .ds-it {
+        white-space: nowrap !important;
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+      }
+      .ds-pg {
+        padding: 14px !important;
+      }
+      .ds-tr {
+        grid-template-columns: minmax(0, 1.4fr) auto !important;
+      }
+      .ds-tr > span:not(:first-child):not(:last-child) {
+        display: none !important;
+      }
+    }
+    
   </style>
 </head>
 <body>
