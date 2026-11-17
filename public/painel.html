@@ -86,30 +86,31 @@
     /* 1. MODO CLARO (APPDOMUS SAAS THEME - WARM SAND & CRISP CARDS)   */
     /* ============================================================== */
     html:not(.dark) body {
-      background-color: #F6F3EE !important;
-      color: #111827 !important;
+      background-color: #F8F7F4 !important;
+      color: #0F172A !important;
     }
     html:not(.dark) #mainSidebar {
       background-color: #FFFFFF !important;
-      border-right: 1px solid #E5E7EB !important;
+      border-right: 1px solid #E2E8F0 !important;
       box-shadow: 1px 0 3px rgba(0, 0, 0, 0.02) !important;
     }
-    html:not(.dark) #mainContentArea {
-      background-color: #F6F3EE !important;
-    }
+    html:not(.dark) #mainContentArea,
     html:not(.dark) main[id^="tab-content-"] {
-      background-color: #F6F3EE !important;
+      background-color: #F8F7F4 !important;
     }
     html:not(.dark) header {
       background-color: #FFFFFF !important;
-      border-bottom: 1px solid #E5E7EB !important;
-      color: #111827 !important;
+      border-bottom: 1px solid #E2E8F0 !important;
+      color: #0F172A !important;
     }
+
+    /* Cards e Superfícies no Modo Claro */
     html:not(.dark) .app-card,
     html:not(.dark) .glass-surface,
     html:not(.dark) .bg-card,
     html:not(.dark) .bg-panel,
     html:not(.dark) .bg-surface,
+    html:not(.dark) .bg-white,
     html:not(.dark) .bg-[#07090e],
     html:not(.dark) .bg-[#0a0e18],
     html:not(.dark) .bg-[#0b0f19],
@@ -121,41 +122,78 @@
     html:not(.dark) .bg-[#181938],
     html:not(.dark) .bg-[#1b2438] {
       background-color: #FFFFFF !important;
-      border-color: #E5E7EB !important;
-      color: #111827 !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+      border: 1px solid #E2E8F0 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.02) !important;
+      color: #0F172A !important;
     }
+
+    /* Gradientes removidos de cards no modo claro */
     html:not(.dark) [class*="bg-gradient-to-"]:not(button):not(.btn) {
       background-image: none !important;
       background-color: #FFFFFF !important;
-      border-color: #E5E7EB !important;
-      color: #111827 !important;
+      border-color: #E2E8F0 !important;
+      color: #0F172A !important;
     }
+
+    /* Bordas no modo claro */
     html:not(.dark) [class*="border-white/"],
     html:not(.dark) .border-slate-800,
     html:not(.dark) .border-slate-700 {
-      border-color: #E5E7EB !important;
+      border-color: #E2E8F0 !important;
     }
+
+    /* Tipografia de Cabeçalhos no Modo Claro */
     html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, 
     html:not(.dark) h4, html:not(.dark) h5, html:not(.dark) h6 {
-      color: #111827 !important;
+      color: #0F172A !important;
     }
-    html:not(.dark) .text-white,
-    html:not(.dark) .text-slate-100,
-    html:not(.dark) .text-slate-200 {
-      color: #111827 !important;
+
+    /* Textos secundários e neutros no Modo Claro */
+    html:not(.dark) .text-slate-900,
+    html:not(.dark) .text-slate-800 {
+      color: #0F172A !important;
     }
-    html:not(.dark) .text-slate-300,
+    html:not(.dark) .text-slate-700,
+    html:not(.dark) .text-slate-600 {
+      color: #334155 !important;
+    }
+    html:not(.dark) .text-slate-500,
     html:not(.dark) .text-slate-400 {
-      color: #4B5563 !important;
+      color: #64748B !important;
     }
-    html:not(.dark) .text-slate-500 {
-      color: #6B7280 !important;
+
+    /* Converter textos brancos legados DENTRO de cards/tabelas para escuro */
+    html:not(.dark) .app-card:not([class*="bg-slate-9"]):not([class*="bg-indigo"]):not([class*="bg-emerald"]) .text-white,
+    html:not(.dark) .glass-surface .text-white,
+    html:not(.dark) table .text-white,
+    html:not(.dark) table thead .text-white {
+      color: #0F172A !important;
     }
+
+    /* GARANTIA ABSOLUTA DE TEXTO BRANCO EM BOTÕES E ELEMENTOS ESCUROS NO MODO CLARO */
+    html:not(.dark) button.bg-slate-900,
+    html:not(.dark) button.bg-slate-900 *,
+    html:not(.dark) button.bg-indigo-600,
+    html:not(.dark) button.bg-indigo-600 *,
+    html:not(.dark) button.bg-slate-800,
+    html:not(.dark) button.bg-slate-800 *,
+    html:not(.dark) .btn-primary,
+    html:not(.dark) .btn-primary *,
+    html:not(.dark) .nav-item-active,
+    html:not(.dark) .nav-item-active *,
+    html:not(.dark) .filter-pill-active,
+    html:not(.dark) .filter-pill-active *,
+    html:not(.dark) .floating-assistant-bot-bubble,
+    html:not(.dark) .floating-assistant-bot-bubble *,
+    html:not(.dark) .floating-pill-badge,
+    html:not(.dark) .floating-pill-badge * {
+      color: #FFFFFF !important;
+    }
+
     /* Pílula Ativa Sidebar em Modo Claro */
     html:not(.dark) .nav-item-active,
     html:not(.dark) button[id^="nav-"].nav-item-active {
-      background-color: #111827 !important;
+      background-color: #0F172A !important;
       color: #FFFFFF !important;
       border-radius: 12px !important;
       border-left: none !important;
@@ -167,75 +205,110 @@
       color: #FFFFFF !important;
     }
     html:not(.dark) button[id^="nav-"]:not(.nav-item-active) {
-      color: #4B5563 !important;
+      color: #475569 !important;
       border-radius: 12px !important;
     }
     html:not(.dark) button[id^="nav-"]:not(.nav-item-active):hover {
-      background-color: #F3F4F6 !important;
-      color: #111827 !important;
+      background-color: #F1F5F9 !important;
+      color: #0F172A !important;
     }
     html:not(.dark) button[id^="nav-"]:not(.nav-item-active) svg {
-      color: #6B7280 !important;
+      color: #64748B !important;
     }
-    /* Inputs em Modo Claro */
+
+    /* Inputs e Selects em Modo Claro */
     html:not(.dark) input:not([type="checkbox"]):not([type="radio"]),
     html:not(.dark) textarea,
     html:not(.dark) select {
       background-color: #FFFFFF !important;
-      border: 1px solid #D1D5DB !important;
-      color: #111827 !important;
+      border: 1px solid #CBD5E1 !important;
+      color: #0F172A !important;
       border-radius: 10px !important;
     }
     html:not(.dark) input::placeholder,
     html:not(.dark) textarea::placeholder {
-      color: #9CA3AF !important;
+      color: #94A3B8 !important;
     }
-    /* Tabela em Modo Claro */
+
+    /* Tabelas no Modo Claro */
     html:not(.dark) table {
       width: 100% !important;
       border-collapse: collapse !important;
     }
     html:not(.dark) thead, html:not(.dark) th {
-      background-color: #F9FAFB !important;
-      color: #6B7280 !important;
-      border-bottom: 1px solid #E5E7EB !important;
+      background-color: #F8FAFC !important;
+      color: #475569 !important;
+      font-weight: 700 !important;
+      border-bottom: 1.5px solid #E2E8F0 !important;
     }
     html:not(.dark) tbody tr {
       background-color: #FFFFFF !important;
-      border-top: 1px solid #F3F4F6 !important;
-      color: #111827 !important;
+      border-top: 1px solid #F1F5F9 !important;
+      color: #1E293B !important;
     }
     html:not(.dark) tbody tr:hover {
-      background-color: #F9FAFB !important;
+      background-color: #F8FAFC !important;
     }
-    /* Status Badges no Modo Claro */
+
+    /* Badges de Status no Modo Claro */
     html:not(.dark) .badge-status-green {
-      background-color: #E7F6EC !important;
+      background-color: #ECFDF5 !important;
       color: #047857 !important;
       border: 1px solid #A7F3D0 !important;
+      font-weight: 700 !important;
     }
     html:not(.dark) .badge-status-amber {
-      background-color: #FFF4D6 !important;
+      background-color: #FFFBEB !important;
       color: #B45309 !important;
       border: 1px solid #FDE68A !important;
+      font-weight: 700 !important;
     }
     html:not(.dark) .badge-status-gray {
-      background-color: #F3F4F6 !important;
-      color: #4B5563 !important;
-      border: 1px solid #E5E7EB !important;
+      background-color: #F1F5F9 !important;
+      color: #334155 !important;
+      border: 1px solid #CBD5E1 !important;
+      font-weight: 600 !important;
     }
+
+    /* Pílulas de Filtro no Modo Claro */
     html:not(.dark) .filter-pill-active {
-      background-color: #111827 !important;
+      background-color: #0F172A !important;
       color: #FFFFFF !important;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.15) !important;
     }
     html:not(.dark) .filter-pill-inactive {
       background-color: #FFFFFF !important;
-      color: #4B5563 !important;
-      border: 1px solid #E5E7EB !important;
+      color: #475569 !important;
+      border: 1px solid #CBD5E1 !important;
     }
     html:not(.dark) .filter-pill-inactive:hover {
-      background-color: #F9FAFB !important;
-      color: #111827 !important;
+      background-color: #F8FAFC !important;
+      color: #0F172A !important;
+      border-color: #94A3B8 !important;
+    }
+
+    /* Floating WhatsApp Card & Bottom Pill no Modo Claro */
+    html:not(.dark) .floating-assistant-card {
+      background-color: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+    }
+    html:not(.dark) .floating-assistant-user-bubble {
+      background-color: #F1F5F9 !important;
+      color: #0F172A !important;
+    }
+    html:not(.dark) .floating-assistant-bot-bubble {
+      background-color: #0F172A !important;
+      color: #FFFFFF !important;
+    }
+    html:not(.dark) .floating-pill-card {
+      background-color: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06) !important;
+    }
+    html:not(.dark) .floating-pill-badge {
+      background-color: #0F172A !important;
+      color: #FFFFFF !important;
     }
 
     /* ============================================================== */
@@ -278,7 +351,8 @@
     html.dark .bg-[#161e30],
     html.dark .bg-[#181938],
     html.dark .bg-[#1b2438],
-    html.dark .bg-[#F6F3EE] {
+    html.dark .bg-[#F6F3EE],
+    html.dark .bg-[#F8F7F4] {
       background-color: #151D2D !important;
       border-color: rgba(255, 255, 255, 0.08) !important;
       color: #F8FAFC !important;
@@ -423,7 +497,7 @@
       background-color: #0B0F19 !important;
       color: #94A3B8 !important;
     }
-    </style>
+  </style>
 </head>
 <body class="min-h-screen flex h-screen overflow-hidden selection:bg-brand selection:text-white relative">
 
@@ -1577,7 +1651,7 @@
         <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-slate-600 dark:hover:text-white p-1">✕</button>
       </div>
 
-      <!-- Suite Dropdown Box (AppDomus Exact Look) -->
+      <!-- Suite Dropdown Box -->
       <div class="mt-3.5">
         <button class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] text-xs font-semibold text-slate-800 dark:text-slate-100 shadow-2xs hover:border-slate-300 dark:hover:border-white/20 transition-all">
           <span class="truncate">CondoVolto AI Web Suite</span>
@@ -1586,11 +1660,11 @@
       </div>
     </div>
 
-    <!-- Navigation (1:1 AppDomus Grouping & Labels) -->
+    <!-- Navigation -->
     <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-4 text-xs font-medium">
       <!-- Group: Início -->
       <div>
-        <div class="px-2 pb-1.5 text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Início</div>
+        <div class="px-2 pb-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Início</div>
         <div class="space-y-0.5">
           <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
@@ -1604,23 +1678,33 @@
 
       <!-- Group: Operação -->
       <div>
-        <div class="px-2 pb-1.5 text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Operação</div>
+        <div class="px-2 pb-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Operação</div>
         <div class="space-y-0.5">
-          <!-- Visitas (Default Active) -->
+          <!-- Visitas & Encomendas JUNTAS (Default Active) -->
           <button onclick="switchTab('portaria_digital')" id="nav-portaria_digital" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-white bg-slate-900 dark:bg-slate-800 font-semibold shadow-xs transition-all nav-item-active">
             <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              <span>Visitas</span>
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+              <span>Visitas & Encomendas</span>
             </div>
-            <span class="w-1.5 h-1.5 rounded-full bg-white dark:bg-emerald-400"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
 
-          <!-- Encomendas -->
-          <button onclick="switchTab('portaria_digital'); focarEncomendas();" id="nav-encomendas" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+          <!-- Conversas & Chat (Omnichannel / Atendimento) -->
+          <button onclick="switchTab('atendimento')" id="nav-atendimento" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-              <span>Encomendas</span>
+              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span>Conversas & Chat</span>
+            </div>
+            <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-mono font-bold">2</span>
+            <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+          </button>
+
+          <!-- Comunicados & Avisos -->
+          <button onclick="switchTab('comunicados')" id="nav-comunicados" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M11 4.5l-5 4H2v7h4l5 4v-15z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+              <span>Comunicados & Avisos</span>
             </div>
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
@@ -1656,16 +1740,6 @@
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
 
-          <!-- Comunicados -->
-          <button onclick="switchTab('atendimento')" id="nav-atendimento" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M11 4.5l-5 4H2v7h4l5 4v-15z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-              <span>Comunicados</span>
-            </div>
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
-          </button>
-
           <!-- Assembleias -->
           <button onclick="switchTab('assembleia')" id="nav-assembleia" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
@@ -1679,32 +1753,33 @@
 
       <!-- Group: Finanças -->
       <div>
-        <div class="px-2 pb-1.5 text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Finanças</div>
+        <div class="px-2 pb-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Finanças</div>
         <div class="space-y-0.5">
-          <!-- Cobranças -->
+          <!-- Cobranças & Acordos -->
           <button onclick="switchTab('cobranca')" id="nav-cobranca" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
               <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
-              <span>Cobranças</span>
+              <span>Cobranças & Acordos</span>
             </div>
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
 
-          <!-- Orçamentos -->
-          <button onclick="switchTab('configuracoes')" id="nav-configuracoes" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+          <!-- Receitas & Fluxo (Dedicada) -->
+          <button onclick="switchTab('receitas')" id="nav-receitas" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/></svg>
-              <span>Orçamentos</span>
+              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Receitas & Fluxo</span>
             </div>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
 
-          <!-- Receitas -->
-          <button onclick="switchTab('cobranca')" id="nav-receitas" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+          <!-- Orçamentos & Gastos (Dedicada) -->
+          <button onclick="switchTab('orcamentos')" id="nav-orcamentos" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span>Receitas</span>
+              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
+              <span>Orçamentos & Gastos</span>
             </div>
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
@@ -1712,18 +1787,31 @@
         </div>
       </div>
 
-      <!-- Group: Governança & IA -->
+      <!-- Group: Governança & IA (CONEXÕES ERP AQUI!) -->
       <div>
-        <div class="px-2 pb-1.5 text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Governança & IA</div>
+        <div class="px-2 pb-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Governança & IA</div>
         <div class="space-y-0.5">
+          <!-- Integrações & ERP -->
+          <button onclick="switchTab('configuracoes')" id="nav-configuracoes" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+              <span>Integrações & ERP</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-mono font-bold">ONLINE</span>
+            <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+          </button>
+
+          <!-- Hub Multi-IA -->
           <button onclick="switchTab('ai')" id="nav-ai" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
               <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M12 8V4H8"/></svg>
               <span>Hub Multi-IA</span>
             </div>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-500 font-mono font-bold">IA</span>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-mono font-bold">IA</span>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
+
+          <!-- Base RAG -->
           <button onclick="switchTab('rag')" id="nav-rag" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
               <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -1731,6 +1819,8 @@
             </div>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
+
+          <!-- Equipe & Acessos -->
           <button onclick="switchTab('equipe')" id="nav-equipe" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
               <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -1742,7 +1832,7 @@
       </div>
     </nav>
 
-    <!-- Sidebar Footer: Alternador Claro/Escuro & Perfil (100% Sempre Visível) -->
+    <!-- Sidebar Footer: Alternador Claro/Escuro & Perfil -->
     <div class="p-3 border-t border-slate-200 dark:border-white/10 space-y-2.5">
       <!-- Alternador Claro / Escuro Seguro -->
       <div class="p-1 rounded-xl bg-slate-100 dark:bg-white/[0.06] flex items-center text-xs font-semibold">
@@ -2213,6 +2303,100 @@
     </main>
 
     <!-- ============================================================== -->
+    <!-- MÓDULO: COMUNICADOS & MURAL DE AVISOS OFICIAIS -->
+    <!-- ============================================================== -->
+    <main id="tab-content-comunicados" class="flex-1 min-w-0 w-full overflow-y-auto p-4 sm:p-6 md:p-8 hidden">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="text-xs text-slate-400 font-medium mb-1">Comunicação Oficial</div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Comunicados & Mural de Avisos</h1>
+          </div>
+          <button onclick="openBroadcastModal()" class="px-4 py-2 rounded-xl bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+            <span>📢</span> <span>+ Novo Comunicado Geral</span>
+          </button>
+        </div>
+
+        <!-- 4 Metric Cards de Comunicados -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Comunicados Enviados</span>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">24 avisos</h3>
+            <span class="text-[11px] text-emerald-600 font-semibold block mt-1">Neste trimestre</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Taxa de Abertura WhatsApp</span>
+            <h3 class="text-2xl font-black text-emerald-600 mt-1 font-mono">96.4%</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Tempo médio de leitura: 4 min</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Dúvidas Atendidas por IA</span>
+            <h3 class="text-2xl font-black text-indigo-600 mt-1 font-mono">100%</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Zero fila na administração</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Próximo Aviso Programado</span>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mt-1">Limpeza Caixas</h3>
+            <span class="text-[11px] text-amber-600 font-semibold block mt-1">Quinta-feira, 08:00</span>
+          </div>
+        </div>
+
+        <!-- Lista de Comunicados Recentes -->
+        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] shadow-xs p-6 space-y-4">
+          <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between border-b border-slate-100 dark:border-white/10 pb-3">
+            <span>Histórico de Comunicados Oficiais</span>
+            <span class="text-xs text-slate-400 font-normal">Disparados via WhatsApp e Mural App</span>
+          </h3>
+
+          <div class="space-y-3 text-xs">
+            <div class="p-4 rounded-xl border border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300">Entregue</span>
+                  <strong class="text-slate-900 dark:text-white text-sm">Manutenção Preventiva dos Elevadores (Torre A e B)</strong>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">Avisando sobre a parada programada entre 13:30 e 16:00 para troca de cabos e lubrificação técnica.</p>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="text-slate-400 text-[11px] block">Hoje, 09:30</span>
+                <span class="text-indigo-600 font-semibold text-xs block mt-0.5">142 moradores notificados</span>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300">Oficial</span>
+                  <strong class="text-slate-900 dark:text-white text-sm">Edital de Convocação: Assembleia Geral Ordinária (AGO)</strong>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">Convocação oficial com pauta de aprovação orçamentária e eleição de síndico/conselho fiscal.</p>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="text-slate-400 text-[11px] block">14 de Novembro</span>
+                <span class="text-emerald-600 font-semibold text-xs block mt-0.5">Quórum digital aberto</span>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300">Informativo</span>
+                  <strong class="text-slate-900 dark:text-white text-sm">Dedetização e Higienização das Áreas Comuns e Garagens</strong>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">Recomendação para moradores com animais de estimação evitarem os jardins no dia 20/11.</p>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="text-slate-400 text-[11px] block">08 de Novembro</span>
+                <span class="text-slate-500 font-semibold text-xs block mt-0.5">Mural & Portaria</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  
+
+    <!-- ============================================================== -->
     <!-- MÓDULO 2: COBRANÇA & ACORDOS DE DÍVIDAS -->
     <!-- ============================================================== -->
     <main id="tab-content-cobranca" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
@@ -2422,6 +2606,210 @@
     </main>
 
     <!-- ============================================================== -->
+    <!-- MÓDULO: RECEITAS & FLUXO DE CAIXA DO CONDOMÍNIO -->
+    <!-- ============================================================== -->
+    <main id="tab-content-receitas" class="flex-1 min-w-0 w-full overflow-y-auto p-4 sm:p-6 md:p-8 hidden">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="text-xs text-slate-400 font-medium mb-1">Finanças & Arrecadação</div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Receitas & Fluxo de Caixa</h1>
+          </div>
+          <button onclick="showToast('Balancete', 'Balancete do mês gerado com assinatura digital.', 'success')" class="px-4 py-2 rounded-xl bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+            <span>📊</span> <span>Exportar Balancete Financeiro</span>
+          </button>
+        </div>
+
+        <!-- 4 Metric Cards de Receitas -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Arrecadação do Mês</span>
+            <h3 class="text-2xl font-black text-emerald-600 mt-1 font-mono">R$ 142.850,00</h3>
+            <span class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold block mt-1">94.2% da cota mensal</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Fundo de Reserva</span>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 84.200,00</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Aplicação 100% CDI Liquidez</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Receitas de Espaços</span>
+            <h3 class="text-2xl font-black text-indigo-600 mt-1 font-mono">R$ 3.850,00</h3>
+            <span class="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold block mt-1">11 reservas de salão/churrasq</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Conciliação Pix EMVCo</span>
+            <h3 class="text-2xl font-black text-cyan-600 mt-1 font-mono">100% Automática</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Compensação em 2 segundos</span>
+          </div>
+        </div>
+
+        <!-- Tabela de Entradas e Liquidações -->
+        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Últimas Entradas Confirmadas</h3>
+            <span class="text-xs text-slate-400">Tempo real</span>
+          </div>
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-100 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <th class="py-3 px-6">Morador / Origem</th>
+                <th class="py-3 px-6">Unidade</th>
+                <th class="py-3 px-6">Descrição</th>
+                <th class="py-3 px-6">Método</th>
+                <th class="py-3 px-6">Valor</th>
+                <th class="py-3 px-6 text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Mariana de Souza</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-300">204</td>
+                <td class="py-3.5 px-6">Cota Condominial Nov/2026</td>
+                <td class="py-3.5 px-6 text-emerald-600 font-semibold">Pix EMVCo Oficial</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 980,00</td>
+                <td class="py-3.5 px-6 text-right">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Liquidado</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Carlos Eduardo</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-300">101</td>
+                <td class="py-3.5 px-6">Cota Ordinária + Telemetria Gás</td>
+                <td class="py-3.5 px-6 text-indigo-600 font-semibold">Boleto Bancário</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 1.150,00</td>
+                <td class="py-3.5 px-6 text-right">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Liquidado</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Roberta Pires</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-300">304</td>
+                <td class="py-3.5 px-6">Taxa Reserva Salão Nobre</td>
+                <td class="py-3.5 px-6 text-emerald-600 font-semibold">Pix Copia e Cola</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 350,00</td>
+                <td class="py-3.5 px-6 text-right">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Confirmado</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Fernando Dias</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-300">112</td>
+                <td class="py-3.5 px-6">Acordo Confissão #9210 (Parc 2/3)</td>
+                <td class="py-3.5 px-6 text-emerald-600 font-semibold">Pix QR Code Dinâmico</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 380,00</td>
+                <td class="py-3.5 px-6 text-right">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Liquidado</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO: ORÇAMENTOS, PREVISÃO ANUAL & COTAÇÕES -->
+    <!-- ============================================================== -->
+    <main id="tab-content-orcamentos" class="flex-1 min-w-0 w-full overflow-y-auto p-4 sm:p-6 md:p-8 hidden">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="text-xs text-slate-400 font-medium mb-1">Planejamento & Custos</div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Orçamentos & Gastos</h1>
+          </div>
+          <button onclick="showToast('Nova Cotação', 'Assistente de Cotações com IA ativado.', 'info')" class="px-4 py-2 rounded-xl bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+            <span>📝</span> <span>+ Nova Cotação de Fornecedor</span>
+          </button>
+        </div>
+
+        <!-- 4 Metric Cards de Orçamento -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Teto Orçamentário Anual</span>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 1.850.000</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Aprovado em assembleia</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Despesas Realizadas</span>
+            <h3 class="text-2xl font-black text-indigo-600 mt-1 font-mono">R$ 1.540.200</h3>
+            <span class="text-[11px] text-emerald-600 font-semibold block mt-1">83.2% do teto (Dentro da meta)</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Economia Gerada por IA</span>
+            <h3 class="text-2xl font-black text-emerald-600 mt-1 font-mono">R$ 48.900,00</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Comparando 3 propostas</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Cotações em Andamento</span>
+            <h3 class="text-2xl font-black text-amber-600 mt-1 font-mono">3 cotações</h3>
+            <span class="text-[11px] text-amber-600 font-semibold block mt-1">Pintura, CFTV e Gerador</span>
+          </div>
+        </div>
+
+        <!-- Tabela de Cotações com Fornecedores -->
+        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Cotações de Fornecedores & Pedidos de Compra</h3>
+            <span class="text-xs text-slate-400">Auditado com 3 orçamentos mínimos</span>
+          </div>
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-100 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <th class="py-3 px-6">Serviço / Projeto</th>
+                <th class="py-3 px-6">Categoria</th>
+                <th class="py-3 px-6">Faixa de Preços</th>
+                <th class="py-3 px-6">Proposta Recomendada</th>
+                <th class="py-3 px-6">Status</th>
+                <th class="py-3 px-6 text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Pintura da Fachada & Pastilhas</td>
+                <td class="py-3.5 px-6 text-slate-500">Manutenção Predial</td>
+                <td class="py-3.5 px-6 font-mono">R$ 38k ~ R$ 47k</td>
+                <td class="py-3.5 px-6 font-semibold text-emerald-600">Construtora Alfa (R$ 38.000)</td>
+                <td class="py-3.5 px-6">
+                  <span class="badge-status-amber px-2 py-0.5 rounded text-[10px] font-bold">Em Votação</span>
+                </td>
+                <td class="py-3.5 px-6 text-right">
+                  <button onclick="showToast('Cotação', 'Propostas e laudos técnicos exibidos.', 'info')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Analisar</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Manutenção Preventiva de Bombas</td>
+                <td class="py-3.5 px-6 text-slate-500">Hidráulica</td>
+                <td class="py-3.5 px-6 font-mono">R$ 2.4k ~ R$ 3.1k</td>
+                <td class="py-3.5 px-6 font-semibold text-emerald-600">HidroTech (R$ 2.400)</td>
+                <td class="py-3.5 px-6">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Aprovado</span>
+                </td>
+                <td class="py-3.5 px-6 text-right">
+                  <button onclick="showToast('Ordem de Compra', 'Contrato e NF vinculados ao ERP.', 'success')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Contrato</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Sistema de CFTV com Reconhecimento</td>
+                <td class="py-3.5 px-6 text-slate-500">Segurança</td>
+                <td class="py-3.5 px-6 font-mono">R$ 12k ~ R$ 16k</td>
+                <td class="py-3.5 px-6 font-semibold text-emerald-600">VisionSafe (R$ 12.500)</td>
+                <td class="py-3.5 px-6">
+                  <span class="badge-status-gray px-2 py-0.5 rounded text-[10px] font-bold">Concluído</span>
+                </td>
+                <td class="py-3.5 px-6 text-right">
+                  <button onclick="showToast('Garantia', 'Equipamentos com garantia de 24 meses ativa.', 'info')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Ver NF</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  
+  
+
+    <!-- ============================================================== -->
     <!-- MÓDULO NOVO: PORTARIA DIGITAL & ENCOMENDAS COM OCR -->
     <!-- ============================================================== -->
     <main id="tab-content-portaria_digital" class="flex-1 min-w-0 w-full overflow-y-auto p-4 sm:p-6 md:p-8">
@@ -2434,8 +2822,8 @@
           <!-- Top Breadcrumb & Heading Bar -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div class="text-xs text-slate-400 font-medium mb-1">Visitas</div>
-              <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Visitas</h1>
+              <div class="text-xs text-slate-400 font-medium mb-1">Portaria Digital</div>
+              <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Visitas & Encomendas</h1>
             </div>
             <div class="flex items-center gap-2">
               <button onclick="openNovoVisitanteModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
@@ -2449,12 +2837,11 @@
 
           <!-- Horizontal Filter Pills (AppDomus Style) -->
           <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-            <button class="filter-pill-active px-4 py-1.5 rounded-full font-semibold shadow-xs cursor-pointer transition-all">Hoje</button>
-            <button class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">Airbnb</button>
-            <button class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">Estacionamento</button>
-            <button class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">Próximas</button>
-            <button class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">Histórico</button>
-            <button class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">Análises</button>
+            <button onclick="filtrarPortariaSecao('todos')" id="pillPortaria_todos" class="filter-pill-active px-4 py-1.5 rounded-full font-semibold shadow-xs cursor-pointer transition-all">Visitas Hoje</button>
+            <button onclick="filtrarPortariaSecao('encomendas')" id="pillPortaria_encomendas" class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">📦 Encomendas Recebidas</button>
+            <button onclick="filtrarPortariaSecao('airbnb')" id="pillPortaria_airbnb" class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">Airbnb & Temporada</button>
+            <button onclick="filtrarPortariaSecao('estacionamento')" id="pillPortaria_estacionamento" class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">Estacionamento</button>
+            <button onclick="filtrarPortariaSecao('historico')" id="pillPortaria_historico" class="filter-pill-inactive px-4 py-1.5 rounded-full font-medium cursor-pointer transition-all">Histórico Completo</button>
           </div>
 
           <!-- Clean Visitas Table (AppDomus Exact Data & Styling) -->
@@ -2569,10 +2956,10 @@
               </div>
             </div>
             <div class="space-y-2 mt-2.5 text-xs">
-              <div class="p-2.5 rounded-xl bg-slate-100 text-slate-800 leading-snug">
+              <div class="p-2.5 rounded-xl bg-slate-100 text-slate-800 leading-snug floating-assistant-user-bubble">
                 Minha mãe vem às 18h30, o nome dela é Rosa.
               </div>
-              <div class="p-2.5 rounded-xl bg-slate-900 text-white leading-snug">
+              <div class="p-2.5 rounded-xl bg-slate-900 text-white leading-snug floating-assistant-bot-bubble">
                 Pronto, enviei um QR de acesso para ela. Te aviso quando ela entrar.
               </div>
             </div>
@@ -2587,7 +2974,7 @@
                 <span class="text-[11px] text-slate-500">Apto 2511 · hoje, 18:30</span>
               </div>
             </div>
-            <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-900 text-white">Registrado por Assistente Pessoal</span>
+            <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-900 text-white floating-pill-badge">Registrado por Assistente Pessoal</span>
           </div>
         </div>
 
@@ -4073,7 +4460,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     const ROLE_PERMISSIONS = {
       admin: {
         nome: 'Administrador Master',
-        allowedTabs: ['portaria_digital', 'atendimento', 'cobranca', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'ai', 'rag', 'configuracoes', 'equipe'],
+        allowedTabs: ['portaria_digital', 'atendimento', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
@@ -4201,7 +4588,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function applyRolePermissions(role) {
       const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
-      const allTabs = ['portaria_digital', 'atendimento', 'cobranca', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'ai', 'rag', 'configuracoes', 'equipe'];
+      const allTabs = ['portaria_digital', 'atendimento', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'];
       
       allTabs.forEach(t => {
         const navBtn = document.getElementById(`nav-${t}`);
@@ -5136,36 +5523,61 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // ==========================================
     // THEME SWITCHER
     // ==========================================
-    function toggleTheme() {
-      const isDark = document.documentElement.classList.toggle('dark');
-      localStorage.setItem('condovolto_theme', isDark ? 'dark' : 'light');
-      localStorage.setItem('domus_theme', isDark ? 'dark' : 'light');
+    // THEME SWITCHER (CLARO / ESCURO SEGURO)
+    // ==========================================
+    function setThemeMode(mode) {
+      const isDark = (mode === 'dark');
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      try {
+        localStorage.setItem('condovolto_theme', mode);
+        localStorage.setItem('domus_theme', mode);
+      } catch(e) {}
       updateThemeUI(isDark);
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      setThemeMode(isDark ? 'light' : 'dark');
     }
 
     function updateThemeUI(isDark) {
       const iconSun = document.getElementById('themeIconSun');
       const iconMoon = document.getElementById('themeIconMoon');
-      if (isDark) {
-        if (iconSun) iconSun.classList.add('hidden');
-        if (iconMoon) iconMoon.classList.remove('hidden');
-      } else {
-        if (iconSun) iconSun.classList.remove('hidden');
-        if (iconMoon) iconMoon.classList.add('hidden');
+      if (iconSun && iconMoon) {
+        if (isDark) {
+          iconSun.classList.add('hidden');
+          iconMoon.classList.remove('hidden');
+        } else {
+          iconSun.classList.remove('hidden');
+          iconMoon.classList.add('hidden');
+        }
+      }
+
+      const btnLight = document.getElementById('themeBtnLight');
+      const btnDark = document.getElementById('themeBtnDark');
+      if (btnLight && btnDark) {
+        if (isDark) {
+          btnLight.className = 'flex-1 py-1.5 px-2 rounded-lg text-center flex items-center justify-center gap-1.5 transition-all text-slate-400 hover:text-slate-200 cursor-pointer';
+          btnDark.className = 'flex-1 py-1.5 px-2 rounded-lg text-center flex items-center justify-center gap-1.5 transition-all bg-white/[0.1] text-white shadow-2xs font-bold cursor-pointer';
+        } else {
+          btnLight.className = 'flex-1 py-1.5 px-2 rounded-lg text-center flex items-center justify-center gap-1.5 transition-all bg-white text-slate-900 shadow-2xs font-bold cursor-pointer';
+          btnDark.className = 'flex-1 py-1.5 px-2 rounded-lg text-center flex items-center justify-center gap-1.5 transition-all text-slate-400 hover:text-slate-600 cursor-pointer';
+        }
       }
     }
 
     function initTheme() {
-      const savedTheme = localStorage.getItem('condovolto_theme') || 'light';
-      if (savedTheme === 'light') {
-        document.documentElement.classList.remove('dark');
-        updateThemeUI(false);
-      } else {
-        document.documentElement.classList.add('dark');
-        updateThemeUI(true);
-      }
+      let savedTheme = 'light';
+      try {
+        savedTheme = localStorage.getItem('condovolto_theme') || localStorage.getItem('domus_theme') || 'light';
+      } catch(e) {}
+      setThemeMode(savedTheme);
     }
-
+  
     function toggleSidebarCollapse() {
       sidebarCollapsed = !sidebarCollapsed;
       const sb = document.getElementById('mainSidebar');
