@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <script id="condovolto-instant-theme-script">
+    try {
+      const savedTheme = localStorage.getItem('condovolto_theme') || localStorage.getItem('domus_theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch(e) {}
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CondoVolto AI — Automação & Inteligência Predial</title>
@@ -36,7 +47,7 @@
   </script>
   <style>
     body {
-      background-color: #07090e;
+      background-color: #0B0F19;
       color: #f1f5f9;
       font-family: 'Plus Jakarta Sans', sans-serif;
       transition: background-color 0.25s ease, color 0.25s ease;
