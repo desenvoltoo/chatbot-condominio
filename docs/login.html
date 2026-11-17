@@ -316,79 +316,82 @@
         </button>
       </form>
 
-      <!-- RBAC Quick Switcher (Seletor de Perfis 1-Clique) -->
+      <!-- Modo Demonstração / Sandbox (Homologação de Interface) -->
       <div class="pt-5 border-t border-white/[0.08]">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            Acesso Rápido de Teste (1-Clique RBAC)
+          <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+            Modo Demonstração / Sandbox
           </span>
-          <span class="text-[10px] text-slate-500 font-mono">Sem digitar senha</span>
+          <span class="text-[10px] text-slate-500 font-mono">Homologação Visual</span>
         </div>
+        <p class="text-[11px] text-slate-400 mb-3 leading-relaxed">
+          Se você está testando a interface em ambiente estático (GitHub Pages) ou sem backend ativo, selecione um perfil para navegar no sandbox:
+        </p>
 
         <div class="grid grid-cols-2 gap-2.5 text-left">
           <!-- 1. Admin Master -->
           <button 
             type="button" 
-            onclick="quickLogin('admin@condominio.com.br', 'admin123', 'admin')"
+            onclick="entrarModoSandbox('admin')"
             id="card-admin"
             class="role-btn p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-left cursor-pointer group">
             <div class="flex items-center justify-between mb-1.5">
               <span class="w-6 h-6 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-300">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
               </span>
-              <span class="text-[9px] font-mono font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">MASTER</span>
+              <span class="text-[9px] font-mono font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">SANDBOX</span>
             </div>
             <div class="font-bold text-xs text-white group-hover:text-indigo-300">Admin Master</div>
-            <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Acesso total a todos os módulos</div>
+            <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Acesso total para avaliação</div>
           </button>
 
           <!-- 2. Síndico Geral -->
           <button 
             type="button" 
-            onclick="quickLogin('sindico@condominio.com.br', 'sindico123', 'sindico')"
+            onclick="entrarModoSandbox('sindico')"
             id="card-sindico"
             class="role-btn p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-left cursor-pointer group">
             <div class="flex items-center justify-between mb-1.5">
               <span class="w-6 h-6 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-300">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
               </span>
-              <span class="text-[9px] font-mono font-bold text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">SÍNDICO</span>
+              <span class="text-[9px] font-mono font-bold text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/30">SANDBOX</span>
             </div>
             <div class="font-bold text-xs text-white group-hover:text-cyan-300">Síndico Eleito</div>
-            <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Visão executiva, relatórios e aprovações</div>
+            <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Visão executiva e relatórios</div>
           </button>
 
           <!-- 3. Operador Financeiro -->
           <button 
             type="button" 
-            onclick="quickLogin('financeiro@condominio.com.br', 'operador123', 'operador')"
+            onclick="entrarModoSandbox('operador')"
             id="card-operador"
             class="role-btn p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-left cursor-pointer group">
             <div class="flex items-center justify-between mb-1.5">
               <span class="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-300">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
               </span>
-              <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">FINANCEIRO</span>
+              <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">SANDBOX</span>
             </div>
             <div class="font-bold text-xs text-white group-hover:text-emerald-300">Gestor Financeiro</div>
-            <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Cobrança, acordos de dívidas e Pix</div>
+            <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Cobrança e acordos</div>
           </button>
 
           <!-- 4. Portaria & Zeladoria -->
           <button 
             type="button" 
-            onclick="quickLogin('portaria@condominio.com.br', 'portaria123', 'portaria')"
+            onclick="entrarModoSandbox('portaria')"
             id="card-portaria"
             class="role-btn p-3.5 rounded-2xl bg-[#0a0e18] border border-white/[0.08] text-left cursor-pointer group">
             <div class="flex items-center justify-between mb-1.5">
               <span class="w-6 h-6 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-300">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M19 21v-4"/><path d="M19 11V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/><path d="M14 11h.01"/></svg>
               </span>
-              <span class="text-[9px] font-mono font-bold text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/30">PORTARIA</span>
+              <span class="text-[9px] font-mono font-bold text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/30">SANDBOX</span>
             </div>
             <div class="font-bold text-xs text-white group-hover:text-purple-300">Portaria & Zeladoria</div>
-            <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Telemetria de medição e reservas</div>
+            <div class="text-[10px] text-slate-400 leading-tight mt-0.5">Acessos e encomendas</div>
           </button>
         </div>
       </div>
@@ -399,10 +402,10 @@
     <div class="mt-6 text-center space-y-1">
       <p class="text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
         <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Segurança bancária com isolamento de dados e conformidade LGPD
+        Segurança corporativa com autenticação no servidor e controle de acesso RBAC
       </p>
       <p class="text-[10px] text-slate-600 font-mono">
-        DOMUS AI v2.4 • Plataforma Proprietária de Inteligência Condominial
+        DOMUS AI v2.4 • Plataforma Operacional de Inteligência Condominial
       </p>
     </div>
   </main>
@@ -453,32 +456,44 @@
       }
     }
 
-    function quickLogin(email, password, role) {
-      document.getElementById('inputEmail').value = email;
-      document.getElementById('inputPassword').value = password;
-      
-      document.querySelectorAll('.role-btn').forEach(c => c.classList.remove('active'));
-      const activeCard = document.getElementById(`card-${role}`);
-      if (activeCard) activeCard.classList.add('active');
+    // Acesso transparente em modo Sandbox / Demonstração
+    function entrarModoSandbox(role) {
+      const sandboxProfiles = {
+        admin: { nome: 'Administrador Master (Sandbox)', role: 'admin', cargo: 'Diretor Geral / TI' },
+        sindico: { nome: 'Síndico Geral (Sandbox)', role: 'sindico', cargo: 'Síndico Eleito' },
+        operador: { nome: 'Operador Financeiro (Sandbox)', role: 'operador', cargo: 'Cobrança & Acordos' },
+        portaria: { nome: 'Equipe de Portaria (Sandbox)', role: 'portaria', cargo: 'Controlador de Acesso' }
+      };
 
-      setTimeout(() => {
-        handleLogin(new Event('submit'));
-      }, 180);
+      const selected = sandboxProfiles[role] || sandboxProfiles.admin;
+      localStorage.setItem('domus_demo_mode', 'true');
+      localStorage.setItem('domus_auth_token', `sandbox_token_${Date.now()}`);
+      localStorage.setItem('domus_auth_user', JSON.stringify({
+        id: `usr_sandbox_${selected.role}`,
+        nome: selected.nome,
+        email: `${selected.role}@demo.condominio.com.br`,
+        role: selected.role,
+        cargo: selected.cargo,
+        isDemo: true,
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      }));
+
+      window.location.href = 'painel.html';
     }
 
+    // Autenticação Real contra a API do Servidor
     async function handleLogin(e) {
       if (e && e.preventDefault) e.preventDefault();
       
       const email = document.getElementById('inputEmail').value.trim();
       const password = document.getElementById('inputPassword').value;
       const errBox = document.getElementById('loginError');
+      const errText = document.getElementById('loginErrorMsg');
       const btn = document.getElementById('btnLoginSubmit');
 
       errBox.classList.add('hidden');
       btn.disabled = true;
-      btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Validando credenciais corporativas...';
-
-      let session = null;
+      btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Autenticando com o servidor...';
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -486,45 +501,26 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
+
         if (res.ok) {
-          session = await res.json();
+          const session = await res.json();
+          localStorage.removeItem('domus_demo_mode');
+          localStorage.setItem('domus_auth_token', session.token);
+          localStorage.setItem('domus_auth_user', JSON.stringify(session.user));
+          window.location.href = 'painel.html';
+          return;
         }
-      } catch (err) {}
 
-      if (!session) {
-        const validUsers = {
-          'admin@condominio.com.br': { nome: 'Administrador Master', role: 'admin', cargo: 'Diretor Geral / TI', senha: 'admin123' },
-          'sindico@condominio.com.br': { nome: 'Síndico Geral', role: 'sindico', cargo: 'Síndico Eleito', senha: 'sindico123' },
-          'financeiro@condominio.com.br': { nome: 'Operador Financeiro', role: 'operador', cargo: 'Cobrança & Acordos', senha: 'operador123' },
-          'portaria@condominio.com.br': { nome: 'Equipe de Portaria', role: 'portaria', cargo: 'Zelador', senha: 'portaria123' }
-        };
-
-        const found = validUsers[email.toLowerCase()];
-        if (found && found.senha === password) {
-          session = {
-            token: `domus_token_${Date.now()}`,
-            user: {
-              id: `usr_${found.role}`,
-              nome: found.nome,
-              email,
-              role: found.role,
-              cargo: found.cargo,
-              avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-            }
-          };
-        }
-      }
-
-      btn.disabled = false;
-      btn.innerHTML = '<span>Entrar na Plataforma DOMUS AI</span> <svg class="w-4 h-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
-
-      if (session) {
-        localStorage.setItem('domus_auth_token', session.token);
-        localStorage.setItem('domus_auth_user', JSON.stringify(session.user));
-        window.location.href = 'painel.html';
-      } else {
+        const data = await res.json().catch(() => ({}));
         errBox.classList.remove('hidden');
-        document.getElementById('loginErrorMsg').innerText = 'Credenciais inválidas. Verifique seu e-mail e senha corporativos.';
+        errText.innerText = data.error || 'Credenciais inválidas. Verifique seu e-mail e senha corporativos.';
+      } catch (err) {
+        // Backend offline ou hospedagem estática
+        errBox.classList.remove('hidden');
+        errText.innerHTML = '<strong>Servidor backend offline ou página estática:</strong> A rota /api/auth/login não respondeu. Para testar a interface neste ambiente, clique em um dos perfis do <strong>Modo Demonstração / Sandbox</strong> abaixo.';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Entrar na Plataforma DOMUS AI</span> <svg class="w-4 h-4 ml-2 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
       }
     }
 

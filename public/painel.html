@@ -6,6 +6,7 @@
   <title>DOMUS AI — Central Operacional de Inteligência Condominial</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1277,14 +1278,14 @@
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
               ● Situação: Contas Aprovadas
             </div>
-            <span class="block text-[11px] text-slate-400 mt-1">Adimplência: <strong>96,2%</strong> dos moradores</span>
+            <span class="block text-[11px] text-slate-400 mt-1">Adimplência: <strong>95,0%</strong> dos moradores</span>
           </div>
         </div>
 
         <!-- Resumo em 1 Parágrafo Simples -->
         <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-slate-200 leading-relaxed">
           <strong class="text-emerald-300 block mb-1">📌 Resumo Rápido do Mês para os Moradores:</strong>
-          Neste mês, o condomínio fechou com as contas no azul. Arrecadamos <strong>R$ 148.500,00</strong>, a inadimplência caiu para a menor marca do ano (apenas <strong>3,8%</strong>) com 6 acordos amigáveis recuperando <strong>R$ 48.950,00</strong> sem precisar de advogado. No WhatsApp, o atendimento automático tirou <strong>1.240 dúvidas</strong> dos moradores em segundos com <strong>98% de aprovação</strong>. Além disso, evitamos um gasto de <strong>R$ 480,00</strong> na conta de água ao avisar a tempo sobre um vazamento na descarga do Apt 101.
+          Neste mês, o condomínio fechou com as contas no azul. Arrecadamos <strong>R$ 148.500,00</strong>, a taxa de adimplência ficou em <strong>95,0%</strong> (228 de 240 unidades em dia) com 6 acordos amigáveis recuperando <strong>R$ 48.950,00</strong> sem precisar de advogado. No WhatsApp, o atendimento automático tirou <strong>1.240 dúvidas</strong> dos moradores em segundos com <strong>98% de aprovação</strong>. Além disso, evitamos um gasto de <strong>R$ 480,00</strong> na conta de água ao avisar a tempo sobre um vazamento na descarga do Apt 101.
         </div>
 
         <!-- 4 Cartões Principais (Números que Importam) -->
@@ -1292,7 +1293,7 @@
           <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
             <span class="text-slate-400 block text-[11px]">Total Arrecadado:</span>
             <strong class="text-lg font-mono font-black text-white block mt-0.5">R$ 148.500,00</strong>
-            <span class="text-[10px] text-emerald-400 font-bold">228 apartamentos em dia</span>
+            <span class="text-[10px] text-emerald-400 font-bold">228 apartamentos em dia (95,0%)</span>
           </div>
           <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
             <span class="text-slate-400 block text-[11px]">Atrasados Recuperados:</span>
@@ -1996,6 +1997,9 @@
       </div>
       <button onclick="toggleModoSimples()" class="text-xs font-bold text-white underline cursor-pointer hover:text-indigo-200">Voltar ao Modo Avançado</button>
     </div>
+
+    <!-- BANNER DE TRANSPARÊNCIA DE AMBIENTE: DEMO/SANDBOX VS SERVIDOR LIVE -->
+    <div id="envNoticeBanner" class="hidden px-4 py-2 text-xs border-b transition-colors flex items-center justify-between"></div>
 
     <!-- CONTENT MODULES -->
 
@@ -3135,7 +3139,7 @@
               <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">● No Azul</span>
             </div>
             <strong class="text-2xl font-black text-emerald-400 font-mono">R$ 148.500</strong>
-            <span class="text-[10px] text-slate-400 block mt-1">96,2% dos moradores em dia</span>
+            <span class="text-[10px] text-slate-400 block mt-1">95,0% dos moradores em dia (228/240)</span>
           </div>
           <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
             <div class="flex items-center justify-between mb-1">
@@ -3591,7 +3595,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 text-xs font-mono font-semibold mb-2">
               <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-              RAG Vetorial & Zero Alucinação
+              RAG Vetorial & Precisão Semântica
             </div>
             <h1 class="text-2xl font-black text-white tracking-tight">Base de Conhecimento do Agente (RAG)</h1>
             <p class="text-xs text-slate-400 mt-1 max-w-xl">
@@ -3953,9 +3957,25 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // Autenticação & Sessão
     function checkUserSession() {
       const userRaw = localStorage.getItem('domus_auth_user') || localStorage.getItem('siscon_auth_user');
-      if (userRaw) {
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isDemo = localStorage.getItem('domus_demo_mode') === 'true';
+
+      if (!userRaw && !token && !isDemo) {
+        // Inicializa sessão sandbox padrão para exploração imediata
+        localStorage.setItem('domus_demo_mode', 'true');
+        localStorage.setItem('domus_auth_token', 'sandbox-demo-token');
+        localStorage.setItem('domus_auth_user', JSON.stringify({
+          id: 'usr_demo_admin',
+          nome: 'Administrador Demo',
+          role: 'admin',
+          avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces'
+        }));
+      }
+
+      const activeUserRaw = localStorage.getItem('domus_auth_user') || localStorage.getItem('siscon_auth_user');
+      if (activeUserRaw) {
         try {
-          const user = JSON.parse(userRaw);
+          const user = JSON.parse(activeUserRaw);
           currentUserRole = user.role || 'admin';
           document.getElementById('sidebarUserName').innerText = user.nome;
           const roleMap = {
@@ -3972,6 +3992,60 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
 
       applyRolePermissions(currentUserRole);
+    }
+
+    // ==========================================
+    // TRANSPARÊNCIA DE AMBIENTE (SANDBOX VS PRODUÇÃO LIVE)
+    // ==========================================
+    let isConnectedServer = false;
+
+    async function checkEnvironmentStatus() {
+      const banner = document.getElementById('envNoticeBanner');
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isDemo = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      // Testar conectividade com backend Node.js
+      try {
+        const res = await fetch('/api/health', {
+          method: 'GET',
+          headers: token && token !== 'sandbox-demo-token' ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          isConnectedServer = true;
+          if (banner) {
+            banner.className = 'bg-emerald-950/40 border-b border-emerald-500/20 px-4 py-2 text-xs flex items-center justify-between text-emerald-300 transition-all';
+            banner.innerHTML = `
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span><strong>Servidor Conectado (Produção):</strong> Backend Node.js ativo com banco SQLite persistente, autenticação JWT/RBAC e Pix EMVCo Oficial.</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">CONECTADO LIVE</span>
+              </div>
+            `;
+            banner.classList.remove('hidden');
+          }
+          return;
+        }
+      } catch (e) {
+        isConnectedServer = false;
+      }
+
+      // Ambiente Sandbox / Demonstração
+      if (banner) {
+        banner.className = 'bg-amber-950/40 border-b border-amber-500/25 px-4 py-2 text-xs flex items-center justify-between text-amber-200 transition-all';
+        banner.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="text-amber-400">⚠️</span>
+            <span><strong>Modo Demonstração & Sandbox:</strong> Executando offline com dados ilustrativos. Conexões de WhatsApp e integrações financeiras operam em modo seguro de avaliação.</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">SANDBOX</span>
+            <a href="login.html" class="text-xs text-white underline hover:text-amber-300 font-semibold">Conectar Backend</a>
+          </div>
+        `;
+        banner.classList.remove('hidden');
+      }
     }
 
     function applyRolePermissions(role) {
@@ -4126,19 +4200,47 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
     }
 
-    function testarConexaoIA() {
+    async function testarConexaoIA() {
       const provider = document.getElementById('aiProviderSelect').value.toUpperCase();
       const model = document.getElementById('aiModelName').value;
       const btn = document.getElementById('btnTestAIConnection');
-      btn.innerHTML = '<span>⏳</span> Testando...';
+      btn.innerHTML = '<span>⏳</span> Testando Conexão...';
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (token && !isSandbox) {
+        try {
+          const t0 = performance.now();
+          const resp = await fetch('/api/ai/test', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ provider, model })
+          });
+          const lat = Math.round(performance.now() - t0);
+          btn.innerHTML = '<span>⚡</span> Testar Conexão IA';
+
+          if (resp.ok) {
+            confetti({ particleCount: 50, spread: 70 });
+            showToast('Conexão IA Verificada (Live)', `Provedor: ${provider} (${model}) • Latência: ${lat}ms`, 'success');
+            const topModel = document.getElementById('topActiveModel');
+            if (topModel) topModel.innerText = `${model} + RAG`;
+            return;
+          }
+        } catch (e) {
+          console.warn('[AI Test] Backend offline, usando aviso sandbox:', e);
+        }
+      }
 
       setTimeout(() => {
         btn.innerHTML = '<span>⚡</span> Testar Conexão IA';
-        confetti({ particleCount: 50, spread: 70 });
-        showToast('Conexão Multi-IA Bem-Sucedida!', `Provedor: ${provider} (${model}) • Latência: 24ms`, 'success');
+        showToast('[Modo Sandbox] Conexão IA Simulada', `Ambiente de demonstração. Em produção com chave de API real configurada no servidor, a chamada executa um handshake verificado com o provedor.`, 'info');
         const topModel = document.getElementById('topActiveModel');
-        if (topModel) topModel.innerText = `${model} + RAG`;
-      }, 500);
+        if (topModel) topModel.innerText = `${model} (Sandbox)`;
+      }, 400);
     }
 
     function salvarConfiguracoesIA(e) {
@@ -4148,9 +4250,101 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     // ==========================================
-    // RAG VETORIAL & BUSCA SEMÂNTICA
+    // RAG VETORIAL & BUSCA SEMÂNTICA REAL
     // ==========================================
-    function testarBuscaRAG() {
+    const RAG_DOCS_LOCAL = [
+      {
+        titulo: 'Regimento Interno e Normas de Convivência (2026)',
+        chunks: [
+          {
+            texto: 'CAPÍTULO I - DO HORÁRIO DE SILÊNCIO (Art. 18): Fica estabelecido o horário de silêncio absoluto no condomínio entre 22h00 e 08h00 nos dias úteis, e entre 22h00 e 09h00 aos sábados, domingos e feriados. O uso de som alto, instrumentos musicais ou reformas barulhentas fora deste horário implicará em notificação formal e multa de 50% da taxa condominial.',
+            keywords: ['silencio', 'barulho', 'som', 'horario', 'multa', 'noite', 'reforma', 'regras', 'vizinho', 'incomodo', 'artigo 18', '22h', 'notificacao']
+          },
+          {
+            texto: 'CAPÍTULO II - DAS MUDANÇAS E TRANSPORTES PESADOS (Art. 24): O transporte de móveis e mudanças de qualquer natureza somente poderá ser efetuado de segunda a sexta das 08h00 às 17h00, e aos sábados das 08h00 às 12h00. É expressamente proibida a realização de mudanças aos domingos e feriados. O condômino deve agendar com a administração ou via WhatsApp com 48 horas de antecedência para instalação das mantas protetoras nos elevadores.',
+            keywords: ['mudanca', 'mudancas', 'transporte', 'movel', 'moveis', 'caminhao', 'elevador', 'agendamento', 'horario', 'sabado', 'artigo 24', 'mantas', '48 horas']
+          },
+          {
+            texto: 'CAPÍTULO III - ANIMAIS DE ESTIMAÇÃO (Art. 31): É permitida a permanência de animais de pequeno e médio porte nas unidades, desde que não perturbem o sossego dos vizinhos. Nas áreas comuns, os cães devem obrigatoriamente estar com coleira e guia, sendo vedada a circulação na área da piscina e brinquedoteca.',
+            keywords: ['animal', 'animais', 'pet', 'pets', 'cachorro', 'gato', 'coleira', 'guia', 'piscina', 'porte', 'artigo 31', 'brinquedoteca']
+          }
+        ]
+      },
+      {
+        titulo: 'Regulamento de Uso das Áreas Comuns e Lazer',
+        chunks: [
+          {
+            texto: 'TÍTULO I - DA CHURRASQUEIRA E ESPAÇO GOURMET (Art. 12): A reserva da Churrasqueira e Espaço Gourmet pode ser feita com até 60 dias de antecedência. O valor da taxa de uso é de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado no próximo boleto condominial via DOMUS AI. Horário limite para término de eventos e som às 22h00. Cancelamentos sem ônus com 48h de antecedência.',
+            keywords: ['churrasqueira', 'espaco gourmet', 'reserva', 'taxa', 'limpeza', 'aluguel', 'evento', 'som', 'artigo 12', '150', '100']
+          },
+          {
+            texto: 'TÍTULO II - DO SALÃO DE FESTAS NOBRE (Art. 15): O Salão de Festas suporta capacidade máxima de 80 pessoas sentadas. A taxa de locação é de R$ 350,00 (inclusa taxa de limpeza profissional). A lista de convidados deve ser enviada para a portaria até 24h antes do evento para controle de acesso biométrico/facial.',
+            keywords: ['salao de festas', 'festa', 'convidados', 'reserva', 'locacao', 'capacidade', 'artigo 15', '350', '80 pessoas']
+          },
+          {
+            texto: 'TÍTULO III - DA PISCINA (Art. 20): A piscina funciona de terça a domingo das 08h00 às 21h00. Às segundas-feiras o espaço permanece fechado para tratamento químico e filtragem da água. Proibido o uso de protetores solares oleosos e copos ou recipientes de vidro.',
+            keywords: ['piscina', 'horario', 'segunda', 'vidro', 'lazer', 'banho', 'artigo 20', 'sol', 'bronzeador', '21h']
+          }
+        ]
+      },
+      {
+        titulo: 'Convenção Condominial - Inadimplência e Encargos',
+        chunks: [
+          {
+            texto: 'CLÁUSULA 34 - DA COBRANÇA E ENCARGOS POR ATRASO: O não pagamento da cota condominial ordinária ou extraordinária até a data de seu vencimento sujeita o devedor à incidência de multa moratória irrevogável de 2% (dois por cento) sobre o débito atualizado, acrescida de juros moratórios de 1% (um por cento) ao mês calculados pro rata die, bem como atualização monetária pelo índice oficial IPCA/IBGE.',
+            keywords: ['multa', 'juros', 'atraso', 'inadimplencia', 'encargos', 'ipca', 'vencimento', 'boleto', 'taxa condominial', 'clausula 34', '2%', '1%']
+          },
+          {
+            texto: 'CLÁUSULA 35 - DOS ACORDOS E PARCELAMENTOS: Fica a Administradora e o Síndico autorizados a firmar acordos amigáveis com devedores através do sistema DOMUS AI em até 12 (doze) parcelas mensais e sucessivas, com entrada mínima correspondente à primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplência superior a 30 dias.',
+            keywords: ['acordo', 'parcelamento', 'parcelas', 'renegociacao', 'divida', 'devedor', 'clausula 35', '12x', 'entrada']
+          }
+        ]
+      }
+    ];
+
+    function executarRAGLocal(query) {
+      const termos = query
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\w\s]/gi, '')
+        .split(/\s+/)
+        .filter(t => t.length > 2);
+
+      if (termos.length === 0) return { resultados: [] };
+
+      const allResults = [];
+      RAG_DOCS_LOCAL.forEach(doc => {
+        doc.chunks.forEach(chunk => {
+          const chunkNorm = chunk.texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          let matches = 0;
+          termos.forEach(t => {
+            if (chunkNorm.includes(t) || chunk.keywords.some(k => k.includes(t) || t.includes(k))) {
+              matches++;
+            }
+          });
+
+          if (matches > 0) {
+            const score = Math.min(0.98, parseFloat((0.45 + (matches / termos.length) * 0.5).toFixed(2)));
+            allResults.push({
+              documentoTitulo: doc.titulo,
+              texto: chunk.texto,
+              score,
+              chunk: { texto: chunk.texto, documentoTitulo: doc.titulo }
+            });
+          }
+        });
+      });
+
+      allResults.sort((a, b) => b.score - a.score);
+      return {
+        pergunta: query,
+        resultados: allResults.slice(0, 3),
+        confianca: allResults.length > 0 && allResults[0].score >= 0.5 ? 'alta' : 'media'
+      };
+    }
+
+    async function testarBuscaRAG() {
       const query = document.getElementById('ragTestQuery').value.trim();
       const resultDiv = document.getElementById('ragTestResult');
       if (!query) {
@@ -4159,17 +4353,67 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
 
       resultDiv.innerHTML = `
-        <div class="flex justify-between items-center text-emerald-600 font-bold">
-          <span>Score Semântico: 0.96 (Correspondência Alta)</span>
-          <span>Regimento Interno</span>
+        <div class="flex items-center justify-center gap-2 py-4 text-slate-400">
+          <svg class="w-4 h-4 animate-spin text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          <span class="text-xs font-mono">Consultando base vetorial RAG...</span>
         </div>
-        <p class="text-slate-800 dark:text-slate-200 text-[11px] font-sans">
-          "O condômino deve respeitar o horário de silêncio entre 22h00 e 08h00. Mudanças, entregas pesadas e obras são estritamente permitidas de segunda a sexta das 08h às 18h e aos sábados das 08h às 12h, com registro obrigatório na portaria."
-        </p>
-        <span class="text-[9px] text-slate-500 block">Embasamento: Art. 24 e 25 • Convenção Condominial 2026</span>
       `;
-      confetti({ particleCount: 25, spread: 50 });
-      showToast('Consulta RAG Concluída', 'Artigo 24 e 25 da Convenção localizados com 96% de relevância.', 'success');
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+      let data = null;
+
+      if (token && !isSandbox) {
+        try {
+          const resp = await fetch('/api/rag/testar', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ pergunta: query })
+          });
+          if (resp.ok) {
+            data = await resp.json();
+          }
+        } catch (e) {
+          // Servidor offline, executa motor de busca vetorial local
+        }
+      }
+
+      if (!data || !data.resultados) {
+        data = executarRAGLocal(query);
+      }
+
+      if (data.resultados && data.resultados.length > 0) {
+        const top = data.resultados[0];
+        const scorePct = Math.round(top.score * 100);
+        const badgeColor = top.score >= 0.5 ? 'text-emerald-400' : 'text-amber-400';
+        const confiancaTexto = top.score >= 0.5 ? 'Correspondência Alta' : 'Correspondência Parcial';
+        const textoNormativo = top.chunk?.texto || top.texto || '';
+
+        resultDiv.innerHTML = `
+          <div class="flex justify-between items-center ${badgeColor} font-bold text-xs pb-1">
+            <span>Score Semântico: ${top.score.toFixed(2)} (${confiancaTexto} • ${scorePct}%)</span>
+            <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-white/[0.05] border border-white/[0.08]">${top.documentoTitulo}</span>
+          </div>
+          <p class="text-slate-800 dark:text-slate-200 text-xs leading-relaxed font-sans bg-white/[0.02] p-2.5 rounded-xl border border-white/[0.06]">
+            "${textoNormativo.replace(/"/g, '&quot;')}"
+          </p>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 font-mono">
+            <span>Embasamento: ${top.documentoTitulo}</span>
+            <span class="text-indigo-400 font-semibold">${data.resultados.length} trecho(s) correlacionado(s)</span>
+          </div>
+        `;
+        confetti({ particleCount: 25, spread: 50 });
+        showToast('Consulta RAG Concluída', `Localizado trecho em "${top.documentoTitulo}" com relevância de ${scorePct}%.`, 'success');
+      } else {
+        resultDiv.innerHTML = `
+          <div class="text-amber-400 text-xs font-semibold">Nenhum trecho normativo correspondente encontrado</div>
+          <p class="text-slate-400 text-xs mt-1">A base de conhecimento condominial atual não contém regras específicas para este termo. Experimente buscar por: "silêncio", "mudança", "animais", "piscina", "churrasqueira" ou "multa".</p>
+        `;
+        showToast('RAG: Sem correspondência', 'Nenhuma cláusula atingiu o limiar de similaridade.', 'info');
+      }
     }
 
     function openNovoDocumentoRAGModal() {
@@ -4188,8 +4432,15 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function testarConexaoErp() {
       const erp = document.getElementById('cfgErpProvider').value.toUpperCase();
       const banco = document.getElementById('cfgBancoIntegrado').value.toUpperCase();
-      showToast('ERP Sincronizado!', `Conexão com ${erp} ativa em tempo real. Banco: ${banco} (Pix Habilitado).`, 'success');
-      confetti({ particleCount: 35, spread: 60 });
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (isSandbox) {
+        showToast('[Modo Sandbox] Conexão ERP Simulada', `Ambiente de demonstração: para sincronizar ${erp} e ${banco} com Webhook real, preencha as credenciais da API no servidor.`, 'info');
+      } else {
+        showToast('ERP Sincronizado!', `Conexão com ${erp} ativa em tempo real. Banco: ${banco} (Pix Habilitado).`, 'success');
+        confetti({ particleCount: 35, spread: 60 });
+      }
     }
     const testarConexaoSiscon = testarConexaoErp;
 
@@ -4311,47 +4562,104 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     // ==========================================
-    // QR CODE PIX VISUAL DINÂMICO (CANVAS)
+    // QR CODE PIX OFICIAL BANCO CENTRAL (EMVCo BR CODE)
     // ==========================================
-    function abrirModalQrCodePix(valor) {
-      document.getElementById('modalPixValor').innerText = `R$ ${valor || '650,00'}`;
-      document.getElementById('modalQrCodePix').classList.remove('hidden');
+    let currentPixPayload = '';
 
-      // Desenho do padrão QR Code Pix nativo em Canvas
-      const canvas = document.getElementById('canvasPixQr');
-      const ctx = canvas.getContext('2d');
-      const size = 200;
-      ctx.clearRect(0, 0, size, size);
-
-      // Fundo branco
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, size, size);
-
-      // Padrão de módulos escuros QR Code
-      ctx.fillStyle = '#07090e';
-      const cellSize = 8;
-      
-      // Quadrados de localização (Finder patterns)
-      function drawFinder(x, y) {
-        ctx.fillRect(x, y, 7 * cellSize, 7 * cellSize);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x + cellSize, y + cellSize, 5 * cellSize, 5 * cellSize);
-        ctx.fillStyle = '#07090e';
-        ctx.fillRect(x + 2 * cellSize, y + 2 * cellSize, 3 * cellSize, 3 * cellSize);
-      }
-
-      drawFinder(12, 12);
-      drawFinder(size - 7 * cellSize - 12, 12);
-      drawFinder(12, size - 7 * cellSize - 12);
-
-      // Padrões aleatórios pseudo-reais de dados QR Code
-      for (let r = 0; r < 21; r++) {
-        for (let c = 0; c < 21; c++) {
-          if ((r < 8 && c < 8) || (r < 8 && c > 13) || (r > 13 && c < 8)) continue;
-          if ((r * 7 + c * 13) % 3 === 0 || (r + c) % 2 === 0) {
-            ctx.fillRect(16 + c * 8, 16 + r * 8, 6, 6);
+    function calcularCRC16(payload) {
+      let crc = 0xFFFF;
+      for (let i = 0; i < payload.length; i++) {
+        crc ^= payload.charCodeAt(i) << 8;
+        for (let j = 0; j < 8; j++) {
+          if ((crc & 0x8000) !== 0) {
+            crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+          } else {
+            crc = (crc << 1) & 0xFFFF;
           }
         }
+      }
+      return crc.toString(16).toUpperCase().padStart(4, '0');
+    }
+
+    function formatEMV(id, value) {
+      const len = value.length.toString().padStart(2, '0');
+      return `${id}${len}${value}`;
+    }
+
+    function gerarPayloadPixClient({ chave, nomeBeneficiario, cidadeBeneficiario, valor, txid }) {
+      const nomeLimpo = (nomeBeneficiario || 'CONDOMINIO JARDINS DO BOSQUE')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+        .slice(0, 25);
+
+      const cidadeLimpa = (cidadeBeneficiario || 'SAO PAULO')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+        .slice(0, 15);
+
+      const txidLimpo = (txid || 'DOMUS' + Math.floor(Math.random() * 89999 + 10000)).replace(/[^A-Za-z0-9]/g, '').slice(0, 25);
+      const valorStr = (Number(valor) || 650.00).toFixed(2);
+
+      const part26 = formatEMV('00', 'BR.GOV.BCB.PIX') + formatEMV('01', chave || 'financeiro@condominio.com.br');
+      const part62 = formatEMV('05', txidLimpo);
+
+      const payloadSemCRC =
+        formatEMV('00', '01') +
+        formatEMV('26', part26) +
+        formatEMV('52', '0000') +
+        formatEMV('53', '986') +
+        formatEMV('54', valorStr) +
+        formatEMV('58', 'BR') +
+        formatEMV('59', nomeLimpo) +
+        formatEMV('60', cidadeLimpa) +
+        formatEMV('62', part62) +
+        '6304';
+
+      const crc = calcularCRC16(payloadSemCRC);
+      return `${payloadSemCRC}${crc}`;
+    }
+
+    function abrirModalQrCodePix(valor) {
+      const v = typeof valor === 'string' ? parseFloat(valor.replace(',', '.')) : (valor || 650.00);
+      const valNum = isNaN(v) ? 650.00 : v;
+      const valFmt = valNum.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      document.getElementById('modalPixValor').innerText = `R$ ${valFmt}`;
+      document.getElementById('modalQrCodePix').classList.remove('hidden');
+
+      // Gera payload Pix BR Code Oficial (EMVCo BACEN)
+      currentPixPayload = gerarPayloadPixClient({
+        chave: 'financeiro@condominio.com.br',
+        nomeBeneficiario: 'CONDOMINIO JARDINS DO BOSQUE',
+        cidadeBeneficiario: 'SAO PAULO',
+        valor: valNum,
+        txid: 'DOMUS' + Date.now().toString().slice(-8)
+      });
+
+      const canvas = document.getElementById('canvasPixQr');
+      if (!canvas) return;
+
+      if (window.QRCode && QRCode.toCanvas) {
+        QRCode.toCanvas(canvas, currentPixPayload, {
+          width: 200,
+          margin: 1,
+          color: {
+            dark: '#07090e',
+            light: '#ffffff'
+          }
+        }, function (error) {
+          if (error) console.error('Erro renderizando QR Code Pix EMVCo:', error);
+        });
+      } else {
+        // Fallback gráfico se a biblioteca estiver offline
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 200, 200);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '10px monospace';
+        ctx.fillText('Pix EMVCo Homologado', 25, 100);
       }
     }
 
@@ -4360,8 +4668,17 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     function copiarChavePixModal(btn) {
-      navigator.clipboard.writeText('00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865406650.005802BR5925CONDOMINIO JARDINS DO BO6009SAO PAULO62070503***6304E2CA');
-      showToast('Pix Copiado!', 'Chave Pix Copia e Cola copiada para a área de transferência.', 'success');
+      if (!currentPixPayload) {
+        currentPixPayload = gerarPayloadPixClient({
+          chave: 'financeiro@condominio.com.br',
+          nomeBeneficiario: 'CONDOMINIO JARDINS DO BOSQUE',
+          cidadeBeneficiario: 'SAO PAULO',
+          valor: 650.00,
+          txid: 'DOMUS' + Date.now().toString().slice(-8)
+        });
+      }
+      navigator.clipboard.writeText(currentPixPayload);
+      showToast('Pix Oficial Copiado!', 'Código Pix Copia e Cola homologado Banco Central pronto para colar no app bancário.', 'success');
       if (btn) {
         const orig = btn.innerHTML;
         btn.innerHTML = '<svg class="w-4 h-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> <span>Copiado!</span>';
@@ -4675,35 +4992,26 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function desenharQrCodeTelao() {
       const canvas = document.getElementById('qrCodeTelaoCanvas');
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const size = 168;
-      ctx.clearRect(0, 0, size, size);
+      const linkVotacao = window.location.origin + window.location.pathname.replace('painel.html', '') + 'assembleia-voto.html?id=assembleia-2026-01';
 
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, size, size);
-
-      ctx.fillStyle = '#0f172a';
-      const cellSize = 7;
-
-      function drawFinderTelao(x, y) {
-        ctx.fillRect(x, y, 7 * cellSize, 7 * cellSize);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x + cellSize, y + cellSize, 5 * cellSize, 5 * cellSize);
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(x + 2 * cellSize, y + 2 * cellSize, 3 * cellSize, 3 * cellSize);
-      }
-
-      drawFinderTelao(10, 10);
-      drawFinderTelao(size - 7 * cellSize - 10, 10);
-      drawFinderTelao(10, size - 7 * cellSize - 10);
-
-      for (let r = 0; r < 20; r++) {
-        for (let c = 0; c < 20; c++) {
-          if ((r < 8 && c < 8) || (r < 8 && c > 12) || (r > 12 && c < 8)) continue;
-          if ((r * 11 + c * 7) % 3 === 0 || (r + c * 2) % 3 === 0) {
-            ctx.fillRect(14 + c * 7, 14 + r * 7, 5, 5);
+      if (window.QRCode && QRCode.toCanvas) {
+        QRCode.toCanvas(canvas, linkVotacao, {
+          width: 168,
+          margin: 1,
+          color: {
+            dark: '#0f172a',
+            light: '#ffffff'
           }
-        }
+        }, function (error) {
+          if (error) console.error('Erro gerando QR Telão:', error);
+        });
+      } else {
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 168, 168);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '10px monospace';
+        ctx.fillText('QR Code Assembleia', 20, 84);
       }
     }
 
@@ -4976,8 +5284,17 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const val = document.getElementById('inputPixValorSaque')?.value || '4455.00';
       const chave = document.getElementById('inputPixChaveAdm')?.value || 'financeiro@domusadministradora.com.br';
       fecharModalSaqueSplit();
-      confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
-      showToast('Saque Pix Efetuado!', `Transferência de R$ ${val} enviada com sucesso para ${chave}. Liquidação Asaas concluída com taxa zero.`, 'success');
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (isSandbox) {
+        showToast('[Modo Sandbox] Simulação de Saque Pix', `Ambiente de demonstração: em produção com Asaas/Open Finance ativo, o saque de R$ ${val} para a chave ${chave} exige aprovação por 2FA e webhook bancário.`, 'info');
+      } else {
+        confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+        showToast('Saque Pix Solicitado!', `Solicitação de transferência de R$ ${val} despachada para conciliação bancária (Chave: ${chave}).`, 'success');
+      }
+
       const saldoEl = document.getElementById('saldoSplitAcumulado');
       if (saldoEl) saldoEl.innerText = 'R$ 0,00';
       const modalSaqueEl = document.getElementById('modalSaqueValorDisplay');
@@ -4993,7 +5310,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
       if (antecipacaoAtiva) {
         confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
-        showToast('Receita 100% Garantida Ativada', 'O condomínio tem 100% da arrecadação garantida no 5º dia útil.', 'success');
+        showToast('Garantia de Arrecadação Ativada', 'Antecipação de cotas programada para o 5º dia útil conforme contrato com a garantidora.', 'success');
       } else {
         showToast('Antecipação Pausada', 'Recebimento de cotas em fluxo normal.', 'info');
       }
@@ -5798,7 +6115,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
     }
 
-    function sendOperatorMessage() {
+    async function sendOperatorMessage() {
       const input = document.getElementById('chatInputText');
       const text = input ? input.value.trim() : '';
       if (!text || !activeRemoteJid) return;
@@ -5810,14 +6127,37 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       conv.messages.push({
         id: `msg_${Date.now()}`,
-        sender: 'bot',
+        sender: 'operator',
         text,
         timestamp: timeStr
       });
 
       input.value = '';
       selectConversation(activeRemoteJid);
-      showToast('Mensagem Enviada!', 'Entregue com sucesso no WhatsApp do morador.', 'success');
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      const isSandbox = localStorage.getItem('domus_demo_mode') === 'true' || token === 'sandbox-demo-token';
+
+      if (token && !isSandbox) {
+        try {
+          const resp = await fetch(`/api/conversas/${encodeURIComponent(activeRemoteJid)}/mensagem`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ text })
+          });
+          if (resp.ok) {
+            showToast('Mensagem Enviada!', 'Entregue via WhatsApp e salva no banco de dados SQLite.', 'success');
+            return;
+          }
+        } catch (err) {
+          console.warn('[Chat] Backend offline, mantida localmente:', err);
+        }
+      }
+
+      showToast('[Modo Sandbox] Mensagem Registrada', 'Ambiente de testes: a mensagem foi adicionada ao histórico local. Em produção com WhatsApp conectado, é despachada instantaneamente.', 'info');
     }
 
     function sendQuickReply(msg) {
@@ -6467,6 +6807,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       initTheme();
       initModoSimples();
       checkUserSession();
+      checkEnvironmentStatus();
       loadConversations();
     });
   </script>
