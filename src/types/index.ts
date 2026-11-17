@@ -184,13 +184,62 @@ export interface Reserva {
   unidadeId: string;
   moradorNome: string;
   moradorTelefone: string;
+  remoteJid?: string;
   dataReserva: string;
   periodo: string;
   convidadosQtd: number;
   taxaTotal: number;
-  status: 'confirmada' | 'pendente_aprovacao' | 'cancelada';
-  statusCobranca: 'faturado_proximo_boleto' | 'pago_antecipado';
+  status: 'confirmada' | 'pendente_aprovacao' | 'recusada' | 'cancelada';
+  statusCobranca: 'faturado_proximo_boleto' | 'pago_antecipado' | 'isento';
+  cobrancaId?: string;
   protocoloSiscon: string;
+  criadoEm?: string;
+}
+
+export interface Cobranca {
+  id: string;
+  unidadeId: string;
+  moradorNome: string;
+  moradorTelefone?: string;
+  remoteJid?: string;
+  tipo: 'cota_condominial' | 'taxa_reserva' | 'acordo' | 'multa';
+  competencia: string;
+  vencimento: string;
+  valor: number;
+  linhaDigitavel?: string;
+  txid: string;
+  pixCopiaECola: string;
+  status: 'aberto' | 'pago' | 'vencido' | 'cancelado';
+  pagoEm?: string;
+  formaPagamento?: 'pix' | 'boleto' | 'transferencia';
+  comprovanteId?: string;
+  splitCondominio: number;
+  splitAdministradora: number;
+  criadoEm: string;
+}
+
+export interface OrdemManutencao {
+  id: string;
+  codigo: string; // ex: 'OS-2026-088'
+  titulo: string;
+  descricao?: string;
+  categoria: 'eletrica' | 'hidraulica' | 'portoes' | 'elevadores' | 'pintura' | 'civil' | 'seguranca';
+  localizacao: string;
+  urgencia: 'baixa' | 'media' | 'alta' | 'urgente';
+  status: 'pendente' | 'em_andamento' | 'concluido' | 'cancelado';
+  solicitanteNome: string;
+  solicitanteUnidade?: string;
+  solicitanteTelefone?: string;
+  remoteJid?: string;
+  responsavelNome?: string;
+  responsavelTelefone?: string;
+  custoEstimado?: number;
+  custoReal?: number;
+  fotoAntesUrl?: string;
+  fotoDepoisUrl?: string;
+  observacoes?: string;
+  criadoEm: string;
+  concluidoEm?: string;
 }
 
 export interface ReguaCobrancaConfig {

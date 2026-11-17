@@ -1,7 +1,18 @@
 import { Response } from 'express';
 
 export interface DashboardEvent {
-  type: 'new_message' | 'handoff_changed' | 'ticket_status' | 'sla_warning' | 'stats_updated' | 'connected';
+  type:
+    | 'new_message'
+    | 'handoff_changed'
+    | 'ticket_status'
+    | 'sla_warning'
+    | 'stats_updated'
+    | 'connected'
+    | 'payment_confirmed'
+    | 'reserva_created'
+    | 'reserva_updated'
+    | 'os_created'
+    | 'os_updated';
   remoteJid?: string;
   data?: any;
   timestamp: string;

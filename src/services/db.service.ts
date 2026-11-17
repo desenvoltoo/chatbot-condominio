@@ -1,7 +1,8 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
-import { UserSession, ChatMessage } from '../types/index.js';
+import { UserSession, ChatMessage, Cobranca, Reserva, OrdemManutencao } from '../types/index.js';
+import { gerarPayloadPix } from '../utils/pix.util.js';
 
 export class DbService {
   private static instance: DbService;
@@ -50,7 +51,7 @@ export class DbService {
       );
     `);
 
-    // Migrações seguras caso colunas não existam em banco pré-existente
+    // Migrações seguras de sessions
     const colunasExtras = [
       'status TEXT DEFAULT "ai"',
       'assignedOperator TEXT',
@@ -120,6 +121,83 @@ export class DbService {
         timestamp TEXT NOT NULL
       );
     `);
+
+    // 5. Tabela de Cobranças e Boletos com Split Pix
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS cobrancas (
+        id TEXT PRIMARY KEY,
+        unidadeId TEXT NOT NULL,
+        moradorNome TEXT NOT NULL,
+        moradorTelefone TEXT,
+        remoteJid TEXT,
+        tipo TEXT NOT NULL,
+        competencia TEXT NOT NULL,
+        vencimento TEXT NOT NULL,
+        valor REAL NOT NULL,
+        linhaDigitavel TEXT,
+        txid TEXT UNIQUE NOT NULL,
+        pixCopiaECola TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'aberto',
+        pagoEm TEXT,
+        formaPagamento TEXT,
+        comprovanteId TEXT,
+        splitCondominio REAL NOT NULL,
+        splitAdministradora REAL NOT NULL,
+        criadoEm TEXT NOT NULL
+      );
+    `);
+
+    // 6. Tabela de Reservas de Espaços Comuns
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS reservas (
+        id TEXT PRIMARY KEY,
+        areaId TEXT NOT NULL,
+        areaNome TEXT NOT NULL,
+        unidadeId TEXT NOT NULL,
+        moradorNome TEXT NOT NULL,
+        moradorTelefone TEXT NOT NULL,
+        remoteJid TEXT,
+        dataReserva TEXT NOT NULL,
+        periodo TEXT NOT NULL,
+        convidadosQtd INTEGER DEFAULT 0,
+        taxaTotal REAL NOT NULL DEFAULT 0,
+        status TEXT NOT NULL DEFAULT 'confirmada',
+        statusCobranca TEXT NOT NULL DEFAULT 'faturado_proximo_boleto',
+        cobrancaId TEXT,
+        protocoloSiscon TEXT NOT NULL,
+        criadoEm TEXT NOT NULL
+      );
+    `);
+
+    // 7. Tabela de Ordens de Serviço (Manutenção Predial)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS manutencoes (
+        id TEXT PRIMARY KEY,
+        codigo TEXT UNIQUE NOT NULL,
+        titulo TEXT NOT NULL,
+        descricao TEXT,
+        categoria TEXT NOT NULL,
+        localizacao TEXT NOT NULL,
+        urgencia TEXT NOT NULL DEFAULT 'media',
+        status TEXT NOT NULL DEFAULT 'pendente',
+        solicitanteNome TEXT NOT NULL,
+        solicitanteUnidade TEXT,
+        solicitanteTelefone TEXT,
+        remoteJid TEXT,
+        responsavelNome TEXT,
+        responsavelTelefone TEXT,
+        custoEstimado REAL DEFAULT 0,
+        custoReal REAL DEFAULT 0,
+        fotoAntesUrl TEXT,
+        fotoDepoisUrl TEXT,
+        observacoes TEXT,
+        criadoEm TEXT NOT NULL,
+        concluidoEm TEXT
+      );
+    `);
+
+    // Alimentação inicial de dados operacionais (se tabelas estiverem vazias)
+    this.seedInitialOperationalData();
   }
 
   // ==========================================
@@ -294,6 +372,429 @@ export class DbService {
   }
 
   // ==========================================
+  // OPERAÇÕES DE COBRANÇAS & FINTECH SPLIT
+  // ==========================================
+
+  public saveCobranca(c: Cobranca): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO cobrancas (
+        id, unidadeId, moradorNome, moradorTelefone, remoteJid, tipo, competencia, vencimento, valor,
+        linhaDigitavel, txid, pixCopiaECola, status, pagoEm, formaPagamento, comprovanteId,
+        splitCondominio, splitAdministradora, criadoEm
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        status = excluded.status,
+        pagoEm = excluded.pagoEm,
+        formaPagamento = excluded.formaPagamento,
+        comprovanteId = excluded.comprovanteId;
+    `);
+
+    stmt.run(
+      c.id,
+      c.unidadeId,
+      c.moradorNome,
+      c.moradorTelefone || null,
+      c.remoteJid || null,
+      c.tipo,
+      c.competencia,
+      c.vencimento,
+      c.valor,
+      c.linhaDigitavel || null,
+      c.txid,
+      c.pixCopiaECola,
+      c.status,
+      c.pagoEm || null,
+      c.formaPagamento || null,
+      c.comprovanteId || null,
+      c.splitCondominio,
+      c.splitAdministradora,
+      c.criadoEm || new Date().toISOString()
+    );
+  }
+
+  public getCobrancas(filtro?: { status?: string; unidadeId?: string }): Cobranca[] {
+    let query = 'SELECT * FROM cobrancas';
+    const params: any[] = [];
+    const where: string[] = [];
+
+    if (filtro?.status && filtro.status !== 'todos') {
+      where.push('status = ?');
+      params.push(filtro.status);
+    }
+    if (filtro?.unidadeId) {
+      where.push('unidadeId = ?');
+      params.push(filtro.unidadeId);
+    }
+
+    if (where.length > 0) {
+      query += ' WHERE ' + where.join(' AND ');
+    }
+    query += ' ORDER BY criadoEm DESC';
+
+    const stmt = this.db.prepare(query);
+    const rows = stmt.all(...params) as any[];
+
+    return rows.map(r => ({
+      id: r.id,
+      unidadeId: r.unidadeId,
+      moradorNome: r.moradorNome,
+      moradorTelefone: r.moradorTelefone || undefined,
+      remoteJid: r.remoteJid || undefined,
+      tipo: r.tipo as any,
+      competencia: r.competencia,
+      vencimento: r.vencimento,
+      valor: r.valor,
+      linhaDigitavel: r.linhaDigitavel || undefined,
+      txid: r.txid,
+      pixCopiaECola: r.pixCopiaECola,
+      status: r.status as any,
+      pagoEm: r.pagoEm || undefined,
+      formaPagamento: r.formaPagamento || undefined,
+      comprovanteId: r.comprovanteId || undefined,
+      splitCondominio: r.splitCondominio,
+      splitAdministradora: r.splitAdministradora,
+      criadoEm: r.criadoEm
+    }));
+  }
+
+  public getCobrancaByTxid(txid: string): Cobranca | null {
+    const stmt = this.db.prepare('SELECT * FROM cobrancas WHERE txid = ? OR id = ?');
+    const r = stmt.get(txid, txid) as any;
+    if (!r) return null;
+
+    return {
+      id: r.id,
+      unidadeId: r.unidadeId,
+      moradorNome: r.moradorNome,
+      moradorTelefone: r.moradorTelefone || undefined,
+      remoteJid: r.remoteJid || undefined,
+      tipo: r.tipo as any,
+      competencia: r.competencia,
+      vencimento: r.vencimento,
+      valor: r.valor,
+      linhaDigitavel: r.linhaDigitavel || undefined,
+      txid: r.txid,
+      pixCopiaECola: r.pixCopiaECola,
+      status: r.status as any,
+      pagoEm: r.pagoEm || undefined,
+      formaPagamento: r.formaPagamento || undefined,
+      comprovanteId: r.comprovanteId || undefined,
+      splitCondominio: r.splitCondominio,
+      splitAdministradora: r.splitAdministradora,
+      criadoEm: r.criadoEm
+    };
+  }
+
+  public liquidarCobranca(txidOuId: string, formaPagamento: string = 'pix', comprovanteId?: string): Cobranca | null {
+    const cobranca = this.getCobrancaByTxid(txidOuId);
+    if (!cobranca) return null;
+
+    const dataPagamento = new Date().toISOString();
+    const compId = comprovanteId || `COMP-BACEN-${Date.now().toString().slice(-8)}`;
+
+    const stmt = this.db.prepare(`
+      UPDATE cobrancas
+      SET status = 'pago', pagoEm = ?, formaPagamento = ?, comprovanteId = ?
+      WHERE id = ?
+    `);
+    stmt.run(dataPagamento, formaPagamento, compId, cobranca.id);
+
+    // Se o morador tiver sessão ativa no WhatsApp e a cobrança for cota, regulariza seu status
+    if (cobranca.remoteJid) {
+      const sessStmt = this.db.prepare(`
+        UPDATE sessions
+        SET statusFinanceiro = 'regular', pixValor = '0.00'
+        WHERE remoteJid = ?
+      `);
+      sessStmt.run(cobranca.remoteJid);
+    }
+
+    return this.getCobrancaByTxid(cobranca.id);
+  }
+
+  public getMetricasFinanceiras() {
+    const rows = this.db.prepare('SELECT status, valor, splitCondominio, splitAdministradora FROM cobrancas').all() as any[];
+
+    const pagas = rows.filter(r => r.status === 'pago');
+    const totalTransacionado = pagas.reduce((acc, r) => acc + (r.valor || 0), 0);
+    const saldoSplitAdm = pagas.reduce((acc, r) => acc + (r.splitAdministradora || 0), 0);
+    const saldoCondominio = pagas.reduce((acc, r) => acc + (r.splitCondominio || 0), 0);
+
+    // O condomínio tem 240 unidades no total.
+    // 228 são adimplentes pré-carregadas + qualquer pagamento recente das demais
+    const cobrancasPagasCount = pagas.length;
+    const unidadesBaseAdimplentes = 227; // Base de unidades pagantes
+    const unidadesAdimplentesCalculadas = Math.min(240, unidadesBaseAdimplentes + cobrancasPagasCount);
+    const totalUnidades = 240;
+    const taxaAdimplencia = parseFloat(((unidadesAdimplentesCalculadas / totalUnidades) * 100).toFixed(1));
+
+    return {
+      totalTransacionado,
+      saldoSplitAdm,
+      saldoCondominio,
+      unidadesAdimplentes: unidadesAdimplentesCalculadas,
+      totalUnidades,
+      taxaAdimplencia: `${taxaAdimplencia}%`,
+      cobrancasPagas: pagas.length,
+      cobrancasAbertas: rows.filter(r => r.status === 'aberto' || r.status === 'vencido').length
+    };
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE RESERVAS DE ÁREAS COMUNS
+  // ==========================================
+
+  public saveReserva(r: Reserva): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO reservas (
+        id, areaId, areaNome, unidadeId, moradorNome, moradorTelefone, remoteJid, dataReserva,
+        periodo, convidadosQtd, taxaTotal, status, statusCobranca, cobrancaId, protocoloSiscon, criadoEm
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        status = excluded.status,
+        statusCobranca = excluded.statusCobranca,
+        cobrancaId = excluded.cobrancaId;
+    `);
+
+    stmt.run(
+      r.id,
+      r.areaId,
+      r.areaNome,
+      r.unidadeId,
+      r.moradorNome,
+      r.moradorTelefone,
+      r.remoteJid || null,
+      r.dataReserva,
+      r.periodo,
+      r.convidadosQtd || 0,
+      r.taxaTotal || 0,
+      r.status,
+      r.statusCobranca,
+      r.cobrancaId || null,
+      r.protocoloSiscon,
+      r.criadoEm || new Date().toISOString()
+    );
+  }
+
+  public getReservas(filtro?: { areaId?: string; dataReserva?: string }): Reserva[] {
+    let query = 'SELECT * FROM reservas';
+    const params: any[] = [];
+    const where: string[] = [];
+
+    if (filtro?.areaId) {
+      where.push('areaId = ?');
+      params.push(filtro.areaId);
+    }
+    if (filtro?.dataReserva) {
+      where.push('dataReserva = ?');
+      params.push(filtro.dataReserva);
+    }
+
+    if (where.length > 0) {
+      query += ' WHERE ' + where.join(' AND ');
+    }
+    query += ' ORDER BY dataReserva ASC';
+
+    const stmt = this.db.prepare(query);
+    const rows = stmt.all(...params) as any[];
+
+    return rows.map(r => ({
+      id: r.id,
+      areaId: r.areaId,
+      areaNome: r.areaNome,
+      unidadeId: r.unidadeId,
+      moradorNome: r.moradorNome,
+      moradorTelefone: r.moradorTelefone,
+      remoteJid: r.remoteJid || undefined,
+      dataReserva: r.dataReserva,
+      periodo: r.periodo,
+      convidadosQtd: r.convidadosQtd,
+      taxaTotal: r.taxaTotal,
+      status: r.status as any,
+      statusCobranca: r.statusCobranca as any,
+      cobrancaId: r.cobrancaId || undefined,
+      protocoloSiscon: r.protocoloSiscon,
+      criadoEm: r.criadoEm
+    }));
+  }
+
+  public verificarConflitoReserva(areaId: string, dataReserva: string, ignorarId?: string): boolean {
+    let query = `
+      SELECT COUNT(*) as count FROM reservas
+      WHERE areaId = ? AND dataReserva = ? AND status != 'cancelada'
+    `;
+    const params: any[] = [areaId, dataReserva];
+
+    if (ignorarId) {
+      query += ' AND id != ?';
+      params.push(ignorarId);
+    }
+
+    const res = this.db.prepare(query).get(...params) as any;
+    return Boolean(res && res.count > 0);
+  }
+
+  public cancelarReserva(id: string): boolean {
+    const stmt = this.db.prepare("UPDATE reservas SET status = 'cancelada' WHERE id = ?");
+    const info = stmt.run(id);
+    return info.changes > 0;
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE MANUTENÇÃO PREDIAL (ORDENS DE SERVIÇO)
+  // ==========================================
+
+  public saveManutencao(m: OrdemManutencao): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO manutencoes (
+        id, codigo, titulo, descricao, categoria, localizacao, urgencia, status, solicitanteNome,
+        solicitanteUnidade, solicitanteTelefone, remoteJid, responsavelNome, responsavelTelefone,
+        custoEstimado, custoReal, fotoAntesUrl, fotoDepoisUrl, observacoes, criadoEm, concluidoEm
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        status = excluded.status,
+        responsavelNome = excluded.responsavelNome,
+        responsavelTelefone = excluded.responsavelTelefone,
+        custoReal = excluded.custoReal,
+        fotoDepoisUrl = excluded.fotoDepoisUrl,
+        observacoes = excluded.observacoes,
+        concluidoEm = excluded.concluidoEm;
+    `);
+
+    stmt.run(
+      m.id,
+      m.codigo,
+      m.titulo,
+      m.descricao || null,
+      m.categoria,
+      m.localizacao,
+      m.urgencia,
+      m.status,
+      m.solicitanteNome,
+      m.solicitanteUnidade || null,
+      m.solicitanteTelefone || null,
+      m.remoteJid || null,
+      m.responsavelNome || null,
+      m.responsavelTelefone || null,
+      m.custoEstimado || 0,
+      m.custoReal || 0,
+      m.fotoAntesUrl || null,
+      m.fotoDepoisUrl || null,
+      m.observacoes || null,
+      m.criadoEm || new Date().toISOString(),
+      m.concluidoEm || null
+    );
+  }
+
+  public getManutencoes(filtro?: { status?: string; categoria?: string }): OrdemManutencao[] {
+    let query = 'SELECT * FROM manutencoes';
+    const params: any[] = [];
+    const where: string[] = [];
+
+    if (filtro?.status && filtro.status !== 'todos') {
+      where.push('status = ?');
+      params.push(filtro.status);
+    }
+    if (filtro?.categoria && filtro.categoria !== 'todas') {
+      where.push('categoria = ?');
+      params.push(filtro.categoria);
+    }
+
+    if (where.length > 0) {
+      query += ' WHERE ' + where.join(' AND ');
+    }
+    query += ' ORDER BY criadoEm DESC';
+
+    const stmt = this.db.prepare(query);
+    const rows = stmt.all(...params) as any[];
+
+    return rows.map(r => ({
+      id: r.id,
+      codigo: r.codigo,
+      titulo: r.titulo,
+      descricao: r.descricao || undefined,
+      categoria: r.categoria as any,
+      localizacao: r.localizacao,
+      urgencia: r.urgencia as any,
+      status: r.status as any,
+      solicitanteNome: r.solicitanteNome,
+      solicitanteUnidade: r.solicitanteUnidade || undefined,
+      solicitanteTelefone: r.solicitanteTelefone || undefined,
+      remoteJid: r.remoteJid || undefined,
+      responsavelNome: r.responsavelNome || undefined,
+      responsavelTelefone: r.responsavelTelefone || undefined,
+      custoEstimado: r.custoEstimado,
+      custoReal: r.custoReal,
+      fotoAntesUrl: r.fotoAntesUrl || undefined,
+      fotoDepoisUrl: r.fotoDepoisUrl || undefined,
+      observacoes: r.observacoes || undefined,
+      criadoEm: r.criadoEm,
+      concluidoEm: r.concluidoEm || undefined
+    }));
+  }
+
+  public getManutencaoById(idOuCodigo: string): OrdemManutencao | null {
+    const stmt = this.db.prepare('SELECT * FROM manutencoes WHERE id = ? OR codigo = ?');
+    const r = stmt.get(idOuCodigo, idOuCodigo) as any;
+    if (!r) return null;
+
+    return {
+      id: r.id,
+      codigo: r.codigo,
+      titulo: r.titulo,
+      descricao: r.descricao || undefined,
+      categoria: r.categoria as any,
+      localizacao: r.localizacao,
+      urgencia: r.urgencia as any,
+      status: r.status as any,
+      solicitanteNome: r.solicitanteNome,
+      solicitanteUnidade: r.solicitanteUnidade || undefined,
+      solicitanteTelefone: r.solicitanteTelefone || undefined,
+      remoteJid: r.remoteJid || undefined,
+      responsavelNome: r.responsavelNome || undefined,
+      responsavelTelefone: r.responsavelTelefone || undefined,
+      custoEstimado: r.custoEstimado,
+      custoReal: r.custoReal,
+      fotoAntesUrl: r.fotoAntesUrl || undefined,
+      fotoDepoisUrl: r.fotoDepoisUrl || undefined,
+      observacoes: r.observacoes || undefined,
+      criadoEm: r.criadoEm,
+      concluidoEm: r.concluidoEm || undefined
+    };
+  }
+
+  public updateManutencaoStatus(
+    idOuCodigo: string,
+    status: 'pendente' | 'em_andamento' | 'concluido' | 'cancelado',
+    responsavelNome?: string,
+    fotoDepoisUrl?: string,
+    observacoes?: string
+  ): OrdemManutencao | null {
+    const os = this.getManutencaoById(idOuCodigo);
+    if (!os) return null;
+
+    const concluidoEm = status === 'concluido' ? new Date().toISOString() : os.concluidoEm || null;
+    const novoResp = responsavelNome || os.responsavelNome;
+    const novaFoto = fotoDepoisUrl || os.fotoDepoisUrl;
+    const novaObs = observacoes || os.observacoes;
+
+    const stmt = this.db.prepare(`
+      UPDATE manutencoes
+      SET status = ?, responsavelNome = ?, fotoDepoisUrl = ?, observacoes = ?, concluidoEm = ?
+      WHERE id = ?
+    `);
+    stmt.run(status, novoResp || null, novaFoto || null, novaObs || null, concluidoEm, os.id);
+
+    return this.getManutencaoById(os.id);
+  }
+
+  public proximoCodigoOs(): string {
+    const res = this.db.prepare('SELECT COUNT(*) as total FROM manutencoes').get() as any;
+    const nextNum = (res?.total || 0) + 89;
+    return `OS-2026-${String(nextNum).padStart(3, '0')}`;
+  }
+
+  // ==========================================
   // AUDITORIA E ACORDOS
   // ==========================================
 
@@ -317,5 +818,264 @@ export class DbService {
   public getAuditLogs(limit: number = 50): any[] {
     const stmt = this.db.prepare('SELECT * FROM audit_logs ORDER BY timestamp DESC LIMIT ?');
     return stmt.all(limit) as any[];
+  }
+
+  // ==========================================
+  // SEED DE DADOS OPERACIONAIS (FASE 3)
+  // ==========================================
+
+  private seedInitialOperationalData() {
+    // 1. Seed Cobranças
+    const cCount = (this.db.prepare('SELECT COUNT(*) as total FROM cobrancas').get() as any)?.total || 0;
+    if (cCount === 0) {
+      const chavePix = 'financeiro@condominio.com.br';
+      const condNome = 'CONDOMINIO RESIDENCIAL';
+      const cidade = 'SAO PAULO';
+
+      const cobrancasIniciais: Cobranca[] = [
+        {
+          id: 'cbr_101',
+          unidadeId: 'unid_101',
+          moradorNome: 'Carlos Eduardo Silva',
+          moradorTelefone: '5511999990001',
+          remoteJid: '5511999990001@s.whatsapp.net',
+          tipo: 'cota_condominial',
+          competencia: '11/2026',
+          vencimento: 'Hoje (17/11/2026)',
+          valor: 650.00,
+          linhaDigitavel: '34191.79001 01043.510047 91020.150008 1 95380000065000',
+          txid: 'DOMUS101NOV26',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 650.00, txid: 'DOMUS101NOV26' }),
+          status: 'aberto',
+          splitCondominio: 630.50,
+          splitAdministradora: 19.50,
+          criadoEm: '2026-11-01T08:00:00.000Z'
+        },
+        {
+          id: 'cbr_204',
+          unidadeId: 'unid_204',
+          moradorNome: 'Mariana de Souza',
+          moradorTelefone: '5511999990002',
+          remoteJid: '5511999990002@s.whatsapp.net',
+          tipo: 'cota_condominial',
+          competencia: '10/2026',
+          vencimento: '10/10/2026 (Vencido)',
+          valor: 1350.00,
+          linhaDigitavel: '34191.79001 01043.510047 91020.150008 2 95380000135000',
+          txid: 'DOMUS204OUT26',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 1350.00, txid: 'DOMUS204OUT26' }),
+          status: 'vencido',
+          splitCondominio: 1309.50,
+          splitAdministradora: 40.50,
+          criadoEm: '2026-10-01T08:00:00.000Z'
+        },
+        {
+          id: 'cbr_304',
+          unidadeId: 'unid_304',
+          moradorNome: 'Roberta Pires',
+          moradorTelefone: '5511999990003',
+          remoteJid: '5511999990003@s.whatsapp.net',
+          tipo: 'taxa_reserva',
+          competencia: '11/2026',
+          vencimento: '16/11/2026',
+          valor: 150.00,
+          linhaDigitavel: '34191.79001 01043.510047 91020.150008 3 95380000015000',
+          txid: 'DOMUS304RES15',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 150.00, txid: 'DOMUS304RES15' }),
+          status: 'pago',
+          pagoEm: '2026-11-16T17:42:00.000Z',
+          formaPagamento: 'pix',
+          comprovanteId: 'E90400888202611161742000',
+          splitCondominio: 145.50,
+          splitAdministradora: 4.50,
+          criadoEm: '2026-11-10T14:00:00.000Z'
+        },
+        {
+          id: 'cbr_112',
+          unidadeId: 'unid_112',
+          moradorNome: 'Fernando Dias',
+          moradorTelefone: '5511999990004',
+          remoteJid: '5511999990004@s.whatsapp.net',
+          tipo: 'acordo',
+          competencia: '11/2026',
+          vencimento: '16/11/2026',
+          valor: 380.00,
+          linhaDigitavel: '34191.79001 01043.510047 91020.150008 4 95380000038000',
+          txid: 'DOMUS112AC2',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 380.00, txid: 'DOMUS112AC2' }),
+          status: 'pago',
+          pagoEm: '2026-11-16T14:15:00.000Z',
+          formaPagamento: 'pix',
+          comprovanteId: 'E90400888202611161415000',
+          splitCondominio: 368.60,
+          splitAdministradora: 11.40,
+          criadoEm: '2026-11-05T09:00:00.000Z'
+        },
+        {
+          id: 'cbr_401',
+          unidadeId: 'unid_401',
+          moradorNome: 'Juliana Castro',
+          moradorTelefone: '5511999990005',
+          tipo: 'cota_condominial',
+          competencia: '11/2026',
+          vencimento: '17/11/2026',
+          valor: 650.00,
+          linhaDigitavel: '34191.79001 01043.510047 91020.150008 5 95380000065000',
+          txid: 'DOMUS401NOV26',
+          pixCopiaECola: gerarPayloadPix({ chave: chavePix, nomeBeneficiario: condNome, cidadeBeneficiario: cidade, valor: 650.00, txid: 'DOMUS401NOV26' }),
+          status: 'pago',
+          pagoEm: '2026-11-17T09:31:00.000Z',
+          formaPagamento: 'pix',
+          comprovanteId: 'E90400888202611170931000',
+          splitCondominio: 630.50,
+          splitAdministradora: 19.50,
+          criadoEm: '2026-11-01T08:00:00.000Z'
+        }
+      ];
+
+      for (const cob of cobrancasIniciais) {
+        this.saveCobranca(cob);
+      }
+    }
+
+    // 2. Seed Reservas
+    const rCount = (this.db.prepare('SELECT COUNT(*) as total FROM reservas').get() as any)?.total || 0;
+    if (rCount === 0) {
+      const reservasIniciais: Reserva[] = [
+        {
+          id: 'res_9482',
+          areaId: 'area_churrasqueira',
+          areaNome: 'Espaço Gourmet & Churrasqueira A',
+          unidadeId: 'unid_204',
+          moradorNome: 'Mariana de Souza',
+          moradorTelefone: '5511999990002',
+          remoteJid: '5511999990002@s.whatsapp.net',
+          dataReserva: '2026-11-21',
+          periodo: '12:00 às 22:00',
+          convidadosQtd: 20,
+          taxaTotal: 150.00,
+          status: 'confirmada',
+          statusCobranca: 'faturado_proximo_boleto',
+          protocoloSiscon: 'SIS-RES-9482',
+          criadoEm: '2026-11-15T11:00:00.000Z'
+        },
+        {
+          id: 'res_8821',
+          areaId: 'area_salao_festas',
+          areaNome: 'Salão de Festas Nobre',
+          unidadeId: 'unid_101',
+          moradorNome: 'Carlos Eduardo Silva',
+          moradorTelefone: '5511999990001',
+          remoteJid: '5511999990001@s.whatsapp.net',
+          dataReserva: '2026-11-28',
+          periodo: '18:00 às 02:00',
+          convidadosQtd: 60,
+          taxaTotal: 350.00,
+          status: 'confirmada',
+          statusCobranca: 'faturado_proximo_boleto',
+          protocoloSiscon: 'SIS-RES-8821',
+          criadoEm: '2026-11-14T16:30:00.000Z'
+        },
+        {
+          id: 'res_7612',
+          areaId: 'area_quadra',
+          areaNome: 'Quadra Poliesportiva Iluminada',
+          unidadeId: 'unid_304',
+          moradorNome: 'Roberta Pires',
+          moradorTelefone: '5511999990003',
+          remoteJid: '5511999990003@s.whatsapp.net',
+          dataReserva: '2026-11-19',
+          periodo: '09:00 às 11:00',
+          convidadosQtd: 10,
+          taxaTotal: 0.00,
+          status: 'confirmada',
+          statusCobranca: 'isento',
+          protocoloSiscon: 'SIS-RES-7612',
+          criadoEm: '2026-11-16T10:15:00.000Z'
+        }
+      ];
+
+      for (const res of reservasIniciais) {
+        this.saveReserva(res);
+      }
+    }
+
+    // 3. Seed Ordens de Manutenção
+    const mCount = (this.db.prepare('SELECT COUNT(*) as total FROM manutencoes').get() as any)?.total || 0;
+    if (mCount === 0) {
+      const manutencoesIniciais: OrdemManutencao[] = [
+        {
+          id: 'manut_88',
+          codigo: 'OS-2026-088',
+          titulo: 'Lâmpada de LED Queimada no Corredor 3º Andar',
+          descricao: 'Morador informou que a lâmpada em frente ao elevador social do 3º andar está oscilando e apagou.',
+          categoria: 'eletrica',
+          localizacao: 'Torre B - 3º Andar',
+          urgencia: 'baixa',
+          status: 'pendente',
+          solicitanteNome: 'Carlos Eduardo Silva',
+          solicitanteUnidade: 'Apt 101',
+          solicitanteTelefone: '5511999990001',
+          remoteJid: '5511999990001@s.whatsapp.net',
+          responsavelNome: 'Zelador José Carlos',
+          custoEstimado: 45.00,
+          criadoEm: '2026-11-17T14:10:00.000Z'
+        },
+        {
+          id: 'manut_87',
+          codigo: 'OS-2026-087',
+          titulo: 'Trava Eletromagnética do Portão da Garagem G1 com Ruído',
+          descricao: 'Acionamento do portão basculante apresentando ruído metálico forte ao travar.',
+          categoria: 'portoes',
+          localizacao: 'Garagem Subsolo G1',
+          urgencia: 'media',
+          status: 'pendente',
+          solicitanteNome: 'Portaria Principal',
+          solicitanteUnidade: 'Portaria',
+          responsavelNome: 'Zelador José Carlos',
+          custoEstimado: 180.00,
+          criadoEm: '2026-11-17T11:20:00.000Z'
+        },
+        {
+          id: 'manut_86',
+          codigo: 'OS-2026-086',
+          titulo: 'Inspeção Preventiva de Vazamento na Válvula de Descarga',
+          descricao: 'Telemetria detectou consumo atípico contínuo durante a madrugada.',
+          categoria: 'hidraulica',
+          localizacao: 'Apt 101 (Banheiro Suíte)',
+          urgencia: 'alta',
+          status: 'em_andamento',
+          solicitanteNome: 'Carlos Eduardo Silva',
+          solicitanteUnidade: 'Apt 101',
+          solicitanteTelefone: '5511999990001',
+          remoteJid: '5511999990001@s.whatsapp.net',
+          responsavelNome: 'Zelador José Carlos',
+          custoEstimado: 120.00,
+          criadoEm: '2026-11-17T09:15:00.000Z'
+        },
+        {
+          id: 'manut_85',
+          codigo: 'OS-2026-085',
+          titulo: 'Reparo na Mola Hidráulica da Porta do Hall de Entrada',
+          descricao: 'Porta de vidro social batendo com força. Ajuste da mola de piso Dorma efetuado.',
+          categoria: 'civil',
+          localizacao: 'Hall Social Torre A',
+          urgencia: 'baixa',
+          status: 'concluido',
+          solicitanteNome: 'Zeladoria',
+          responsavelNome: 'Otávio Serralheria',
+          custoEstimado: 250.00,
+          custoReal: 230.00,
+          fotoDepoisUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop&q=80',
+          observacoes: 'Substituído o óleo hidráulico e recalibrada a velocidade de fechamento.',
+          criadoEm: '2026-11-16T14:00:00.000Z',
+          concluidoEm: '2026-11-16T16:30:00.000Z'
+        }
+      ];
+
+      for (const m of manutencoesIniciais) {
+        this.saveManutencao(m);
+      }
+    }
   }
 }

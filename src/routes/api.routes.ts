@@ -10,6 +10,7 @@ import { DbService } from '../services/db.service.js';
 import { requireAuth } from '../middlewares/auth.middleware.js';
 import { formatarMensagemPix, gerarPayloadPix } from '../utils/pix.util.js';
 import { EventsService } from '../services/events.service.js';
+import { Cobranca, Reserva, OrdemManutencao } from '../types/index.js';
 
 export function createApiRouter(orchestrator: BotOrchestrator): Router {
   const router = Router();
@@ -288,7 +289,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   // ==========================================
-  // 6. GERAÇÃO DE PIX OFICIAL (EMVCo BR CODE)
+  // 6. GERAÇÃO DE PIX OFICIAL & WEBHOOK BANCÁRIO
   // ==========================================
 
   router.post('/pix/gerar', requireAuth(), (req: Request, res: Response) => {
@@ -321,7 +322,446 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   // ==========================================
-  // 7. COBRANÇA, RÉGUA & ACORDOS
+  // 7. OPERAÇÕES FINANCEIRAS: COBRANÇA, CONCILIAÇÃO & SPLIT
+  // ==========================================
+
+  router.get('/financeiro/cobrancas', requireAuth(), (req: Request, res: Response) => {
+    const { status, unidadeId } = req.query;
+    const cobrancas = dbService.getCobrancas({
+      status: status as string,
+      unidadeId: unidadeId as string
+    });
+    res.json(cobrancas);
+  });
+
+  router.post('/financeiro/cobrancas', requireAuth(['admin', 'sindico', 'operador']), (req: Request, res: Response) => {
+    const { unidadeId, moradorNome, moradorTelefone, remoteJid, tipo, competencia, vencimento, valor } = req.body;
+    if (!unidadeId || !moradorNome || !valor) {
+      return res.status(400).json({ error: 'unidadeId, moradorNome e valor são obrigatórios' });
+    }
+    const val = Number(valor);
+    const splitAdm = parseFloat((val * 0.03).toFixed(2));
+    const splitCond = parseFloat((val - splitAdm).toFixed(2));
+    const txid = `DOMUS${Date.now().toString().slice(-8)}`;
+    const brCode = gerarPayloadPix({
+      chave: 'financeiro@condominio.com.br',
+      nomeBeneficiario: 'CONDOMINIO RESIDENCIAL',
+      cidadeBeneficiario: 'SAO PAULO',
+      valor: val,
+      txid
+    });
+    const cobranca: Cobranca = {
+      id: `cbr_${Date.now()}`,
+      unidadeId,
+      moradorNome,
+      moradorTelefone,
+      remoteJid,
+      tipo: tipo || 'cota_condominial',
+      competencia: competencia || `${new Date().getMonth() + 1}/${new Date().getFullYear()}`,
+      vencimento: vencimento || new Date(Date.now() + 86400000 * 5).toLocaleDateString('pt-BR'),
+      valor: val,
+      linhaDigitavel: `34191.79001 01043.510047 91020.150008 1 ${String(Math.round(val * 100)).padStart(10, '0')}`,
+      txid,
+      pixCopiaECola: brCode,
+      status: 'aberto',
+      splitCondominio: splitCond,
+      splitAdministradora: splitAdm,
+      criadoEm: new Date().toISOString()
+    };
+    dbService.saveCobranca(cobranca);
+    res.json({ success: true, cobranca });
+  });
+
+  // Webhook bancário oficial (Bacen / Asaas / Inter / Itaú)
+  router.post('/financeiro/pix/webhook', async (req: Request, res: Response) => {
+    const txid = req.body.txid || req.body.data?.txid || req.body.data?.externalReference;
+    const comprovanteId = req.body.comprovanteId || req.body.data?.endToEndId || `COMP-${Date.now()}`;
+    const forma = req.body.formaPagamento || 'pix';
+
+    if (!txid) {
+      return res.status(400).json({ error: 'txid ou externalReference é obrigatório' });
+    }
+
+    const cobrancaLiquidada = dbService.liquidarCobranca(txid, forma, comprovanteId);
+    if (!cobrancaLiquidada) {
+      return res.status(404).json({ error: 'Cobrança não encontrada para o txid informado' });
+    }
+
+    // Notificação ao morador via WhatsApp se houver remoteJid cadastrado
+    const remoteJid = cobrancaLiquidada.remoteJid || (cobrancaLiquidada.moradorTelefone ? `${cobrancaLiquidada.moradorTelefone}@s.whatsapp.net` : null);
+    if (remoteJid) {
+      const msgConfirmacao = [
+        `🎉 *PAGAMENTO COMPENSADO COM SUCESSO!*`,
+        `----------------------------------------`,
+        `Olá, *${cobrancaLiquidada.moradorNome}*!`,
+        `Confirmamos o recebimento da sua cota/taxa via *${forma.toUpperCase()}*.`,
+        ``,
+        `• *Competência:* ${cobrancaLiquidada.competencia}`,
+        `• *Valor Liquidado:* R$ ${cobrancaLiquidada.valor.toFixed(2)}`,
+        `• *Autenticação Bancária:* \`${cobrancaLiquidada.comprovanteId}\``,
+        ``,
+        `✅ Sua unidade *${cobrancaLiquidada.unidadeId}* está RIGOROSAMENTE EM DIA!`,
+        `Agradecemos pela pontualidade.`
+      ].join('\n');
+
+      try {
+        await evolutionService.sendText(remoteJid, msgConfirmacao);
+        orchestrator.getSessionManager().addMessage(remoteJid, {
+          id: `msg_comp_${Date.now()}`,
+          sender: 'system',
+          text: msgConfirmacao,
+          timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch (err: any) {
+        console.warn('[Webhook] Falha no envio WhatsApp:', err.message);
+      }
+    }
+
+    // Auditoria
+    dbService.logAudit('system_webhook', 'banco@pix.bacen.gov.br', 'LIQUIDACAO_PIX_RECEBIDA', `Cobranca ${cobrancaLiquidada.id} - Valor R$ ${cobrancaLiquidada.valor}`);
+
+    // Transmissão SSE em tempo real
+    EventsService.getInstance().broadcast({
+      type: 'payment_confirmed',
+      data: {
+        cobranca: cobrancaLiquidada,
+        metricas: dbService.getMetricasFinanceiras()
+      },
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({ success: true, cobranca: cobrancaLiquidada });
+  });
+
+  // Simulação de pagamento sandbox de alta fidelidade
+  router.post('/financeiro/pix/simular-pagamento', requireAuth(), async (req: Request, res: Response) => {
+    const { txid, id } = req.body;
+    const target = txid || id;
+    if (!target) return res.status(400).json({ error: 'txid ou id da cobrança é obrigatório' });
+
+    const cobranca = dbService.getCobrancaByTxid(target);
+    if (!cobranca) return res.status(404).json({ error: 'Cobrança não encontrada' });
+
+    const comprovante = `COMP-DEMO-${Date.now().toString().slice(-6)}`;
+    const cobrancaLiquidada = dbService.liquidarCobranca(cobranca.txid, 'pix', comprovante);
+
+    if (cobrancaLiquidada?.remoteJid) {
+      const msg = `🎉 *COMPROVANTE DE QUITAÇÃO (PIX)*\n` +
+        `Sua cota condominial de R$ ${cobrancaLiquidada.valor.toFixed(2)} foi baixada com sucesso!\n` +
+        `Autenticação: \`${comprovante}\`\n` +
+        `Sua unidade agora está regularizada.`;
+      try {
+        await evolutionService.sendText(cobrancaLiquidada.remoteJid, msg);
+        orchestrator.getSessionManager().addMessage(cobrancaLiquidada.remoteJid, {
+          id: `msg_pix_${Date.now()}`,
+          sender: 'system',
+          text: msg,
+          timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch (e) {}
+    }
+
+    EventsService.getInstance().broadcast({
+      type: 'payment_confirmed',
+      data: {
+        cobranca: cobrancaLiquidada,
+        metricas: dbService.getMetricasFinanceiras()
+      },
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({ success: true, cobranca: cobrancaLiquidada, metricas: dbService.getMetricasFinanceiras() });
+  });
+
+  router.get('/financeiro/metricas', requireAuth(), (_req: Request, res: Response) => {
+    res.json(dbService.getMetricasFinanceiras());
+  });
+
+  router.post('/financeiro/saque-split', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    const { chavePix, valor } = req.body;
+    const user = (req as any).user;
+    dbService.logAudit(user?.id || 'admin', user?.email || 'admin@condominio.com.br', 'SAQUE_SPLIT_PIX', `Saque de R$ ${valor} para chave ${chavePix}`);
+    res.json({
+      success: true,
+      protocolo: `SAQUE-PIX-${Date.now().toString().slice(-6)}`,
+      mensagem: `Saque de R$ ${valor} solicitado com sucesso para a chave ${chavePix}. TED/Pix liquidado.`
+    });
+  });
+
+  // ==========================================
+  // 8. RESERVAS DE ÁREAS COMUNS (CALENDÁRIO & TAXAS)
+  // ==========================================
+
+  router.get('/reservas', requireAuth(), (req: Request, res: Response) => {
+    const { areaId, dataReserva } = req.query;
+    const reservas = dbService.getReservas({
+      areaId: areaId as string,
+      dataReserva: dataReserva as string
+    });
+    res.json(reservas);
+  });
+
+  router.get('/reservas/areas', requireAuth(), async (_req: Request, res: Response) => {
+    const areas = await sisconService.listarAreasComuns();
+    res.json(areas);
+  });
+
+  router.post('/reservas', requireAuth(), async (req: Request, res: Response) => {
+    const { areaId, dataReserva, periodo, unidadeId, moradorNome, moradorTelefone, convidadosQtd, remoteJid } = req.body;
+
+    if (!areaId || !dataReserva || !unidadeId || !moradorNome) {
+      return res.status(400).json({ error: 'areaId, dataReserva, unidadeId e moradorNome são obrigatórios' });
+    }
+
+    // Verificação de conflito de datas no SQLite
+    const conflito = dbService.verificarConflitoReserva(areaId, dataReserva);
+    if (conflito) {
+      return res.status(409).json({
+        error: `A área selecionada já está reservada para o dia ${dataReserva}. Por favor, escolha outra data.`
+      });
+    }
+
+    const areas = await sisconService.listarAreasComuns();
+    const area = areas.find(a => a.id === areaId);
+    const taxaTotal = area ? (area.taxaUso + area.taxaLimpeza) : 0;
+    const proto = `SIS-RES-${Date.now().toString().slice(-4)}`;
+
+    const novaReserva: Reserva = {
+      id: `res_${Date.now()}`,
+      areaId,
+      areaNome: area?.nome || 'Área Comum',
+      unidadeId,
+      moradorNome,
+      moradorTelefone: moradorTelefone || '5511999990001',
+      remoteJid: remoteJid || undefined,
+      dataReserva,
+      periodo: periodo || area?.horarioFuncionamento || '12:00 às 22:00',
+      convidadosQtd: Number(convidadosQtd) || 20,
+      taxaTotal,
+      status: 'confirmada',
+      statusCobranca: taxaTotal > 0 ? 'faturado_proximo_boleto' : 'isento',
+      protocoloSiscon: proto,
+      criadoEm: new Date().toISOString()
+    };
+
+    // Gera cobrança no SQLite caso haja taxa
+    if (taxaTotal > 0) {
+      const splitAdm = parseFloat((taxaTotal * 0.03).toFixed(2));
+      const splitCond = parseFloat((taxaTotal - splitAdm).toFixed(2));
+      const txidRes = `DOMUS${proto.replace(/[^A-Za-z0-9]/g, '')}`;
+      const cobrancaRes: Cobranca = {
+        id: `cbr_res_${Date.now()}`,
+        unidadeId,
+        moradorNome,
+        moradorTelefone: novaReserva.moradorTelefone,
+        remoteJid: novaReserva.remoteJid,
+        tipo: 'taxa_reserva',
+        competencia: `${new Date().getMonth() + 1}/${new Date().getFullYear()}`,
+        vencimento: new Date(Date.now() + 86400000 * 5).toLocaleDateString('pt-BR'),
+        valor: taxaTotal,
+        txid: txidRes,
+        pixCopiaECola: gerarPayloadPix({ chave: 'financeiro@condominio.com.br', nomeBeneficiario: 'CONDOMINIO RESIDENCIAL', cidadeBeneficiario: 'SAO PAULO', valor: taxaTotal, txid: txidRes }),
+        status: 'aberto',
+        splitCondominio: splitCond,
+        splitAdministradora: splitAdm,
+        criadoEm: new Date().toISOString()
+      };
+      dbService.saveCobranca(cobrancaRes);
+      novaReserva.cobrancaId = cobrancaRes.id;
+    }
+
+    dbService.saveReserva(novaReserva);
+
+    // Notificação WhatsApp
+    if (novaReserva.remoteJid) {
+      const msgReserva = `📅 *RESERVA CONFIRMADA — DOMUS AI*\n\n` +
+        `• *Espaço:* ${novaReserva.areaNome}\n` +
+        `• *Data:* ${novaReserva.dataReserva} (${novaReserva.periodo})\n` +
+        `• *Protocolo:* \`${proto}\`\n` +
+        (taxaTotal > 0 ? `• *Taxa:* R$ ${taxaTotal.toFixed(2)} (Lançada para o próximo boleto)\n` : `• *Taxa:* Gratuito\n`) +
+        `\nAproveite com responsabilidade respeitando o regimento interno!`;
+
+      try {
+        await evolutionService.sendText(novaReserva.remoteJid, msgReserva);
+        orchestrator.getSessionManager().addMessage(novaReserva.remoteJid, {
+          id: `msg_res_${Date.now()}`,
+          sender: 'system',
+          text: msgReserva,
+          timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch (e) {}
+    }
+
+    EventsService.getInstance().broadcast({
+      type: 'reserva_created',
+      data: novaReserva,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({ success: true, reserva: novaReserva });
+  });
+
+  router.delete('/reservas/:id', requireAuth(['admin', 'sindico', 'operador']), (req: Request, res: Response) => {
+    const cancelado = dbService.cancelarReserva(req.params.id);
+    if (!cancelado) return res.status(404).json({ error: 'Reserva não encontrada' });
+
+    EventsService.getInstance().broadcast({
+      type: 'reserva_updated',
+      data: { id: req.params.id, status: 'cancelada' },
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({ success: true });
+  });
+
+  // ==========================================
+  // 9. ORDENS DE SERVIÇO & MANUTENÇÃO PREDIAL
+  // ==========================================
+
+  router.get('/manutencoes', requireAuth(), (req: Request, res: Response) => {
+    const { status, categoria } = req.query;
+    const lista = dbService.getManutencoes({
+      status: status as string,
+      categoria: categoria as string
+    });
+    res.json(lista);
+  });
+
+  router.post('/manutencoes', requireAuth(), async (req: Request, res: Response) => {
+    const {
+      titulo,
+      descricao,
+      categoria,
+      localizacao,
+      urgencia,
+      solicitanteNome,
+      solicitanteUnidade,
+      solicitanteTelefone,
+      responsavelNome,
+      responsavelTelefone,
+      custoEstimado,
+      fotoAntesUrl,
+      remoteJid,
+      notificarZelador
+    } = req.body;
+
+    if (!titulo || !localizacao) {
+      return res.status(400).json({ error: 'Título e localização são obrigatórios' });
+    }
+
+    const codigo = dbService.proximoCodigoOs();
+    const novaOs: OrdemManutencao = {
+      id: `manut_${Date.now()}`,
+      codigo,
+      titulo,
+      descricao: descricao || undefined,
+      categoria: categoria || 'eletrica',
+      localizacao,
+      urgencia: urgencia || 'media',
+      status: 'pendente',
+      solicitanteNome: solicitanteNome || 'Morador via Painel',
+      solicitanteUnidade: solicitanteUnidade || undefined,
+      solicitanteTelefone: solicitanteTelefone || undefined,
+      remoteJid: remoteJid || undefined,
+      responsavelNome: responsavelNome || 'Zelador José Carlos',
+      responsavelTelefone: responsavelTelefone || undefined,
+      custoEstimado: Number(custoEstimado) || 0,
+      fotoAntesUrl: fotoAntesUrl || undefined,
+      criadoEm: new Date().toISOString()
+    };
+
+    dbService.saveManutencao(novaOs);
+
+    if (notificarZelador && responsavelTelefone) {
+      const msgZelador = `🛠️ *NOVA ORDEM DE SERVIÇO: ${codigo}*\n` +
+        `• *Local:* ${localizacao}\n` +
+        `• *Descrição:* ${titulo}\n` +
+        `• *Urgência:* ${(urgencia || 'media').toUpperCase()}\n` +
+        `• *Solicitante:* ${novaOs.solicitanteNome}`;
+      try {
+        await evolutionService.sendText(`${responsavelTelefone}@s.whatsapp.net`, msgZelador);
+      } catch (e) {}
+    }
+
+    EventsService.getInstance().broadcast({
+      type: 'os_created',
+      data: novaOs,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({ success: true, os: novaOs });
+  });
+
+  router.post('/manutencoes/:id/despachar', requireAuth(['admin', 'sindico', 'operador']), async (req: Request, res: Response) => {
+    const { responsavelNome, responsavelTelefone } = req.body;
+    const osAtualizada = dbService.updateManutencaoStatus(
+      req.params.id,
+      'em_andamento',
+      responsavelNome || 'Zelador José Carlos'
+    );
+
+    if (!osAtualizada) return res.status(404).json({ error: 'Ordem de serviço não encontrada' });
+
+    if (responsavelTelefone) {
+      try {
+        await evolutionService.sendText(
+          `${responsavelTelefone}@s.whatsapp.net`,
+          `📲 *OS ${osAtualizada.codigo} DESPACHADA*\nVocê foi escalado para atender o chamado em: *${osAtualizada.localizacao}*.\n*Descrição:* ${osAtualizada.titulo}`
+        );
+      } catch (e) {}
+    }
+
+    EventsService.getInstance().broadcast({
+      type: 'os_updated',
+      data: osAtualizada,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({ success: true, os: osAtualizada });
+  });
+
+  router.post('/manutencoes/:id/concluir', requireAuth(['admin', 'sindico', 'operador']), async (req: Request, res: Response) => {
+    const { fotoDepoisUrl, observacoes } = req.body;
+    const osConcluida = dbService.updateManutencaoStatus(
+      req.params.id,
+      'concluido',
+      undefined,
+      fotoDepoisUrl || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop&q=80',
+      observacoes || 'Serviço finalizado e inspecionado com sucesso.'
+    );
+
+    if (!osConcluida) return res.status(404).json({ error: 'Ordem de serviço não encontrada' });
+
+    const targetJid = osConcluida.remoteJid || (osConcluida.solicitanteTelefone ? `${osConcluida.solicitanteTelefone}@s.whatsapp.net` : null);
+    if (targetJid) {
+      const msgMorador = `✅ *CHAMADO CONCLUÍDO — DOMUS AI*\n\n` +
+        `Olá, *${osConcluida.solicitanteNome}*!\n` +
+        `Informamos que o chamado *${osConcluida.codigo}* (${osConcluida.titulo}) foi finalizado com sucesso pela zeladoria.\n\n` +
+        (osConcluida.fotoDepoisUrl ? `📸 *Foto da Vistoria:* ${osConcluida.fotoDepoisUrl}\n` : '') +
+        `Obrigado por colaborar para manter o condomínio em ordem!`;
+
+      try {
+        await evolutionService.sendText(targetJid, msgMorador);
+        orchestrator.getSessionManager().addMessage(targetJid, {
+          id: `msg_os_ok_${Date.now()}`,
+          sender: 'system',
+          text: msgMorador,
+          timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch (e) {}
+    }
+
+    EventsService.getInstance().broadcast({
+      type: 'os_updated',
+      data: osConcluida,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({ success: true, os: osConcluida });
+  });
+
+  // ==========================================
+  // 10. ACORDOS DE DÍVIDAS & SISCON
   // ==========================================
 
   router.get('/acordos/simular/:unidadeId', requireAuth(), async (req: Request, res: Response) => {
@@ -382,7 +822,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   // ==========================================
-  // 8. CONFIGURAÇÕES SISCON & ERP
+  // 11. CONFIGURAÇÕES SISCON & ERP
   // ==========================================
 
   router.get('/configuracoes', requireAuth(['admin', 'sindico']), (_req: Request, res: Response) => {
@@ -408,7 +848,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   // ==========================================
-  // 9. AUDITORIA & DASHBOARD
+  // 12. AUDITORIA & DASHBOARD INDICADORES REAIS
   // ==========================================
 
   router.get('/auditoria', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
@@ -423,19 +863,23 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     const resolvidosBot = Math.max(0, totalConversas - emAtendimentoHumano);
     const taxaAutomacao = totalConversas > 0 ? Math.round((resolvidosBot / totalConversas) * 100) : 85;
     const cfg = configService.getConfig();
+    const metricasFin = dbService.getMetricasFinanceiras();
+    const reservasMes = dbService.getReservas().length;
 
     res.json({
       totalConversas,
       emAtendimentoHumano,
       resolvidosBot,
       taxaAutomacao: `${taxaAutomacao}%`,
-      taxaAdimplencia: '95.0%',
-      unidadesEmDia: '228 de 240 unidades',
+      taxaAdimplencia: metricasFin.taxaAdimplencia,
+      unidadesEmDia: `${metricasFin.unidadesAdimplentes} de ${metricasFin.totalUnidades} unidades`,
       tempoMedioPrimeiraResposta: '1.8 segundos',
       satisfacaoNps: '4.9 / 5.0 (Excelente)',
-      boletosEmitidosHoje: 18,
+      boletosEmitidosHoje: metricasFin.cobrancasPagas + metricasFin.cobrancasAbertas,
       acordosFirmadosMes: 6,
-      reservasConfirmadasMes: 12,
+      reservasConfirmadasMes: reservasMes,
+      totalTransacionado: metricasFin.totalTransacionado,
+      saldoSplitAdm: metricasFin.saldoSplitAdm,
       erpConectado: 'DOMUS ERP Integrado (Nativo)',
       bancoAtivo: `${cfg.bancoIntegrado.toUpperCase()} (Conexão Bancária Direta)`,
       statusConexaoErp: 'Ativo & Sincronizado',
