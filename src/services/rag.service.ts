@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { DocumentoRAG, ChunkRAG, RAGSearchResult } from '../types/index.js';
+import { DocumentoRAG, ChunkRAG, RAGSearchResult, CitacaoRAG } from '../types/index.js';
 
 const RAG_DATA_PATH = path.join(process.cwd(), 'data', 'rag-documents.json');
 
@@ -34,7 +34,7 @@ export class RagService {
         if (this.documentos.size > 0) return;
       }
     } catch (err: any) {
-      console.warn('[RagService] Falha ao carregar rag-documents.json, populando base padrão:', err.message);
+      console.warn('[RagService] Falha ao carregar rag-documents.json, populando base padrao:', err.message);
     }
 
     this.popularBasePadrao();
@@ -63,49 +63,49 @@ export class RagService {
 
   private popularBasePadrao() {
     this.adicionarDocumento(
-      'Regimento Interno e Normas de Convivência (2026)',
+      'Regimento Interno e Normas de Convivencia (2026)',
       'regimento_interno',
-      `CAPÍTULO I - DO HORÁRIO DE SILÊNCIO
-Artigo 18 - Fica estabelecido o horário de silêncio absoluto no condomínio entre 22h00 e 08h00 nos dias úteis, e entre 22h00 e 09h00 aos sábados, domingos e feriados. O uso de aparelhos de som, instrumentos musicais ou reformas barulhentas fora deste horário implicará em notificação formal e, em caso de reincidência, multa de 50% da taxa condominial lançada no boleto condominial.
+      `CAPITULO I - DO HORARIO DE SILENCIO
+Artigo 18 - Fica estabelecido o horario de silencio absoluto no condominio entre 22h00 e 08h00 nos dias uteis, e entre 22h00 e 09h00 aos sabados, domingos e feriados. O uso de aparelhos de som, instrumentos musicais ou reformas barulhentas fora deste horario implicara em notificacao formal e, em caso de reincidencia, multa de 50% da taxa condominial lancada no boleto condominial.
 
-CAPÍTULO II - DAS MUDANÇAS E TRANSPORTES PESADOS
-Artigo 24 - O transporte de móveis e mudanças de qualquer natureza somente poderá ser efetuado de segunda a sexta-feira, das 08h00 às 17h00, e aos sábados das 08h00 às 12h00. É expressamente proibida a realização de mudanças aos domingos e feriados nacionais. O condômino deve agendar com a administração ou via WhatsApp com antecedência mínima de 48 horas para instalação das mantas protetoras nos elevadores.
+CAPITULO II - DAS MUDANCAS E TRANSPORTES PESADOS
+Artigo 24 - O transporte de moveis e mudancas de qualquer natureza somente podera ser efetuado de segunda a sexta-feira, das 08h00 as 17h00, e aos sabados das 08h00 as 12h00. E expressamente proibida a realizacao de mudancas aos domingos e feriados nacionais. O condomino deve agendar com a administracao ou via WhatsApp com antecedencia minima de 48 horas para instalacao das mantas protetoras nos elevadores.
 
-CAPÍTULO III - ANIMAIS DE ESTIMAÇÃO
-Artigo 31 - É permitida a permanência de animais de pequeno e médio porte nas unidades, desde que não perturbem o sossego dos vizinhos. Nas áreas comuns, os cães devem obrigatoriamente estar com coleira e guia, sendo vedada a circulação na área da piscina e brinquedoteca.`
+CAPITULO III - ANIMAIS DE ESTIMACAO
+Artigo 31 - E permitida a permanencia de animais de pequeno e medio porte nas unidades, desde que nao perturbem o sossego dos vizinhos. Nas areas comuns, os caes devem obrigatoriamente estar com coleira e guia, sendo vedada a circulacao na area da piscina e brinquedoteca.`
     );
 
     this.adicionarDocumento(
-      'Regulamento de Uso das Áreas Comuns e Lazer',
+      'Regulamento de Uso das Areas Comuns e Lazer',
       'geral',
-      `TÍTULO I - DA CHURRASQUEIRA E ESPAÇO GOURMET
-Artigo 12 - A reserva do Espaço Gourmet & Churrasqueira pode ser feita com até 60 dias de antecedência. O valor da taxa de uso é de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado automaticamente no próximo boleto condominial via DOMUS AI. O horário limite para término de eventos e desligamento de som é às 22h00. Cancelamentos sem ônus devem ser solicitados com 48h de antecedência.
+      `TITULO I - DA CHURRASQUEIRA E ESPACO GOURMET
+Artigo 12 - A reserva do Espaco Gourmet & Churrasqueira pode ser feita com ate 60 dias de antecedencia. O valor da taxa de uso e de R$ 100,00 acrescido da taxa de limpeza de R$ 50,00 (total R$ 150,00), debitado automaticamente no proximo boleto condominial via DOMUS AI. O horario limite para termino de eventos e desligamento de som e as 22h00. Cancelamentos sem onus devem ser solicitados com 48h de antecedencia.
 
-TÍTULO II - DO SALÃO DE FESTAS NOBRE
-Artigo 15 - O Salão de Festas suporta capacidade máxima de 80 pessoas sentadas. A taxa de locação é de R$ 350,00 (inclusa taxa de limpeza profissional). A lista de convidados deve ser enviada para a portaria até 24h antes do evento para controle de acesso biométrico/facial.
+TITULO II - DO SALAO DE FESTAS NOBRE
+Artigo 15 - O Salao de Festas suporta capacidade maxima de 80 pessoas sentadas. A taxa de locacao e de R$ 350,00 (inclusa taxa de limpeza profissional). A lista de convidados deve ser enviada para a portaria ate 24h antes do evento para controle de acesso biometrico/facial.
 
-TÍTULO III - DA PISCINA
-Artigo 20 - A piscina funciona de terça a domingo das 08h00 às 21h00. Às segundas-feiras o espaço permanece fechado para tratamento químico e filtragem da água. Proibido o uso de protetores solares oleosos e copos de vidro.`
+TITULO III - DA PISCINA
+Artigo 20 - A piscina funciona de terca a domingo das 08h00 as 21h00. As segundas-feiras o espaco permanece fechado para tratamento quimico e filtragem da agua. Proibido o uso de protetores solares oleosos e copos de vidro.`
     );
 
     this.adicionarDocumento(
-      'Convenção Condominial - Inadimplência e Encargos',
+      'Convencao Condominial - Inadimplencia e Encargos',
       'convencao',
-      `CLÁUSULA 34 - DA COBRANÇA E ENCARGOS POR ATRASO
-O não pagamento da cota condominial ordinária ou extraordinária até a data de seu vencimento sujeita o devedor à incidência de multa moratória irrevogável de 2% (dois por cento) sobre o débito atualizado, acrescida de juros moratórios de 1% (um por cento) ao mês calculados pro rata die, bem como atualização monetária pelo índice oficial IPCA/IBGE.
+      `CLAUSULA 34 - DA COBRANCA E ENCARGOS POR ATRASO
+O nao pagamento da cota condominial ordinaria ou extraordinaria ate a data de seu vencimento sujeita o devedor a incidencia de multa moratoria irrevogavel de 2% (dois por cento) sobre o debito atualizado, acrescida de juros moratorios de 1% (um por cento) ao mes calculados pro rata die, bem como atualizacao monetaria pelo indice oficial IPCA/IBGE.
 
-CLÁUSULA 35 - DOS ACORDOS E PARCELAMENTOS
-Fica a Administradora e o Síndico autorizados a firmar acordos amigáveis com devedores através do sistema DOMUS AI em até 12 (doze) parcelas mensais e sucessivas, com entrada mínima correspondente à primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplência superior a 30 dias.`
+CLAUSULA 35 - DOS ACORDOS E PARCELAMENTOS
+Fica a Administradora e o Sindico autorizados a firmar acordos amigaveis com devedores atraves do sistema DOMUS AI em ate 12 (doze) parcelas mensais e sucessivas, com entrada minima correspondente a primeira parcela, sob pena de vencimento antecipado das parcelas vincendas em caso de inadimplencia superior a 30 dias.`
     );
 
     this.adicionarDocumento(
-      'FAQ Oficial da Administração & Portaria',
+      'FAQ Oficial da Administracao & Portaria',
       'faq',
-      `PERGUNTA: Como recebo minha 2ª via de boleto?
-RESPOSTA: O boleto pode ser obtido instantaneamente enviando "boleto" ou "segunda via" no nosso WhatsApp oficial, informando seu CPF cadastrado no condom�nio. O sistema gera a linha digitável e o código Pix Copia e Cola para pagamento imediato.
+      `PERGUNTA: Como recebo minha 2a via de boleto?
+RESPOSTA: O boleto pode ser obtido instantaneamente enviando "boleto" ou "segunda via" no nosso WhatsApp oficial, informando seu CPF cadastrado no condominio. O sistema gera a linha digitavel e o codigo Pix Copia e Cola para pagamento imediato.
 
 PERGUNTA: Onde retiro encomendas deixadas na portaria?
-RESPOSTA: As encomendas entregues são catalogadas na portaria e notificadas no aplicativo. A retirada pode ser feita 24 horas por dia apresentando documento ou o número do apartamento.`
+RESPOSTA: As encomendas entregues sao catalogadas na portaria e notificadas no aplicativo. A retirada pode ser feita 24 horas por dia apresentando documento ou o numero do apartamento.`
     );
   }
 
@@ -121,7 +121,7 @@ RESPOSTA: As encomendas entregues são catalogadas na portaria e notificadas no 
     const id = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const tamanhoBytes = Buffer.byteLength(conteudoTexto, 'utf-8');
 
-    // Chunker semântico inteligente (divide por artigos/parágrafos de ~400 a 600 caracteres)
+    // Chunker semantico inteligente (divide por artigos/paragrafos)
     const paragrafos = conteudoTexto.split(/\n\s*\n/).filter(p => p.trim().length > 20);
     const novosChunks: ChunkRAG[] = paragrafos.map((p, idx) => ({
       id: `chk_${id}_${idx + 1}`,
@@ -159,7 +159,7 @@ RESPOSTA: As encomendas entregues são catalogadas na portaria e notificadas no 
   }
 
   /**
-   * Busca semântica por similaridade de termos e palavras-chave contextuais
+   * Busca semantica por similaridade de termos e palavras-chave contextuais
    */
   public buscarSemantica(query: string, topK: number = 3): RAGSearchResult[] {
     const termos = query
@@ -177,7 +177,6 @@ RESPOSTA: As encomendas entregues são catalogadas na portaria e notificadas no 
         if (textoLower.includes(t)) matches++;
       });
 
-      // Score ponderado
       const score = matches > 0 ? parseFloat((matches / termos.length).toFixed(2)) : 0;
       return {
         chunk,
@@ -193,24 +192,54 @@ RESPOSTA: As encomendas entregues são catalogadas na portaria e notificadas no 
   }
 
   /**
-   * Playground de Teste RAG: retorna contexto compilado e score de acerto
+   * Extrai e formata as citacoes juridicas/regimentais com documento, artigo e versao
+   */
+  public extrairCitacoes(resultados: RAGSearchResult[]): CitacaoRAG[] {
+    return resultados.map(r => {
+      let artigo = 'Disposição Geral';
+      const matchArt = r.chunk.texto.match(/(Artigo\s+\d+|Art\.\s*\d+|CLAUSULA\s+\d+|CLÁUSULA\s+\d+|TITULO\s+[IVXLCDM\d]+|CAPITULO\s+[IVXLCDM\d]+[^\n-]*)/i);
+      if (matchArt) {
+        artigo = matchArt[0].trim();
+      }
+
+      return {
+        artigo,
+        documentoTitulo: r.documentoTitulo,
+        versao: 'v2026.2 (Homologada em Assembleia Geral)',
+        textoCitado: r.chunk.texto,
+        scoreRelevancia: `${Math.round(r.score * 100)}% de correspondência`
+      };
+    });
+  }
+
+  /**
+   * Playground de Teste RAG: retorna contexto compilado, citacoes detalhadas e confianca
    */
   public testarRAG(pergunta: string): {
     pergunta: string;
+    resposta: string;
     resultados: RAGSearchResult[];
+    citacoes: CitacaoRAG[];
     contextoCompilado: string;
     confianca: 'alta' | 'media' | 'baixa';
   } {
     const resultados = this.buscarSemantica(pergunta, 3);
+    const citacoes = this.extrairCitacoes(resultados);
     const contextoCompilado = resultados.map(r => `[Fonte: ${r.documentoTitulo}]\n${r.chunk.texto}`).join('\n\n---\n\n');
 
     let confianca: 'alta' | 'media' | 'baixa' = 'baixa';
     if (resultados.length > 0 && resultados[0].score >= 0.5) confianca = 'alta';
     else if (resultados.length > 0) confianca = 'media';
 
+    const resposta = resultados.length > 0
+      ? `Conforme o ${citacoes[0]?.documentoTitulo} (${citacoes[0]?.artigo || 'Disposição Regimental'}):\n\n${resultados[0].chunk.texto}`
+      : 'Não foi localizada disposição explícita para este termo nos documentos condominiais vigentes. A consulta pode ser encaminhada ao síndico para deliberação.';
+
     return {
       pergunta,
+      resposta,
       resultados,
+      citacoes,
       contextoCompilado,
       confianca
     };

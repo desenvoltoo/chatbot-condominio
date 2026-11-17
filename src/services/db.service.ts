@@ -1,7 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
-import { UserSession, ChatMessage, Cobranca, Reserva, OrdemManutencao } from '../types/index.js';
+import { UserSession, ChatMessage, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao } from '../types/index.js';
 import { gerarPayloadPix } from '../utils/pix.util.js';
 
 export class DbService {
@@ -193,6 +193,61 @@ export class DbService {
         observacoes TEXT,
         criadoEm TEXT NOT NULL,
         concluidoEm TEXT
+      );
+    `);
+
+    // 8. Tabela de Condomínios (Multi-Condomínio / White-label)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS condominios (
+        id TEXT PRIMARY KEY,
+        nome TEXT NOT NULL,
+        cnpj TEXT NOT NULL,
+        endereco TEXT NOT NULL,
+        cidade TEXT NOT NULL,
+        estado TEXT NOT NULL,
+        unidadesQtd INTEGER NOT NULL,
+        administradoraNome TEXT NOT NULL,
+        taxaAdmPercentual REAL NOT NULL,
+        logoUrl TEXT,
+        criadoEm TEXT NOT NULL
+      );
+    `);
+
+    // 9. Tabela de Decisões e Auditoria de IA (Transparência & Governança)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS ai_decisions (
+        id TEXT PRIMARY KEY,
+        condominioId TEXT NOT NULL,
+        pergunta TEXT NOT NULL,
+        resposta TEXT NOT NULL,
+        artigoCitado TEXT,
+        documentoCitado TEXT,
+        scoreConfianca REAL NOT NULL,
+        nivelAutonomia INTEGER NOT NULL,
+        statusAprovacao TEXT NOT NULL,
+        aprovadoPor TEXT,
+        tokensConsumidos INTEGER NOT NULL,
+        provedor TEXT NOT NULL,
+        modelo TEXT NOT NULL,
+        timestamp TEXT NOT NULL
+      );
+    `);
+
+    // 10. Tabela de Pendências de Supervisão (Human-in-the-Loop Guardrails)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS pendencias_supervisao (
+        id TEXT PRIMARY KEY,
+        condominioId TEXT NOT NULL,
+        tipo TEXT NOT NULL,
+        descricao TEXT NOT NULL,
+        solicitanteNome TEXT NOT NULL,
+        unidadeId TEXT NOT NULL,
+        dadosJson TEXT,
+        status TEXT NOT NULL DEFAULT 'pendente',
+        analisadoPor TEXT,
+        justificativa TEXT,
+        criadoEm TEXT NOT NULL,
+        respondidoEm TEXT
       );
     `);
 
@@ -821,7 +876,122 @@ export class DbService {
   }
 
   // ==========================================
-  // SEED DE DADOS OPERACIONAIS (FASE 3)
+  // CONDOMÍNIOS (MULTI-CONDOMÍNIO / WHITE-LABEL)
+  // ==========================================
+  public getCondominios(): Condominio[] {
+    const stmt = this.db.prepare('SELECT * FROM condominios ORDER BY nome ASC');
+    return stmt.all() as any[];
+  }
+
+  public getCondominioById(id: string): Condominio | null {
+    const stmt = this.db.prepare('SELECT * FROM condominios WHERE id = ?');
+    const row = stmt.get(id);
+    return (row as any) || null;
+  }
+
+  public saveCondominio(c: Condominio): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO condominios (id, nome, cnpj, endereco, cidade, estado, unidadesQtd, administradoraNome, taxaAdmPercentual, logoUrl, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        nome = excluded.nome,
+        cnpj = excluded.cnpj,
+        endereco = excluded.endereco,
+        cidade = excluded.cidade,
+        estado = excluded.estado,
+        unidadesQtd = excluded.unidadesQtd,
+        administradoraNome = excluded.administradoraNome,
+        taxaAdmPercentual = excluded.taxaAdmPercentual,
+        logoUrl = excluded.logoUrl
+    `);
+    stmt.run(
+      c.id, c.nome, c.cnpj, c.endereco, c.cidade, c.estado, c.unidadesQtd,
+      c.administradoraNome, c.taxaAdmPercentual, c.logoUrl || null, c.criadoEm
+    );
+  }
+
+  // ==========================================
+  // GOVERNANÇA DE IA & AUDITORIA DE DECISÕES
+  // ==========================================
+  public saveAIDecision(d: AIDecision): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO ai_decisions (
+        id, condominioId, pergunta, resposta, artigoCitado, documentoCitado,
+        scoreConfianca, nivelAutonomia, statusAprovacao, aprovadoPor,
+        tokensConsumidos, provedor, modelo, timestamp
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      d.id, d.condominioId, d.pergunta, d.resposta, d.artigoCitado || null, d.documentoCitado || null,
+      d.scoreConfianca, d.nivelAutonomia, d.statusAprovacao, d.aprovadoPor || null,
+      d.tokensConsumidos, d.provedor, d.modelo, d.timestamp
+    );
+  }
+
+  public getAIDecisions(condominioId?: string, limit: number = 30): AIDecision[] {
+    if (condominioId) {
+      const stmt = this.db.prepare('SELECT * FROM ai_decisions WHERE condominioId = ? ORDER BY timestamp DESC LIMIT ?');
+      return stmt.all(condominioId, limit) as any[];
+    }
+    const stmt = this.db.prepare('SELECT * FROM ai_decisions ORDER BY timestamp DESC LIMIT ?');
+    return stmt.all(limit) as any[];
+  }
+
+  // ==========================================
+  // HUMAN-IN-THE-LOOP / PENDÊNCIAS DE SUPERVISÃO
+  // ==========================================
+  public getPendenciasSupervisao(condominioId?: string, status?: string): PendenciaSupervisao[] {
+    let sql = 'SELECT * FROM pendencias_supervisao WHERE 1=1';
+    const params: any[] = [];
+    if (condominioId) {
+      sql += ' AND condominioId = ?';
+      params.push(condominioId);
+    }
+    if (status) {
+      sql += ' AND status = ?';
+      params.push(status);
+    }
+    sql += ' ORDER BY criadoEm DESC';
+    const stmt = this.db.prepare(sql);
+    return stmt.all(...params) as any[];
+  }
+
+  public getPendenciaSupervisaoById(id: string): PendenciaSupervisao | null {
+    const stmt = this.db.prepare('SELECT * FROM pendencias_supervisao WHERE id = ?');
+    const row = stmt.get(id);
+    return (row as any) || null;
+  }
+
+  public criarPendenciaSupervisao(p: PendenciaSupervisao): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO pendencias_supervisao (
+        id, condominioId, tipo, descricao, solicitanteNome, unidadeId, dadosJson, status, criadoEm
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      p.id, p.condominioId, p.tipo, p.descricao, p.solicitanteNome, p.unidadeId,
+      p.dadosJson || null, p.status || 'pendente', p.criadoEm
+    );
+  }
+
+  public responderPendenciaSupervisao(
+    id: string,
+    status: 'aprovado' | 'rejeitado',
+    analisadoPor: string,
+    justificativa?: string
+  ): PendenciaSupervisao | null {
+    const respondidoEm = new Date().toISOString();
+    const stmt = this.db.prepare(`
+      UPDATE pendencias_supervisao
+      SET status = ?, analisadoPor = ?, justificativa = ?, respondidoEm = ?
+      WHERE id = ?
+    `);
+    stmt.run(status, analisadoPor, justificativa || null, respondidoEm, id);
+    return this.getPendenciaSupervisaoById(id);
+  }
+
+  // ==========================================
+  // SEED DE DADOS OPERACIONAIS (FASE 3 & FASE 4/5)
   // ==========================================
 
   private seedInitialOperationalData() {
@@ -1075,6 +1245,156 @@ export class DbService {
 
       for (const m of manutencoesIniciais) {
         this.saveManutencao(m);
+      }
+    }
+
+    // 4. Seed Condomínios (Multi-Condomínio)
+    const condoCount = (this.db.prepare('SELECT COUNT(*) as total FROM condominios').get() as any)?.total || 0;
+    if (condoCount === 0) {
+      const condominiosIniciais: Condominio[] = [
+        {
+          id: 'condo_1',
+          nome: 'Condomínio Residencial Jardins do Bosque',
+          cnpj: '12.345.678/0001-90',
+          endereco: 'Av. das Castanheiras, 1500 - Campo Belo',
+          cidade: 'São Paulo',
+          estado: 'SP',
+          unidadesQtd: 240,
+          administradoraNome: 'Nova Era Adm Condominial',
+          taxaAdmPercentual: 6.5,
+          logoUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=120&auto=format&fit=crop&q=80',
+          criadoEm: '2026-01-10T08:00:00.000Z'
+        },
+        {
+          id: 'condo_2',
+          nome: 'Edifício Solar dos Pinheiros',
+          cnpj: '98.765.432/0001-10',
+          endereco: 'Rua dos Pinheiros, 450 - Batel',
+          cidade: 'Curitiba',
+          estado: 'PR',
+          unidadesQtd: 84,
+          administradoraNome: 'Nova Era Adm Condominial',
+          taxaAdmPercentual: 7.0,
+          logoUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=120&auto=format&fit=crop&q=80',
+          criadoEm: '2026-03-15T08:00:00.000Z'
+        },
+        {
+          id: 'condo_3',
+          nome: 'Grand Tower Corporate & Living',
+          cnpj: '33.221.100/0001-55',
+          endereco: 'Av. Brigadeiro Faria Lima, 3200 - Itaim Bibi',
+          cidade: 'São Paulo',
+          estado: 'SP',
+          unidadesQtd: 310,
+          administradoraNome: 'Atlas Gestão de Ativos',
+          taxaAdmPercentual: 5.8,
+          logoUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=120&auto=format&fit=crop&q=80',
+          criadoEm: '2026-06-01T08:00:00.000Z'
+        }
+      ];
+
+      for (const c of condominiosIniciais) {
+        this.saveCondominio(c);
+      }
+    }
+
+    // 5. Seed Pendências de Supervisão (Human-in-the-Loop)
+    const pendCount = (this.db.prepare('SELECT COUNT(*) as total FROM pendencias_supervisao').get() as any)?.total || 0;
+    if (pendCount === 0) {
+      const pendenciasIniciais: PendenciaSupervisao[] = [
+        {
+          id: 'pend_1',
+          condominioId: 'condo_1',
+          tipo: 'desconto_acordo',
+          descricao: 'Morador solicita 50% de desconto nos juros moratórios para quitação à vista de 3 cotas em atraso.',
+          solicitanteNome: 'Carlos Eduardo Silva',
+          unidadeId: 'Apt 101',
+          dadosJson: JSON.stringify({ valorOriginal: 2450.00, propostaAVista: 2100.00, descontoJuros: 350.00 }),
+          status: 'pendente',
+          criadoEm: '2026-11-17T10:00:00.000Z'
+        },
+        {
+          id: 'pend_2',
+          condominioId: 'condo_1',
+          tipo: 'isencao_reserva',
+          descricao: 'Solicitação de isenção da taxa do Salão Gourmet para reunião extraordinária da comissão de obras.',
+          solicitanteNome: 'Mariana de Souza',
+          unidadeId: 'Apt 202',
+          dadosJson: JSON.stringify({ dataReserva: '2026-11-25', motivo: 'Reunião Comissão de Obras' }),
+          status: 'pendente',
+          criadoEm: '2026-11-17T11:30:00.000Z'
+        },
+        {
+          id: 'pend_3',
+          condominioId: 'condo_1',
+          tipo: 'infracao_multa',
+          descricao: 'IA detectou reincidência de ruído após 22h e propõe notificação formal com advertência por infração ao Regimento.',
+          solicitanteNome: 'Sistema IA - Guardrails',
+          unidadeId: 'Apt 402',
+          dadosJson: JSON.stringify({ artigo: 'Artigo 42 do Regimento', decibeis: 72, horario: '23:45' }),
+          status: 'pendente',
+          criadoEm: '2026-11-16T23:50:00.000Z'
+        }
+      ];
+
+      for (const p of pendenciasIniciais) {
+        this.criarPendenciaSupervisao(p);
+      }
+    }
+
+    // 6. Seed Histórico de Decisões de IA
+    const decCount = (this.db.prepare('SELECT COUNT(*) as total FROM ai_decisions').get() as any)?.total || 0;
+    if (decCount === 0) {
+      const decisoesIniciais: AIDecision[] = [
+        {
+          id: 'dec_1',
+          condominioId: 'condo_1',
+          pergunta: 'Até que horas posso usar a piscina com convidados?',
+          resposta: 'De acordo com o Artigo 18 do Regimento Interno, a piscina funciona das 08h às 20h nos dias de semana e das 08h às 22h aos fins de semana e feriados. Visitantes são permitidos até o limite de 2 por unidade.',
+          artigoCitado: 'Artigo 18',
+          documentoCitado: 'Regimento Interno 2026',
+          scoreConfianca: 0.96,
+          nivelAutonomia: 1,
+          statusAprovacao: 'auto_aprovado',
+          tokensConsumidos: 320,
+          provedor: 'Gemini',
+          modelo: 'gemini-1.5-flash',
+          timestamp: '2026-11-17T12:04:00.000Z'
+        },
+        {
+          id: 'dec_2',
+          condominioId: 'condo_1',
+          pergunta: 'Posso pintar a porta do meu apartamento de preto fosco?',
+          resposta: 'Não é permitido alterar a cor ou padrão da porta exterior. Conforme a Convenção Condominial (Artigo 5º, Parágrafo Único), qualquer alteração na fachada interna dos corredores depende de aprovação prévia em AGE com quórum qualificado.',
+          artigoCitado: 'Artigo 5º, Parágrafo Único',
+          documentoCitado: 'Convenção Condominial',
+          scoreConfianca: 0.94,
+          nivelAutonomia: 1,
+          statusAprovacao: 'auto_aprovado',
+          tokensConsumidos: 285,
+          provedor: 'Gemini',
+          modelo: 'gemini-1.5-flash',
+          timestamp: '2026-11-17T11:42:00.000Z'
+        },
+        {
+          id: 'dec_3',
+          condominioId: 'condo_1',
+          pergunta: 'Gostaria de negociar o parcelamento da cota de outubro com isenção total dos juros.',
+          resposta: 'A proposta de parcelamento com isenção de encargos moratórios excede a autonomia automática da IA (Nível 2). A solicitação foi protocolada como pendência de supervisão e encaminhada à análise do síndico.',
+          artigoCitado: 'Artigo 12 da Convenção',
+          documentoCitado: 'Convenção Condominial',
+          scoreConfianca: 0.91,
+          nivelAutonomia: 2,
+          statusAprovacao: 'pendente_sindico',
+          tokensConsumidos: 310,
+          provedor: 'Gemini',
+          modelo: 'gemini-1.5-flash',
+          timestamp: '2026-11-17T10:00:15.000Z'
+        }
+      ];
+
+      for (const d of decisoesIniciais) {
+        this.saveAIDecision(d);
       }
     }
   }

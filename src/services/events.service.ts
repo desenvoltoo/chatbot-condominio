@@ -12,7 +12,9 @@ export interface DashboardEvent {
     | 'reserva_created'
     | 'reserva_updated'
     | 'os_created'
-    | 'os_updated';
+    | 'os_updated'
+    | 'supervisao_pendencia'
+    | 'supervisao_respondida';
   remoteJid?: string;
   data?: any;
   timestamp: string;

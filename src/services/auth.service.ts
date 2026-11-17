@@ -137,4 +137,57 @@ export class AuthService {
       return publicUser;
     });
   }
+
+  public criarUsuario(dados: {
+    nome: string;
+    email: string;
+    senhaPlana: string;
+    role: UserRole;
+    cargo: string;
+    avatarUrl?: string;
+    condominioIds?: string[];
+  }): Omit<User, 'senhaHash'> {
+    const emailNorm = dados.email.toLowerCase().trim();
+    if (this.users.has(emailNorm)) {
+      throw new Error('Já existe um usuário cadastrado com este e-mail');
+    }
+
+    const id = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const novoUsuario: User = {
+      id,
+      nome: dados.nome.trim(),
+      email: emailNorm,
+      senhaHash: this.hashPassword(dados.senhaPlana),
+      role: dados.role,
+      cargo: dados.cargo.trim(),
+      avatarUrl: dados.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      ativo: true,
+      ultimoAcesso: 'Nunca acessou',
+      condominioIds: dados.condominioIds || ['cond_bosque']
+    };
+
+    this.users.set(emailNorm, novoUsuario);
+    const { senhaHash, ...publicUser } = novoUsuario;
+    return publicUser;
+  }
+
+  public removerUsuario(id: string): boolean {
+    const user = Array.from(this.users.values()).find(u => u.id === id);
+    if (!user) return false;
+    if (user.role === 'admin' && user.email === 'admin@condominio.com.br') {
+      throw new Error('Não é permitido excluir o Administrador Master do sistema');
+    }
+    return this.users.delete(user.email);
+  }
+
+  public toggleUsuarioAtivo(id: string): Omit<User, 'senhaHash'> | null {
+    const user = Array.from(this.users.values()).find(u => u.id === id);
+    if (!user) return null;
+    if (user.role === 'admin' && user.email === 'admin@condominio.com.br') {
+      throw new Error('Não é permitido desativar o Administrador Master');
+    }
+    user.ativo = !user.ativo;
+    const { senhaHash, ...publicUser } = user;
+    return publicUser;
+  }
 }

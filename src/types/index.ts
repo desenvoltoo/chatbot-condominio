@@ -286,6 +286,7 @@ export interface User {
   avatarUrl?: string;
   ativo: boolean;
   ultimoAcesso?: string;
+  condominioIds?: string[];
 }
 
 export interface AuthSession {
@@ -344,4 +345,58 @@ export interface RAGSearchResult {
   chunk: ChunkRAG;
   score: number;
   documentoTitulo: string;
+}
+
+export interface CitacaoRAG {
+  artigo?: string;
+  documentoTitulo: string;
+  versao: string;
+  textoCitado: string;
+  scoreRelevancia: string;
+}
+
+export interface Condominio {
+  id: string;
+  nome: string;
+  cnpj: string;
+  endereco: string;
+  cidade: string;
+  estado: string;
+  unidadesQtd: number;
+  administradoraNome: string;
+  taxaAdmPercentual: number;
+  logoUrl?: string;
+  criadoEm: string;
+}
+
+export interface AIDecision {
+  id: string;
+  condominioId: string;
+  pergunta: string;
+  resposta: string;
+  artigoCitado?: string;
+  documentoCitado?: string;
+  scoreConfianca: number;
+  nivelAutonomia: 1 | 2 | 3;
+  statusAprovacao: 'auto_aprovado' | 'pendente_sindico' | 'aprovado' | 'rejeitado';
+  aprovadoPor?: string;
+  tokensConsumidos: number;
+  provedor: string;
+  modelo: string;
+  timestamp: string;
+}
+
+export interface PendenciaSupervisao {
+  id: string;
+  condominioId: string;
+  tipo: 'desconto_acordo' | 'isencao_reserva' | 'infracao_multa' | 'liberacao_acesso';
+  descricao: string;
+  solicitanteNome: string;
+  unidadeId: string;
+  dadosJson?: string;
+  status: 'pendente' | 'aprovado' | 'rejeitado';
+  analisadoPor?: string;
+  justificativa?: string;
+  criadoEm: string;
+  respondidoEm?: string;
 }

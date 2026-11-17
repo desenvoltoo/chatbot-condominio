@@ -1731,6 +1731,68 @@
     </div>
   </div>
 
+  <!-- ============================================================== -->
+  <!-- MODAL: NOVO MEMBRO DA EQUIPE (FASE 5) -->
+  <!-- ============================================================== -->
+  <div id="modalNovoUsuario" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4 overflow-y-auto" onclick="if(event.target === this) fecharModalNovoUsuario()">
+    <div class="glass-surface rounded-3xl w-full max-w-md p-6 border border-indigo-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between border-b border-white/[0.08] pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <svg class="w-4 h-4 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-sm">Adicionar Membro à Equipe</h3>
+            <span class="text-[10px] text-slate-400">Novo operador, síndico ou gestor com permissões RBAC</span>
+          </div>
+        </div>
+        <button onclick="fecharModalNovoUsuario()" class="p-1 rounded-lg hover:bg-white/[0.08] text-slate-400 hover:text-white transition-all text-xs cursor-pointer">✕</button>
+      </div>
+
+      <form onsubmit="salvarNovoUsuario(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">Nome Completo:</label>
+          <input type="text" id="novoUsuarioNome" required placeholder="Ex: Lucas Mendes" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">E-mail Corporativo:</label>
+          <input type="email" id="novoUsuarioEmail" required placeholder="lucas@condominio.com.br" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Papel / Perfil RBAC:</label>
+            <select id="novoUsuarioRole" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="operador">Operador de Atendimento</option>
+              <option value="sindico">Síndico Geral</option>
+              <option value="portaria">Portaria / Acessos</option>
+              <option value="admin">Administrador Master</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Cargo / Função:</label>
+            <input type="text" id="novoUsuarioCargo" placeholder="Ex: Atendente N1" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">Senha Inicial de Acesso:</label>
+          <input type="password" id="novoUsuarioSenha" placeholder="Padrão: domus123" class="w-full bg-[#0a0e18] border border-white/[0.1] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div class="flex items-center gap-2 pt-2">
+          <button type="button" onclick="fecharModalNovoUsuario()" class="flex-1 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 text-xs font-semibold transition-all cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+            Cadastrar Usuário
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Backdrop para Drawer Mobile -->
   <div id="mobileSidebarBackdrop" onclick="closeMobileSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 hidden md:hidden transition-opacity duration-300"></div>
 
@@ -2004,19 +2066,31 @@
         </button>
       </div>
 
-      <!-- Lado Direito: Status Compacto + Disparo + Ações Rápidas -->
+      <!-- Lado Direito: Seletor Multi-Condomínio + Status + Disparo + Ações Rápidas -->
       <div class="flex items-center gap-2 shrink-0">
+        <!-- Seletor Multi-Condomínio (White-Label) -->
+        <div class="relative hidden sm:flex items-center">
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-indigo-500/40 text-xs transition-colors">
+            <svg class="w-3.5 h-3.5 text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-3"/></svg>
+            <select id="selectCondominioAtivo" onchange="trocarCondominioAtivo(this.value)" class="bg-transparent text-slate-200 text-xs font-semibold focus:outline-none cursor-pointer pr-1">
+              <option value="condo_1" class="bg-[#0b0f19] text-white">Jardins do Bosque (240 unid)</option>
+              <option value="condo_2" class="bg-[#0b0f19] text-white">Solar dos Pinheiros (84 unid)</option>
+              <option value="condo_3" class="bg-[#0b0f19] text-white">Grand Tower Living (310 unid)</option>
+            </select>
+          </div>
+        </div>
+
         <!-- Indicador de Status Compacto (Latência + Piloto Autônomo) -->
         <div 
           id="topAutonomiaBadge" 
           onclick="switchTab('ai')" 
           class="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 cursor-pointer hover:bg-emerald-500/20 transition-all"
-          title="Piloto 100% Autônomo Ativo • Latência: 38ms • IA: GPT-4o-mini + RAG (Clique para configurar)">
+          title="Autonomia com Supervisão Ativa • Latência: 38ms • IA: Gemini 1.5 Flash + RAG (Clique para configurar)">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="font-semibold text-[11px]">Piloto Autônomo</span>
+          <span class="font-semibold text-[11px]">Autonomia & Guardrails</span>
           <span class="text-emerald-500/30 text-[10px]">•</span>
           <span class="font-mono text-[10px] opacity-75">38ms</span>
-          <span class="hidden" id="topActiveModel">GPT-4o-mini + RAG</span>
+          <span class="hidden" id="topActiveModel">Gemini 1.5 + RAG</span>
         </div>
 
         <div class="h-4 w-[1px] bg-white/[0.08] hidden sm:block mx-0.5"></div>
@@ -2606,7 +2680,7 @@
                 <span>💸</span> Sacar Split via Pix
               </button>
               <button onclick="toggleAntecipacaoReceita()" id="btnAntecipacao" class="px-3.5 py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
-                <span>🛡️</span> Receita 100% Garantida: <span id="statusAntecipacao" class="text-emerald-400 font-mono font-bold ml-1">Ativa</span>
+                <span>🛡️</span> Antecipação de Receita Homologada: <span id="statusAntecipacao" class="text-emerald-400 font-mono font-bold ml-1">Ativa</span>
               </button>
             </div>
           </div>
@@ -2624,9 +2698,9 @@
               <span id="volumeCotasCompensadas" class="text-[10px] text-slate-400 block mt-0.5">228 cotas condominiais compensadas (95.0%)</span>
             </div>
             <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-              <span class="text-slate-400 text-xs block">Blindagem Fiscal (Receita Federal):</span>
-              <strong class="text-2xl font-black text-indigo-400 font-mono mt-1 block">100% Blindado</strong>
-              <span class="text-[10px] text-indigo-300/80 block mt-0.5">Zero bitributação (NF apenas s/ 3% de taxa)</span>
+              <span class="text-slate-400 text-xs block">Conformidade Fiscal & Split Bacen:</span>
+              <strong class="text-2xl font-black text-indigo-400 font-mono mt-1 block">Segregação Homologada</strong>
+              <span class="text-[10px] text-indigo-300/80 block mt-0.5">Sem bitributação (NF apenas sobre a comissão de 3%)</span>
             </div>
           </div>
 
@@ -3421,29 +3495,90 @@
 
         <!-- Header do Módulo -->
         <div class="p-6 rounded-3xl bg-gradient-to-r from-indigo-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 text-xs font-mono font-semibold mb-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-semibold mb-2">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            DOMUS Autonomous Engine • Auto-Pilot Zero-Touch
+            DOMUS Autonomous Engine • Governança & Human-in-the-Loop
           </div>
-          <h1 class="text-2xl font-black text-white tracking-tight">Hub Multi-IA & Piloto 100% Autônomo</h1>
+          <h1 class="text-2xl font-black text-white tracking-tight">Hub Multi-IA & Central de Governança Autônoma</h1>
           <p class="text-xs text-slate-400 mt-1 max-w-2xl">
-            Configure o modelo de inteligência artificial de sua preferência (OpenAI, Gemini, Claude, DeepSeek, Groq ou Custom) e defina as regras de autonomia total para execução de todas as tarefas sem intervenção humana.
+            Configure o modelo de inteligência artificial de sua preferência (Gemini, Claude, GPT-4o, DeepSeek ou Local) com 3 níveis de autonomia estritos e supervisão humana para decisões financeiras e jurídicas.
           </p>
         </div>
 
-        <!-- CARD MASTER: MODO 100% AUTÔNOMO (ZERO INTERVENÇÃO HUMANA) -->
+        <!-- 3 NÍVEIS DE AUTONOMIA E POLÍTICAS DE RISCO -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-4 rounded-2xl glass-surface border border-emerald-500/30 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Nível 1 • Totalmente Autônomo</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-mono font-bold">Auto-Aprovado</span>
+            </div>
+            <h4 class="text-white text-xs font-bold">Dúvidas Regimentais & 2ª Via Pix</h4>
+            <p class="text-slate-400 text-[11px] leading-relaxed">
+              Consultas ao Regimento Interno com citações oficiais de artigos e reemissão de boletos em dia ou com juros padrões. Resposta instantânea sem intervenção humana.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl glass-surface border border-amber-500/30 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">Nível 2 • Supervisionado</span>
+              <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-mono font-bold">Exige Síndico</span>
+            </div>
+            <h4 class="text-white text-xs font-bold">Descontos, Isenções & Notificações</h4>
+            <p class="text-slate-400 text-[11px] leading-relaxed">
+              Negociação com renúncia de juros, isenção de taxas de salões de festas e aplicação de notificações de infração por ruído. A IA prepara a proposta e aguarda aprovação em 1 clique.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl glass-surface border border-rose-500/30 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider">Nível 3 • Bloqueio Estrito</span>
+              <span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 text-[10px] font-mono font-bold">Humano Obrigatório</span>
+            </div>
+            <h4 class="text-white text-xs font-bold">Ações Judiciais & Alterações Estruturais</h4>
+            <p class="text-slate-400 text-[11px] leading-relaxed">
+              Decisões de cobrança judicial com advogado, obras na fachada ou penalidades máximas. A IA bloqueia execução autônoma e transfere ao departamento jurídico responsável.
+            </p>
+          </div>
+        </div>
+
+        <!-- COCKPIT DE PENDÊNCIAS DE SUPERVISÃO HUMANA (HUMAN-IN-THE-LOOP) -->
+        <div class="glass-surface rounded-3xl p-6 border-2 border-amber-500/30 shadow-2xl space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg">
+                🛡️
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-extrabold text-sm text-white">Pendências de Supervisão Humana (Aprovações do Síndico)</h3>
+                  <span id="badgeQtdPendencias" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500 text-slate-950">Carregando...</span>
+                </div>
+                <p class="text-xs text-slate-400">Demandas de Nível 2 que a IA analisou e aguardam autorização prévia para validação legal.</p>
+              </div>
+            </div>
+            <button onclick="carregarPendenciasSupervisao()" class="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 text-xs border border-white/[0.06] cursor-pointer" title="Atualizar Pendências">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+            </button>
+          </div>
+          <div id="containerPendenciasSupervisao" class="space-y-3">
+            <!-- Renderizado dinamicamente via JS -->
+            <div class="text-center py-6 text-slate-400 text-xs">Carregando pendências de supervisão...</div>
+          </div>
+        </div>
+
+        <!-- CARD MASTER: AUTONOMIA INTELIGENTE COM GUARDRAILS -->
         <div class="glass-surface rounded-3xl p-6 border-2 border-emerald-500/40 shadow-2xl space-y-5 bg-gradient-to-b from-emerald-500/[0.04] to-transparent">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 text-xl font-black shadow-inner">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl font-black shadow-inner">
                 ⚡
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h3 class="font-extrabold text-base text-white">Piloto 100% Autônomo (Zero Intervenção Humana)</h3>
+                  <h3 class="font-extrabold text-base text-white">Autonomia Inteligente com Supervisão Ativa</h3>
                   <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500 text-slate-950">ATIVO</span>
                 </div>
-                <p class="text-xs text-slate-400">Quando ativado, a IA executa todas as tarefas operacionais de ponta a ponta sem fila de espera e sem depender de operadores humanos.</p>
+                <p class="text-xs text-slate-400">A IA resolve atendimentos operacionais imediatos e protocola demandas críticas para chancela da gestão.</p>
               </div>
             </div>
             <label class="relative inline-flex items-center cursor-pointer shrink-0">
@@ -3454,7 +3589,7 @@
 
           <!-- Grid de 8 Tarefas Autônomas -->
           <div>
-            <span class="text-xs font-bold text-slate-300 block mb-3 uppercase tracking-wider">Tarefas que a IA executa com 100% de autonomia:</span>
+            <span class="text-xs font-bold text-slate-300 block mb-3 uppercase tracking-wider">Tarefas com Execução Autônoma Homologada:</span>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
               <div class="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex items-start justify-between gap-3">
                 <div class="flex items-start gap-2.5">
@@ -3784,6 +3919,45 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           </div>
         </div>
 
+        <!-- TRILHA DE AUDITORIA & DECISÕES DA IA (GOVERNANÇA & RASTREABILIDADE) -->
+        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold">
+                ⚖️
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-white">Trilha de Auditoria & Decisões da IA (Governança e Rastreabilidade)</h3>
+                <span class="text-[11px] text-slate-400">Histórico detalhado de perguntas, respostas, artigos citados, nível de autonomia e autorizações.</span>
+              </div>
+            </div>
+            <button onclick="carregarDecisoesIA()" class="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 text-xs border border-white/[0.06] transition-all cursor-pointer">
+              Atualizar Trilha
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="text-slate-400 border-b border-white/[0.08] text-[10px] font-mono uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Data / Hora</th>
+                  <th class="p-3">Consulta do Morador</th>
+                  <th class="p-3">Artigo / Norma Citada</th>
+                  <th class="p-3 text-center">Nível Autonomia</th>
+                  <th class="p-3 text-center">Confiança</th>
+                  <th class="p-3 text-center">Status</th>
+                  <th class="p-3 text-right">Tokens & Provedor</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaDecisoesIABody" class="divide-y divide-white/[0.04] text-slate-300 font-medium">
+                <!-- Renderizado dinamicamente via carregarDecisoesIA() -->
+                <tr>
+                  <td colspan="7" class="text-center py-6 text-slate-500">Carregando histórico de deliberações da IA...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </main>
 
@@ -3902,8 +4076,47 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           </div>
           <h1 class="text-2xl font-black text-white tracking-tight">Equipe & Matriz de Permissões RBAC</h1>
           <p class="text-xs text-slate-400 mt-1">
-            Controle granular de permissões operacionais por papel no condomínio. Modifique e personalize as políticas abaixo.
+            Controle granular de permissões operacionais por papel no condomínio. Gerencie os membros da equipe e personalize as políticas abaixo.
           </p>
+        </div>
+
+        <!-- GESTÃO DE MEMBROS DA EQUIPE (CRUD REAL) -->
+        <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/[0.08]">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                <svg class="w-4 h-4 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-white">Membros da Equipe & Operadores</h3>
+                <span class="text-[11px] text-slate-400">Gestão de acessos por condomínio e perfis de operador, síndico e portaria</span>
+              </div>
+            </div>
+            <button onclick="abrirModalNovoUsuario()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>+</span>
+              <span>Novo Usuário</span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="text-slate-400 border-b border-white/[0.08] text-[10px] font-mono uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Usuário</th>
+                  <th class="p-3">E-mail</th>
+                  <th class="p-3">Perfil RBAC</th>
+                  <th class="p-3">Condomínios</th>
+                  <th class="p-3 text-center">Status</th>
+                  <th class="p-3 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaMembrosEquipeBody" class="divide-y divide-white/[0.04] text-slate-300 font-medium">
+                <tr>
+                  <td colspan="6" class="text-center py-6 text-slate-500">Carregando lista de operadores...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
@@ -4442,10 +4655,11 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ pergunta: query })
+            body: JSON.stringify({ pergunta: query, condominioId: currentCondominioId })
           });
           if (resp.ok) {
             data = await resp.json();
+            carregarDecisoesIA();
           }
         } catch (e) {
           // Servidor offline, executa motor de busca vetorial local
@@ -4458,26 +4672,35 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
       if (data.resultados && data.resultados.length > 0) {
         const top = data.resultados[0];
+        const topCitacao = (data.citacoes && data.citacoes[0]) || {
+          artigo: 'Artigo Regimental',
+          documentoTitulo: top.documentoTitulo,
+          versao: 'v2026.2 (Homologada em AGE)'
+        };
         const scorePct = Math.round(top.score * 100);
         const badgeColor = top.score >= 0.5 ? 'text-emerald-400' : 'text-amber-400';
         const confiancaTexto = top.score >= 0.5 ? 'Correspondência Alta' : 'Correspondência Parcial';
         const textoNormativo = top.chunk?.texto || top.texto || '';
 
         resultDiv.innerHTML = `
-          <div class="flex justify-between items-center ${badgeColor} font-bold text-xs pb-1">
-            <span>Score Semântico: ${top.score.toFixed(2)} (${confiancaTexto} • ${scorePct}%)</span>
-            <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-white/[0.05] border border-white/[0.08]">${top.documentoTitulo}</span>
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-1 border-b border-white/[0.06]">
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono font-bold text-[10px] border border-indigo-500/30">📜 ${topCitacao.artigo || 'Artigo'}</span>
+              <span class="text-[10px] font-mono text-emerald-400 font-bold ${badgeColor}">${confiancaTexto} (${scorePct}%)</span>
+            </div>
+            <span class="font-mono text-[9px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">✓ ${topCitacao.versao || 'v2026.2 AGE'}</span>
           </div>
           <p class="text-slate-800 dark:text-slate-200 text-xs leading-relaxed font-sans bg-white/[0.02] p-2.5 rounded-xl border border-white/[0.06]">
             "${textoNormativo.replace(/"/g, '&quot;')}"
           </p>
           <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 font-mono">
-            <span>Embasamento: ${top.documentoTitulo}</span>
+            <span>Fonte Primária: <strong>${topCitacao.documentoTitulo || top.documentoTitulo}</strong></span>
             <span class="text-indigo-400 font-semibold">${data.resultados.length} trecho(s) correlacionado(s)</span>
           </div>
         `;
         confetti({ particleCount: 25, spread: 50 });
-        showToast('Consulta RAG Concluída', `Localizado trecho em "${top.documentoTitulo}" com relevância de ${scorePct}%.`, 'success');
+        showToast('Consulta RAG Concluída', `Localizado artigo em "${top.documentoTitulo}" (${scorePct}% relevância).`, 'success');
+        carregarDecisoesIA();
       } else {
         resultDiv.innerHTML = `
           <div class="text-amber-400 text-xs font-semibold">Nenhum trecho normativo correspondente encontrado</div>
@@ -4495,6 +4718,514 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         const docCount = document.getElementById('ragDocCount');
         if (docCount) docCount.innerText = '5 documentos';
       }
+    }
+
+    // ==========================================
+    // MULTI-CONDOMÍNIO (FASE 5)
+    // ==========================================
+    let currentCondominioId = localStorage.getItem('domus_condo_ativo') || 'condo_1';
+    let condominiosCadastrados = [
+      { id: 'condo_1', nome: 'Condomínio Residencial Jardins do Bosque', unidadesQtd: 240, cnpj: '12.345.678/0001-90' },
+      { id: 'condo_2', nome: 'Edifício Solar dos Pinheiros', unidadesQtd: 84, cnpj: '98.765.432/0001-10' },
+      { id: 'condo_3', nome: 'Grand Tower Corporate & Living', unidadesQtd: 310, cnpj: '33.221.100/0001-55' }
+    ];
+
+    async function carregarCondominios() {
+      const select = document.getElementById('selectCondominioAtivo');
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      try {
+        const res = await fetch('/api/condominios', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          const lista = await res.json();
+          if (lista && lista.length > 0) {
+            condominiosCadastrados = lista;
+          }
+        }
+      } catch (e) {}
+
+      if (select) {
+        select.innerHTML = condominiosCadastrados.map(c => `
+          <option value="${c.id}" ${c.id === currentCondominioId ? 'selected' : ''} class="bg-[#0b0f19] text-white">
+            ${c.nome.length > 28 ? c.nome.slice(0, 26) + '...' : c.nome} (${c.unidadesQtd} unid)
+          </option>
+        `).join('');
+      }
+    }
+
+    function trocarCondominioAtivo(condoId) {
+      currentCondominioId = condoId;
+      localStorage.setItem('domus_condo_ativo', condoId);
+      const condo = condominiosCadastrados.find(c => c.id === condoId);
+      const nomeCondo = condo ? condo.nome : 'Condomínio Selecionado';
+      showToast('Condomínio Alternado', `Ambiente alterado para "${nomeCondo}". Dados e regras isolados.`, 'info');
+      carregarPendenciasSupervisao();
+      carregarDecisoesIA();
+      carregarCobrancasFintech();
+    }
+
+    // ==========================================
+    // SUPERVISÃO HUMANO-NO-LOOP (FASE 4)
+    // ==========================================
+    let pendenciasSupervisao = [];
+
+    async function carregarPendenciasSupervisao() {
+      const container = document.getElementById('containerPendenciasSupervisao');
+      const badge = document.getElementById('badgeQtdPendencias');
+      if (!container) return;
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      try {
+        const res = await fetch(`/api/supervisao/pendencias?condominioId=${encodeURIComponent(currentCondominioId)}&status=pendente`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          pendenciasSupervisao = await res.json();
+        }
+      } catch (e) {
+        // Fallback local se offline
+        pendenciasSupervisao = [
+          {
+            id: 'pend_1',
+            tipo: 'desconto_acordo',
+            descricao: 'Morador solicita 50% de desconto nos juros moratórios para quitação à vista de 3 cotas em atraso.',
+            solicitanteNome: 'Carlos Eduardo Silva',
+            unidadeId: 'Apt 101',
+            status: 'pendente',
+            criadoEm: new Date().toISOString()
+          },
+          {
+            id: 'pend_2',
+            tipo: 'isencao_reserva',
+            descricao: 'Solicitação de isenção da taxa do Salão Gourmet para reunião extraordinária da comissão de obras.',
+            solicitanteNome: 'Mariana de Souza',
+            unidadeId: 'Apt 202',
+            status: 'pendente',
+            criadoEm: new Date().toISOString()
+          }
+        ];
+      }
+
+      if (badge) {
+        badge.innerText = `${pendenciasSupervisao.length} Pendente${pendenciasSupervisao.length !== 1 ? 's' : ''}`;
+        badge.className = pendenciasSupervisao.length > 0
+          ? 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500 text-slate-950 animate-pulse'
+          : 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300';
+      }
+
+      if (pendenciasSupervisao.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 text-slate-400 text-xs">
+            <span class="text-emerald-400 block text-base mb-1">✓</span>
+            Nenhuma pendência de supervisão aguardando deliberação para este condomínio.
+          </div>
+        `;
+        return;
+      }
+
+      const tipoMap = {
+        desconto_acordo: { label: 'Renúncia de Juros / Desconto', color: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
+        isencao_reserva: { label: 'Isenção de Taxa de Reserva', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
+        infracao_multa: { label: 'Advertência por Infração', color: 'bg-rose-500/20 text-rose-300 border-rose-500/30' },
+        liberacao_acesso: { label: 'Liberação de Acesso Físico', color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' }
+      };
+
+      container.innerHTML = pendenciasSupervisao.map(p => {
+        const badgeInfo = tipoMap[p.tipo] || { label: p.tipo, color: 'bg-slate-500/20 text-slate-300 border-slate-500/30' };
+        return `
+          <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:bg-white/[0.04]">
+            <div class="space-y-1.5 flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border ${badgeInfo.color}">
+                  ${badgeInfo.label}
+                </span>
+                <span class="text-xs font-bold text-white">${p.solicitanteNome}</span>
+                <span class="text-[11px] font-mono text-cyan-400 font-semibold">• ${p.unidadeId}</span>
+                <span class="text-[10px] text-slate-500 font-mono">${new Date(p.criadoEm).toLocaleDateString('pt-BR')} ${new Date(p.criadoEm).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed font-sans">
+                ${p.descricao}
+              </p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="responderSupervisao('${p.id}', 'rejeitado')" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold transition-all cursor-pointer">
+                ✕ Rejeitar
+              </button>
+              <button onclick="responderSupervisao('${p.id}', 'aprovado')" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 transition-all flex items-center gap-1 cursor-pointer">
+                <span>✓</span>
+                <span>Aprovar</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function responderSupervisao(id, status) {
+      let justificativa = '';
+      if (status === 'rejeitado') {
+        justificativa = prompt('Digite a justificativa para a rejeição da solicitação:', 'Em desacordo com o Artigo 12 da Convenção Condominial.');
+        if (justificativa === null) return;
+      }
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      try {
+        const res = await fetch(`/api/supervisao/pendencias/${encodeURIComponent(id)}/responder`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({ status, justificativa })
+        });
+        if (res.ok) {
+          if (status === 'aprovado') confetti({ particleCount: 30, spread: 60 });
+          showToast('Deliberação Registrada', `Pendência ${status === 'aprovado' ? 'aprovada' : 'rejeitada'} com sucesso no livro de registros.`, 'success');
+          carregarPendenciasSupervisao();
+          carregarDecisoesIA();
+          return;
+        }
+      } catch (e) {}
+
+      // Fallback local se offline
+      pendenciasSupervisao = pendenciasSupervisao.filter(p => p.id !== id);
+      showToast('Deliberação Registrada', `Pendência ${status === 'aprovado' ? 'aprovada' : 'rejeitada'} com sucesso.`, 'success');
+      carregarPendenciasSupervisao();
+    }
+
+    // ==========================================
+    // TRILHA DE AUDITORIA & DECISÕES DA IA (FASE 4)
+    // ==========================================
+    let decisoesIA = [];
+
+    async function carregarDecisoesIA() {
+      const tbody = document.getElementById('tabelaDecisoesIABody');
+      if (!tbody) return;
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      try {
+        const res = await fetch(`/api/ai/decisions?condominioId=${encodeURIComponent(currentCondominioId)}&limit=30`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          decisoesIA = await res.json();
+        }
+      } catch (e) {
+        decisoesIA = [
+          {
+            id: 'dec_1',
+            pergunta: 'Até que horas posso usar a piscina com convidados?',
+            resposta: 'De acordo com o Artigo 18 do Regimento Interno, a piscina funciona das 08h às 20h nos dias de semana...',
+            artigoCitado: 'Artigo 18',
+            documentoCitado: 'Regimento Interno 2026',
+            scoreConfianca: 0.96,
+            nivelAutonomia: 1,
+            statusAprovacao: 'auto_aprovado',
+            tokensConsumidos: 320,
+            provedor: 'Gemini',
+            timestamp: new Date().toISOString()
+          },
+          {
+            id: 'dec_2',
+            pergunta: 'Posso pintar a porta do meu apartamento de preto fosco?',
+            resposta: 'Não é permitido alterar o padrão exterior (Art. 5º Convenção).',
+            artigoCitado: 'Artigo 5º',
+            documentoCitado: 'Convenção Condominial',
+            scoreConfianca: 0.94,
+            nivelAutonomia: 1,
+            statusAprovacao: 'auto_aprovado',
+            tokensConsumidos: 285,
+            provedor: 'Gemini',
+            timestamp: new Date().toISOString()
+          }
+        ];
+      }
+
+      if (decisoesIA.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-6 text-slate-500">Nenhuma decisão registrada até o momento para este condomínio.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      const statusMap = {
+        auto_aprovado: { label: 'Auto-Aprovado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' },
+        pendente_sindico: { label: 'Pendente Síndico', color: 'bg-amber-500/10 text-amber-400 border-amber-500/30' },
+        aprovado: { label: 'Homologado', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' },
+        rejeitado: { label: 'Rejeitado', color: 'bg-rose-500/10 text-rose-400 border-rose-500/30' }
+      };
+
+      tbody.innerHTML = decisoesIA.map(d => {
+        const st = statusMap[d.statusAprovacao] || { label: d.statusAprovacao, color: 'bg-slate-500/10 text-slate-400' };
+        const dataStr = new Date(d.timestamp).toLocaleDateString('pt-BR');
+        const horaStr = new Date(d.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const confPct = Math.round((d.scoreConfianca || 0.95) * 100);
+
+        return `
+          <tr class="hover:bg-white/[0.02] transition-colors">
+            <td class="p-3 font-mono text-[11px] text-slate-400 whitespace-nowrap">
+              ${dataStr} <span class="text-slate-600">${horaStr}</span>
+            </td>
+            <td class="p-3 max-w-xs">
+              <span class="text-white font-medium block truncate" title="${d.pergunta.replace(/"/g, '&quot;')}">${d.pergunta}</span>
+              <span class="text-[10px] text-slate-500 block truncate" title="${(d.resposta || '').replace(/"/g, '&quot;')}">${d.resposta}</span>
+            </td>
+            <td class="p-3 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                ${d.artigoCitado || 'Disposição Regimental'}
+              </span>
+              <span class="text-[10px] text-slate-500 block mt-0.5">${d.documentoCitado || 'Regimento'}</span>
+            </td>
+            <td class="p-3 text-center whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold ${d.nivelAutonomia === 1 ? 'bg-emerald-500/10 text-emerald-400' : d.nivelAutonomia === 2 ? 'bg-amber-500/10 text-amber-400' : 'bg-rose-500/10 text-rose-400'}">
+                Nível ${d.nivelAutonomia || 1}
+              </span>
+            </td>
+            <td class="p-3 text-center font-mono text-xs ${confPct >= 90 ? 'text-emerald-400' : 'text-amber-400'}">
+              ${confPct}%
+            </td>
+            <td class="p-3 text-center whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${st.color}">
+                ${st.label}
+              </span>
+            </td>
+            <td class="p-3 text-right font-mono text-[11px] text-slate-400 whitespace-nowrap">
+              ${d.tokensConsumidos || 310} tok <span class="text-indigo-400 block text-[10px]">${d.provedor || 'Gemini'}</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // GESTÃO DE EQUIPE (CRUD REAL - FASE 5)
+    // ==========================================
+    let membrosEquipe = [];
+
+    async function carregarEquipe() {
+      const tbody = document.getElementById('tabelaMembrosEquipeBody');
+      if (!tbody) return;
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      try {
+        const res = await fetch('/api/auth/usuarios', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          membrosEquipe = await res.json();
+        }
+      } catch (e) {
+        // Fallback local
+        membrosEquipe = [
+          {
+            id: 'usr_admin',
+            nome: 'Administrador Master',
+            email: 'admin@domuscondo.com.br',
+            role: 'admin',
+            cargo: 'Head de Operações Prediais',
+            avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+            ativo: true,
+            ultimoAcesso: 'Hoje às 13:40',
+            condominioIds: ['*']
+          },
+          {
+            id: 'usr_sindico',
+            nome: 'Dr. Roberto Mendes',
+            email: 'sindico@jardinsdobosque.com.br',
+            role: 'sindico',
+            cargo: 'Síndico Geral Eleito',
+            avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+            ativo: true,
+            ultimoAcesso: 'Hoje às 11:20',
+            condominioIds: ['condo_1']
+          },
+          {
+            id: 'usr_operador',
+            nome: 'Juliana Costa',
+            email: 'juliana.cobranca@novaera.adm.br',
+            role: 'operador',
+            cargo: 'Analista Financeiro / Acordos',
+            avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+            ativo: true,
+            ultimoAcesso: 'Ontem às 17:55',
+            condominioIds: ['*']
+          },
+          {
+            id: 'usr_portaria',
+            nome: 'Marcos Vinícius',
+            email: 'portaria@jardinsdobosque.com.br',
+            role: 'portaria',
+            cargo: 'Líder de Portaria & Acessos',
+            avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+            ativo: true,
+            ultimoAcesso: 'Hoje às 06:10',
+            condominioIds: ['condo_1']
+          }
+        ];
+      }
+
+      const roleBadges = {
+        admin: { label: '👑 Admin Master', color: 'bg-purple-500/10 text-purple-300 border-purple-500/30' },
+        sindico: { label: '🏢 Síndico', color: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30' },
+        operador: { label: '💼 Financeiro', color: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30' },
+        portaria: { label: '🚪 Portaria', color: 'bg-amber-500/10 text-amber-300 border-amber-500/30' }
+      };
+
+      tbody.innerHTML = membrosEquipe.map(u => {
+        const badge = roleBadges[u.role] || { label: u.role, color: 'bg-slate-500/10 text-slate-300 border-slate-500/30' };
+        const condoTexto = u.condominioIds && u.condominioIds.includes('*') ? 'Todos os Condomínios' : 'Jardins do Bosque';
+        const isMaster = u.id === 'usr_admin';
+
+        return `
+          <tr class="hover:bg-white/[0.02] transition-colors">
+            <td class="p-3">
+              <div class="flex items-center gap-2.5">
+                <img src="${u.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80'}" alt="" class="w-8 h-8 rounded-full object-cover border border-white/[0.1] shrink-0">
+                <div>
+                  <strong class="text-white block font-semibold">${u.nome}</strong>
+                  <span class="text-[10px] text-slate-400 block">${u.cargo || 'Operador'}</span>
+                </div>
+              </div>
+            </td>
+            <td class="p-3 font-mono text-slate-300">${u.email}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${badge.color}">
+                ${badge.label}
+              </span>
+            </td>
+            <td class="p-3 text-[11px] text-slate-400">${condoTexto}</td>
+            <td class="p-3 text-center">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${u.ativo ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-slate-700 text-slate-400'}">
+                ${u.ativo ? 'Ativo' : 'Inativo'}
+              </span>
+            </td>
+            <td class="p-3 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                ${!isMaster ? `
+                  <button onclick="toggleUsuarioAtivo('${u.id}')" class="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 text-xs border border-white/[0.06] transition-all cursor-pointer" title="${u.ativo ? 'Desativar Usuário' : 'Ativar Usuário'}">
+                    ${u.ativo ? '⏸️' : '▶️'}
+                  </button>
+                  <button onclick="removerUsuario('${u.id}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs border border-rose-500/20 transition-all cursor-pointer" title="Remover Usuário">
+                    🗑️
+                  </button>
+                ` : `
+                  <span class="text-[10px] text-slate-500 font-mono italic">Mestre Protegido</span>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function abrirModalNovoUsuario() {
+      const modal = document.getElementById('modalNovoUsuario');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function fecharModalNovoUsuario() {
+      const modal = document.getElementById('modalNovoUsuario');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function salvarNovoUsuario(e) {
+      if (e) e.preventDefault();
+      const nome = document.getElementById('novoUsuarioNome').value.trim();
+      const email = document.getElementById('novoUsuarioEmail').value.trim();
+      const role = document.getElementById('novoUsuarioRole').value;
+      const cargo = document.getElementById('novoUsuarioCargo').value.trim();
+      const senha = document.getElementById('novoUsuarioSenha').value.trim() || 'domus123';
+
+      if (!nome || !email) {
+        showToast('Atenção', 'Nome e e-mail são obrigatórios.', 'warning');
+        return;
+      }
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      try {
+        const res = await fetch('/api/auth/usuarios', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({ nome, email, role, cargo, senha })
+        });
+        if (res.ok) {
+          fecharModalNovoUsuario();
+          confetti({ particleCount: 35, spread: 60 });
+          showToast('Usuário Cadastrado!', `${nome} adicionado(a) com sucesso à equipe.`, 'success');
+          carregarEquipe();
+          return;
+        } else {
+          const errData = await res.json();
+          showToast('Erro no Cadastro', errData.error || 'Não foi possível cadastrar o usuário.', 'error');
+          return;
+        }
+      } catch (err) {}
+
+      // Fallback local se offline
+      const novoUsr = {
+        id: `usr_${Date.now()}`,
+        nome,
+        email,
+        role,
+        cargo: cargo || 'Operador de Atendimento',
+        ativo: true,
+        ultimoAcesso: 'Nunca acessou',
+        condominioIds: ['*']
+      };
+      membrosEquipe.push(novoUsr);
+      fecharModalNovoUsuario();
+      confetti({ particleCount: 35, spread: 60 });
+      showToast('Usuário Cadastrado!', `${nome} adicionado(a) à equipe.`, 'success');
+      carregarEquipe();
+    }
+
+    async function toggleUsuarioAtivo(id) {
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      try {
+        const res = await fetch(`/api/auth/usuarios/${encodeURIComponent(id)}/toggle-ativo`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token || 'sandbox-demo-token'}` }
+        });
+        if (res.ok) {
+          showToast('Status Alterado', 'Acesso do usuário atualizado.', 'info');
+          carregarEquipe();
+          return;
+        }
+      } catch (e) {}
+
+      const u = membrosEquipe.find(m => m.id === id);
+      if (u) {
+        u.ativo = !u.ativo;
+        showToast('Status Alterado', `Usuário ${u.nome} está agora ${u.ativo ? 'ativo' : 'inativo'}.`, 'info');
+        carregarEquipe();
+      }
+    }
+
+    async function removerUsuario(id) {
+      if (!confirm('Deseja realmente remover este usuário da equipe? O acesso será revogado imediatamente.')) return;
+
+      const token = localStorage.getItem('domus_auth_token') || localStorage.getItem('siscon_auth_token');
+      try {
+        const res = await fetch(`/api/auth/usuarios/${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token || 'sandbox-demo-token'}` }
+        });
+        if (res.ok) {
+          showToast('Usuário Removido', 'Membro removido da equipe com sucesso.', 'info');
+          carregarEquipe();
+          return;
+        }
+      } catch (e) {}
+
+      membrosEquipe = membrosEquipe.filter(m => m.id !== id);
+      showToast('Usuário Removido', 'Membro removido da equipe com sucesso.', 'info');
+      carregarEquipe();
     }
 
     // ==========================================
@@ -4632,8 +5363,17 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
       if (tabName === 'reservas') carregarReservas();
       if (tabName === 'manutencao') carregarManutencoes();
-      if (tabName === 'rag') carregarDocumentosRAG();
-      if (tabName === 'ai') carregarConfiguracoesIA();
+      if (tabName === 'rag') {
+        carregarDocumentosRAG();
+        carregarDecisoesIA();
+      }
+      if (tabName === 'ai') {
+        carregarConfiguracoesIA();
+        carregarPendenciasSupervisao();
+      }
+      if (tabName === 'equipe') {
+        carregarEquipe();
+      }
     }
 
     // ==========================================
@@ -6053,6 +6793,12 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         carregarReservas();
       } else if (event.type === 'os_created' || event.type === 'os_updated') {
         carregarManutencoes();
+      } else if (event.type === 'supervisao_pendencia') {
+        showToast('Nova Pendência de IA', `Solicitação de ${event.data?.solicitanteNome || 'morador'} aguarda aprovação do síndico.`, 'info');
+        carregarPendenciasSupervisao();
+      } else if (event.type === 'supervisao_respondida') {
+        carregarPendenciasSupervisao();
+        carregarDecisoesIA();
       }
     }
 
@@ -7427,6 +8173,10 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       carregarCobrancasFintech();
       carregarReservas();
       carregarManutencoes();
+      carregarCondominios();
+      carregarPendenciasSupervisao();
+      carregarDecisoesIA();
+      carregarEquipe();
     });
   </script>
 </body>

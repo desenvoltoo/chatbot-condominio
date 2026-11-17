@@ -10,7 +10,7 @@ import { DbService } from '../services/db.service.js';
 import { requireAuth } from '../middlewares/auth.middleware.js';
 import { formatarMensagemPix, gerarPayloadPix } from '../utils/pix.util.js';
 import { EventsService } from '../services/events.service.js';
-import { Cobranca, Reserva, OrdemManutencao } from '../types/index.js';
+import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision } from '../types/index.js';
 
 export function createApiRouter(orchestrator: BotOrchestrator): Router {
   const router = Router();
@@ -72,6 +72,47 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   // Listagem de usuários da equipe (apenas admin e síndico)
   router.get('/auth/usuarios', requireAuth(['admin', 'sindico']), (_req: Request, res: Response) => {
     res.json(authService.listarUsuarios());
+  });
+
+  // Cadastro de novo operador/administrador
+  router.post('/auth/usuarios', requireAuth(['admin']), (req: Request, res: Response) => {
+    const { email, nome, name, role, cargo, senha, condominioIds } = req.body;
+    const nomeFinal = (nome || name || '').trim();
+    if (!email || !nomeFinal || !role) {
+      return res.status(400).json({ error: 'E-mail, nome e perfil são obrigatórios' });
+    }
+
+    try {
+      const novo = authService.criarUsuario({
+        nome: nomeFinal,
+        email,
+        senhaPlana: senha || 'domus123',
+        role,
+        cargo: cargo || (role === 'admin' ? 'Administrador do Sistema' : role === 'sindico' ? 'Síndico Geral' : 'Operador'),
+        condominioIds: condominioIds || ['*']
+      });
+      res.status(201).json({ success: true, user: novo });
+    } catch (err: any) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+
+  // Exclusão de membro da equipe
+  router.delete('/auth/usuarios/:id', requireAuth(['admin']), (req: Request, res: Response) => {
+    const success = authService.removerUsuario(req.params.id);
+    if (!success) {
+      return res.status(400).json({ error: 'Não foi possível remover o usuário (ou é o administrador mestre).' });
+    }
+    res.json({ success: true });
+  });
+
+  // Alternar status ativo/inativo
+  router.put('/auth/usuarios/:id/toggle-ativo', requireAuth(['admin']), (req: Request, res: Response) => {
+    const updated = authService.toggleUsuarioAtivo(req.params.id);
+    if (!updated) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+    res.json({ success: true, user: updated });
   });
 
   // ==========================================
@@ -142,10 +183,34 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   router.post('/rag/testar', requireAuth(), (req: Request, res: Response) => {
-    const { pergunta } = req.body;
+    const { pergunta, condominioId } = req.body;
     if (!pergunta) return res.status(400).json({ error: 'Pergunta é obrigatória' });
 
     const teste = ragService.testarRAG(pergunta);
+    const user = (req as any).user;
+    
+    // Registrar na governança de decisões da IA com auditoria
+    const condId = condominioId || 'condo_1';
+    const topCitacao = teste.citacoes && teste.citacoes.length > 0 ? teste.citacoes[0] : null;
+    const confiancaNum = parseFloat((teste.confianca || '90').toString().replace('%', '')) / 100;
+
+    dbService.saveAIDecision({
+      id: `dec_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      condominioId: condId,
+      pergunta,
+      resposta: teste.resposta,
+      artigoCitado: topCitacao ? topCitacao.artigo : undefined,
+      documentoCitado: topCitacao ? topCitacao.documentoTitulo : undefined,
+      scoreConfianca: isNaN(confiancaNum) ? 0.95 : confiancaNum,
+      nivelAutonomia: 1,
+      statusAprovacao: 'auto_aprovado',
+      aprovadoPor: user ? user.name : 'Sistema RAG',
+      tokensConsumidos: Math.floor(pergunta.length * 1.5 + teste.resposta.length * 1.2),
+      provedor: 'Gemini RAG Embeddings',
+      modelo: 'gemini-1.5-flash',
+      timestamp: new Date().toISOString()
+    });
+
     res.json(teste);
   });
 
@@ -884,6 +949,122 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       bancoAtivo: `${cfg.bancoIntegrado.toUpperCase()} (Conexão Bancária Direta)`,
       statusConexaoErp: 'Ativo & Sincronizado',
     });
+  });
+
+  // ==========================================
+  // 13. SUPERVISÃO HUMANO-NO-LOOP & PENDÊNCIAS
+  // ==========================================
+
+  router.get('/supervisao/pendencias', requireAuth(['admin', 'sindico', 'operador']), (req: Request, res: Response) => {
+    const condominioId = req.query.condominioId as string | undefined;
+    const status = req.query.status as string | undefined;
+    const pendencias = dbService.getPendenciasSupervisao(condominioId, status);
+    res.json(pendencias);
+  });
+
+  router.post('/supervisao/pendencias', requireAuth(['admin', 'sindico', 'operador']), (req: Request, res: Response) => {
+    const { condominioId, tipo, descricao, solicitanteNome, unidadeId, dadosJson } = req.body;
+    if (!tipo || !descricao || !solicitanteNome) {
+      return res.status(400).json({ error: 'Campos tipo, descricao e solicitanteNome são obrigatórios' });
+    }
+
+    const nova: PendenciaSupervisao = {
+      id: `pend_${Date.now()}`,
+      condominioId: condominioId || 'condo_1',
+      tipo,
+      descricao,
+      solicitanteNome,
+      unidadeId: unidadeId || 'Geral',
+      dadosJson: typeof dadosJson === 'object' ? JSON.stringify(dadosJson) : dadosJson,
+      status: 'pendente',
+      criadoEm: new Date().toISOString()
+    };
+
+    dbService.criarPendenciaSupervisao(nova);
+    EventsService.getInstance().broadcast({
+      type: 'supervisao_pendencia',
+      data: nova,
+      timestamp: new Date().toISOString()
+    });
+    res.status(201).json({ success: true, pendencia: nova });
+  });
+
+  router.post('/supervisao/pendencias/:id/responder', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { status, justificativa } = req.body;
+    if (status !== 'aprovado' && status !== 'rejeitado') {
+      return res.status(400).json({ error: 'Status deve ser "aprovado" ou "rejeitado"' });
+    }
+
+    const user = (req as any).user;
+    const respondida = dbService.responderPendenciaSupervisao(id, status, user?.name || 'Administrador', justificativa);
+    if (!respondida) {
+      return res.status(404).json({ error: 'Pendência não encontrada' });
+    }
+
+    dbService.logAudit(
+      user?.id || 'admin',
+      user?.email || 'admin@domus.condo',
+      `SUPERVISAO_${status.toUpperCase()}`,
+      `Pendência ${id} (${respondida.tipo}) ${status} por ${user?.name}. Justificativa: ${justificativa || 'Nenhuma'}`
+    );
+
+    EventsService.getInstance().broadcast({
+      type: 'supervisao_respondida',
+      data: respondida,
+      timestamp: new Date().toISOString()
+    });
+    res.json({ success: true, pendencia: respondida });
+  });
+
+  // ==========================================
+  // 14. GOVERNANÇA DE IA & AUDITORIA DE DECISÕES
+  // ==========================================
+
+  router.get('/ai/decisions', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    const condominioId = req.query.condominioId as string | undefined;
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 30;
+    const decisions = dbService.getAIDecisions(condominioId, limit);
+    res.json(decisions);
+  });
+
+  // ==========================================
+  // 15. MULTI-CONDOMÍNIO (WHITE-LABEL & GESTÃO)
+  // ==========================================
+
+  router.get('/condominios', requireAuth(), (_req: Request, res: Response) => {
+    const lista = dbService.getCondominios();
+    res.json(lista);
+  });
+
+  router.get('/condominios/:id', requireAuth(), (req: Request, res: Response) => {
+    const cond = dbService.getCondominioById(req.params.id);
+    if (!cond) return res.status(404).json({ error: 'Condomínio não encontrado' });
+    res.json(cond);
+  });
+
+  router.post('/condominios', requireAuth(['admin']), (req: Request, res: Response) => {
+    const { nome, cnpj, endereco, cidade, estado, unidadesQtd, administradoraNome, taxaAdmPercentual, logoUrl } = req.body;
+    if (!nome || !cnpj) {
+      return res.status(400).json({ error: 'Nome e CNPJ são obrigatórios' });
+    }
+
+    const novoCond: Condominio = {
+      id: req.body.id || `condo_${Date.now()}`,
+      nome,
+      cnpj,
+      endereco: endereco || '',
+      cidade: cidade || 'São Paulo',
+      estado: estado || 'SP',
+      unidadesQtd: unidadesQtd || 100,
+      administradoraNome: administradoraNome || 'Administradora Padrão',
+      taxaAdmPercentual: taxaAdmPercentual || 6.0,
+      logoUrl: logoUrl || undefined,
+      criadoEm: new Date().toISOString()
+    };
+
+    dbService.saveCondominio(novoCond);
+    res.status(201).json({ success: true, condominio: novoCond });
   });
 
   return router;
