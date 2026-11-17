@@ -2710,95 +2710,280 @@
 
     <!-- ============================================================== -->
     <!-- MÓDULO: ORÇAMENTOS, PREVISÃO ANUAL & COTAÇÕES -->
+        <!-- ============================================================== -->
+    <!-- MÓDULO: ORÇAMENTOS & GASTOS CONDOMINIAIS (DESPESAS E COTAÇÕES) -->
     <!-- ============================================================== -->
     <main id="tab-content-orcamentos" class="flex-1 min-w-0 w-full overflow-y-auto p-4 sm:p-6 md:p-8 hidden">
       <div class="max-w-5xl mx-auto space-y-6">
+        <!-- Topo & Ações de Gestão de Gastos -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div class="text-xs text-slate-400 font-medium mb-1">Planejamento & Custos</div>
+            <div class="text-xs text-slate-400 font-medium mb-1">Finanças & Custos</div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Orçamentos & Gastos</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Previsão orçamentária anual, execução de despesas por categoria e tomadas de preço com 3 cotações.</p>
           </div>
-          <button onclick="showToast('Nova Cotação', 'Assistente de Cotações com IA ativado.', 'info')" class="px-4 py-2 rounded-xl bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
-            <span>📝</span> <span>+ Nova Cotação de Fornecedor</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button onclick="showToast('Nova Cotação', 'Assistente de Cotações com IA ativado. Insira os dados da solicitação.', 'info')" class="px-4 py-2 rounded-xl bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+              <span>📝</span> <span>+ Nova Cotação IA</span>
+            </button>
+            <button onclick="showToast('Lançamento', 'Formulário de nota fiscal e contas a pagar aberto.', 'info')" class="px-4 py-2 rounded-xl bg-white dark:bg-[#151D2D] hover:bg-slate-50 dark:hover:bg-white/[0.05] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+              <span>🧾</span> <span>+ Lançar Despesa / NF</span>
+            </button>
+          </div>
         </div>
 
-        <!-- 4 Metric Cards de Orçamento -->
+        <!-- 4 Metric Cards de Despesas & Orçamento (100% Gastos) -->
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
-            <span class="text-slate-500 text-xs block font-medium">Teto Orçamentário Anual</span>
-            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 1.850.000</h3>
-            <span class="text-[11px] text-slate-400 block mt-1">Aprovado em assembleia</span>
+            <span class="text-slate-500 text-xs block font-medium">Previsão Orçamentária Anual</span>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 1.680.000</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Aprovado na AGO para 2026</span>
           </div>
           <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
-            <span class="text-slate-500 text-xs block font-medium">Despesas Realizadas</span>
-            <h3 class="text-2xl font-black text-indigo-600 mt-1 font-mono">R$ 1.540.200</h3>
-            <span class="text-[11px] text-emerald-600 font-semibold block mt-1">83.2% do teto (Dentro da meta)</span>
+            <span class="text-slate-500 text-xs block font-medium">Despesas Realizadas (YTD)</span>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 1.342.180</h3>
+            <span class="text-[11px] text-emerald-600 font-semibold block mt-1">79.9% executado (Dentro da meta)</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Gasto Médio Mensal</span>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 134.218</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Teto mensal estipulado: R$ 140k</span>
           </div>
           <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
             <span class="text-slate-500 text-xs block font-medium">Economia Gerada por IA</span>
-            <h3 class="text-2xl font-black text-emerald-600 mt-1 font-mono">R$ 48.900,00</h3>
-            <span class="text-[11px] text-slate-400 block mt-1">Comparando 3 propostas</span>
-          </div>
-          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
-            <span class="text-slate-500 text-xs block font-medium">Cotações em Andamento</span>
-            <h3 class="text-2xl font-black text-amber-600 mt-1 font-mono">3 cotações</h3>
-            <span class="text-[11px] text-amber-600 font-semibold block mt-1">Pintura, CFTV e Gerador</span>
+            <h3 class="text-2xl font-black text-emerald-600 mt-1 font-mono">R$ 48.950</h3>
+            <span class="text-[11px] text-emerald-600 font-semibold block mt-1">Comparando 3 cotações mínimas</span>
           </div>
         </div>
 
-        <!-- Tabela de Cotações com Fornecedores -->
+        <!-- Execução do Orçamento por Centros de Custo (Categorias de Gastos) -->
+        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] shadow-xs p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-white/10 pb-3">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">Execução Orçamentária por Centro de Custo</h3>
+              <p class="text-xs text-slate-400">Acompanhamento de consumo do orçamento aprovado por categoria de despesa</p>
+            </div>
+            <span class="text-xs font-mono font-semibold text-slate-500">Saldo Disponível: R$ 337.820,00</span>
+          </div>
+
+          <div class="space-y-4 text-xs">
+            <!-- Categoria 1: Folha e Pessoal -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5 font-medium">
+                <span class="text-slate-800 dark:text-slate-200 font-semibold">1. Folha de Pagamento & Encargos (Portaria, Zeladoria, Limpeza)</span>
+                <span class="font-mono text-slate-600 dark:text-slate-300">R$ 645.000 / R$ 780.000 <strong class="text-slate-900 dark:text-white ml-2">(82.7%)</strong></span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
+                <div class="h-full bg-indigo-600 rounded-full" style="width: 82.7%"></div>
+              </div>
+            </div>
+
+            <!-- Categoria 2: Contratos e Manutenção -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5 font-medium">
+                <span class="text-slate-800 dark:text-slate-200 font-semibold">2. Contratos & Manutenção Predial (Elevadores, Bombas, CFTV, Jardinagem)</span>
+                <span class="font-mono text-slate-600 dark:text-slate-300">R$ 310.000 / R$ 390.000 <strong class="text-slate-900 dark:text-white ml-2">(79.5%)</strong></span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full" style="width: 79.5%"></div>
+              </div>
+            </div>
+
+            <!-- Categoria 3: Concessionárias -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5 font-medium">
+                <span class="text-slate-800 dark:text-slate-200 font-semibold">3. Concessionárias Públicas (Energia Áreas Comuns, Água, Gás)</span>
+                <span class="font-mono text-slate-600 dark:text-slate-300">R$ 262.180 / R$ 320.000 <strong class="text-slate-900 dark:text-white ml-2">(81.9%)</strong></span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
+                <div class="h-full bg-amber-500 rounded-full" style="width: 81.9%"></div>
+              </div>
+            </div>
+
+            <!-- Categoria 4: Administrativo & Seguros -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5 font-medium">
+                <span class="text-slate-800 dark:text-slate-200 font-semibold">4. Administrativo, Jurídico & Seguro Predial Obrigatório</span>
+                <span class="font-mono text-slate-600 dark:text-slate-300">R$ 85.000 / R$ 110.000 <strong class="text-slate-900 dark:text-white ml-2">(77.3%)</strong></span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
+                <div class="h-full bg-cyan-500 rounded-full" style="width: 77.3%"></div>
+              </div>
+            </div>
+
+            <!-- Categoria 5: Obras e Benfeitorias -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5 font-medium">
+                <span class="text-slate-800 dark:text-slate-200 font-semibold">5. Fundo de Obras & Benfeitorias Aprovadas</span>
+                <span class="font-mono text-slate-600 dark:text-slate-300">R$ 40.000 / R$ 80.000 <strong class="text-slate-900 dark:text-white ml-2">(50.0%)</strong></span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
+                <div class="h-full bg-purple-500 rounded-full" style="width: 50.0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela de Cotações com Fornecedores (Tomada de 3 Preços com IA) -->
         <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] shadow-xs overflow-hidden">
           <div class="p-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
-            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Cotações de Fornecedores & Pedidos de Compra</h3>
-            <span class="text-xs text-slate-400">Auditado com 3 orçamentos mínimos</span>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">Cotações de Serviços & Compras (3 Orçamentos Obrigatórios)</h3>
+              <p class="text-xs text-slate-400">Auditoria automatizada comparando preço, prazo de garantia e laudo técnico</p>
+            </div>
+            <span class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold font-mono">3 Ativas</span>
           </div>
           <table class="w-full text-left text-xs">
             <thead>
               <tr class="border-b border-slate-100 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
                 <th class="py-3 px-6">Serviço / Projeto</th>
                 <th class="py-3 px-6">Categoria</th>
-                <th class="py-3 px-6">Faixa de Preços</th>
-                <th class="py-3 px-6">Proposta Recomendada</th>
+                <th class="py-3 px-6">3 Propostas Comparadas</th>
+                <th class="py-3 px-6">Recomendação IA</th>
                 <th class="py-3 px-6">Status</th>
                 <th class="py-3 px-6 text-right">Ação</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
               <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Pintura da Fachada & Pastilhas</td>
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">
+                  <span>Pintura e Tratamento da Fachada</span>
+                  <span class="block text-[11px] text-slate-400 font-normal">Torre A e B • 240 unidades</span>
+                </td>
+                <td class="py-3.5 px-6 text-slate-500">Obras & Fachada</td>
+                <td class="py-3.5 px-6 font-mono text-[11px] leading-relaxed">
+                  <div>1. Alfa: R$ 38.000</div>
+                  <div>2. EngPred: R$ 44.500</div>
+                  <div>3. FacadeBR: R$ 47.000</div>
+                </td>
+                <td class="py-3.5 px-6">
+                  <span class="font-semibold text-emerald-600">Construtora Alfa</span>
+                  <span class="block text-[11px] text-emerald-700 dark:text-emerald-400 font-mono">Economia: R$ 9.000</span>
+                </td>
+                <td class="py-3.5 px-6">
+                  <span class="badge-status-amber px-2 py-0.5 rounded text-[10px] font-bold">Votação Conselho</span>
+                </td>
+                <td class="py-3.5 px-6 text-right">
+                  <button onclick="showToast('Cotação Fachada', 'Parecer técnico da IA e propostas anexadas abertas.', 'info')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Analisar</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">
+                  <span>Troca de 2 Bombas de Recalque</span>
+                  <span class="block text-[11px] text-slate-400 font-normal">Subsolo 2 • Barrilete Central</span>
+                </td>
                 <td class="py-3.5 px-6 text-slate-500">Manutenção Predial</td>
-                <td class="py-3.5 px-6 font-mono">R$ 38k ~ R$ 47k</td>
-                <td class="py-3.5 px-6 font-semibold text-emerald-600">Construtora Alfa (R$ 38.000)</td>
+                <td class="py-3.5 px-6 font-mono text-[11px] leading-relaxed">
+                  <div>1. HidroTech: R$ 4.800</div>
+                  <div>2. BombaForte: R$ 5.200</div>
+                  <div>3. Paulistana: R$ 5.600</div>
+                </td>
                 <td class="py-3.5 px-6">
-                  <span class="badge-status-amber px-2 py-0.5 rounded text-[10px] font-bold">Em Votação</span>
+                  <span class="font-semibold text-emerald-600">HidroTech (R$ 4.800)</span>
+                  <span class="block text-[11px] text-slate-400 font-mono">Garantia 24 meses</span>
+                </td>
+                <td class="py-3.5 px-6">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Aprovado Síndico</span>
                 </td>
                 <td class="py-3.5 px-6 text-right">
-                  <button onclick="showToast('Cotação', 'Propostas e laudos técnicos exibidos.', 'info')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Analisar</button>
+                  <button onclick="showToast('Ordem de Serviço', 'Contrato assinado e ordem de serviço gerada no ERP.', 'success')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Contrato</button>
                 </td>
               </tr>
               <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Manutenção Preventiva de Bombas</td>
-                <td class="py-3.5 px-6 text-slate-500">Hidráulica</td>
-                <td class="py-3.5 px-6 font-mono">R$ 2.4k ~ R$ 3.1k</td>
-                <td class="py-3.5 px-6 font-semibold text-emerald-600">HidroTech (R$ 2.400)</td>
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">
+                  <span>CFTV IP 4K com Leitura Facial</span>
+                  <span class="block text-[11px] text-slate-400 font-normal">16 Câmeras Garagens e Hall</span>
+                </td>
+                <td class="py-3.5 px-6 text-slate-500">Segurança & TI</td>
+                <td class="py-3.5 px-6 font-mono text-[11px] leading-relaxed">
+                  <div>1. VisionSafe: R$ 12.500</div>
+                  <div>2. TechSeg: R$ 14.800</div>
+                  <div>3. Intelbras: R$ 15.200</div>
+                </td>
                 <td class="py-3.5 px-6">
-                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Aprovado</span>
+                  <span class="font-semibold text-emerald-600">VisionSafe (R$ 12.500)</span>
+                  <span class="block text-[11px] text-slate-400 font-mono">Compatível com CondoVolto</span>
+                </td>
+                <td class="py-3.5 px-6">
+                  <span class="badge-status-gray px-2 py-0.5 rounded text-[10px] font-bold">Instalado / Liquidado</span>
                 </td>
                 <td class="py-3.5 px-6 text-right">
-                  <button onclick="showToast('Ordem de Compra', 'Contrato e NF vinculados ao ERP.', 'success')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Contrato</button>
+                  <button onclick="showToast('Nota Fiscal', 'NF-e #8491 e termo de homologação técnica visualizados.', 'info')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Ver NF</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Livro de Contas a Pagar & Despesas Recentes (Saídas) -->
+        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">Contas a Pagar & Despesas Liquidadas</h3>
+              <p class="text-xs text-slate-400">Registro oficial de saídas e pagamentos operacionais do condomínio</p>
+            </div>
+            <button onclick="showToast('Exportar DRE', 'Relatório de despesas exportado em PDF e CSV.', 'success')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Exportar DRE</button>
+          </div>
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-100 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <th class="py-3 px-6">Fornecedor / Credor</th>
+                <th class="py-3 px-6">Descrição da Despesa</th>
+                <th class="py-3 px-6">Categoria</th>
+                <th class="py-3 px-6">Vencimento</th>
+                <th class="py-3 px-6">Valor</th>
+                <th class="py-3 px-6 text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">LimpTotal Serviços Terceirizados</td>
+                <td class="py-3.5 px-6">Folha Postos Portaria 24h & Limpeza (Nov/26)</td>
+                <td class="py-3.5 px-6 text-slate-500">Folha & Pessoal</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-400">05/11/2026</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 28.400,00</td>
+                <td class="py-3.5 px-6 text-right">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Liquidado</span>
                 </td>
               </tr>
               <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Sistema de CFTV com Reconhecimento</td>
-                <td class="py-3.5 px-6 text-slate-500">Segurança</td>
-                <td class="py-3.5 px-6 font-mono">R$ 12k ~ R$ 16k</td>
-                <td class="py-3.5 px-6 font-semibold text-emerald-600">VisionSafe (R$ 12.500)</td>
-                <td class="py-3.5 px-6">
-                  <span class="badge-status-gray px-2 py-0.5 rounded text-[10px] font-bold">Concluído</span>
-                </td>
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Otis Elevadores do Brasil Ltda</td>
+                <td class="py-3.5 px-6">Manutenção Preventiva 4 Elevadores Sociais/Serviço</td>
+                <td class="py-3.5 px-6 text-slate-500">Manutenção Predial</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-400">10/11/2026</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 4.250,00</td>
                 <td class="py-3.5 px-6 text-right">
-                  <button onclick="showToast('Garantia', 'Equipamentos com garantia de 24 meses ativa.', 'info')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Ver NF</button>
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Liquidado</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Enel Distribuição São Paulo</td>
+                <td class="py-3.5 px-6">Energia Elétrica Áreas Comuns, Garagens e Bombas</td>
+                <td class="py-3.5 px-6 text-slate-500">Concessionárias</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-400">12/11/2026</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 8.940,00</td>
+                <td class="py-3.5 px-6 text-right">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Liquidado</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">Sabesp S/A</td>
+                <td class="py-3.5 px-6">Consumo de Água Portaria, Salões e Jardins</td>
+                <td class="py-3.5 px-6 text-slate-500">Concessionárias</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-400">22/11/2026</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 3.820,00</td>
+                <td class="py-3.5 px-6 text-right">
+                  <span class="badge-status-amber px-2 py-0.5 rounded text-[10px] font-bold">Agendado D+5</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">SulAmérica Cia de Seguros</td>
+                <td class="py-3.5 px-6">Seguro Condominial Obrigatório Incêndio (Parc 10/12)</td>
+                <td class="py-3.5 px-6 text-slate-500">Administrativo & Seguros</td>
+                <td class="py-3.5 px-6 font-mono text-slate-600 dark:text-slate-400">15/11/2026</td>
+                <td class="py-3.5 px-6 font-mono font-bold text-slate-900 dark:text-white">R$ 1.850,00</td>
+                <td class="py-3.5 px-6 text-right">
+                  <span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Liquidado</span>
                 </td>
               </tr>
             </tbody>
@@ -4467,14 +4652,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       },
       sindico: {
         nome: 'Síndico Geral',
-        allowedTabs: ['atendimento', 'cobranca', 'portaria_digital', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
+        allowedTabs: ['portaria_digital', 'atendimento', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
       },
       operador: {
         nome: 'Operador Financeiro',
-        allowedTabs: ['atendimento', 'cobranca', 'reservas'],
+        allowedTabs: ['cobranca', 'receitas', 'orcamentos', 'atendimento', 'reservas'],
         canBroadcast: false,
         canEmitPix: true,
         canEditAcordo: true
@@ -5625,24 +5810,65 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
 
       const perm = ROLE_PERMISSIONS[currentUserRole] || ROLE_PERMISSIONS.admin;
-      if (!perm.allowedTabs.includes(tabName)) {
+      if (perm && perm.allowedTabs && !perm.allowedTabs.includes(tabName)) {
         mostrarAvisoPermissaoRestrita(tabName, currentUserRole);
         return;
       }
 
-      const tabs = ['atendimento', 'cobranca', 'portaria_digital', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'ai', 'configuracoes', 'equipe'];
-      tabs.forEach(t => {
-        const content = document.getElementById(`tab-content-${t}`);
-        const nav = document.getElementById(`nav-${t}`);
-        if (content) content.classList.add('hidden');
-        if (nav) nav.classList.remove('nav-item-active');
+      // 1. Esconde TODAS as abas sem exceção (evita sobreposição)
+      document.querySelectorAll('main[id^="tab-content-"]').forEach(el => {
+        el.classList.add('hidden');
+        el.style.display = 'none';
       });
 
-      const activeContent = document.getElementById(`tab-content-${tabName}`);
-      const activeNav = document.getElementById(`nav-${tabName}`);
-      if (activeContent) activeContent.classList.remove('hidden');
-      if (activeNav) activeNav.classList.add('nav-item-active');
+      // 2. Remove destaque de TODOS os itens da barra lateral
+      document.querySelectorAll('button[id^="nav-"]').forEach(nav => {
+        nav.classList.remove('nav-item-active');
+        nav.classList.remove('bg-slate-900', 'dark:bg-slate-800', 'text-white', 'shadow-xs');
+      });
 
+      // 3. Ativa a aba solicitada
+      const activeContent = document.getElementById('tab-content-' + tabName);
+      if (activeContent) {
+        activeContent.classList.remove('hidden');
+        activeContent.style.display = 'block';
+      }
+
+      // 4. Ativa o botão correspondente na barra lateral
+      const activeNav = document.getElementById('nav-' + tabName);
+      if (activeNav) {
+        activeNav.classList.add('nav-item-active');
+      }
+
+      // 5. Atualiza o rótulo do breadcrumb no topo
+      const tabLabels = {
+        portaria_digital: 'Visitas & Encomendas',
+        atendimento: 'Conversas & Chat',
+        comunicados: 'Comunicados & Avisos',
+        cobranca: 'Cobranças & Acordos',
+        receitas: 'Receitas & Fluxo',
+        orcamentos: 'Orçamentos & Gastos',
+        manutencao: 'Ocorrências & Manutenção',
+        medicao: 'Medidores & Telemetria',
+        reservas: 'Reservas de Espaços',
+        analytics: 'Painel Administrativo',
+        assembleia: 'Assembleias Virtuais',
+        configuracoes: 'Integrações & ERP',
+        ai: 'Hub Multi-IA',
+        rag: 'Base RAG & Regulamentos',
+        equipe: 'Equipe & Acessos'
+      };
+      const topBreadcrumb = document.getElementById('topActiveTabLabel');
+      if (topBreadcrumb && tabLabels[tabName]) {
+        topBreadcrumb.textContent = tabLabels[tabName];
+      }
+
+      // 6. Rola suavemente para o topo do conteúdo
+      const mainArea = document.getElementById('mainContentArea');
+      if (mainArea) mainArea.scrollTop = 0;
+      window.scrollTo(0, 0);
+
+      // 7. Dispara carregadores específicos da aba
       if (tabName === 'cobranca') {
         carregarSimulacaoAcordo();
         carregarCobrancasFintech();
@@ -5661,6 +5887,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         carregarEquipe();
       }
     }
+
+    
 
     // ==========================================
     // QR CODE PIX OFICIAL BANCO CENTRAL (EMVCo BR CODE)
