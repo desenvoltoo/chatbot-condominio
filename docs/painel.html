@@ -663,37 +663,15 @@
     }
 
     /* ============================================================== */
-    /* APPDOMUS MASTER CLEAN DESIGN SYSTEM (CondoVolto AI)            */
+    /* DUAL THEME ENGINE: APPDOMUS LIGHT + FULL DARK MODE             */
     /* ============================================================== */
-    :root {
-      --dm-canvas: #F6F3EE;
-      --dm-card: #FFFFFF;
-      --dm-border: #E5E7EB;
-      --dm-text-main: #111827;
-      --dm-text-sub: #4B5563;
-      --dm-text-muted: #6B7280;
-    }
-
+    /* Layout Dimensions - Theme Neutral */
     html, body {
       max-width: 100vw !important;
       width: 100% !important;
       overflow-x: hidden !important;
-      background-color: #F6F3EE !important;
-      color: #111827 !important;
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
-    }
-
-    /* Scrollbars clean */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #F1ECE4; }
-    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
-
-    /* Layout Containers & Responsiveness */
-    #mainSidebar {
-      background-color: #FFFFFF !important;
-      border-right: 1px solid #E5E7EB !important;
-      box-shadow: 1px 0 3px rgba(0, 0, 0, 0.02) !important;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     #mainContentArea {
@@ -701,28 +679,57 @@
       width: 100% !important;
       flex: 1 1 0% !important;
       overflow-x: hidden !important;
-      background-color: #F6F3EE !important;
     }
 
     main[id^="tab-content-"] {
       min-width: 0 !important;
       width: 100% !important;
       max-width: 100% !important;
-      background-color: #F6F3EE !important;
       box-sizing: border-box !important;
     }
 
     header {
-      background-color: #FFFFFF !important;
-      border-bottom: 1px solid #E5E7EB !important;
-      color: #111827 !important;
       min-width: 0 !important;
       max-width: 100% !important;
       overflow: hidden !important;
     }
 
-    /* All Cards, Panels, Modals and Surfaces in Light Mode */
+    /* -------------------------------------------------------------- */
+    /* 1. MODO CLARO (APPDOMUS CLEAN LIGHT SAAS THEME)                 */
+    /* -------------------------------------------------------------- */
+    html:not(.dark) body {
+      background-color: #F6F3EE !important;
+      color: #111827 !important;
+    }
+
+    html:not(.dark) ::-webkit-scrollbar-track { background: #F1ECE4; }
+    html:not(.dark) ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+    html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+    html:not(.dark) #mainSidebar {
+      background-color: #FFFFFF !important;
+      border-right: 1px solid #E5E7EB !important;
+      box-shadow: 1px 0 3px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    html:not(.dark) #mainContentArea {
+      background-color: #F6F3EE !important;
+    }
+
+    html:not(.dark) main[id^="tab-content-"] {
+      background-color: #F6F3EE !important;
+    }
+
+    html:not(.dark) header {
+      background-color: #FFFFFF !important;
+      border-bottom: 1px solid #E5E7EB !important;
+      color: #111827 !important;
+    }
+
     html:not(.dark) .glass-surface,
+    html:not(.dark) .bg-card,
+    html:not(.dark) .bg-panel,
+    html:not(.dark) .bg-surface,
     html:not(.dark) .bg-\[\#07090e\],
     html:not(.dark) .bg-\[\#0a0e18\],
     html:not(.dark) .bg-\[\#0b0f19\],
@@ -732,25 +739,13 @@
     html:not(.dark) .bg-\[\#121826\],
     html:not(.dark) .bg-\[\#161e30\],
     html:not(.dark) .bg-\[\#181938\],
-    html:not(.dark) .bg-\[\#1b2438\],
-    html:not(.dark) .bg-canvas,
-    html:not(.dark) .bg-panel,
-    html:not(.dark) .bg-card,
-    html:not(.dark) .bg-surface,
-    html:not(.dark) .bg-black\/20,
-    html:not(.dark) .bg-black\/30,
-    html:not(.dark) .bg-black\/40,
-    html:not(.dark) .bg-white\/\[0\.02\],
-    html:not(.dark) .bg-white\/\[0\.03\],
-    html:not(.dark) .bg-white\/\[0\.04\],
-    html:not(.dark) .bg-white\/\[0\.05\] {
+    html:not(.dark) .bg-\[\#1b2438\] {
       background-color: #FFFFFF !important;
       border-color: #E5E7EB !important;
       color: #111827 !important;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
     }
 
-    /* Override dark gradients to clean white cards */
     html:not(.dark) [class*="bg-gradient-to-"]:not(button):not(.btn) {
       background-image: none !important;
       background-color: #FFFFFF !important;
@@ -758,31 +753,23 @@
       color: #111827 !important;
     }
 
-    /* Borders */
     html:not(.dark) [class*="border-white\/"],
     html:not(.dark) .border-slate-800,
-    html:not(.dark) .border-slate-700,
-    html:not(.dark) .border-slate-600 {
+    html:not(.dark) .border-slate-700 {
       border-color: #E5E7EB !important;
     }
 
-    /* Typography Hierarchy */
-    html:not(.dark) h1, 
-    html:not(.dark) h2, 
-    html:not(.dark) h3, 
-    html:not(.dark) h4, 
-    html:not(.dark) h5, 
-    html:not(.dark) h6 {
+    html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, 
+    html:not(.dark) h4, html:not(.dark) h5, html:not(.dark) h6 {
       color: #111827 !important;
-      font-weight: 700 !important;
     }
 
-    html:not(.dark) .text-white, 
-    html:not(.dark) .text-slate-100, 
+    html:not(.dark) .text-white,
+    html:not(.dark) .text-slate-100,
     html:not(.dark) .text-slate-200 {
       color: #111827 !important;
     }
-    html:not(.dark) .text-slate-300, 
+    html:not(.dark) .text-slate-300,
     html:not(.dark) .text-slate-400 {
       color: #4B5563 !important;
     }
@@ -790,26 +777,14 @@
       color: #6B7280 !important;
     }
 
-    /* Keep crisp white text on intentionally dark buttons & active nav */
-    html:not(.dark) .bg-indigo-600, html:not(.dark) .bg-indigo-600 *,
-    html:not(.dark) .bg-indigo-700, html:not(.dark) .bg-indigo-700 *,
-    html:not(.dark) .bg-slate-900, html:not(.dark) .bg-slate-900 *,
-    html:not(.dark) .bg-black, html:not(.dark) .bg-black *,
-    html:not(.dark) .bg-gray-900, html:not(.dark) .bg-gray-900 *,
-    html:not(.dark) .nav-item-active, html:not(.dark) .nav-item-active *,
-    html:not(.dark) button[id^="nav-"].nav-item-active, html:not(.dark) button[id^="nav-"].nav-item-active *,
-    html:not(.dark) #topBtnBroadcast, html:not(.dark) #topBtnBroadcast * {
-      color: #FFFFFF !important;
-    }
-
-    /* Sidebar Navigation Items - AppDomus Style */
+    /* Pílula Escura AppDomus para o item ativo no Modo Claro */
     html:not(.dark) .nav-item-active,
     html:not(.dark) button[id^="nav-"].nav-item-active {
       background-color: #111827 !important;
       color: #FFFFFF !important;
-      font-weight: 600 !important;
       border-radius: 10px !important;
       border-left: none !important;
+      font-weight: 600 !important;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
     }
     html:not(.dark) .nav-item-active svg,
@@ -830,7 +805,15 @@
       color: #6B7280 !important;
     }
 
-    /* Inputs, Selects, Textareas - Clean White Fields */
+    /* Botões Escuros Primários em Modo Claro */
+    html:not(.dark) .bg-indigo-600, html:not(.dark) .bg-indigo-600 *,
+    html:not(.dark) .bg-slate-900, html:not(.dark) .bg-slate-900 *,
+    html:not(.dark) .bg-black, html:not(.dark) .bg-black *,
+    html:not(.dark) #topBtnBroadcast, html:not(.dark) #topBtnBroadcast * {
+      color: #FFFFFF !important;
+    }
+
+    /* Inputs no Modo Claro */
     html:not(.dark) input:not([type="checkbox"]):not([type="radio"]),
     html:not(.dark) textarea,
     html:not(.dark) select {
@@ -838,7 +821,6 @@
       border: 1px solid #D1D5DB !important;
       color: #111827 !important;
       border-radius: 10px !important;
-      font-weight: 500 !important;
     }
     html:not(.dark) input::placeholder, 
     html:not(.dark) textarea::placeholder {
@@ -852,88 +834,54 @@
       box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.08) !important;
     }
 
-    /* AppDomus Chip Badges */
+    /* Chips AppDomus no Modo Claro */
     html:not(.dark) .badge-green,
     html:not(.dark) [class*="bg-emerald-500/10"],
-    html:not(.dark) [class*="bg-emerald-500/15"],
-    html:not(.dark) [class*="bg-emerald-500/20"],
-    html:not(.dark) [class*="bg-emerald-950"] {
+    html:not(.dark) [class*="bg-emerald-500/20"] {
       background-color: #E7F6EC !important;
       color: #1F6B35 !important;
       border: 1px solid #A7F3D0 !important;
     }
-    html:not(.dark) .text-emerald-400, 
-    html:not(.dark) .text-emerald-300, 
-    html:not(.dark) .text-emerald-500 {
+    html:not(.dark) .text-emerald-400, html:not(.dark) .text-emerald-300 {
       color: #1F6B35 !important;
     }
 
     html:not(.dark) .badge-amber,
     html:not(.dark) [class*="bg-amber-500/10"],
-    html:not(.dark) [class*="bg-amber-500/15"],
-    html:not(.dark) [class*="bg-amber-500/20"],
-    html:not(.dark) [class*="bg-amber-950"] {
+    html:not(.dark) [class*="bg-amber-500/20"] {
       background-color: #FFF4D6 !important;
       color: #8A5A00 !important;
       border: 1px solid #FDE68A !important;
     }
-    html:not(.dark) .text-amber-400, 
-    html:not(.dark) .text-amber-300, 
-    html:not(.dark) .text-amber-500 {
+    html:not(.dark) .text-amber-400, html:not(.dark) .text-amber-300 {
       color: #8A5A00 !important;
     }
 
     html:not(.dark) .badge-red,
     html:not(.dark) [class*="bg-rose-500/10"],
-    html:not(.dark) [class*="bg-rose-500/15"],
-    html:not(.dark) [class*="bg-rose-500/20"],
-    html:not(.dark) [class*="bg-rose-950"],
-    html:not(.dark) [class*="bg-red-500/10"] {
+    html:not(.dark) [class*="bg-rose-500/20"] {
       background-color: #FDE8E4 !important;
       color: #A63A1E !important;
       border: 1px solid #FECDD3 !important;
     }
-    html:not(.dark) .text-rose-400, 
-    html:not(.dark) .text-rose-300, 
-    html:not(.dark) .text-red-400 {
+    html:not(.dark) .text-rose-400, html:not(.dark) .text-rose-300 {
       color: #A63A1E !important;
     }
 
-    html:not(.dark) .badge-cyan,
-    html:not(.dark) [class*="bg-cyan-500/10"],
-    html:not(.dark) [class*="bg-cyan-500/15"],
-    html:not(.dark) [class*="bg-cyan-500/20"],
-    html:not(.dark) [class*="bg-cyan-950"] {
-      background-color: #E0F2FE !important;
-      color: #0369A1 !important;
-      border: 1px solid #BAE6FD !important;
-    }
-    html:not(.dark) .text-cyan-400, 
-    html:not(.dark) .text-cyan-300 {
-      color: #0369A1 !important;
-    }
-
-    html:not(.dark) .badge-indigo,
+    html:not(.dark) .badge-gray,
     html:not(.dark) [class*="bg-indigo-500/10"],
-    html:not(.dark) [class*="bg-indigo-500/15"],
-    html:not(.dark) [class*="bg-indigo-500/20"],
-    html:not(.dark) [class*="bg-indigo-950"] {
-      background-color: #EEF2FF !important;
-      color: #4338CA !important;
-      border: 1px solid #C7D2FE !important;
-    }
-    html:not(.dark) .text-indigo-400, 
-    html:not(.dark) .text-indigo-300 {
-      color: #4338CA !important;
+    html:not(.dark) [class*="bg-indigo-500/20"] {
+      background-color: #F3F4F6 !important;
+      color: #374151 !important;
+      border: 1px solid #E5E7EB !important;
     }
 
-    /* Tables Clean Styling */
+    /* Tabelas no Modo Claro */
     html:not(.dark) table {
       width: 100% !important;
       border-collapse: collapse !important;
     }
-    html:not(.dark) thead, 
-    html:not(.dark) th {
+    html:not(.dark) thead, html:not(.dark) th {
       background-color: #F9FAFB !important;
       color: #6B7280 !important;
       font-size: 11.5px !important;
@@ -945,23 +893,113 @@
       background-color: #FFFFFF !important;
       border-top: 1px solid #F3F4F6 !important;
       color: #111827 !important;
-      transition: background 0.12s !important;
     }
     html:not(.dark) tbody tr:hover {
       background-color: #F9FAFB !important;
     }
 
-    /* Clean Environment / Sandbox Notice Banner */
-    html:not(.dark) #envNoticeBanner {
-      background-color: #FFFBEB !important;
-      border-color: #FDE68A !important;
-      color: #92400E !important;
-    }
-    html:not(.dark) #envNoticeBanner strong {
-      color: #78350F !important;
+    /* -------------------------------------------------------------- */
+    /* 2. MODO ESCURO (FULL DARK CYBER/PRO CONDVOLTO THEME)           */
+    /* -------------------------------------------------------------- */
+    html.dark body {
+      background-color: #07090e !important;
+      color: #f1f5f9 !important;
     }
 
-    /* Responsiveness Rules - Prevent Any Horizontal Cut-Off */
+    html.dark ::-webkit-scrollbar-track { background: #07090e; }
+    html.dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 9999px; }
+    html.dark ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
+
+    html.dark #mainSidebar {
+      background-color: #0a0e18 !important;
+      border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+      box-shadow: none !important;
+    }
+
+    html.dark #mainContentArea {
+      background-color: #07090e !important;
+    }
+
+    html.dark main[id^="tab-content-"] {
+      background-color: #07090e !important;
+    }
+
+    html.dark header {
+      background-color: #0b0f19 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+      color: #f1f5f9 !important;
+    }
+
+    html.dark .glass-surface,
+    html.dark .bg-card,
+    html.dark .bg-panel,
+    html.dark .bg-surface,
+    html.dark .bg-\[\#07090e\],
+    html.dark .bg-\[\#0a0e18\],
+    html.dark .bg-\[\#0b0f19\],
+    html.dark .bg-\[\#0e1320\],
+    html.dark .bg-\[\#0e131f\],
+    html.dark .bg-\[\#101524\],
+    html.dark .bg-\[\#121826\],
+    html.dark .bg-\[\#161e30\],
+    html.dark .bg-\[\#181938\],
+    html.dark .bg-\[\#1b2438\] {
+      background-color: #0e1320 !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      color: #f1f5f9 !important;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    html.dark .nav-item-active,
+    html.dark button[id^="nav-"].nav-item-active {
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0.05) 100%) !important;
+      border-left: 3px solid #6366f1 !important;
+      color: #ffffff !important;
+      border-radius: 8px !important;
+    }
+    html.dark .nav-item-active svg,
+    html.dark .nav-item-active span {
+      color: #818cf8 !important;
+    }
+
+    html.dark button[id^="nav-"]:not(.nav-item-active) {
+      color: #94a3b8 !important;
+      border-radius: 8px !important;
+    }
+    html.dark button[id^="nav-"]:not(.nav-item-active):hover {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      color: #ffffff !important;
+    }
+
+    html.dark input:not([type="checkbox"]):not([type="radio"]),
+    html.dark textarea,
+    html.dark select {
+      background-color: #0e1320 !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark input::placeholder,
+    html.dark textarea::placeholder {
+      color: #64748b !important;
+    }
+
+    html.dark table thead th {
+      background-color: #0e1320 !important;
+      color: #94a3b8 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    html.dark table tbody tr {
+      background-color: #0a0e18 !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+      color: #f1f5f9 !important;
+    }
+    html.dark table tbody tr:hover {
+      background-color: #121826 !important;
+    }
+
+    /* -------------------------------------------------------------- */
+    /* 3. RESPONSIVIDADE E PROTEÇÃO CONTRA CORTES LATERAIS            */
+    /* -------------------------------------------------------------- */
     @media (max-width: 1280px) {
       .grid-cols-3,
       [class*="md:grid-cols-3"],
@@ -986,24 +1024,10 @@
         bottom: 0 !important;
         z-index: 50 !important;
         width: 320px !important;
-        background: #FFFFFF !important;
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15) !important;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.25) !important;
       }
     }
-
-    /* Chat Bubbles Clean AppDomus */
-    html:not(.dark) .chat-bubble-user {
-      background: #E7F6EC !important;
-      border: 1px solid #A7F3D0 !important;
-      color: #111827 !important;
-    }
-    html:not(.dark) .chat-bubble-agent {
-      background: #FFFFFF !important;
-      border: 1px solid #E5E7EB !important;
-      color: #111827 !important;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-    }
-  </style>
+    </style>
 </head>
 <body class="min-h-screen flex h-screen overflow-hidden selection:bg-brand selection:text-white relative">
 
@@ -3081,6 +3105,123 @@
     <!-- ============================================================== -->
     <main id="tab-content-portaria_digital" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
       <div class="max-w-5xl mx-auto space-y-6">
+
+        <!-- ============================================================== -->
+        <!-- APPDOMUS EXACT VISITAS COCKPIT (Ref: appdomus.io/pt/solucoes/administradoras) -->
+        <!-- ============================================================== -->
+        <div class="space-y-5">
+          <!-- Top Breadcrumb & Heading Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="text-xs text-slate-400 font-medium mb-1">Visitas</div>
+              <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Visitas</h1>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openNovoVisitanteModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+                <span>+</span> <span>Novo Visitante / QR Code</span>
+              </button>
+              <button onclick="openNovaEncomendaModal()" class="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+                <span>📦</span> <span>Receber Encomenda</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Horizontal Filter Pills (AppDomus Style) -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+            <button class="px-4 py-1.5 rounded-full bg-slate-900 text-white font-semibold shadow-xs cursor-pointer">Hoje</button>
+            <button class="px-4 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 font-medium cursor-pointer">Airbnb</button>
+            <button class="px-4 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 font-medium cursor-pointer">Estacionamento</button>
+            <button class="px-4 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 font-medium cursor-pointer">Próximas</button>
+            <button class="px-4 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 font-medium cursor-pointer">Histórico</button>
+            <button class="px-4 py-1.5 rounded-full bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 font-medium cursor-pointer">Análises</button>
+          </div>
+
+          <!-- Clean Visitas Table (AppDomus Exact Data & Styling) -->
+          <div class="rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-slate-100 bg-slate-50/60 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <th class="py-3.5 px-6">Visitante</th>
+                  <th class="py-3.5 px-6">Unidade</th>
+                  <th class="py-3.5 px-6">Entrada</th>
+                  <th class="py-3.5 px-6">Estacionamento</th>
+                  <th class="py-3.5 px-6">Status</th>
+                  <th class="py-3.5 px-6 text-right">Ação</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                  <td class="py-4 px-6 font-semibold text-slate-900">Fernanda Rocha</td>
+                  <td class="py-4 px-6 font-mono text-slate-600">2511</td>
+                  <td class="py-4 px-6 font-mono text-slate-600">10:42</td>
+                  <td class="py-4 px-6 text-slate-600">Vaga 3</td>
+                  <td class="py-4 px-6">
+                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Entrou</span>
+                  </td>
+                  <td class="py-4 px-6 text-right">
+                    <button onclick="showToast('Acesso', 'Acesso de Fernanda Rocha confirmado na portaria.', 'success')" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">Ver Passe</button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                  <td class="py-4 px-6 font-semibold text-slate-900">Técnico de internet</td>
+                  <td class="py-4 px-6 font-mono text-slate-600">1204</td>
+                  <td class="py-4 px-6 font-mono text-slate-600">11:15</td>
+                  <td class="py-4 px-6 text-slate-400">—</td>
+                  <td class="py-4 px-6">
+                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">A caminho</span>
+                  </td>
+                  <td class="py-4 px-6 text-right">
+                    <button onclick="showToast('Portaria', 'Prestador avisado no interfone digital.', 'info')" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">Liberar</button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                  <td class="py-4 px-6 font-semibold text-slate-900">Entregador do iFood</td>
+                  <td class="py-4 px-6 font-mono text-slate-600">808</td>
+                  <td class="py-4 px-6 font-mono text-slate-600">12:03</td>
+                  <td class="py-4 px-6 text-slate-400">—</td>
+                  <td class="py-4 px-6">
+                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">Acesso enviado</span>
+                  </td>
+                  <td class="py-4 px-6 text-right">
+                    <button onclick="showToast('WhatsApp', 'Notificação reenviada ao morador.', 'info')" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">Reenviar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Floating Assistant Widget Preview (matching Image 0 top right) -->
+          <div class="fixed top-20 right-6 z-30 hidden 2xl:block w-72 bg-white rounded-2xl shadow-xl border border-slate-200/80 p-3.5">
+            <div class="flex items-center gap-2 pb-2.5 border-b border-slate-100">
+              <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">💬</div>
+              <div>
+                <strong class="text-xs text-slate-900 block leading-tight">Assistente Pessoal</strong>
+                <span class="text-[10px] text-slate-400 block leading-tight">WhatsApp</span>
+              </div>
+            </div>
+            <div class="space-y-2 mt-2.5 text-xs">
+              <div class="p-2.5 rounded-xl bg-slate-100 text-slate-800 leading-snug">
+                Minha mãe vem às 18h30, o nome dela é Rosa.
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-900 text-white leading-snug">
+                Pronto, enviei um QR de acesso para ela. Te aviso quando ela entrar.
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Bottom Registered Pill (matching Image 0 bottom left) -->
+          <div class="fixed bottom-6 left-72 z-30 hidden 2xl:block bg-white rounded-2xl shadow-lg border border-slate-200 p-3 max-w-xs">
+            <div class="flex items-center gap-2.5">
+              <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">✓</div>
+              <div>
+                <strong class="text-xs text-slate-900 block">Visita registrada</strong>
+                <span class="text-[11px] text-slate-500">Apto 2511 · hoje, 18:30</span>
+              </div>
+            </div>
+            <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-900 text-white">Registrado por Assistente Pessoal</span>
+          </div>
+        </div>
+
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-[#0e1320] to-cyan-950/30 border border-white/[0.08] shadow-xl">
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono font-semibold mb-2">
@@ -8531,6 +8672,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // Inicialização
     window.addEventListener('DOMContentLoaded', () => {
       initTheme();
+      switchTab('portaria_digital');
       initModoSimples();
       checkUserSession();
       checkEnvironmentStatus();
