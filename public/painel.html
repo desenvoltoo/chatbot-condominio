@@ -2003,108 +2003,177 @@
     <!-- MÓDULO 1: CAIXA DE ENTRADA OMNICHANNEL (COM ÁUDIO & SENTIMENTO) -->
     <!-- ============================================================== -->
     <main id="tab-content-atendimento" class="flex-1 flex overflow-hidden">
-      <!-- Coluna 1: Lista de Conversas -->
+      <!-- Coluna 1: Lista de Conversas & Filtros Avançados -->
       <aside class="w-80 md:w-88 bg-[#0a0e18] border-r border-white/[0.08] flex flex-col shrink-0">
-        <div class="p-3 border-b border-white/[0.08] flex flex-col gap-2">
+        <div class="p-3 border-b border-white/[0.08] space-y-2.5">
+          <!-- Linha 1: Título e Status WhatsApp Live -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-xs text-white uppercase tracking-wider font-mono">Atendimentos</span>
+              <span id="chatTotalCountBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">5 conversas</span>
+            </div>
+            <span class="flex items-center gap-1.5 text-[10px] text-emerald-400 font-mono">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              WhatsApp Live
+            </span>
+          </div>
+
+          <!-- Seletor Rápido de Condomínio -->
+          <div>
+            <select id="filterCondominioSelect" onchange="setCondoFilter(this.value)" class="w-full bg-[#101524] border border-white/[0.08] rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-indigo-500 cursor-pointer">
+              <option value="todos">Todos os Condomínios (Carteira Geral)</option>
+              <option value="Residencial Jardins do Bosque">Residencial Jardins do Bosque</option>
+              <option value="Condomínio Solar das Palmeiras">Condomínio Solar das Palmeiras</option>
+              <option value="Condomínio Edifício Mar Azul">Condomínio Edifício Mar Azul</option>
+            </select>
+          </div>
+
+          <!-- Barra de Busca Instantânea -->
           <div class="relative">
             <input 
               type="text" 
               id="searchConversationInput" 
-              placeholder="Filtrar por morador, unidade ou telefone..." 
-              class="w-full bg-[#101524] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all pr-14"
+              placeholder="Buscar por morador, ap, telefone..." 
+              class="w-full bg-[#101524] border border-white/[0.08] rounded-xl pl-9 pr-8 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all font-sans"
               oninput="filterConversations()"
             />
-            <button id="btnClearSearch" onclick="clearConversationSearch()" class="hidden absolute right-8 top-2 text-xs text-slate-400 hover:text-white px-1.5 py-0.5 rounded font-bold cursor-pointer transition-colors" title="Limpar busca">✕</button>
-            <svg class="w-3.5 h-3.5 text-slate-500 absolute right-3 top-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <svg class="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <button id="btnClearSearch" onclick="clearConversationSearch()" class="hidden absolute right-2.5 top-2 text-xs text-slate-400 hover:text-white px-1.5 py-0.5 rounded font-bold cursor-pointer transition-colors" title="Limpar busca">✕</button>
           </div>
-          <div class="flex items-center justify-between text-[11px] text-slate-400 px-0.5">
-            <span>Filtro de Fila:</span>
-            <div class="flex gap-1">
-              <button onclick="setFilter('todos')" class="px-2 py-0.5 rounded-md bg-indigo-600/30 text-indigo-300 font-semibold border border-indigo-500/30" id="btnFilterTodos">Todos</button>
-              <button onclick="setFilter('humano')" class="px-2 py-0.5 rounded-md hover:bg-white/[0.05] text-slate-400" id="btnFilterHumano">Humano</button>
-              <button onclick="setFilter('bot')" class="px-2 py-0.5 rounded-md hover:bg-white/[0.05] text-slate-400" id="btnFilterBot">IA Ativa</button>
-            </div>
+
+          <!-- Chips de Filtro Segmentado -->
+          <div class="flex items-center gap-1 overflow-x-auto pb-0.5 custom-scrollbar text-[11px]">
+            <button onclick="setFilter('todos')" class="px-2.5 py-1 rounded-lg bg-indigo-600/30 text-indigo-300 font-semibold border border-indigo-500/40 text-xs shrink-0 transition-all cursor-pointer" id="btnFilter_todos">Todos</button>
+            <button onclick="setFilter('bot')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer" id="btnFilter_bot">IA Ativa</button>
+            <button onclick="setFilter('humano')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer" id="btnFilter_humano">Humano</button>
+            <button onclick="setFilter('pendentes')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer" id="btnFilter_pendentes">Pendentes</button>
+            <button onclick="setFilter('inadimplentes')" class="px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer" id="btnFilter_inadimplentes">Inadimplentes</button>
           </div>
         </div>
 
         <div id="conversationsList" class="flex-1 overflow-y-auto divide-y divide-white/[0.04]"></div>
       </aside>
 
-      <!-- Coluna 2: Chat ao Vivo -->
+      <!-- Coluna 2: Chat ao Vivo & Cockpit de Controle -->
       <section class="flex-1 flex flex-col bg-[#07090e] relative overflow-hidden">
-        <div class="px-4 py-2.5 border-b border-white/[0.08] bg-[#0b0f19] flex items-center justify-between shrink-0">
+        <!-- Header da Conversa Ativa -->
+        <div class="px-4 md:px-6 py-3 border-b border-white/[0.08] bg-[#0b0f19] flex items-center justify-between shrink-0 gap-3">
           <div class="flex items-center gap-3 min-w-0">
-            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[1px] shrink-0">
-              <img id="chatHeaderAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" class="w-full h-full rounded-full object-cover" />
+            <div class="relative shrink-0">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[1.5px] shadow-sm">
+                <img id="chatHeaderAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" class="w-full h-full rounded-full object-cover" />
+              </div>
+              <span id="chatHeaderOnlineDot" class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0b0f19] animate-pulse" title="Online via WhatsApp"></span>
             </div>
             <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <h2 id="chatHeaderName" class="font-bold text-sm text-white truncate">Carlos Eduardo Silva</h2>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 id="chatHeaderName" class="font-bold text-sm text-white truncate cursor-pointer hover:text-indigo-300 transition-colors" onclick="toggleDossieLateral(true)" title="Clique para ver o Dossiê 360°">Carlos Eduardo Silva</h2>
                 <span id="chatHeaderBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
                   Em Dia
                 </span>
-                <!-- Detector de Sentimento & Risco Jurídico (Oculto em caso normal) -->
-                <span id="chatHeaderSentiment" class="hidden px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 shrink-0 animate-pulse">
-                  ⚠️ Risco Jurídico
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-600/15 text-emerald-300 border border-emerald-500/25 shrink-0 hidden sm:inline-flex items-center gap-1">
+                  <svg class="w-3 h-3 text-emerald-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
+                  WhatsApp Oficial
+                </span>
+                <!-- Detector de Sentimento & Risco Jurídico -->
+                <span id="chatHeaderSentiment" class="hidden px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 shrink-0 animate-pulse items-center gap-1">
+                  <svg class="w-3 h-3 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                  Risco Jurídico
                 </span>
               </div>
-              <p id="chatHeaderSub" class="text-[11px] text-slate-400 truncate">Residencial Jardins do Bosque • Apt 101 - Bloco A</p>
+              <p id="chatHeaderSub" class="text-[11px] text-slate-400 truncate mt-0.5">Residencial Jardins do Bosque • Apt 101 - Bloco A</p>
             </div>
           </div>
 
+          <!-- Controles de Atendimento no Header -->
           <div class="flex items-center gap-2 shrink-0">
+            <!-- Toggle Autonomia IA vs Humano -->
             <button 
               id="btnToggleHandoff" 
               onclick="toggleHumanHandoff()" 
-              class="px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer">
-              <svg id="handoffIcon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/></svg>
+              title="Alternar entre resposta autônoma da IA e controle do operador"
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer shadow-sm">
+              <span id="handoffIndicatorDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span id="handoffText">IA Autônoma</span>
             </button>
+
+            <!-- Botão Boleto Pix 1-Clique -->
             <button 
               id="btnEmitirPixChat"
               onclick="abrirModalQrCodePix('650.00')" 
-              class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
+              title="Gerar e Enviar QR Code Pix instantâneo"
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm shadow-emerald-600/30 cursor-pointer">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span class="hidden sm:inline">QR Code Pix</span>
-              <span class="sm:hidden">Pix</span>
+              <span class="hidden sm:inline">Pix 1-Clique</span>
             </button>
+
+            <!-- Botão Concluir Atendimento -->
+            <button 
+              onclick="concluirAtendimentoAtual()" 
+              title="Marcar conversa como resolvida e arquivar"
+              class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer">
+              <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span class="hidden lg:inline">Concluir</span>
+            </button>
+
+            <!-- Botão Abrir Dossiê 360° -->
             <button 
               id="btnToggleDossie" 
               onclick="toggleDossieLateral()" 
               title="Abrir / Recolher Dossiê do Morador"
-              class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] transition-all flex items-center gap-1 cursor-pointer">
-              <span>👤</span>
-              <span class="hidden md:inline">Dossiê</span>
+              class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer">
+              <svg class="w-3.5 h-3.5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span class="hidden md:inline" id="btnToggleDossieText">Ver Dossiê</span>
             </button>
           </div>
         </div>
 
         <!-- BANNER DE AÇÃO RECOMENDADA PELA IA (DISCRETO & INTELIGENTE) -->
-        <div id="smartActionBanner" class="px-4 py-2 bg-gradient-to-r from-indigo-950/30 via-slate-900/40 to-transparent border-b border-indigo-500/15 flex flex-wrap items-center justify-between gap-2 transition-all">
+        <div id="smartActionBanner" class="px-4 py-2 bg-gradient-to-r from-indigo-950/40 via-slate-900/60 to-transparent border-b border-indigo-500/20 flex flex-wrap items-center justify-between gap-2 transition-all">
           <div class="flex items-center gap-2 text-xs truncate">
             <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
-            <span class="font-bold text-indigo-300 shrink-0">Sugestão:</span>
+            <span class="font-bold text-indigo-300 shrink-0 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Sugestão IA:
+            </span>
             <span id="smartActionText" class="text-slate-300 truncate">Morador solicitou 2ª via da cota (<strong>R$ 650,00</strong>).</span>
           </div>
           <div class="flex items-center gap-1.5 shrink-0" id="smartActionButtons">
-            <button id="btnSmartActionPrimary" onclick="executarAcaoSugerida('pix')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center gap-1 cursor-pointer">
-              <span>⚡ Enviar Pix</span>
+            <button id="btnSmartActionPrimary" onclick="executarAcaoSugerida('pix')" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Enviar Pix</span>
             </button>
-            <button id="btnSmartActionSecondary" onclick="executarAcaoSugerida('acordo')" class="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 font-medium text-xs border border-white/[0.08] transition-all cursor-pointer">
-              <span>🤝 Acordo</span>
+            <button id="btnSmartActionSecondary" onclick="executarAcaoSugerida('acordo')" class="px-3 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 font-medium text-xs border border-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer">
+              <svg class="w-3.5 h-3.5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Acordo</span>
             </button>
           </div>
         </div>
 
-        <div id="chatMessagesStream" class="flex-1 overflow-y-auto p-4 space-y-3.5"></div>
+        <div id="chatMessagesStream" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-3.5 custom-scrollbar"></div>
 
-        <!-- Canned Responses / Respostas Rápidas -->
-        <div class="px-4 py-2 border-t border-white/[0.06] bg-[#0a0e18] flex items-center gap-2 overflow-x-auto text-[11px]">
-          <span class="text-slate-500 font-mono font-semibold shrink-0">Respostas Rápidas:</span>
-          <button onclick="sendQuickReply('📄 Seu boleto recalculado com Pix Copia e Cola já foi gerado!')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08] cursor-pointer">📄 Enviar Boleto Pix</button>
-          <button id="btnQuickAcordo" onclick="abrirModalTermoAcordoParaAtivo()" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-indigo-300 shrink-0 border border-indigo-500/30 cursor-pointer">✍️ Gerar Termo de Acordo</button>
-          <button onclick="sendQuickReply('📦 Conforme o Art. 24 do Regimento Interno, mudanças são permitidas aos sábados das 08h às 12h.')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08] cursor-pointer">📦 Regra de Mudança</button>
-          <button onclick="openNovaEncomendaModal()" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-purple-300 shrink-0 border border-purple-500/30 cursor-pointer">📦 Notificar Encomenda</button>
+        <!-- Canned Responses / Respostas Rápidas com SVGs -->
+        <div class="px-4 py-2 border-t border-white/[0.06] bg-[#0a0e18] flex items-center gap-2 overflow-x-auto text-[11px] custom-scrollbar">
+          <span class="text-slate-500 font-mono font-semibold shrink-0 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Respostas Rápidas:
+          </span>
+          <button onclick="sendQuickReply('📄 Seu boleto recalculado com Pix Copia e Cola já foi gerado!')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08] cursor-pointer flex items-center gap-1.5 transition-colors">
+            <svg class="w-3 h-3 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>Enviar Boleto Pix</span>
+          </button>
+          <button id="btnQuickAcordo" onclick="abrirModalTermoAcordoParaAtivo()" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-indigo-300 shrink-0 border border-indigo-500/30 cursor-pointer flex items-center gap-1.5 transition-colors">
+            <svg class="w-3 h-3 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Gerar Termo de Acordo</span>
+          </button>
+          <button onclick="sendQuickReply('📦 Conforme o Art. 24 do Regimento Interno, mudanças são permitidas aos sábados das 08h às 12h.')" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 shrink-0 border border-white/[0.08] cursor-pointer flex items-center gap-1.5 transition-colors">
+            <svg class="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>
+            <span>Regra de Mudança</span>
+          </button>
+          <button onclick="openNovaEncomendaModal()" class="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-purple-300 shrink-0 border border-purple-500/30 cursor-pointer flex items-center gap-1.5 transition-colors">
+            <svg class="w-3 h-3 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+            <span>Notificar Encomenda</span>
+          </button>
         </div>
 
         <!-- Barra de Status de Controle do Chat (IA vs Humano) -->
@@ -2121,18 +2190,46 @@
           <div id="slashCommandsPopover" class="hidden absolute bottom-full left-3 mb-2 w-80 bg-[#0e1322] border border-indigo-500/30 rounded-2xl shadow-2xl p-2 z-30 backdrop-blur-xl">
             <div class="px-2.5 py-1.5 border-b border-white/[0.06] flex items-center justify-between text-[11px] text-slate-400">
               <span class="font-bold text-indigo-300 font-mono flex items-center gap-1">
-                <span>⚡</span> Comandos Rápidos
+                <svg class="w-3.5 h-3.5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Comandos Rápidos
               </span>
               <span class="text-[9px] font-mono bg-white/[0.06] text-slate-400 px-1.5 py-0.5 rounded">↑↓ navegar • Enter</span>
             </div>
             <div id="slashCommandsList" class="max-h-56 overflow-y-auto mt-1 space-y-1 text-xs"></div>
           </div>
 
+          <!-- Botão de Anexos Rápidos -->
+          <div class="relative">
+            <button 
+              type="button" 
+              onclick="toggleAttachmentMenu()" 
+              id="btnAttachment"
+              class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-all cursor-pointer"
+              title="Anexar Boleto, Regimento ou Foto">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </button>
+            <!-- Dropup de Anexos Rápidos -->
+            <div id="attachmentMenu" class="hidden absolute bottom-full left-0 mb-2 w-56 bg-[#0e1322] border border-white/[0.1] rounded-2xl shadow-2xl p-1.5 z-30 space-y-1 text-xs">
+              <button type="button" onclick="sendQuickReply('📄 Segue o boleto em PDF homologado para pagamento.'); toggleAttachmentMenu();" class="w-full p-2 rounded-xl hover:bg-white/[0.08] text-left text-slate-200 flex items-center gap-2 cursor-pointer transition-colors">
+                <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span>Boleto Cota em PDF</span>
+              </button>
+              <button type="button" onclick="sendQuickReply('📋 Segue cópia em PDF do Regimento Interno e Convenção Condominial.'); toggleAttachmentMenu();" class="w-full p-2 rounded-xl hover:bg-white/[0.08] text-left text-slate-200 flex items-center gap-2 cursor-pointer transition-colors">
+                <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>
+                <span>Regimento Interno</span>
+              </button>
+              <button type="button" onclick="openNovaEncomendaModal(); toggleAttachmentMenu();" class="w-full p-2 rounded-xl hover:bg-white/[0.08] text-left text-slate-200 flex items-center gap-2 cursor-pointer transition-colors">
+                <svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+                <span>Notificar Encomenda</span>
+              </button>
+            </div>
+          </div>
+
           <input 
             type="text" 
             id="chatInputText" 
-            placeholder="Digite uma mensagem ou '/' para comandos rápidos..." 
-            class="flex-1 bg-[#07090e] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all"
+            placeholder="Digite uma mensagem ou digite '/' para comandos rápidos..." 
+            class="flex-1 bg-[#07090e] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all font-sans"
             oninput="handleChatInput(event)"
             onkeydown="handleChatKeyDown(event)"
           />
@@ -2152,8 +2249,19 @@
         </div>
       </section>
 
-      <!-- Coluna 3: Dossiê do Condômino & CRM -->
-      <aside id="sideDossieMorador" class="w-80 bg-[#0a0e18] border-l border-white/[0.08] flex flex-col shrink-0 overflow-y-auto">
+      <!-- Coluna 3: Dossiê do Condômino & CRM (Inicia FECHADO até clique) -->
+      <aside id="sideDossieMorador" class="w-80 bg-[#0a0e18] border-l border-white/[0.08] flex-col shrink-0 overflow-y-auto hidden">
+        <!-- Barra de Topo do Dossiê com Botão Fechar -->
+        <div class="px-4 py-3 border-b border-white/[0.08] flex items-center justify-between bg-[#0e1322]">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-300">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <span class="text-xs font-bold text-white font-mono uppercase tracking-wider">Dossiê 360°</span>
+          </div>
+          <button onclick="toggleDossieLateral(false)" class="p-1 rounded-lg hover:bg-white/[0.08] text-slate-400 hover:text-white transition-colors cursor-pointer text-xs" title="Recolher Dossiê">✕</button>
+        </div>
+
         <div class="p-5 border-b border-white/[0.08] text-center">
           <div class="w-16 h-16 rounded-full mx-auto mb-2.5 bg-gradient-to-tr from-indigo-500 to-cyan-400 p-[2px]">
             <img id="sideMoradorAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80" class="w-full h-full rounded-full object-cover" />
@@ -3804,6 +3912,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     let allConversations = [];
     let activeRemoteJid = null;
     let currentFilter = 'todos';
+    let currentCondoFilter = 'todos';
     let currentSimulacao = null;
     let selectedParcelasQtd = 1;
     let sidebarCollapsed = false;
@@ -5093,6 +5202,18 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         { time: '05/11/2026', icon: '📩', dotClass: 'bg-amber-400', title: 'Régua de Cobrança D+20', desc: 'Lembrete amigável com proposta de acordo sem juros enviado no WhatsApp.' },
         { time: '15/10/2026', icon: '⚠️', dotClass: 'bg-rose-400', title: 'Cota de Outubro Vencida', desc: 'Cota de R$ 1.350,00 em aberto (inadimplência de 42 dias).' },
         { time: '20/09/2026', icon: '🤝', dotClass: 'bg-emerald-400', title: 'Acordo Anterior Quitado', desc: 'Termo de confissão nº 842 cumprido integralmente com 100% de pontualidade.' }
+      ],
+      '5511977777777@s.whatsapp.net': [
+        { time: 'Hoje 10:05', icon: '⚖️', dotClass: 'bg-indigo-400', title: 'Dúvida Assembleia', desc: 'Solicitou pauta da AGE para o síndico geral.' },
+        { time: '10/11/2026', icon: '💰', dotClass: 'bg-emerald-400', title: 'Cota de Novembro Paga', desc: 'Pix de R$ 820,00 compensado.' }
+      ],
+      '5511966666666@s.whatsapp.net': [
+        { time: 'Hoje 08:47', icon: '🎉', dotClass: 'bg-emerald-400', title: 'Reserva Churrasqueira 2', desc: 'Reserva confirmada para o próximo sábado via IA autônoma.' },
+        { time: '15/10/2026', icon: '💰', dotClass: 'bg-emerald-400', title: 'Cota em Dia', desc: 'Pagamento de R$ 650,00 via Pix.' }
+      ],
+      '5511955555555@s.whatsapp.net': [
+        { time: 'Ontem 19:40', icon: '📋', dotClass: 'bg-amber-400', title: 'Negociação de Dívida', desc: 'Morador solicitou parcelamento em 6x no Pix após perda de emprego.' },
+        { time: '15/08/2026', icon: '⚠️', dotClass: 'bg-rose-400', title: 'Inadimplência 90 dias', desc: 'Total em aberto de R$ 2.450,00 com split DOMUS PAY ativo.' }
       ]
     };
 
@@ -5128,14 +5249,28 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const now = new Date();
       const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       
-      const isMariana = activeRemoteJid.includes('888888888');
-      const duration = isMariana ? '0:35' : '0:22';
-      const summary = isMariana 
-        ? 'Moradora aceita quitar parcelas sem multa e solicita envio do termo de acordo.'
-        : 'Morador confirma pagamento Pix de R$ 650,00 e solicita comprovante de quitação.';
-      const transcription = isMariana
-        ? 'Olá, como conversamos, se retirarem a multa abusiva eu concordo em parcelar o valor principal e pagar a primeira parcela hoje mesmo via Pix. Podem me mandar o termo?'
-        : 'Boa tarde, pessoal da administração. Acabei de realizar o pagamento da cota de condomínio pelo Pix Copia e Cola. Gostaria de saber se já consta baixado no sistema predial.';
+      const nome = conv.pushName || 'Morador';
+      let duration = '0:22';
+      let summary = `Morador ${nome} enviou áudio com dúvida operacional sobre o condomínio.`;
+      let transcription = `Olá, boa tarde! Gostaria de confirmar se já receberam a minha solicitação no sistema predial. Obrigado!`;
+      let replyText = `Olá ${nome.split(' ')[0]}! Sua solicitação foi confirmada e registrada com sucesso no sistema.`;
+
+      if (activeRemoteJid.includes('888888888')) {
+        duration = '0:35';
+        summary = 'Moradora aceita quitar parcelas sem multa e solicita envio do termo de acordo.';
+        transcription = 'Olá, como conversamos, se retirarem a multa abusiva eu concordo em parcelar o valor principal e pagar a primeira parcela hoje mesmo via Pix. Podem me mandar o termo?';
+        replyText = 'Perfeito, Mariana! Formalizamos sua proposta: termo sem juros de R$ 1.350,00 pronto para assinatura digital. Você pode assinar com 1 clique no botão acima.';
+      } else if (activeRemoteJid.includes('999999999')) {
+        duration = '0:22';
+        summary = 'Morador confirma pagamento Pix de R$ 650,00 e solicita comprovante de quitação.';
+        transcription = 'Boa tarde, pessoal da administração. Acabei de realizar o pagamento da cota de condomínio pelo Pix Copia e Cola. Gostaria de saber se já consta baixado no sistema predial.';
+        replyText = 'Olá Carlos! Sim, seu pagamento via Pix de R$ 650,00 foi identificado instantaneamente pelo gateway DOMUS PAY. Sua unidade está 100% regularizada e sem pendências!';
+      } else if (activeRemoteJid.includes('777777777')) {
+        duration = '0:28';
+        summary = 'Morador solicita esclarecimento sobre o orçamento extraordinário da fachada.';
+        transcription = 'Olá, boa tarde. Gostaria de entender o impacto da taxa extra da fachada na cota ordinária antes da assembleia de quinta-feira.';
+        replyText = 'Olá Roberto! O memorial de cálculo da fachada foi anexado à pauta da assembleia com rateio em 10 cotas fixas.';
+      }
 
       conv.messages.push({
         id: `audio_${Date.now()}`,
@@ -5162,10 +5297,6 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       showToast('Áudio Recebido & Transcrito!', 'A IA processou o áudio, gerou o resumo executivo e a transcrição Whisper.', 'info');
 
       setTimeout(() => {
-        const replyText = isMariana
-          ? 'Perfeito, Mariana! Formalizamos sua proposta: termo sem juros de R$ 1.350,00 pronto para assinatura digital. Você pode assinar com 1 clique no botão acima.'
-          : 'Olá Carlos! Sim, seu pagamento via Pix de R$ 650,00 foi identificado instantaneamente pelo gateway. Sua unidade está 100% regularizada e sem pendências!';
-
         conv.messages.push({
           id: `bot_reply_${Date.now()}`,
           sender: 'bot',
@@ -5189,6 +5320,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         telefone: '(11) 99999-9999',
         avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80',
         isHumanHandoff: false,
+        isPendente: false,
         sentiment: 'positivo',
         statusFinanceiro: 'regular',
         statusFinanceiroLabel: '● Regular',
@@ -5219,6 +5351,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         telefone: '(11) 98888-8888',
         avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80',
         isHumanHandoff: true,
+        isPendente: true,
         sentiment: 'risco_juridico',
         statusFinanceiro: 'inadimplente',
         statusFinanceiroLabel: '⚠️ Inadimplente (42d)',
@@ -5237,6 +5370,95 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         messages: [
           { id: 'm21', sender: 'user', text: 'Bom dia, recebi uma notificação com juros abusivos. Se não tirarem a multa vou acionar meu advogado e abrir processo!', timestamp: '09:15' },
           { id: 'm22', sender: 'bot', text: 'Compreendo sua preocupação, Mariana. Transferi seu contato com prioridade máxima para nosso gestor financeiro humano para renegociação amigável.', timestamp: '09:15' }
+        ]
+      },
+      {
+        remoteJid: '5511977777777@s.whatsapp.net',
+        pushName: 'Roberto Guimarães',
+        cpf: '45678912345',
+        cpfFormatted: '456.***.***-45',
+        telefone: '(11) 97777-7777',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+        isHumanHandoff: true,
+        isPendente: true,
+        sentiment: 'neutro',
+        statusFinanceiro: 'regular',
+        statusFinanceiroLabel: '● Regular',
+        statusFinanceiroBadgeClass: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        cotaLabel: 'Cota Atual:',
+        cotaValor: 'R$ 820,00',
+        cotaVenc: '10/11/2026',
+        splitAdm: 'R$ 24,60 (3%)',
+        pixValor: '820.00',
+        morador: {
+          id: 'morador_3',
+          nome: 'Roberto Guimarães',
+          cpf: '45678912345',
+          unidades: [{ id: 'unid_502', condominioNome: 'Condomínio Edifício Mar Azul', bloco: 'Torre Única', numero: 'Apt 502' }]
+        },
+        messages: [
+          { id: 'm31', sender: 'user', text: 'Boa tarde! Gostaria de falar com o síndico a respeito da pauta da próxima assembleia extraordinária.', timestamp: '10:05' },
+          { id: 'm32', sender: 'bot', text: 'Olá, Sr. Roberto! Notifiquei o síndico geral. O atendimento humano está aberto e o operador responderá em instantes.', timestamp: '10:06' }
+        ]
+      },
+      {
+        remoteJid: '5511966666666@s.whatsapp.net',
+        pushName: 'Fernanda Dias',
+        cpf: '32165498711',
+        cpfFormatted: '321.***.***-11',
+        telefone: '(11) 96666-6666',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80',
+        isHumanHandoff: false,
+        isPendente: false,
+        sentiment: 'positivo',
+        statusFinanceiro: 'regular',
+        statusFinanceiroLabel: '● Regular',
+        statusFinanceiroBadgeClass: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        cotaLabel: 'Cota Atual:',
+        cotaValor: 'R$ 650,00',
+        cotaVenc: '15/11/2026',
+        splitAdm: 'R$ 19,50 (3%)',
+        pixValor: '650.00',
+        morador: {
+          id: 'morador_4',
+          nome: 'Fernanda Dias',
+          cpf: '32165498711',
+          unidades: [{ id: 'unid_302', condominioNome: 'Residencial Jardins do Bosque', bloco: 'Bloco B', numero: 'Apt 302' }]
+        },
+        messages: [
+          { id: 'm41', sender: 'user', text: 'Oi, a churrasqueira 2 está livre no próximo sábado?', timestamp: '08:45' },
+          { id: 'm42', sender: 'bot', text: 'Olá Fernanda! Sim, a Churrasqueira 2 do Bosque está disponível no sábado das 11h às 18h. A taxa de limpeza é de R$ 90,00 debitada na próxima cota. Deseja confirmar a reserva agora?', timestamp: '08:46' },
+          { id: 'm43', sender: 'user', text: 'Sim, pode confirmar por favor!', timestamp: '08:47' },
+          { id: 'm44', sender: 'bot', text: '🎉 Reserva confirmada com sucesso para o Apt 302! O voucher e o regulamento de convidados foram salvos no seu app.', timestamp: '08:47' }
+        ]
+      },
+      {
+        remoteJid: '5511955555555@s.whatsapp.net',
+        pushName: 'Juliano Rocha',
+        cpf: '78912345688',
+        cpfFormatted: '789.***.***-88',
+        telefone: '(11) 95555-5555',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80',
+        isHumanHandoff: false,
+        isPendente: true,
+        sentiment: 'neutro',
+        statusFinanceiro: 'inadimplente',
+        statusFinanceiroLabel: '⚠️ Inadimplente (90d)',
+        statusFinanceiroBadgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+        cotaLabel: 'Total em Aberto:',
+        cotaValor: 'R$ 2.450,00',
+        cotaVenc: 'Vencido há 90 dias (15/08)',
+        splitAdm: 'R$ 73,50 (3%)',
+        pixValor: '2450.00',
+        morador: {
+          id: 'morador_5',
+          nome: 'Juliano Rocha',
+          cpf: '78912345688',
+          unidades: [{ id: 'unid_108', condominioNome: 'Condomínio Solar das Palmeiras', bloco: 'Torre 1', numero: 'Apt 108' }]
+        },
+        messages: [
+          { id: 'm51', sender: 'user', text: 'Boa noite, perdi meu emprego no mês retrasado e atrasei os condomínios. Consigo parcelar em até 6 vezes no Pix?', timestamp: 'Ontem 19:40' },
+          { id: 'm52', sender: 'bot', text: 'Olá Juliano! Compreendemos sua situação perfeitamente. O condomínio autoriza o parcelamento em até 6 parcelas via Pix sem juros abusivos. Nosso gestor já gerou a proposta de acordo para você.', timestamp: 'Ontem 19:41' }
         ]
       }
     ];
@@ -5261,22 +5483,38 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (!container) return;
 
       const filtered = allConversations.filter(c => {
+        // Filtro de Condomínio
+        if (currentCondoFilter && currentCondoFilter !== 'todos') {
+          const condo = c.morador?.unidades?.[0]?.condominioNome || '';
+          if (condo !== currentCondoFilter) return false;
+        }
+
+        // Filtro de Status
         if (currentFilter === 'humano') return c.isHumanHandoff;
         if (currentFilter === 'bot') return !c.isHumanHandoff;
+        if (currentFilter === 'pendentes') return c.isPendente || c.isHumanHandoff;
+        if (currentFilter === 'inadimplentes') return c.statusFinanceiro === 'inadimplente';
         return true;
       });
 
-      // Atualiza contadores dos filtros
-      const countTodos = allConversations.length;
-      const countHumano = allConversations.filter(c => c.isHumanHandoff).length;
-      const countBot = allConversations.filter(c => !c.isHumanHandoff).length;
+      // Atualiza badge de total
+      const totalBadge = document.getElementById('chatTotalCountBadge');
+      if (totalBadge) {
+        totalBadge.innerText = `${filtered.length} ${filtered.length === 1 ? 'conversa' : 'conversas'}`;
+      }
 
-      const btnTodos = document.getElementById('btnFilterTodos');
-      const btnHumano = document.getElementById('btnFilterHumano');
-      const btnBot = document.getElementById('btnFilterBot');
-      if (btnTodos) btnTodos.innerText = `Todos (${countTodos})`;
-      if (btnHumano) btnHumano.innerText = `Humano (${countHumano})`;
-      if (btnBot) btnBot.innerText = `IA Ativa (${countBot})`;
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-xs text-slate-400 space-y-2">
+            <div class="w-10 h-10 mx-auto rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-400">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+            <div class="font-bold text-slate-200">Nenhum atendimento encontrado</div>
+            <p class="text-[11px] text-slate-500">Nenhuma conversa atende aos filtros atuais.</p>
+          </div>
+        `;
+        return;
+      }
 
       container.innerHTML = filtered.map(c => {
         const isActive = c.remoteJid === activeRemoteJid;
@@ -5289,7 +5527,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           <div onclick="selectConversation('${c.remoteJid}')" class="p-3 cursor-pointer transition-all flex items-start gap-3 border-b border-white/[0.04] ${isActive ? 'bg-indigo-950/40 border-l-4 border-indigo-500' : 'hover:bg-white/[0.03]'}">
             <div class="relative shrink-0 mt-0.5">
               <img src="${avatarUrl}" class="w-10 h-10 rounded-full object-cover border border-white/10" alt="${c.pushName || 'Morador'}" />
-              <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0a0e18] ${c.isHumanHandoff ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}" title="${c.isHumanHandoff ? 'Atendimento Humano' : 'IA Autônoma Ativa'}"></span>
+              <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0a0e18] ${c.isHumanHandoff ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}" title="${c.isHumanHandoff ? 'Operador Humano Ativo' : 'IA Autônoma Ativa'}"></span>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center justify-between gap-1 mb-0.5">
@@ -5346,7 +5584,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           headerBadge.innerText = 'Em Dia';
         } else {
           headerBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 shrink-0';
-          headerBadge.innerText = 'Atraso 42d';
+          headerBadge.innerText = conv.statusFinanceiroLabel?.replace('⚠️ ', '') || 'Atraso';
         }
       }
 
@@ -5355,7 +5593,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         if (conv.sentiment === 'risco_juridico') {
           sentBadge.classList.remove('hidden');
           sentBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 animate-pulse shrink-0';
-          sentBadge.innerHTML = '<span>⚠️</span> Risco Jurídico';
+          sentBadge.innerHTML = '<svg class="w-3 h-3 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg> Risco Jurídico';
         } else {
           sentBadge.classList.add('hidden');
         }
@@ -5374,9 +5612,9 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const sideUnidade = document.getElementById('sideMoradorUnidade');
       if (sideUnidade) sideUnidade.innerText = unitShort;
       const sideCpf = document.getElementById('sideMoradorCpf');
-      if (sideCpf) sideCpf.innerText = conv.cpfFormatted || (conv.remoteJid.includes('888888888') ? '987.***.***-00' : '123.***.***-09');
+      if (sideCpf) sideCpf.innerText = conv.cpfFormatted || '123.***.***-00';
       const sideTel = document.getElementById('sideMoradorTel');
-      if (sideTel) sideTel.innerText = conv.telefone || (conv.remoteJid.includes('888888888') ? '(11) 98888-8888' : '(11) 99999-9999');
+      if (sideTel) sideTel.innerText = conv.telefone || '(11) 99999-9999';
 
       const sideBadge = document.getElementById('sideFinanceiroBadge');
       if (sideBadge) {
@@ -5385,18 +5623,18 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           sideBadge.innerText = '● Regular';
         } else {
           sideBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30';
-          sideBadge.innerText = '⚠️ Inadimplente (42d)';
+          sideBadge.innerText = conv.statusFinanceiroLabel || '⚠️ Inadimplente';
         }
       }
 
       const sideLabel = document.getElementById('sideFinanceiroLabel');
-      if (sideLabel) sideLabel.innerText = isFinOk ? 'Cota Atual:' : 'Total em Aberto:';
+      if (sideLabel) sideLabel.innerText = conv.cotaLabel || (isFinOk ? 'Cota Atual:' : 'Total em Aberto:');
       const sideValor = document.getElementById('sideFinanceiroValor');
-      if (sideValor) sideValor.innerText = isFinOk ? 'R$ 650,00' : 'R$ 1.350,00';
+      if (sideValor) sideValor.innerText = conv.cotaValor || (isFinOk ? 'R$ 650,00' : 'R$ 1.350,00');
       const sideVenc = document.getElementById('sideFinanceiroVenc');
-      if (sideVenc) sideVenc.innerText = isFinOk ? '15/11/2026' : 'Vencido há 42 dias';
+      if (sideVenc) sideVenc.innerText = conv.cotaVenc || (isFinOk ? '15/11/2026' : 'Vencido');
       const sideSplit = document.getElementById('sideFinanceiroSplit');
-      if (sideSplit) sideSplit.innerText = isFinOk ? 'R$ 19,50 (3%)' : 'R$ 40,50 (3%)';
+      if (sideSplit) sideSplit.innerText = conv.splitAdm || (isFinOk ? 'R$ 19,50 (3%)' : 'R$ 40,50 (3%)');
 
       const btnSidePix = document.getElementById('btnSidePix');
       if (btnSidePix) {
@@ -5422,17 +5660,20 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
                 <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md chat-bubble-user text-slate-200 border border-cyan-500/20">
                   <div class="flex items-center justify-between gap-4 mb-2">
                     <div class="flex items-center gap-1.5 font-bold text-[10px] text-cyan-300">
-                      <span>🎙️</span>
+                      <svg class="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
                       <span>Áudio WhatsApp</span>
                       <span class="px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 font-mono text-[9px]">${m.duration || '0:22'}</span>
                     </div>
-                    <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
+                    <div class="flex items-center gap-1">
+                      <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
+                      <span class="text-cyan-400 font-mono text-[9px]">✓✓</span>
+                    </div>
                   </div>
 
                   <!-- Waveform Player Interativo -->
                   <div class="flex items-center gap-3 p-2.5 rounded-xl bg-black/40 border border-white/[0.08]">
                     <button onclick="showToast('Áudio em Reprodução', 'Reproduzindo áudio do morador com velocidade normal (1.0x).', 'info')" class="w-7 h-7 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black flex items-center justify-center font-bold text-[11px] shrink-0 transition-transform active:scale-95 shadow cursor-pointer">
-                      ▶
+                      <svg class="w-3.5 h-3.5 text-black ml-0.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </button>
                     <div class="flex-1 flex items-center gap-1 h-5">
                       <span class="w-1 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
@@ -5451,7 +5692,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
                   <!-- Resumo Executivo DOMUS AI -->
                   <div class="mt-2.5 p-2.5 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-indigo-100">
                     <div class="flex items-center gap-1.5 text-[10px] font-bold text-cyan-300 mb-1">
-                      <span>🧠</span>
+                      <svg class="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                       <span>Resumo Executivo DOMUS AI:</span>
                     </div>
                     <p class="text-xs text-white font-medium leading-relaxed">${m.audioSummary || 'Morador solicita confirmação de baixa do Pix no sistema.'}</p>
@@ -5471,7 +5712,10 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
               <div class="max-w-[85%] rounded-2xl p-3.5 text-xs shadow-md ${isUser ? 'chat-bubble-user text-slate-200' : 'chat-bubble-agent text-indigo-100'}">
                 <div class="flex items-center justify-between gap-4 mb-1">
                   <span class="font-bold text-[10px] ${isUser ? 'text-slate-400' : 'text-cyan-300 font-mono'}">${isUser ? 'Condômino' : 'DOMUS AI'}</span>
-                  <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
+                  <div class="flex items-center gap-1">
+                    <span class="text-[9px] text-slate-500 font-mono">${m.timestamp || ''}</span>
+                    <span class="text-indigo-400 font-mono text-[9px]">✓✓</span>
+                  </div>
                 </div>
                 <p class="whitespace-pre-wrap leading-relaxed">${m.text}</p>
 
@@ -5479,7 +5723,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
                   <div class="mt-3 p-3 rounded-xl bg-black/60 border border-emerald-500/30 text-emerald-300">
                     <div class="flex items-center justify-between mb-1.5">
                       <span class="text-[10px] font-mono font-bold uppercase tracking-wider">Pix Copia e Cola Oficial:</span>
-                      <button onclick="navigator.clipboard.writeText('${m.pixCode}'); alert('Chave Pix copiada!')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-bold text-[10px]">Copiar Chave</button>
+                      <button onclick="navigator.clipboard.writeText('${m.pixCode}'); showToast('Pix Copiado!', 'Chave Pix Copia e Cola copiada com sucesso.', 'success')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-bold text-[10px] cursor-pointer">Copiar Chave</button>
                     </div>
                     <input readonly value="${m.pixCode}" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded px-2 py-1 text-[10px] font-mono text-slate-300" />
                   </div>
@@ -5505,14 +5749,19 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function updateHandoffButton(isHuman) {
       const btn = document.getElementById('btnToggleHandoff');
       const text = document.getElementById('handoffText');
+      const handoffDot = document.getElementById('handoffIndicatorDot');
       const statusBar = document.getElementById('chatControlStatusBar');
       const statusDot = document.getElementById('chatControlDot');
       const statusText = document.getElementById('chatControlText');
       const statusActionBtn = document.getElementById('chatControlActionBtn');
 
+      if (handoffDot) {
+        handoffDot.className = isHuman ? 'w-2 h-2 rounded-full bg-amber-400' : 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+      }
+
       if (isHuman) {
         if (btn) {
-          btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 cursor-pointer';
+          btn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 cursor-pointer shadow-sm';
         }
         if (text) text.innerText = 'Operador Humano';
 
@@ -5523,14 +5772,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           statusDot.className = 'w-2 h-2 rounded-full bg-amber-400 shrink-0';
         }
         if (statusText) {
-          statusText.innerHTML = '<strong>👤 Atendimento Humano Ativo:</strong> A IA está pausada. Suas mensagens são enviadas diretamente ao morador.';
+          statusText.innerHTML = '<strong>Atendimento Humano Ativo:</strong> A IA está pausada. Suas mensagens são enviadas diretamente ao morador.';
         }
         if (statusActionBtn) {
-          statusActionBtn.innerText = 'Devolver para IA 🤖';
+          statusActionBtn.innerText = 'Devolver para IA';
         }
       } else {
         if (btn) {
-          btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer';
+          btn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer shadow-sm';
         }
         if (text) text.innerText = 'IA Autônoma';
 
@@ -5541,10 +5790,10 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           statusDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0';
         }
         if (statusText) {
-          statusText.innerHTML = '<strong>🤖 IA Autônoma Ativa:</strong> O robô responde dúvidas de convenção, boletos e encomendas automaticamente.';
+          statusText.innerHTML = '<strong>IA Autônoma Ativa:</strong> O robô responde dúvidas de convenção, boletos e encomendas automaticamente.';
         }
         if (statusActionBtn) {
-          statusActionBtn.innerText = 'Pausar IA & Assumir 👤';
+          statusActionBtn.innerText = 'Pausar IA & Assumir';
         }
       }
     }
@@ -5579,26 +5828,53 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function setFilter(filter) {
       currentFilter = filter;
-      ['todos', 'humano', 'bot'].forEach(f => {
-        const btn = document.getElementById(`btnFilter${f.charAt(0).toUpperCase() + f.slice(1)}`);
+      const filters = ['todos', 'bot', 'humano', 'pendentes', 'inadimplentes'];
+      filters.forEach(f => {
+        const btn = document.getElementById(`btnFilter_${f}`);
         if (btn) {
-          if (f === filter) btn.className = 'px-2 py-0.5 rounded-md bg-indigo-600/30 text-indigo-300 font-semibold border border-indigo-500/30';
-          else btn.className = 'px-2 py-0.5 rounded-md hover:bg-white/[0.05] text-slate-400';
+          if (f === filter) {
+            btn.className = 'px-2.5 py-1 rounded-lg bg-indigo-600/30 text-indigo-300 font-semibold border border-indigo-500/40 text-xs shrink-0 transition-all cursor-pointer';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] text-slate-400 text-xs shrink-0 border border-white/[0.06] transition-all cursor-pointer';
+          }
         }
       });
       renderConversationsList();
     }
 
-    function toggleDossieLateral() {
+    function setCondoFilter(val) {
+      currentCondoFilter = val;
+      renderConversationsList();
+    }
+
+    function concluirAtendimentoAtual() {
+      const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
+      if (!conv) return;
+      conv.isPendente = false;
+      showToast('Atendimento Concluído', `Conversa com ${conv.pushName || 'morador'} foi marcada como resolvida.`, 'success');
+      renderConversationsList();
+    }
+
+    function toggleAttachmentMenu() {
+      const menu = document.getElementById('attachmentMenu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    function toggleDossieLateral(forceOpen) {
       const dossie = document.getElementById('sideDossieMorador');
+      const btnText = document.getElementById('btnToggleDossieText');
       if (!dossie) return;
-      if (dossie.classList.contains('hidden')) {
+
+      const willOpen = (typeof forceOpen === 'boolean') ? forceOpen : dossie.classList.contains('hidden');
+      if (willOpen) {
         dossie.classList.remove('hidden');
         dossie.classList.add('flex');
-        showToast('Dossiê Expandido', 'Painel lateral do condômino visível.', 'info');
+        if (btnText) btnText.innerText = 'Fechar Dossiê';
+        showToast('Dossiê Expandido', 'Painel lateral 360° do condômino visível.', 'info');
       } else {
         dossie.classList.add('hidden');
         dossie.classList.remove('flex');
+        if (btnText) btnText.innerText = 'Ver Dossiê';
         showToast('Dossiê Recolhido', 'Espaço central de chat maximizado.', 'info');
       }
     }
@@ -5634,7 +5910,9 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           emptyEl.id = 'conversationsEmptyState';
           emptyEl.className = 'p-6 text-center text-xs text-slate-400 space-y-2';
           emptyEl.innerHTML = `
-            <div class="text-3xl">🔍</div>
+            <div class="w-10 h-10 mx-auto rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-400">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
             <div class="font-bold text-slate-200">Nenhum morador encontrado</div>
             <p class="text-[11px] text-slate-400">Nenhuma conversa coincide com "${term}". Tente buscar por nome, bloco ou número.</p>
           `;
@@ -6033,19 +6311,19 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (!textEl || !btnPrimary) return;
 
       if (conv.remoteJid.includes('888888888') || conv.sentiment === 'risco_juridico') {
-        textEl.innerHTML = `Débito de <strong>R$ 1.350,00</strong> (42 dias). IA recomenda acordo amigável com 100% de desconto de juros.`;
-        btnPrimary.innerHTML = `<span>✍️ Formalizar Acordo Sem Juros (1 Clique)</span>`;
+        textEl.innerHTML = `Débito de <strong>${conv.cotaValor || 'R$ 1.350,00'}</strong>. IA recomenda proposta de acordo com isenção moratória.`;
+        btnPrimary.innerHTML = `<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> <span>Formalizar Acordo (1-Clique)</span>`;
         btnPrimary.onclick = () => executarAcaoSugerida('acordo');
         if (btnSecondary) {
-          btnSecondary.innerHTML = `<span>📢 Notificar Amigável</span>`;
+          btnSecondary.innerHTML = `<svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> <span>Notificar Amigável</span>`;
           btnSecondary.onclick = () => executarAcaoSugerida('notificar_amigavel');
         }
       } else {
-        textEl.innerHTML = `Morador solicitou 2ª via da cota condominial de Novembro (<strong>R$ 650,00</strong>).`;
-        btnPrimary.innerHTML = `<span>⚡ Enviar Boleto Pix (1 Clique)</span>`;
+        textEl.innerHTML = `Morador consultando cota condominial (<strong>${conv.cotaValor || 'R$ 650,00'}</strong>).`;
+        btnPrimary.innerHTML = `<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> <span>Enviar Pix (1-Clique)</span>`;
         btnPrimary.onclick = () => executarAcaoSugerida('pix');
         if (btnSecondary) {
-          btnSecondary.innerHTML = `<span>🤝 Propor Acordo</span>`;
+          btnSecondary.innerHTML = `<svg class="w-3.5 h-3.5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> <span>Propor Acordo</span>`;
           btnSecondary.onclick = () => executarAcaoSugerida('acordo_simular');
         }
       }
