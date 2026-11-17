@@ -18,6 +18,34 @@
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
+            zeloris: {
+              obsidian: '#07090E',
+              surface: '#0D1322',
+              surfaceElevated: '#141C30',
+              indigo: {
+                50: '#EEF2FF',
+                100: '#E0E7FF',
+                400: '#818CF8',
+                500: '#6366F1',
+                600: '#4F46E5',
+                700: '#4338CA',
+                800: '#3730A3',
+                900: '#312E81'
+              },
+              emerald: {
+                50: '#ECFDF5',
+                100: '#D1FAE5',
+                400: '#34D399',
+                500: '#10B981',
+                600: '#059669',
+                700: '#047857'
+              },
+              cyan: {
+                400: '#38BDF8',
+                500: '#06B6D4',
+                600: '#0891B2'
+              }
+            },
             brand: {
               50: '#ecfdf5',
               100: '#d1fae5',
@@ -190,20 +218,21 @@
         </div>
       </div>
 
-      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-300">
-        <a href="#simulador" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Simulador Ao Vivo
+      <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
+        <a href="#trabalhadores" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Trabalhadores Digitais
         </a>
-        <a href="#diferenciais" class="hover:text-emerald-400 transition-colors">Diferenciais</a>
-        <a href="#roi" class="hover:text-emerald-400 transition-colors">Economia Financeira</a>
-        <a href="#como-funciona" class="hover:text-emerald-400 transition-colors">Como Funciona</a>
-        <a href="#questionario" class="hover:text-emerald-400 transition-colors">Integração ERP</a>
+        <a href="#cockpit" class="hover:text-cyan-400 transition-colors">Cockpit da Carteira</a>
+        <a href="#comparativo" class="hover:text-cyan-400 transition-colors">Comparativo</a>
+        <a href="#paleta-cores" class="hover:text-cyan-400 transition-colors">Identidade Visual</a>
+        <a href="#simulador" class="hover:text-emerald-400 transition-colors">Simulador WhatsApp</a>
+        <a href="#roi" class="hover:text-cyan-400 transition-colors">Calculadora de Escala</a>
       </nav>
 
       <div class="flex items-center gap-3">
-        <a href="login.html" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/25 transition-all flex items-center gap-1.5 transform hover:-translate-y-0.5">
-          <svg class="w-4 h-4 text-slate-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span>Acessar ZELORIS AI</span>
+        <a href="login.html" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold text-xs shadow-lg shadow-indigo-500/25 transition-all flex items-center gap-1.5 transform hover:-translate-y-0.5">
+          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Acessar Plataforma</span>
         </a>
         <a href="painel.html" class="hidden sm:flex px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-emerald-300 border border-emerald-500/30 font-bold text-xs transition-all items-center gap-1.5 shadow-sm">
           <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
@@ -219,15 +248,16 @@
 
     <!-- Gaveta de Navegação Mobile -->
     <div id="mobileLandingNav" class="lg:hidden hidden bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 px-6 py-4 space-y-3 text-sm font-medium text-slate-200">
-      <a href="#simulador" onclick="toggleMobileLandingNav()" class="flex items-center gap-2 py-2 hover:text-emerald-400 transition-colors">
-        <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Simulador Ao Vivo
+      <a href="#trabalhadores" onclick="toggleMobileLandingNav()" class="flex items-center gap-2 py-2 hover:text-cyan-400 transition-colors">
+        <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Trabalhadores Digitais
       </a>
-      <a href="#diferenciais" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-emerald-400 transition-colors">Diferenciais</a>
-      <a href="#roi" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-emerald-400 transition-colors">Economia Financeira</a>
-      <a href="#como-funciona" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-emerald-400 transition-colors">Como Funciona</a>
-      <a href="#questionario" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-emerald-400 transition-colors">Integração ERP</a>
+      <a href="#cockpit" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-cyan-400 transition-colors">Cockpit da Carteira</a>
+      <a href="#comparativo" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-cyan-400 transition-colors">Comparativo</a>
+      <a href="#paleta-cores" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-cyan-400 transition-colors">Identidade Visual</a>
+      <a href="#simulador" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-emerald-400 transition-colors">Simulador WhatsApp</a>
+      <a href="#roi" onclick="toggleMobileLandingNav()" class="block py-2 hover:text-cyan-400 transition-colors">Calculadora de Escala</a>
       <div class="pt-3 border-t border-slate-800/80 flex flex-col gap-2">
-        <a href="login.html" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-center text-xs shadow-md">Acessar Login Corporativo</a>
+        <a href="login.html" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-bold text-center text-xs shadow-md">Acessar Login Corporativo</a>
         <a href="painel.html" class="w-full py-2.5 rounded-xl bg-slate-800 text-emerald-300 font-bold text-center text-xs border border-emerald-500/30">Abrir Painel Operacional</a>
       </div>
     </div>
@@ -238,73 +268,713 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
       
       <!-- Top Pill -->
-      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-semibold text-emerald-300 mb-8 shadow-inner backdrop-blur-md">
+      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-xs font-semibold text-indigo-300 mb-8 shadow-inner backdrop-blur-md">
         <span class="flex h-2 w-2 relative">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
-        <span>Tecnologia Oficial de Autoatendimento WhatsApp para Administradoras de Condomínio</span>
+        <span class="font-mono text-cyan-400 uppercase tracking-wider text-[11px] font-bold">Solução Oficial para Administradoras de Condomínios</span>
+        <span class="text-slate-600">•</span>
+        <span class="text-slate-300">Trabalhadores Digitais com IA</span>
       </div>
 
       <!-- Main Headline -->
       <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight max-w-5xl mx-auto leading-[1.1]">
-        Elimine o Atendimento Manual e Entregue Boletos em <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-300">3 Segundos</span>
+        Escale sua Administradora para <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400">+50 Condomínios</span> com IA
       </h1>
 
       <p class="mt-6 text-base sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
-        Substitua o trabalho repetitivo de enviar 2ª via e responder dúvidas frequentes por uma central autônoma que funciona <strong class="text-white font-semibold">24 horas por dia, 7 dias por semana</strong> no número oficial da sua administradora.
+        Assuma o dobro de edifícios sem dobrar sua equipe. Atendimento ininterrupto <strong class="text-white font-semibold">24/7 no WhatsApp</strong>, cobrança preventiva com <strong class="text-emerald-400 font-semibold">Split Pix no Banco Central</strong> e conciliação direta conectada ao seu ERP.
       </p>
 
       <!-- Key Value Points -->
-      <div class="mt-10 flex flex-wrap justify-center gap-3 sm:gap-5 text-xs sm:text-sm font-medium text-slate-200">
-        <div class="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-card-pro shadow-sm">
-          <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>Linha Digitável & Pix Copia e Cola</span>
+      <div class="mt-10 flex flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm font-medium text-slate-200">
+        <div class="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-card-pro shadow-sm border border-indigo-500/20">
+          <svg class="w-4 h-4 text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>4 Trabalhadores Digitais Especializados</span>
         </div>
-        <div class="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-card-pro shadow-sm">
+        <div class="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-card-pro shadow-sm border border-emerald-500/20">
           <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>PDF Oficial Anexado na Hora</span>
+          <span>Split Pix 3% Instantâneo no BACEN</span>
         </div>
-        <div class="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-card-pro shadow-sm">
-          <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>Transcrição de Áudio com IA Whisper</span>
+        <div class="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-card-pro shadow-sm border border-cyan-500/20">
+          <svg class="w-4 h-4 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>RAG Regimental com Citação de Artigos</span>
         </div>
-        <div class="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-card-pro shadow-sm">
+        <div class="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass-card-pro shadow-sm border border-white/[0.08]">
           <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>Zero Esforço Técnico (Chave na Mão)</span>
+          <span>Zero Tarifa por Mensagem Enviada</span>
         </div>
       </div>
 
       <!-- CTA Buttons -->
       <div class="mt-10 flex flex-wrap justify-center gap-4">
-        <a href="#simulador" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-sm transition-all shadow-xl shadow-emerald-500/25 transform hover:-translate-y-0.5 flex items-center gap-2.5 group">
-          <span>Experimentar Simulador Interativo</span>
+        <a href="#simulador" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-black text-sm transition-all shadow-xl shadow-indigo-500/25 transform hover:-translate-y-0.5 flex items-center gap-2.5 group">
+          <span>Testar Simulador WhatsApp ao Vivo</span>
           <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" x2="19" y1="12" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
-        <a href="#roi" class="px-8 py-4 rounded-2xl glass-card-pro hover:bg-white/[0.08] text-white font-semibold text-sm transition-all flex items-center gap-2">
-          <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
-          <span>Calcular Economia Financeira</span>
+        <a href="#trabalhadores" class="px-8 py-4 rounded-2xl glass-card-pro hover:bg-white/[0.08] text-white font-semibold text-sm transition-all flex items-center gap-2">
+          <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Conhecer os 4 Trabalhadores Digitais</span>
+        </a>
+        <a href="painel.html" class="px-8 py-4 rounded-2xl bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 font-bold text-sm transition-all flex items-center gap-2">
+          <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          <span>Abrir Cockpit da Administradora</span>
         </a>
       </div>
 
       <!-- Live Operational Telemetry Strip -->
-      <div class="mt-14 pt-8 border-t border-white/[0.08] max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+      <div class="mt-14 pt-8 border-t border-white/[0.08] max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
         <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm">
-          <span class="block text-2xl font-black text-white font-mono tracking-tight">+140.000</span>
-          <span class="text-[11px] text-slate-400">Boletos Emitidos</span>
+          <span class="block text-2xl font-black text-indigo-400 font-mono tracking-tight">3,2s</span>
+          <span class="text-[11px] text-slate-400">SLA Médio de 1ª Resposta</span>
         </div>
         <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm">
-          <span class="block text-2xl font-black text-emerald-400 font-mono tracking-tight">3,2s</span>
-          <span class="text-[11px] text-slate-400">Tempo Médio de Envio</span>
+          <span class="block text-2xl font-black text-emerald-400 font-mono tracking-tight">82%</span>
+          <span class="text-[11px] text-slate-400">Chamados Resolvidos sem Humano</span>
         </div>
         <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm">
-          <span class="block text-2xl font-black text-cyan-400 font-mono tracking-tight">98,6%</span>
-          <span class="text-[11px] text-slate-400">Resolução Automática</span>
+          <span class="block text-2xl font-black text-cyan-400 font-mono tracking-tight">3% Split</span>
+          <span class="text-[11px] text-slate-400">Comissão no Pix pelo Bacen</span>
         </div>
         <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm">
-          <span class="block text-2xl font-black text-teal-300 font-mono tracking-tight">R$ 0,00</span>
-          <span class="text-[11px] text-slate-400">Custo por Conversa</span>
+          <span class="block text-2xl font-black text-white font-mono tracking-tight">+3x</span>
+          <span class="text-[11px] text-slate-400">Capacidade de Expansão</span>
         </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section: Os 4 Trabalhadores Digitais da Zeloris AI -->
+  <section id="trabalhadores" class="py-24 md:py-32 relative z-10 border-b border-slate-800/80 bg-slate-950/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+          <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+          Equipe de IA Especializada
+        </div>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          Conheça os <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400">4 Trabalhadores Digitais</span> da Zeloris
+        </h2>
+        <p class="text-slate-300 text-sm md:text-base mt-4 leading-relaxed">
+          Não sobrecarregue sua equipe com tarefas manuais e repetitivas. Ative agentes de inteligência artificial autônomos que operam em conjunto pelo WhatsApp da sua administradora, 24 horas por dia, 7 dias por semana.
+        </p>
+      </div>
+
+      <!-- Grid dos 4 Trabalhadores -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        
+        <!-- Trabalhador 1: Concierge & Atendimento 24/7 -->
+        <div class="glass-card-pro rounded-3xl p-7 sm:p-9 border border-indigo-500/20 relative overflow-hidden flex flex-col justify-between group hover:border-indigo-400/50 transition-all">
+          <div class="absolute -top-12 -right-12 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-500/20 transition-all"></div>
+          
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold shadow-lg shadow-indigo-500/10">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-xs font-mono font-bold border border-indigo-500/30">
+                Trabalhador #01 • 24/7
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <span>Concierge & Atendimento 24/7</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-indigo-300 font-medium mt-1">
+              Atendimento receptivo contínuo, regimento interno e reservas
+            </p>
+
+            <p class="text-xs sm:text-sm text-slate-300 mt-4 leading-relaxed">
+              Responde instantaneamente no WhatsApp oficial da administradora. Tira dúvidas complexas sobre convenção condominial, regras da piscina, barulho e mudanças usando RAG com citação exata de artigos e parágrafos.
+            </p>
+
+            <div class="mt-6 space-y-2.5 border-t border-white/[0.08] pt-5">
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Reserva de áreas comuns (churrasqueiras, salão de festas) com regras de carência</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Envio imediato de atas de assembleia, balancetes e circulares oficiais em PDF</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Transbordo humano supervisionado com passagem integral de histórico de conversa</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-400">Taxa de Resolução:</span>
+            <span class="text-indigo-300 font-bold bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20">82% Sem Intervenção Humana</span>
+          </div>
+        </div>
+
+        <!-- Trabalhador 2: Agente de Cobrança & Split Pix -->
+        <div class="glass-card-pro rounded-3xl p-7 sm:p-9 border border-emerald-500/20 relative overflow-hidden flex flex-col justify-between group hover:border-emerald-400/50 transition-all">
+          <div class="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/20 transition-all"></div>
+          
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-bold shadow-lg shadow-emerald-500/10">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-mono font-bold border border-emerald-500/30">
+                Trabalhador #02 • Financeiro
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <span>Agente de Cobrança & Split Pix</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-emerald-300 font-medium mt-1">
+              Régua preventiva, emissão instantânea e comissão automática
+            </p>
+
+            <p class="text-xs sm:text-sm text-slate-300 mt-4 leading-relaxed">
+              Acabe com a inadimplência sem desgastar o síndico. Emite 2ª via atualizada em 3 segundos, gera códigos Pix Copia e Cola dinâmicos e aplica Split Pix pelo Banco Central (97% condomínio / 3% administradora).
+            </p>
+
+            <div class="mt-6 space-y-2.5 border-t border-white/[0.08] pt-5">
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Régua de lembretes preventivos (D-5, D-1 e D+3) com tom cordial e profissional</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Recálculo automático de multas e juros de mora diários integrado ao ERP</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Trava inteligente para débitos antigos e encaminhamento com dossiê ao Jurídico</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-400">Impacto em 30 Dias:</span>
+            <span class="text-emerald-300 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">+45% Liquidação via Pix</span>
+          </div>
+        </div>
+
+        <!-- Trabalhador 3: Assistente de Manutenção & Ocorrências -->
+        <div class="glass-card-pro rounded-3xl p-7 sm:p-9 border border-cyan-500/20 relative overflow-hidden flex flex-col justify-between group hover:border-cyan-400/50 transition-all">
+          <div class="absolute -top-12 -right-12 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-500/20 transition-all"></div>
+          
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold shadow-lg shadow-cyan-500/10">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 text-xs font-mono font-bold border border-cyan-500/30">
+                Trabalhador #03 • Operacional
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <span>Zeladoria Digital & Ocorrências</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-cyan-300 font-medium mt-1">
+              Triagem visual por IA, geração de OS e despacho de prestadores
+            </p>
+
+            <p class="text-xs sm:text-sm text-slate-300 mt-4 leading-relaxed">
+              O morador envia foto ou gravação de voz de um vazamento, lâmpada queimada ou avaria. A IA categoriza a gravidade, gera protocolo de chamado e despacha a equipe de manutenção com rastreabilidade completa.
+            </p>
+
+            <div class="mt-6 space-y-2.5 border-t border-white/[0.08] pt-5">
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Classificação de urgência automática (Baixa, Média, Emergencial) com visão computacional</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Aviso imediato no WhatsApp do zelador e do síndico com dados estruturados da OS</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Comprovação fotográfica 'Antes e Depois' anexada antes da baixa e liberação de pagamento</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-400">Eficiência de Reparo:</span>
+            <span class="text-cyan-300 font-bold bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/20">-60% no Tempo de Solução</span>
+          </div>
+        </div>
+
+        <!-- Trabalhador 4: Portaria Digital & Passes Rápidos -->
+        <div class="glass-card-pro rounded-3xl p-7 sm:p-9 border border-teal-500/20 relative overflow-hidden flex flex-col justify-between group hover:border-teal-400/50 transition-all">
+          <div class="absolute -top-12 -right-12 w-40 h-40 bg-teal-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-teal-500/20 transition-all"></div>
+          
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center font-bold shadow-lg shadow-teal-500/10">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h.01"/><path d="M17 7h.01"/><path d="M7 17h.01"/><path d="M17 17h.01"/><path d="M12 7v10"/><path d="M7 12h10"/></svg>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-teal-500/10 text-teal-300 text-xs font-mono font-bold border border-teal-500/30">
+                Trabalhador #04 • Acessos & Logística
+              </span>
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <span>Portaria Digital & Passes QR Code</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-teal-300 font-medium mt-1">
+              Autorização de visitantes, aviso de entregas e assembleia digital
+            </p>
+
+            <p class="text-xs sm:text-sm text-slate-300 mt-4 leading-relaxed">
+              O morador cadastra visitantes ou prestadores e gera na hora um convite em QR Code com expiração programada. A portaria lê o passe em 1 segundo e notifica a entrada no WhatsApp da unidade.
+            </p>
+
+            <div class="mt-6 space-y-2.5 border-t border-white/[0.08] pt-5">
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-teal-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Notificação instantânea de encomendas recebidas com leitura OCR da etiqueta do pacote</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-teal-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Registro de entrada com placa do veículo, documento e foto para auditoria de segurança</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-300">
+                <svg class="w-4 h-4 text-teal-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Modo Telão para Assembleias Gerais com votação via WhatsApp e quorum em tempo real</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-400">Segurança da Portaria:</span>
+            <span class="text-teal-300 font-bold bg-teal-500/10 px-2.5 py-1 rounded-lg border border-teal-500/20">Zero Fila • 100% Auditável</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section: Cockpit da Carteira Multi-Condomínio -->
+  <section id="cockpit" class="py-24 md:py-32 relative z-10 border-b border-slate-800/80 bg-slate-950/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+          Painel de Controle Unificado
+        </div>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          O Cockpit que sua Administradora <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">Sempre Sonhou</span>
+        </h2>
+        <p class="text-slate-300 text-sm md:text-base mt-4 leading-relaxed">
+          Gerencie centenas de condomínios sob o mesmo teto. Uma visão gerencial com controle fino de permissões, alternador de prédios em 1 clique e supervisão de agentes em tempo real.
+        </p>
+      </div>
+
+      <!-- Mockup do Cockpit Multi-Condomínio -->
+      <div class="glass-card-pro rounded-3xl p-6 sm:p-10 border border-slate-700/80 shadow-2xl relative overflow-hidden bento-highlight">
+        <div class="absolute -top-32 -left-32 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Barra Superior do Cockpit -->
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-cyan-400">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 font-mono">CONDOMÍNIO ATIVO:</span>
+              <div class="flex items-center gap-2">
+                <h4 id="cockpitActiveCondoTitle" class="text-base sm:text-lg font-bold text-white">Residencial Jardins do Bosque</h4>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30">ONLINE • 120 UNIDADES</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seletor de Condomínios da Carteira -->
+          <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            <span class="text-xs text-slate-400 font-medium hidden sm:inline">Trocar Prédio:</span>
+            <button onclick="switchCockpitCondo('jardins')" id="btnCondoJardins" class="px-3 py-1.5 rounded-xl bg-indigo-500/20 border border-indigo-400 text-indigo-200 text-xs font-semibold transition-all cursor-pointer">Res. Jardins</button>
+            <button onclick="switchCockpitCondo('marazul')" id="btnCondoMarazul" class="px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer">Mar Azul</button>
+            <button onclick="switchCockpitCondo('bosque')" id="btnCondoBosque" class="px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer">Bosque Imperial</button>
+            <button onclick="switchCockpitCondo('solar')" id="btnCondoSolar" class="px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer">Solar Acácias</button>
+          </div>
+        </div>
+
+        <!-- Indicadores Operacionais em Tempo Real -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 border-b border-white/[0.08]">
+          <div class="p-4 rounded-2xl bg-slate-900/80 border border-white/[0.06]">
+            <span class="text-[11px] text-slate-400 block mb-1">Arrecadação Mensal</span>
+            <strong id="cockpitMetricArrecadacao" class="text-xl sm:text-2xl font-black text-emerald-400 font-mono">R$ 78.400,00</strong>
+            <span class="text-[10px] text-emerald-300/80 flex items-center gap-1 mt-1">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              96,2% Adimplência (228/240 cotas)
+            </span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-900/80 border border-white/[0.06]">
+            <span class="text-[11px] text-slate-400 block mb-1">Split da Administradora (3%)</span>
+            <strong id="cockpitMetricSplit" class="text-xl sm:text-2xl font-black text-indigo-400 font-mono">R$ 2.352,00</strong>
+            <span class="text-[10px] text-slate-400 flex items-center gap-1 mt-1">
+              Creditado via Pix BACEN em tempo real
+            </span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-900/80 border border-white/[0.06]">
+            <span class="text-[11px] text-slate-400 block mb-1">Chamados pelo WhatsApp</span>
+            <strong id="cockpitMetricChamados" class="text-xl sm:text-2xl font-black text-white font-mono">148 atendimentos</strong>
+            <span class="text-[10px] text-cyan-400 flex items-center gap-1 mt-1">
+              88% resolvidos sem atendente
+            </span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-900/80 border border-white/[0.06]">
+            <span class="text-[11px] text-slate-400 block mb-1">Tempo Médio de Atendimento</span>
+            <strong id="cockpitMetricSla" class="text-xl sm:text-2xl font-black text-teal-300 font-mono">3,2 segundos</strong>
+            <span class="text-[10px] text-slate-400 flex items-center gap-1 mt-1">
+              Zero tempo de espera em fila
+            </span>
+          </div>
+        </div>
+
+        <!-- Linha Inferior: Central de Alertas e Ações Recomendadas da IA -->
+        <div class="pt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-8 space-y-3">
+            <h5 class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              Fila de Ações Críticas & Alertas em Andamento
+            </h5>
+
+            <div id="cockpitAlertList" class="space-y-2.5 text-xs">
+              <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start justify-between gap-3 text-slate-200">
+                <div class="flex items-start gap-3">
+                  <span class="p-1.5 rounded-lg bg-amber-500/20 text-amber-400 shrink-0">⚠️</span>
+                  <div>
+                    <strong class="text-amber-300 block">Acordo de Inadimplência Pré-aprovado pela IA</strong>
+                    <span class="text-[11px] text-slate-300">Morador da Unidade 402 aceitou proposta de 3 parcelas de R$ 680,00 via Pix. Aguardando assinatura digital da Administradora.</span>
+                  </div>
+                </div>
+                <button onclick="window.location.href='painel.html'" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] shrink-0 cursor-pointer">Aprovar</button>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-start justify-between gap-3 text-slate-200">
+                <div class="flex items-start gap-3">
+                  <span class="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 shrink-0">🔧</span>
+                  <div>
+                    <strong class="text-cyan-300 block">Ordem de Serviço #104 Despachada para Hidráulica</strong>
+                    <span class="text-[11px] text-slate-300">Foto de vazamento na coluna do Bloco B classificada com severidade 'Alta'. Prestador HydroTech notificado via WhatsApp.</span>
+                  </div>
+                </div>
+                <button onclick="window.location.href='painel.html'" class="px-3 py-1.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-white font-medium text-[11px] shrink-0 cursor-pointer">Ver OS</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 p-5 rounded-2xl bg-gradient-to-br from-indigo-950/60 to-slate-900 border border-indigo-500/30 flex flex-col justify-between">
+            <div>
+              <span class="text-[10px] font-mono font-bold text-indigo-300 uppercase">Acesso Completo</span>
+              <h5 class="text-base font-bold text-white mt-1">Conheça o Painel Operacional Real</h5>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                Acesse a versão operacional com banco de dados, assembleia digital, gestão de boletos e supervisão dos agentes de IA.
+              </p>
+            </div>
+            <a href="painel.html" class="mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-bold text-xs text-center shadow-lg shadow-indigo-500/25 transition-all flex items-center justify-center gap-2">
+              <span>Abrir Plataforma Operacional</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section: Tabela Comparativa (Tradicional vs Zeloris AI) -->
+  <section id="comparativo" class="py-24 md:py-32 relative z-10 border-b border-slate-800/80 bg-slate-950/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          Comparativo de Eficiência
+        </div>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          Administradora Tradicional vs. <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">ZELORIS AI</span>
+        </h2>
+        <p class="text-slate-300 text-sm md:text-base mt-4 leading-relaxed">
+          Veja por que as administradoras mais inovadoras do Brasil estão trocando tarefas operacionais repetitivas pela inteligência autônoma.
+        </p>
+      </div>
+
+      <!-- Battlecard Table -->
+      <div class="glass-card-pro rounded-3xl border border-slate-700/80 overflow-hidden shadow-2xl">
+        <div class="grid grid-cols-1 md:grid-cols-12 text-xs sm:text-sm">
+          
+          <!-- Header Row -->
+          <div class="md:col-span-4 p-5 sm:p-6 bg-slate-900/90 font-bold text-slate-400 border-b md:border-b-0 md:border-r border-white/[0.08] flex items-center">
+            Pilar Operacional
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-rose-950/20 font-bold text-rose-300 border-b md:border-b-0 md:border-r border-white/[0.08] flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+            Administradora Tradicional (Manual)
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-emerald-950/40 font-bold text-emerald-300 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Administradora ZELORIS AI
+          </div>
+
+          <!-- Row 1: Atendimento & Horário -->
+          <div class="md:col-span-4 p-5 sm:p-6 bg-slate-900/60 font-semibold text-white border-t border-white/[0.06] md:border-r">
+            Janela de Atendimento ao Morador
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-rose-950/10 text-slate-300 border-t border-white/[0.06] md:border-r">
+            <span class="text-rose-400 font-bold block mb-1">Apenas Horário Comercial (44h/sem)</span>
+            Moradores esperam até o próximo dia útil. Nos finais de semana e noites de vazamento, o síndico é incomodado diretamente.
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-emerald-950/20 text-slate-200 border-t border-white/[0.06]">
+            <span class="text-emerald-400 font-bold block mb-1">24 Horas x 7 Dias (168h/sem)</span>
+            Atendimento imediato em menos de 4 segundos, sem fila, inclusive em feriados, madrugadas e finais de semana.
+          </div>
+
+          <!-- Row 2: 2ª Via & Cobrança -->
+          <div class="md:col-span-4 p-5 sm:p-6 bg-slate-900/60 font-semibold text-white border-t border-white/[0.06] md:border-r">
+            Emissão de 2ª Via & Boletos
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-rose-950/10 text-slate-300 border-t border-white/[0.06] md:border-r">
+            <span class="text-rose-400 font-bold block mb-1">Média de 35 a 60 minutos</span>
+            Atendente recebe a mensagem, abre o ERP, procura o morador, recalcula juros na calculadora e envia o PDF de volta.
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-emerald-950/20 text-slate-200 border-t border-white/[0.06]">
+            <span class="text-emerald-400 font-bold block mb-1">Instantâneo em 3,2 segundos</span>
+            O morador digita o CPF e recebe a linha digitável, código Pix Copia e Cola dinâmico e PDF oficial emitido no ERP.
+          </div>
+
+          <!-- Row 3: Escala & Equipe -->
+          <div class="md:col-span-4 p-5 sm:p-6 bg-slate-900/60 font-semibold text-white border-t border-white/[0.06] md:border-r">
+            Capacidade de Adicionar Novos Prédios
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-rose-950/10 text-slate-300 border-t border-white/[0.06] md:border-r">
+            <span class="text-rose-400 font-bold block mb-1">1 novo CLT a cada 5 condomínios</span>
+            Gargalo humano: o crescimento da carteira sufoca o atendimento e eleva drasticamente o custo fixo com salários e encargos.
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-emerald-950/20 text-slate-200 border-t border-white/[0.06]">
+            <span class="text-emerald-400 font-bold block mb-1">+50 Condomínios com a Mesma Equipe</span>
+            A IA absorve 80% do volume operacional diário. A equipe humana foca em relacionamento nobre com os síndicos e expansão.
+          </div>
+
+          <!-- Row 4: Gestão de Manutenção -->
+          <div class="md:col-span-4 p-5 sm:p-6 bg-slate-900/60 font-semibold text-white border-t border-white/[0.06] md:border-r">
+            Registro de Ocorrências e Zeladoria
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-rose-950/10 text-slate-300 border-t border-white/[0.06] md:border-r">
+            <span class="text-rose-400 font-bold block mb-1">Fotos soltas em grupos de WhatsApp</span>
+            Mensagens se perdem no grupo, prestadores esquecem de enviar orçamentos e não há histórico auditável de quem aprovou o conserto.
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-emerald-950/20 text-slate-200 border-t border-white/[0.06]">
+            <span class="text-emerald-400 font-bold block mb-1">Protocolo com Visão Computacional</span>
+            IA tria fotos de vazamentos, classifica urgência, gera OS formal, avisa síndico e prestador e exige foto 'Antes e Depois'.
+          </div>
+
+          <!-- Row 5: Consultas Regimentais (RAG) -->
+          <div class="md:col-span-4 p-5 sm:p-6 bg-slate-900/60 font-semibold text-white border-t border-white/[0.06] md:border-r">
+            Respostas sobre Regimento & Atas
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-rose-950/10 text-slate-300 border-t border-white/[0.06] md:border-r">
+            <span class="text-rose-400 font-bold block mb-1">Consulta manual a pastas em PDF</span>
+            Atendentes se confundem entre as regras de diferentes condomínios, gerando atritos jurídicos com moradores.
+          </div>
+          <div class="md:col-span-4 p-5 sm:p-6 bg-emerald-950/20 text-slate-200 border-t border-white/[0.06]">
+            <span class="text-emerald-400 font-bold block mb-1">RAG com Citação Exata de Artigos</span>
+            A IA consulta a convenção e a última ata do condomínio em questão e cita o artigo legal que fundamenta a resposta.
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section: Identidade Visual & Paleta de Cores Oficial -->
+  <section id="paleta-cores" class="py-24 md:py-32 relative z-10 border-b border-slate-800/80 bg-[#07090E]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+          <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+          Design Tokens & Brand Architecture
+        </div>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          Paleta de Cores Oficial <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400">ZELORIS AI</span>
+        </h2>
+        <p class="text-slate-300 text-sm md:text-base mt-4 leading-relaxed">
+          Desenvolvida sob medida para transmitir alta tecnologia, segurança bancária e máxima credibilidade institucional para condomínios e administradoras. Clique em qualquer cor para copiar o código hexadecimal.
+        </p>
+      </div>
+
+      <!-- Color Swatch Cards Grid (6 Cores) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Cor 1: Obsidian Void -->
+        <div onclick="copyColorHex('#07090E', 'Zeloris Obsidian')" class="glass-card-pro rounded-3xl p-6 border border-white/[0.08] hover:border-white/30 transition-all cursor-pointer group">
+          <div class="h-28 rounded-2xl bg-[#07090E] border border-white/20 flex items-center justify-center relative overflow-hidden shadow-inner">
+            <span class="text-white text-xs font-mono font-bold px-3 py-1 rounded-lg bg-black/60 backdrop-blur-sm border border-white/10 group-hover:scale-105 transition-transform">
+              #07090E
+            </span>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <div>
+              <h4 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Zeloris Obsidian</h4>
+              <p class="text-xs text-slate-400">Canvas Base / Deep Space Void</p>
+            </div>
+            <span class="text-[10px] font-mono text-slate-500 bg-white/[0.04] px-2 py-1 rounded">RGB 7, 9, 14</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Cor de imersão total. Reduz a fadiga visual dos operadores e estabelece o contraste perfeito com os elementos luminosos.
+          </p>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500">
+            <span>Uso: Background Geral</span>
+            <span class="text-emerald-400 font-medium group-hover:underline">Clique para Copiar</span>
+          </div>
+        </div>
+
+        <!-- Cor 2: Surface Dark -->
+        <div onclick="copyColorHex('#0D1322', 'Zeloris Surface Dark')" class="glass-card-pro rounded-3xl p-6 border border-white/[0.08] hover:border-white/30 transition-all cursor-pointer group">
+          <div class="h-28 rounded-2xl bg-[#0D1322] border border-white/20 flex items-center justify-center relative overflow-hidden shadow-inner">
+            <span class="text-white text-xs font-mono font-bold px-3 py-1 rounded-lg bg-black/60 backdrop-blur-sm border border-white/10 group-hover:scale-105 transition-transform">
+              #0D1322
+            </span>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <div>
+              <h4 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Zeloris Surface Dark</h4>
+              <p class="text-xs text-slate-400">Superfícies Bento & Modais</p>
+            </div>
+            <span class="text-[10px] font-mono text-slate-500 bg-white/[0.04] px-2 py-1 rounded">RGB 13, 19, 34</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Elevação de profundidade espacial. Suporta cartões translúcidos e modais de autoatendimento com acabamento glassmorphism.
+          </p>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500">
+            <span>Uso: Cards & Tabelas</span>
+            <span class="text-emerald-400 font-medium group-hover:underline">Clique para Copiar</span>
+          </div>
+        </div>
+
+        <!-- Cor 3: Indigo Intelligence -->
+        <div onclick="copyColorHex('#6366F1', 'Zeloris Indigo')" class="glass-card-pro rounded-3xl p-6 border border-indigo-500/30 hover:border-indigo-400 transition-all cursor-pointer group">
+          <div class="h-28 rounded-2xl bg-gradient-to-r from-[#4F46E5] to-[#6366F1] flex items-center justify-center relative overflow-hidden shadow-lg shadow-indigo-500/20">
+            <span class="text-white text-xs font-mono font-bold px-3 py-1 rounded-lg bg-black/40 backdrop-blur-sm border border-white/20 group-hover:scale-105 transition-transform">
+              #6366F1
+            </span>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <div>
+              <h4 class="text-base font-bold text-white group-hover:text-indigo-300 transition-colors">Zeloris Indigo</h4>
+              <p class="text-xs text-indigo-300">Inteligência Artificial & Cognição</p>
+            </div>
+            <span class="text-[10px] font-mono text-slate-400 bg-indigo-500/10 px-2 py-1 rounded">RGB 99, 102, 241</span>
+          </div>
+          <p class="text-xs text-slate-300 mt-3 leading-relaxed">
+            Representa o cérebro cognitivo da plataforma, RAG regimental, governança corporativa e autonomia de decisão dos agentes.
+          </p>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-400">
+            <span>Uso: Botões Primários & IA</span>
+            <span class="text-indigo-400 font-medium group-hover:underline">Clique para Copiar</span>
+          </div>
+        </div>
+
+        <!-- Cor 4: Emerald Finance -->
+        <div onclick="copyColorHex('#10B981', 'Zeloris Emerald')" class="glass-card-pro rounded-3xl p-6 border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer group">
+          <div class="h-28 rounded-2xl bg-gradient-to-r from-[#059669] to-[#10B981] flex items-center justify-center relative overflow-hidden shadow-lg shadow-emerald-500/20">
+            <span class="text-white text-xs font-mono font-bold px-3 py-1 rounded-lg bg-black/40 backdrop-blur-sm border border-white/20 group-hover:scale-105 transition-transform">
+              #10B981
+            </span>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <div>
+              <h4 class="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">Zeloris Emerald</h4>
+              <p class="text-xs text-emerald-300">Split Pix BACEN & Finanças</p>
+            </div>
+            <span class="text-[10px] font-mono text-slate-400 bg-emerald-500/10 px-2 py-1 rounded">RGB 16, 185, 129</span>
+          </div>
+          <p class="text-xs text-slate-300 mt-3 leading-relaxed">
+            Ativa a percepção psicológica de liquidez instantânea, compensação bancária e alta taxa de adimplência na arrecadação condominial.
+          </p>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-400">
+            <span>Uso: Pagamentos & Sucesso</span>
+            <span class="text-emerald-400 font-medium group-hover:underline">Clique para Copiar</span>
+          </div>
+        </div>
+
+        <!-- Cor 5: Cyan Telemetry -->
+        <div onclick="copyColorHex('#06B6D4', 'Zeloris Cyan')" class="glass-card-pro rounded-3xl p-6 border border-cyan-500/30 hover:border-cyan-400 transition-all cursor-pointer group">
+          <div class="h-28 rounded-2xl bg-gradient-to-r from-[#0891B2] to-[#06B6D4] flex items-center justify-center relative overflow-hidden shadow-lg shadow-cyan-500/20">
+            <span class="text-white text-xs font-mono font-bold px-3 py-1 rounded-lg bg-black/40 backdrop-blur-sm border border-white/20 group-hover:scale-105 transition-transform">
+              #06B6D4
+            </span>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <div>
+              <h4 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Zeloris Cyan</h4>
+              <p class="text-xs text-cyan-300">Telemetria & Tempo Real</p>
+            </div>
+            <span class="text-[10px] font-mono text-slate-400 bg-cyan-500/10 px-2 py-1 rounded">RGB 6, 182, 212</span>
+          </div>
+          <p class="text-xs text-slate-300 mt-3 leading-relaxed">
+            Representa a velocidade instantânea (3,2s), conexões SSE (Server-Sent Events), passes de portaria via QR Code e inovação.
+          </p>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-400">
+            <span>Uso: Badges, Telemetria & QR</span>
+            <span class="text-cyan-400 font-medium group-hover:underline">Clique para Copiar</span>
+          </div>
+        </div>
+
+        <!-- Cor 6: Light Contrast -->
+        <div onclick="copyColorHex('#F8FAFC', 'Zeloris Light Pure')" class="glass-card-pro rounded-3xl p-6 border border-white/[0.08] hover:border-white/30 transition-all cursor-pointer group">
+          <div class="h-28 rounded-2xl bg-[#F8FAFC] flex items-center justify-center relative overflow-hidden shadow-inner">
+            <span class="text-slate-900 text-xs font-mono font-bold px-3 py-1 rounded-lg bg-white/80 backdrop-blur-sm border border-slate-300 group-hover:scale-105 transition-transform">
+              #F8FAFC
+            </span>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <div>
+              <h4 class="text-base font-bold text-white group-hover:text-slate-200 transition-colors">Zeloris Light Pure</h4>
+              <p class="text-xs text-slate-400">Tipografia & Contraste WCAG AAA</p>
+            </div>
+            <span class="text-[10px] font-mono text-slate-500 bg-white/[0.04] px-2 py-1 rounded">RGB 248, 250, 252</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed">
+            Branco de alta pureza ótica que garante legibilidade absoluta em smartphones sob luz solar direta e monitores de alta resolução.
+          </p>
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500">
+            <span>Uso: Títulos & Textos Primários</span>
+            <span class="text-emerald-400 font-medium group-hover:underline">Clique para Copiar</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Caixa de Fundamentação & Neurodesign -->
+      <div class="mt-12 p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-white/[0.08] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold shrink-0">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-white">Por que esta paleta gera resultados comerciais superiores?</h4>
+            <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+              O tom escuro Obsidian (`#07090E`) reduz em até 40% o consumo de energia em telas OLED e elimina a sensação de aplicativo amador. O Emerald e o Indigo transmitem solidez de fintech regulada, gerando confiança imediata no síndico e conselheiros fiscais.
+            </p>
+          </div>
+        </div>
+        <a href="#simulador" class="px-5 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-white font-bold text-xs border border-white/[0.1] transition-all shrink-0">
+          Ver Aplicação Prática ↑
+        </a>
       </div>
 
     </div>
@@ -1015,9 +1685,6 @@
     </div>
   </section>
 
-    </div>
-  </section>
-
   <!-- Section 2: Calculadora de Retorno sobre Investimento (ROI) -->
   <section id="roi" class="py-20 md:py-28 relative z-10 bg-slate-950/80 border-b border-slate-800/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1339,9 +2006,9 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
   <footer class="py-10 bg-slate-950 border-t border-slate-800 text-xs text-slate-500 relative z-10">
     <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
-        <span class="font-bold text-slate-300">CondoBot Enterprise</span> • Autoatendimento Inteligente para Administradoras de Condomínios
+        <span class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400">ZELORIS AI Enterprise</span> • Plataforma Autônoma de Gestão Condominial &amp; Trabalhadores Digitais
       </div>
-      <p>© 2026 Todos os direitos reservados • Sistema Homologado</p>
+      <p>© 2026 Zeloris AI Inc. • Todos os direitos reservados • Sistema Homologado BACEN</p>
     </div>
   </footer>
 
@@ -2476,6 +3143,109 @@ Para homologarmos a comunicação via API com seu sistema, precisamos das seguin
         openIcon?.classList.remove('hidden');
         closeIcon?.classList.add('hidden');
       }
+    }
+
+    // Funções Interativas do Cockpit e Paleta de Cores ZELORIS
+    function copyColorHex(hex, name) {
+      if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(hex).then(() => {
+          showToast(`Cor copiada: ${name} (${hex})`);
+        }).catch(() => {
+          showToast(`Código: ${hex}`);
+        });
+      } else {
+        showToast(`Código copiado: ${hex}`);
+      }
+    }
+
+    const cockpitCondoData = {
+      jardins: {
+        title: 'Residencial Jardins do Bosque',
+        arrecadacao: 'R$ 78.400,00',
+        split: 'R$ 2.352,00',
+        chamados: '148 atendimentos',
+        sla: '3,2 segundos',
+        alerts: [
+          { tag: '⚠️', title: 'Acordo de Inadimplência Pré-aprovado pela IA', text: 'Morador da Unidade 402 aceitou proposta de 3 parcelas de R$ 680,00 via Pix. Aguardando assinatura digital da Administradora.', btn: 'Aprovar', color: 'amber' },
+          { tag: '🔧', title: 'Ordem de Serviço #104 Despachada para Hidráulica', text: 'Foto de vazamento na coluna do Bloco B classificada com severidade "Alta". Prestador HydroTech notificado via WhatsApp.', btn: 'Ver OS', color: 'cyan' }
+        ]
+      },
+      marazul: {
+        title: 'Condomínio Edifício Mar Azul',
+        arrecadacao: 'R$ 54.200,00',
+        split: 'R$ 1.626,00',
+        chamados: '92 atendimentos',
+        sla: '2,9 segundos',
+        alerts: [
+          { tag: '🌊', title: 'Reserva do Salão de Festas Confirmada', text: 'Unidade 701 reservou para 14/12. Taxa de limpeza de R$ 180,00 paga via Pix com conciliação automática.', btn: 'Ver Recibo', color: 'emerald' },
+          { tag: '📦', title: '8 Encomendas Pendentes de Retirada', text: 'Moradores notificados automaticamente via WhatsApp com código de autenticação.', btn: 'Notificar', color: 'indigo' }
+        ]
+      },
+      bosque: {
+        title: 'Condomínio Bosque Imperial',
+        arrecadacao: 'R$ 136.800,00',
+        split: 'R$ 4.104,00',
+        chamados: '264 atendimentos',
+        sla: '3,5 segundos',
+        alerts: [
+          { tag: '📢', title: 'Edital de Convocação de AGE Publicado', text: 'Assembleia Ordinária de Prestação de Contas agendada para 20/12 com votação via Modo Telão.', btn: 'Ver Pauta', color: 'indigo' },
+          { tag: '⚡', title: 'Manutenção Preventiva de Geradores', text: 'Relatório de conformidade da empresa PowerTec arquivado no sistema com validade até 05/2027.', btn: 'Laudo', color: 'cyan' }
+        ]
+      },
+      solar: {
+        title: 'Residencial Solar das Acácias',
+        arrecadacao: 'R$ 41.600,00',
+        split: 'R$ 1.248,00',
+        chamados: '58 atendimentos',
+        sla: '2,8 segundos',
+        alerts: [
+          { tag: '📋', title: 'Regulamento da Piscina Atualizado via RAG', text: 'Novo horário de silêncio (22h) indexado na base de conhecimento da IA e respondendo aos condôminos.', btn: 'Testar IA', color: 'emerald' }
+        ]
+      }
+    };
+
+    function switchCockpitCondo(condoKey) {
+      const data = cockpitCondoData[condoKey];
+      if (!data) return;
+
+      ['jardins', 'marazul', 'bosque', 'solar'].forEach(k => {
+        const btn = document.getElementById(`btnCondo${k.charAt(0).toUpperCase() + k.slice(1)}`);
+        if (!btn) return;
+        if (k === condoKey) {
+          btn.className = 'px-3 py-1.5 rounded-xl bg-indigo-500/20 border border-indigo-400 text-indigo-200 text-xs font-semibold transition-all cursor-pointer';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer';
+        }
+      });
+
+      const titleEl = document.getElementById('cockpitActiveCondoTitle');
+      if (titleEl) titleEl.textContent = data.title;
+      const arrEl = document.getElementById('cockpitMetricArrecadacao');
+      if (arrEl) arrEl.textContent = data.arrecadacao;
+      const splitEl = document.getElementById('cockpitMetricSplit');
+      if (splitEl) splitEl.textContent = data.split;
+      const chamEl = document.getElementById('cockpitMetricChamados');
+      if (chamEl) chamEl.textContent = data.chamados;
+      const slaEl = document.getElementById('cockpitMetricSla');
+      if (slaEl) slaEl.textContent = data.sla;
+
+      const alertList = document.getElementById('cockpitAlertList');
+      if (alertList) {
+        alertList.innerHTML = data.alerts.map(a => `
+          <div class="p-3.5 rounded-2xl bg-${a.color}-500/10 border border-${a.color}-500/20 flex items-start justify-between gap-3 text-slate-200">
+            <div class="flex items-start gap-3">
+              <span class="p-1.5 rounded-lg bg-${a.color}-500/20 text-${a.color}-400 shrink-0">${a.tag}</span>
+              <div>
+                <strong class="text-${a.color}-300 block">${a.title}</strong>
+                <span class="text-[11px] text-slate-300">${a.text}</span>
+              </div>
+            </div>
+            <button onclick="window.location.href='painel.html'" class="px-3 py-1.5 rounded-xl ${a.color === 'amber' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-white/[0.08] hover:bg-white/[0.15] text-white font-medium'} text-[11px] shrink-0 cursor-pointer">${a.btn}</button>
+          </div>
+        `).join('');
+      }
+
+      showToast(`Condomínio: ${data.title}`);
     }
 
     // Inicialização da aplicação
