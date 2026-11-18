@@ -66,20 +66,66 @@
     /* Layout & 100% Responsiveness Protection */
     html, body {
       max-width: 100vw !important;
-      width: 100% !important;
+      width: 100vw !important;
       overflow-x: hidden !important;
+      position: relative;
+    }
+    #mainSidebar {
+      flex-shrink: 0 !important;
     }
     #mainContentArea {
-      min-width: 0 !important;
-      width: 100% !important;
       flex: 1 1 0% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      height: 100vh !important;
       overflow-x: hidden !important;
+      overflow-y: hidden !important;
     }
     main[id^="tab-content-"] {
       min-width: 0 !important;
-      width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box !important;
+    }
+
+    /* Regras Estruturais Específicas do Chat (#tab-content-atendimento) */
+    #tab-content-atendimento {
+      display: flex !important;
+      flex-direction: row !important;
+      flex: 1 1 0% !important;
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      height: calc(100vh - 56px) !important;
+      max-height: calc(100vh - 56px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+    }
+    #tab-content-atendimento.hidden {
+      display: none !important;
+    }
+    #tab-content-atendimento aside {
+      height: 100% !important;
+      min-height: 0 !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    #tab-content-atendimento section {
+      height: 100% !important;
+      min-height: 0 !important;
+      max-height: 100% !important;
+      flex: 1 1 0% !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+    #chatMessagesStream {
+      flex: 1 1 0% !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
     }
 
     /* ============================================================== */
@@ -1799,7 +1845,7 @@
   <!-- ============================================================== -->
   <!-- SIDEBAR LATERAL RETRÁTIL (ESTILO LINEAR / VOZKO) -->
   <!-- ============================================================== -->
-  <aside id="mainSidebar" class="w-64 flex flex-col shrink-0 border-r transition-all duration-200 z-30 select-none bg-white dark:bg-[#111625] border-slate-200 dark:border-white/10">
+  <aside id="mainSidebar" class="fixed md:static inset-y-0 left-0 z-40 w-64 flex flex-col shrink-0 border-r transition-all duration-200 select-none bg-white dark:bg-[#111625] border-slate-200 dark:border-white/10 -translate-x-full md:translate-x-0">
     <!-- Brand Header -->
     <div class="p-4 pb-2">
       <div class="flex items-center justify-between">
@@ -2027,7 +2073,7 @@
   <!-- ============================================================== -->
   <!-- MAIN WORKSPACE CONTAINER -->
   <!-- ============================================================== -->
-  <div id="mainContentArea" class="flex-1 flex flex-col min-w-0 w-full h-screen overflow-hidden bg-[#F6F3EE]">
+  <div id="mainContentArea" class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#F6F3EE]">
 
     <!-- Topbar Executivo Minimalista estilo Linear / Raycast -->
     <header class="bg-white dark:bg-[#111625] border-b border-slate-200 dark:border-white/10 px-4 md:px-6 py-2.5 flex items-center justify-between shrink-0 z-20 gap-3">
@@ -2098,7 +2144,7 @@
     <!-- ============================================================== -->
     <main id="tab-content-atendimento" class="flex-1 min-w-0 w-full flex overflow-hidden hidden">
       <!-- Coluna 1: Lista de Conversas & Filtros Avançados -->
-      <aside class="w-80 md:w-88 bg-white dark:bg-[#0a0e18] border-r border-slate-200 dark:border-white/[0.08] flex flex-col shrink-0">
+      <aside class="w-72 lg:w-80 bg-white dark:bg-[#0a0e18] border-r border-slate-200 dark:border-white/[0.08] flex flex-col shrink-0 min-w-0 h-full overflow-hidden">
         <div class="p-3 border-b border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#0a0e18] space-y-2.5">
           <!-- Linha 1: Título e Status WhatsApp Live -->
           <div class="flex items-center justify-between">
@@ -2149,7 +2195,7 @@
       </aside>
 
       <!-- Coluna 2: Chat ao Vivo & Cockpit de Controle -->
-      <section class="flex-1 flex flex-col bg-[#F8F7F4] dark:bg-[#07090e] relative overflow-hidden">
+      <section class="flex-1 min-w-0 flex flex-col bg-[#F8F7F4] dark:bg-[#07090e] relative overflow-hidden h-full">
         <!-- Header da Conversa Ativa -->
         <div class="px-4 md:px-6 py-3 border-b border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#0b0f19] flex items-center justify-between shrink-0 gap-3">
           <div class="flex items-center gap-3 min-w-0">
@@ -5995,7 +6041,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const activeContent = document.getElementById('tab-content-' + tabName);
       if (activeContent) {
         activeContent.classList.remove('hidden');
-        activeContent.style.display = 'block';
+        activeContent.style.display = (tabName === 'atendimento' ? 'flex' : 'block');
       }
 
       // 4. Ativa o botão correspondente na barra lateral
@@ -6027,10 +6073,15 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         topBreadcrumb.textContent = tabLabels[tabName];
       }
 
-      // 6. Rola suavemente para o topo do conteúdo
+      // 6. Rola suavemente para o topo e zera scroll horizontal
       const mainArea = document.getElementById('mainContentArea');
-      if (mainArea) mainArea.scrollTop = 0;
-      window.scrollTo(0, 0);
+      if (mainArea) {
+        mainArea.scrollTop = 0;
+        mainArea.scrollLeft = 0;
+      }
+      document.body.scrollLeft = 0;
+      document.documentElement.scrollLeft = 0;
+      window.scrollTo({ left: 0, top: 0, behavior: 'instant' });
 
       // 7. Dispara carregadores específicos da aba
       if (tabName === 'cobranca') {
