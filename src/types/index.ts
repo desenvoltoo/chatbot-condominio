@@ -58,9 +58,24 @@ export interface Comunicado {
   disparadoWhatsapp?: boolean;
 }
 
+export interface Carteira {
+  id: string;
+  nome: string;
+  descricao?: string;
+  cor?: string;
+  operadorResponsavelId?: string;
+  operadorResponsavelNome?: string;
+  tipo?: 'contatos' | 'grupos' | 'misto';
+  criadoEm?: number;
+  totalConversas?: number;
+}
+
 export interface ChatMessage {
   id: string;
   sender: 'user' | 'bot' | 'operator' | 'system';
+  senderName?: string;
+  senderRole?: 'morador' | 'operador' | 'bot' | 'sistema' | 'sindico';
+  operatorId?: string;
   text: string;
   timestamp: string;
   mediaUrl?: string;
@@ -91,6 +106,10 @@ export interface UserSession {
   isHumanHandoff?: boolean;
   status?: 'waiting_human' | 'in_service' | 'ai' | 'closed';
   assignedOperator?: string;
+  assignedOperatorId?: string;
+  carteiraId?: string;
+  carteiraNome?: string;
+  isGroup?: boolean;
   slaStartedAt?: string;
   statusFinanceiro?: 'regular' | 'inadimplente' | 'acordo_ativo';
   statusFinanceiroLabel?: string;

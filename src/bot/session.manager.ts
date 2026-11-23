@@ -353,6 +353,18 @@ export class SessionManager {
 
   addMessage(remoteJid: string, message: ChatMessage): void {
     const session = this.getSession(remoteJid);
+    if (!message.senderName) {
+      if (message.sender === 'user') {
+        message.senderName = session.pushName || session.morador?.nome || 'Condômino';
+        message.senderRole = 'morador';
+      } else if (message.sender === 'bot') {
+        message.senderName = 'CondoVolto AI';
+        message.senderRole = 'bot';
+      } else if (message.sender === 'operator') {
+        message.senderName = session.assignedOperator || 'Operador';
+        message.senderRole = 'operador';
+      }
+    }
     if (!session.messages) session.messages = [];
     session.messages.push(message);
     this.db.saveMessage(remoteJid, message);
@@ -374,6 +386,36 @@ export class SessionManager {
     return Array.from(this.sessions.values()).sort(
       (a, b) => new Date(b.lastInteraction).getTime() - new Date(a.lastInteraction).getTime()
     );
+  }
+
+  atribuirCarteira(
+    remoteJid: string,
+    carteiraId: string,
+    carteiraNome?: string,
+    operadorId?: string,
+    operadorNome?: string
+  ): UserSession {
+    const session = this.getSession(remoteJid);
+    const carteira = this.db.getCarteira(carteiraId);
+    session.carteiraId = carteiraId;
+    session.carteiraNome = carteiraNome || carteira?.nome || 'Atendimento Geral & Reservas';
+    if (operadorNome || carteira?.operadorResponsavelNome) {
+      session.assignedOperator = operadorNome || carteira?.operadorResponsavelNome;
+    }
+    if (operadorId || carteira?.operadorResponsavelId) {
+      session.assignedOperatorId = operadorId || carteira?.operadorResponsavelId;
+    }
+    this.db.atribuirConversaCarteira(remoteJid, carteiraId, session.carteiraNome, session.assignedOperatorId, session.assignedOperator);
+    this.updateSession(session);
+
+    this.events.broadcast({
+      type: 'session_updated',
+      remoteJid,
+      data: session,
+      timestamp: new Date().toISOString()
+    });
+
+    return session;
   }
 
   setHumanHandoff(remoteJid: string, isHuman: boolean, operatorName?: string): void {

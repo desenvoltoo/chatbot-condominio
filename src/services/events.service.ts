@@ -4,6 +4,7 @@ export interface DashboardEvent {
   type:
     | 'new_message'
     | 'handoff_changed'
+    | 'session_updated'
     | 'ticket_status'
     | 'sla_warning'
     | 'stats_updated'

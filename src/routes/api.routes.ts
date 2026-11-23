@@ -182,6 +182,15 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     res.json({ success: deleted });
   });
 
+  router.get('/rag/status', requireAuth(), (_req: Request, res: Response) => {
+    res.json(ragService.getStatusVetorizacao());
+  });
+
+  router.post('/rag/revetorizar', requireAuth(['admin', 'sindico']), (_req: Request, res: Response) => {
+    const resultado = ragService.revetorizarBase();
+    res.json(resultado);
+  });
+
   router.post('/rag/testar', requireAuth(), (req: Request, res: Response) => {
     const { pergunta, condominioId } = req.body;
     if (!pergunta) return res.status(400).json({ error: 'Pergunta é obrigatória' });
@@ -269,7 +278,10 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
 
   router.post('/conversas/:remoteJid/mensagem', requireAuth(), async (req: Request, res: Response) => {
     const { remoteJid } = req.params;
-    const { text } = req.body;
+    const { text, senderName: customSenderName } = req.body;
+    const user = (req as any).user;
+    const senderName = customSenderName || user?.nome || 'Operador';
+    const senderRole = user?.role || 'operador';
 
     if (!text || !text.trim()) {
       return res.status(400).json({ error: 'Texto da mensagem é obrigatório' });
@@ -281,6 +293,9 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     orchestrator.getSessionManager().addMessage(remoteJid, {
       id: `msg_op_${Date.now()}`,
       sender: 'operator',
+      senderName,
+      senderRole: 'operador',
+      operatorId: user?.id,
       text,
       timestamp: timeStr,
     });
@@ -351,6 +366,45 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
 
     orchestrator.getSessionManager().addNotaInterna(remoteJid, operadorNome, texto.trim());
     res.json({ success: true, message: 'Nota interna registrada.' });
+  });
+
+  // ==========================================
+  // CARTEIRAS DE ATENDIMENTO & ATRIBUIÇÃO
+  // ==========================================
+
+  router.get('/carteiras', requireAuth(), (_req: Request, res: Response) => {
+    res.json(dbService.getCarteiras());
+  });
+
+  router.post('/carteiras', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    const { id, nome, descricao, cor, operadorResponsavelId, operadorResponsavelNome, tipo } = req.body;
+    if (!nome) return res.status(400).json({ error: 'Nome da carteira é obrigatório' });
+    const cartId = id || `carteira_${Date.now()}`;
+    dbService.saveCarteira({
+      id: cartId,
+      nome,
+      descricao,
+      cor: cor || '#4F46E5',
+      operadorResponsavelId,
+      operadorResponsavelNome,
+      tipo: tipo || 'contatos',
+      criadoEm: Date.now()
+    });
+    res.json({ success: true, carteira: dbService.getCarteira(cartId) });
+  });
+
+  router.post('/conversas/:remoteJid/carteira', requireAuth(), (req: Request, res: Response) => {
+    const { remoteJid } = req.params;
+    const { carteiraId, carteiraNome, operadorId, operadorNome } = req.body;
+    if (!carteiraId) return res.status(400).json({ error: 'carteiraId é obrigatório' });
+    const session = orchestrator.getSessionManager().atribuirCarteira(
+      remoteJid,
+      carteiraId,
+      carteiraNome,
+      operadorId,
+      operadorNome
+    );
+    res.json({ success: true, session });
   });
 
   // ==========================================

@@ -1,7 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
-import { UserSession, ChatMessage, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado } from '../types/index.js';
+import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado } from '../types/index.js';
 import { gerarPayloadPix } from '../utils/pix.util.js';
 
 export class DbService {
@@ -33,6 +33,20 @@ export class DbService {
   }
 
   private initTables() {
+    // 0. Tabela de Carteiras de Atendimento
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS carteiras (
+        id TEXT PRIMARY KEY,
+        nome TEXT NOT NULL,
+        descricao TEXT,
+        cor TEXT DEFAULT '#4F46E5',
+        operadorResponsavelId TEXT,
+        operadorResponsavelNome TEXT,
+        tipo TEXT DEFAULT 'contatos',
+        criadoEm INTEGER NOT NULL
+      );
+    `);
+
     // 1. Tabela de Sessões de Atendimento WhatsApp
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS sessions (
@@ -67,7 +81,12 @@ export class DbService {
       'pixValor TEXT',
       'avatar TEXT',
       'telefone TEXT',
-      'notasInternasJson TEXT'
+      'notasInternasJson TEXT',
+      'carteiraId TEXT DEFAULT "carteira_atendimento"',
+      'carteiraNome TEXT DEFAULT "Atendimento Geral & Reservas"',
+      'assignedOperatorId TEXT',
+      'assignedOperatorName TEXT',
+      'isGroup INTEGER DEFAULT 0'
     ];
     for (const col of colunasExtras) {
       try {
@@ -83,6 +102,9 @@ export class DbService {
         id TEXT PRIMARY KEY,
         remoteJid TEXT NOT NULL,
         sender TEXT NOT NULL,
+        senderName TEXT,
+        senderRole TEXT,
+        operatorId TEXT,
         text TEXT NOT NULL,
         timestamp TEXT NOT NULL,
         mediaUrl TEXT,
@@ -95,6 +117,19 @@ export class DbService {
         createdAt INTEGER NOT NULL
       );
     `);
+
+    const colunasMensagens = [
+      'senderName TEXT',
+      'senderRole TEXT',
+      'operatorId TEXT'
+    ];
+    for (const col of colunasMensagens) {
+      try {
+        this.db.exec(`ALTER TABLE messages ADD COLUMN ${col};`);
+      } catch (e) {
+        // Coluna já existe
+      }
+    }
 
     // 3. Tabela de Acordos de Dívidas e Confissões
     this.db.exec(`
@@ -387,6 +422,10 @@ export class DbService {
       lastInteraction: new Date(row.lastInteraction),
       status: row.status || (row.isHumanHandoff ? 'waiting_human' : 'ai'),
       assignedOperator: row.assignedOperator || undefined,
+      assignedOperatorId: row.assignedOperatorId || undefined,
+      carteiraId: row.carteiraId || (row.remoteJid.endsWith('@g.us') ? 'carteira_grupos' : 'carteira_atendimento'),
+      carteiraNome: row.carteiraNome || (row.remoteJid.endsWith('@g.us') ? 'Grupos de WhatsApp dos Blocos' : 'Atendimento Geral & Reservas'),
+      isGroup: Boolean(row.isGroup || row.remoteJid.endsWith('@g.us')),
       slaStartedAt: row.slaStartedAt || undefined,
       statusFinanceiro: row.statusFinanceiro || 'regular',
       cotaValor: row.cotaValor || 'R$ 650,00',
@@ -440,12 +479,15 @@ export class DbService {
   public saveMessage(remoteJid: string, msg: ChatMessage) {
     const stmt = this.db.prepare(`
       INSERT INTO messages (
-        id, remoteJid, sender, text, timestamp, mediaUrl, mediaType, pixCode, isAudio, duration, audioSummary, audioTranscription, createdAt
+        id, remoteJid, sender, senderName, senderRole, operatorId, text, timestamp, mediaUrl, mediaType, pixCode, isAudio, duration, audioSummary, audioTranscription, createdAt
       ) VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
       )
       ON CONFLICT(id) DO UPDATE SET
         text = excluded.text,
+        senderName = excluded.senderName,
+        senderRole = excluded.senderRole,
+        operatorId = excluded.operatorId,
         pixCode = excluded.pixCode;
     `);
 
@@ -453,6 +495,9 @@ export class DbService {
       msg.id,
       remoteJid,
       msg.sender,
+      msg.senderName || null,
+      msg.senderRole || null,
+      msg.operatorId || null,
       msg.text,
       msg.timestamp,
       msg.mediaUrl || null,
@@ -473,6 +518,9 @@ export class DbService {
     return rows.map(r => ({
       id: r.id,
       sender: r.sender as any,
+      senderName: r.senderName || undefined,
+      senderRole: r.senderRole || undefined,
+      operatorId: r.operatorId || undefined,
       text: r.text,
       timestamp: r.timestamp,
       mediaUrl: r.mediaUrl || undefined,
@@ -483,6 +531,97 @@ export class DbService {
       audioSummary: r.audioSummary || undefined,
       audioTranscription: r.audioTranscription || undefined
     }));
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE CARTEIRAS DE ATENDIMENTO
+  // ==========================================
+
+  public getCarteiras(): Carteira[] {
+    const stmt = this.db.prepare('SELECT * FROM carteiras ORDER BY criadoEm ASC');
+    const rows = stmt.all() as any[];
+
+    // Adiciona contagem de atendimentos ativos por carteira
+    const stmtCount = this.db.prepare('SELECT carteiraId, count(*) as total FROM sessions GROUP BY carteiraId');
+    const counts = stmtCount.all() as any[];
+    const mapCount = new Map<string, number>();
+    counts.forEach(c => mapCount.set(c.carteiraId, c.total));
+
+    return rows.map(r => ({
+      id: r.id,
+      nome: r.nome,
+      descricao: r.descricao || undefined,
+      cor: r.cor || '#4F46E5',
+      operadorResponsavelId: r.operadorResponsavelId || undefined,
+      operadorResponsavelNome: r.operadorResponsavelNome || undefined,
+      tipo: r.tipo as any || 'contatos',
+      criadoEm: r.criadoEm,
+      totalConversas: mapCount.get(r.id) || 0
+    }));
+  }
+
+  public getCarteira(id: string): Carteira | null {
+    const stmt = this.db.prepare('SELECT * FROM carteiras WHERE id = ?');
+    const r = stmt.get(id) as any;
+    if (!r) return null;
+    return {
+      id: r.id,
+      nome: r.nome,
+      descricao: r.descricao || undefined,
+      cor: r.cor || '#4F46E5',
+      operadorResponsavelId: r.operadorResponsavelId || undefined,
+      operadorResponsavelNome: r.operadorResponsavelNome || undefined,
+      tipo: r.tipo as any || 'contatos',
+      criadoEm: r.criadoEm
+    };
+  }
+
+  public saveCarteira(c: Carteira): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO carteiras (id, nome, descricao, cor, operadorResponsavelId, operadorResponsavelNome, tipo, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        nome = excluded.nome,
+        descricao = excluded.descricao,
+        cor = excluded.cor,
+        operadorResponsavelId = excluded.operadorResponsavelId,
+        operadorResponsavelNome = excluded.operadorResponsavelNome,
+        tipo = excluded.tipo;
+    `);
+    stmt.run(
+      c.id,
+      c.nome,
+      c.descricao || null,
+      c.cor || '#4F46E5',
+      c.operadorResponsavelId || null,
+      c.operadorResponsavelNome || null,
+      c.tipo || 'contatos',
+      c.criadoEm || Date.now()
+    );
+  }
+
+  public atribuirConversaCarteira(
+    remoteJid: string,
+    carteiraId: string,
+    carteiraNome?: string,
+    operadorId?: string,
+    operadorNome?: string
+  ): boolean {
+    const carteira = this.getCarteira(carteiraId);
+    const finalNome = carteiraNome || carteira?.nome || 'Carteira Geral';
+    const finalOpNome = operadorNome || carteira?.operadorResponsavelNome;
+    const finalOpId = operadorId || carteira?.operadorResponsavelId;
+
+    const stmt = this.db.prepare(`
+      UPDATE sessions SET
+        carteiraId = ?,
+        carteiraNome = ?,
+        assignedOperator = ?,
+        assignedOperatorId = ?
+      WHERE remoteJid = ?;
+    `);
+    const res = stmt.run(carteiraId, finalNome, finalOpNome || null, finalOpId || null, remoteJid);
+    return res.changes > 0;
   }
 
   // ==========================================
