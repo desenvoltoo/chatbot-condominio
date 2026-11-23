@@ -1,7 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
-import { UserSession, ChatMessage, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao } from '../types/index.js';
+import { UserSession, ChatMessage, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado } from '../types/index.js';
 import { gerarPayloadPix } from '../utils/pix.util.js';
 
 export class DbService {
@@ -254,6 +254,59 @@ export class DbService {
         justificativa TEXT,
         criadoEm TEXT NOT NULL,
         respondidoEm TEXT
+      );
+    `);
+
+    // 11. Tabela de Visitas e Controle de Acesso (Portaria Digital)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS visitas (
+        id TEXT PRIMARY KEY,
+        visitanteNome TEXT NOT NULL,
+        documento TEXT,
+        unidade TEXT NOT NULL,
+        tipo TEXT NOT NULL DEFAULT 'visita',
+        dataEntrada TEXT NOT NULL,
+        horaEntrada TEXT NOT NULL,
+        estacionamento TEXT,
+        qrCodeToken TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'autorizado',
+        criadoEm TEXT NOT NULL
+      );
+    `);
+
+    // 12. Tabela de Encomendas Recebidas
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS encomendas (
+        id TEXT PRIMARY KEY,
+        destinatarioNome TEXT NOT NULL,
+        unidade TEXT NOT NULL,
+        transportadora TEXT NOT NULL,
+        codigoRastreio TEXT NOT NULL,
+        dataChegada TEXT NOT NULL,
+        horaChegada TEXT NOT NULL,
+        codigoRetirada TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'aguardando_retirada',
+        fotoUrl TEXT,
+        notificadoWhatsapp INTEGER DEFAULT 1,
+        retiradoEm TEXT,
+        criadoEm TEXT NOT NULL
+      );
+    `);
+
+    // 13. Tabela de Comunicados Oficiais e Murais
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS comunicados (
+        id TEXT PRIMARY KEY,
+        condominioId TEXT NOT NULL,
+        condominioNome TEXT NOT NULL,
+        titulo TEXT NOT NULL,
+        conteudo TEXT NOT NULL,
+        data TEXT NOT NULL,
+        categoria TEXT NOT NULL DEFAULT 'geral',
+        autor TEXT NOT NULL,
+        publico TEXT DEFAULT 'todos',
+        disparadoWhatsapp INTEGER DEFAULT 0,
+        criadoEm TEXT NOT NULL
       );
     `);
 
@@ -1403,5 +1456,327 @@ export class DbService {
         this.saveAIDecision(d);
       }
     }
+
+    // 7. Seed Visitas (Portaria Digital)
+    const visCount = (this.db.prepare('SELECT COUNT(*) as total FROM visitas').get() as any)?.total || 0;
+    if (visCount === 0) {
+      const visitasIniciais: Visita[] = [
+        {
+          id: 'vis_1',
+          visitanteNome: 'Fernanda Rocha',
+          documento: '44.891.203-9',
+          unidade: '2511',
+          tipo: 'visita',
+          dataEntrada: 'Hoje',
+          horaEntrada: '10:42',
+          estacionamento: 'Vaga 3',
+          qrCodeToken: 'QR-VIS-2511-8841',
+          status: 'autorizado',
+          criadoEm: '2026-11-17T10:40:00.000Z'
+        },
+        {
+          id: 'vis_2',
+          visitanteNome: 'Marcos Vinícius (Técnico Claro)',
+          documento: '38.102.994-1',
+          unidade: '1402',
+          tipo: 'prestador',
+          dataEntrada: 'Hoje',
+          horaEntrada: '11:15',
+          estacionamento: 'Vaga Visitante 1',
+          qrCodeToken: 'QR-VIS-1402-9921',
+          status: 'entrou',
+          criadoEm: '2026-11-17T11:10:00.000Z'
+        },
+        {
+          id: 'vis_3',
+          visitanteNome: 'Lucas Oliveira',
+          documento: '52.341.119-0',
+          unidade: '101',
+          tipo: 'visita',
+          dataEntrada: 'Hoje',
+          horaEntrada: '12:00',
+          estacionamento: 'Vaga Visitante 2',
+          qrCodeToken: 'QR-VIS-101-3312',
+          status: 'autorizado',
+          criadoEm: '2026-11-17T11:50:00.000Z'
+        }
+      ];
+      for (const v of visitasIniciais) this.saveVisita(v);
+    }
+
+    // 8. Seed Encomendas (Portaria Digital)
+    const encCount = (this.db.prepare('SELECT COUNT(*) as total FROM encomendas').get() as any)?.total || 0;
+    if (encCount === 0) {
+      const encomendasIniciais: Encomenda[] = [
+        {
+          id: 'enc_1',
+          destinatarioNome: 'Carlos Eduardo Silva',
+          unidade: 'Apt 101',
+          transportadora: 'Mercado Livre',
+          codigoRastreio: 'ML-88421092',
+          dataChegada: 'Hoje',
+          horaChegada: '09:15',
+          codigoRetirada: 'RET-101-842',
+          status: 'aguardando_retirada',
+          fotoUrl: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&auto=format&fit=crop&q=80',
+          notificadoWhatsapp: true,
+          criadoEm: '2026-11-17T09:15:00.000Z'
+        },
+        {
+          id: 'enc_2',
+          destinatarioNome: 'Mariana de Souza',
+          unidade: 'Apt 204',
+          transportadora: 'Amazon Prime',
+          codigoRastreio: 'AMZ-99120412',
+          dataChegada: 'Hoje',
+          horaChegada: '10:30',
+          codigoRetirada: 'RET-204-119',
+          status: 'aguardando_retirada',
+          fotoUrl: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&auto=format&fit=crop&q=80',
+          notificadoWhatsapp: true,
+          criadoEm: '2026-11-17T10:30:00.000Z'
+        }
+      ];
+      for (const e of encomendasIniciais) this.saveEncomenda(e);
+    }
+
+    // 9. Seed Comunicados
+    const comCount = (this.db.prepare('SELECT COUNT(*) as total FROM comunicados').get() as any)?.total || 0;
+    if (comCount === 0) {
+      const comunicadosIniciais: Comunicado[] = [
+        {
+          id: 'com_1',
+          condominioId: 'condo_1',
+          condominioNome: 'Residencial Jardins do Bosque',
+          titulo: 'Manutenção Preventiva dos Elevadores (Bloco A)',
+          conteudo: 'Informamos que o elevador social do Bloco A passará por manutenção preventiva nesta quinta-feira das 09h às 12h. O elevador de serviço funcionará normalmente.',
+          data: '17/11/2026',
+          categoria: 'manutencao',
+          autor: 'Administração Predial',
+          publico: 'Bloco A',
+          disparadoWhatsapp: true
+        },
+        {
+          id: 'com_2',
+          condominioId: 'condo_1',
+          condominioNome: 'Residencial Jardins do Bosque',
+          titulo: 'Limpeza Semestral das Caixas d\'Água',
+          conteudo: 'Conforme cronograma de higienização, haverá interrupção temporária no fornecimento de água na próxima terça-feira entre 08h e 14h. Pedimos a compreensão de todos.',
+          data: '15/11/2026',
+          categoria: 'urgente',
+          autor: 'Síndico Geral',
+          publico: 'Todos os Condôminos',
+          disparadoWhatsapp: true
+        }
+      ];
+      for (const c of comunicadosIniciais) this.saveComunicado(c);
+    }
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE PORTARIA DIGITAL (VISITAS & ENCOMENDAS)
+  // ==========================================
+
+  public getVisitas(): Visita[] {
+    const rows = this.db.prepare('SELECT * FROM visitas ORDER BY criadoEm DESC').all() as any[];
+    return rows.map(r => ({
+      id: r.id,
+      visitanteNome: r.visitanteNome,
+      documento: r.documento,
+      unidade: r.unidade,
+      tipo: r.tipo,
+      dataEntrada: r.dataEntrada,
+      horaEntrada: r.horaEntrada,
+      estacionamento: r.estacionamento,
+      qrCodeToken: r.qrCodeToken,
+      status: r.status,
+      criadoEm: r.criadoEm
+    }));
+  }
+
+  public saveVisita(visita: Visita) {
+    const stmt = this.db.prepare(`
+      INSERT INTO visitas (id, visitanteNome, documento, unidade, tipo, dataEntrada, horaEntrada, estacionamento, qrCodeToken, status, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        visitanteNome = excluded.visitanteNome,
+        documento = excluded.documento,
+        unidade = excluded.unidade,
+        tipo = excluded.tipo,
+        dataEntrada = excluded.dataEntrada,
+        horaEntrada = excluded.horaEntrada,
+        estacionamento = excluded.estacionamento,
+        qrCodeToken = excluded.qrCodeToken,
+        status = excluded.status;
+    `);
+    stmt.run(
+      visita.id,
+      visita.visitanteNome,
+      visita.documento || null,
+      visita.unidade,
+      visita.tipo,
+      visita.dataEntrada,
+      visita.horaEntrada,
+      visita.estacionamento || null,
+      visita.qrCodeToken,
+      visita.status,
+      visita.criadoEm
+    );
+  }
+
+  public updateVisitaStatus(id: string, status: string): boolean {
+    const stmt = this.db.prepare('UPDATE visitas SET status = ? WHERE id = ?');
+    const res = stmt.run(status, id);
+    return res.changes > 0;
+  }
+
+  public getEncomendas(): Encomenda[] {
+    const rows = this.db.prepare('SELECT * FROM encomendas ORDER BY criadoEm DESC').all() as any[];
+    return rows.map(r => ({
+      id: r.id,
+      destinatarioNome: r.destinatarioNome,
+      unidade: r.unidade,
+      transportadora: r.transportadora,
+      codigoRastreio: r.codigoRastreio,
+      dataChegada: r.dataChegada,
+      horaChegada: r.horaChegada,
+      codigoRetirada: r.codigoRetirada,
+      status: r.status,
+      fotoUrl: r.fotoUrl,
+      notificadoWhatsapp: Boolean(r.notificadoWhatsapp),
+      retiradoEm: r.retiradoEm,
+      criadoEm: r.criadoEm
+    }));
+  }
+
+  public saveEncomenda(encomenda: Encomenda) {
+    const stmt = this.db.prepare(`
+      INSERT INTO encomendas (id, destinatarioNome, unidade, transportadora, codigoRastreio, dataChegada, horaChegada, codigoRetirada, status, fotoUrl, notificadoWhatsapp, retiradoEm, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        destinatarioNome = excluded.destinatarioNome,
+        unidade = excluded.unidade,
+        transportadora = excluded.transportadora,
+        codigoRastreio = excluded.codigoRastreio,
+        status = excluded.status,
+        notificadoWhatsapp = excluded.notificadoWhatsapp,
+        retiradoEm = excluded.retiradoEm;
+    `);
+    stmt.run(
+      encomenda.id,
+      encomenda.destinatarioNome,
+      encomenda.unidade,
+      encomenda.transportadora,
+      encomenda.codigoRastreio,
+      encomenda.dataChegada,
+      encomenda.horaChegada,
+      encomenda.codigoRetirada,
+      encomenda.status,
+      encomenda.fotoUrl || null,
+      encomenda.notificadoWhatsapp ? 1 : 0,
+      encomenda.retiradoEm || null,
+      encomenda.criadoEm
+    );
+  }
+
+  public updateEncomendaStatus(id: string, status: string): boolean {
+    const agora = new Date().toISOString();
+    const stmt = this.db.prepare('UPDATE encomendas SET status = ?, retiradoEm = ? WHERE id = ?');
+    const res = stmt.run(status, status === 'entregue' ? agora : null, id);
+    return res.changes > 0;
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE COMUNICADOS
+  // ==========================================
+
+  public getComunicados(): Comunicado[] {
+    const rows = this.db.prepare('SELECT * FROM comunicados ORDER BY data DESC').all() as any[];
+    return rows.map(r => ({
+      id: r.id,
+      condominioId: r.condominioId,
+      condominioNome: r.condominioNome,
+      titulo: r.titulo,
+      conteudo: r.conteudo,
+      data: r.data,
+      categoria: r.categoria,
+      autor: r.autor,
+      publico: r.publico,
+      disparadoWhatsapp: Boolean(r.disparadoWhatsapp)
+    }));
+  }
+
+  public saveComunicado(comunicado: Comunicado) {
+    const stmt = this.db.prepare(`
+      INSERT INTO comunicados (id, condominioId, condominioNome, titulo, conteudo, data, categoria, autor, publico, disparadoWhatsapp, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        titulo = excluded.titulo,
+        conteudo = excluded.conteudo,
+        data = excluded.data,
+        categoria = excluded.categoria,
+        publico = excluded.publico,
+        disparadoWhatsapp = excluded.disparadoWhatsapp;
+    `);
+    stmt.run(
+      comunicado.id,
+      comunicado.condominioId || 'condo_1',
+      comunicado.condominioNome || 'Residencial',
+      comunicado.titulo,
+      comunicado.conteudo,
+      comunicado.data,
+      comunicado.categoria || 'geral',
+      comunicado.autor || 'Administração',
+      comunicado.publico || 'todos',
+      comunicado.disparadoWhatsapp ? 1 : 0,
+      new Date().toISOString()
+    );
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE ACORDOS
+  // ==========================================
+
+  public saveAcordo(acordo: {
+    id: string;
+    unidadeId: string;
+    condominioNome: string;
+    moradorNome: string;
+    cpf: string;
+    valorOriginal: number;
+    valorAcordo: number;
+    qtdParcelas: number;
+    valorParcela: number;
+    descontoJuros?: number;
+    status?: string;
+    termoHash?: string;
+    criadoEm?: string;
+  }) {
+    const stmt = this.db.prepare(`
+      INSERT INTO acordos (id, unidadeId, condominioNome, moradorNome, cpf, valorOriginal, valorAcordo, qtdParcelas, valorParcela, descontoJuros, status, termoHash, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        status = excluded.status,
+        termoHash = excluded.termoHash;
+    `);
+    stmt.run(
+      acordo.id,
+      acordo.unidadeId,
+      acordo.condominioNome,
+      acordo.moradorNome,
+      acordo.cpf,
+      acordo.valorOriginal,
+      acordo.valorAcordo,
+      acordo.qtdParcelas,
+      acordo.valorParcela,
+      acordo.descontoJuros || 0,
+      acordo.status || 'aguardando_assinatura',
+      acordo.termoHash || `HASH-SHA256-${Date.now()}`,
+      acordo.criadoEm || new Date().toISOString()
+    );
+  }
+
+  public getAcordos(): any[] {
+    return this.db.prepare('SELECT * FROM acordos ORDER BY criadoEm DESC').all();
   }
 }

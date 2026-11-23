@@ -54,6 +54,8 @@ export interface Comunicado {
   data: string;
   categoria: 'manutencao' | 'assembleia' | 'geral' | 'urgente';
   autor: string;
+  publico?: string;
+  disparadoWhatsapp?: boolean;
 }
 
 export interface ChatMessage {
@@ -384,6 +386,36 @@ export interface AIDecision {
   provedor: string;
   modelo: string;
   timestamp: string;
+}
+
+export interface Visita {
+  id: string;
+  visitanteNome: string;
+  documento?: string;
+  unidade: string;
+  tipo: 'visita' | 'prestador' | 'delivery' | 'airbnb';
+  dataEntrada: string;
+  horaEntrada: string;
+  estacionamento?: string;
+  qrCodeToken: string;
+  status: 'autorizado' | 'entrou' | 'saiu' | 'expirado';
+  criadoEm: string;
+}
+
+export interface Encomenda {
+  id: string;
+  destinatarioNome: string;
+  unidade: string;
+  transportadora: string;
+  codigoRastreio: string;
+  dataChegada: string;
+  horaChegada: string;
+  codigoRetirada: string;
+  status: 'aguardando_retirada' | 'entregue';
+  fotoUrl?: string;
+  notificadoWhatsapp: boolean;
+  retiradoEm?: string;
+  criadoEm: string;
 }
 
 export interface PendenciaSupervisao {

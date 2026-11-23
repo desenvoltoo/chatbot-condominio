@@ -14,6 +14,8 @@ import {
 import { limparCpf } from '../utils/cpf.util.js';
 import { ConfigService } from './config.service.js';
 import { MockErpService } from './mock-erp.service.js';
+import { DbService } from './db.service.js';
+import { EventsService } from './events.service.js';
 
 /**
  * Conector de Integração Oficial para o ERP SISCON (Mais Domínio)
@@ -363,6 +365,26 @@ export class SisconService implements IErpService {
     };
 
     this.acordosMemoria.set(acordoId, acordoEfetivado);
+
+    // Persiste no SQLite nativo
+    try {
+      DbService.getInstance().saveAcordo({
+        id: acordoId,
+        unidadeId,
+        condominioNome: 'Residencial Jardins do Bosque',
+        moradorNome,
+        cpf: moradorCpf,
+        valorOriginal: simulacao.totalConsolidado,
+        valorAcordo: opcao.totalGeral,
+        qtdParcelas: opcao.parcelas,
+        valorParcela: opcao.valorParcela,
+        descontoJuros: opcao.descontoAplicado,
+        status: 'ativo',
+        termoHash: `HASH-SHA256-${acordoId}`,
+        criadoEm: hoje.toISOString()
+      });
+    } catch (e) {}
+
     console.log(`✅ [SISCON] Acordo ${acordoId} firmado para unidade ${unidadeId}. ${opcao.parcelas} parcelas geradas.`);
     return acordoEfetivado;
   }
@@ -429,6 +451,8 @@ export class SisconService implements IErpService {
   }
 
   async consultarDisponibilidadeArea(areaId: string, dataIso: string): Promise<boolean> {
+    const conflitoDb = DbService.getInstance().verificarConflitoReserva(areaId, dataIso);
+    if (conflitoDb) return false;
     const reservasExistentes = this.reservasMemoria.get(areaId) || [];
     const ocupada = reservasExistentes.some(r => r.dataReserva === dataIso && r.status === 'confirmada');
     return !ocupada;
@@ -472,12 +496,23 @@ export class SisconService implements IErpService {
       taxaTotal,
       status: 'confirmada',
       statusCobranca: taxaTotal > 0 ? 'faturado_proximo_boleto' : 'pago_antecipado',
-      protocoloSiscon
+      protocoloSiscon,
+      criadoEm: new Date().toISOString()
     };
 
     const lista = this.reservasMemoria.get(areaId) || [];
     lista.push(novaReserva);
     this.reservasMemoria.set(areaId, lista);
+
+    // Salva no SQLite e transmite via SSE
+    try {
+      DbService.getInstance().saveReserva(novaReserva);
+      EventsService.getInstance().broadcast({
+        type: 'reserva_created',
+        data: novaReserva,
+        timestamp: new Date().toISOString()
+      });
+    } catch (e) {}
 
     console.log(`🎉 [SISCON] Reserva de ${area.nome} confirmada para ${dataIso}. Taxa R$ ${taxaTotal} debitada na cota SISCON.`);
     return {
@@ -589,6 +624,8 @@ export class SisconService implements IErpService {
 
   async listarComunicados(condominioNome?: string): Promise<Comunicado[]> {
     if (!this.isLiveMode()) {
+      const doBanco = DbService.getInstance().getComunicados();
+      if (doBanco && doBanco.length > 0) return doBanco;
       return this.fallbackService.listarComunicados(condominioNome);
     }
 

@@ -10,7 +10,7 @@ import { DbService } from '../services/db.service.js';
 import { requireAuth } from '../middlewares/auth.middleware.js';
 import { formatarMensagemPix, gerarPayloadPix } from '../utils/pix.util.js';
 import { EventsService } from '../services/events.service.js';
-import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision } from '../types/index.js';
+import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado } from '../types/index.js';
 
 export function createApiRouter(orchestrator: BotOrchestrator): Router {
   const router = Router();
@@ -1065,6 +1065,231 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
 
     dbService.saveCondominio(novoCond);
     res.status(201).json({ success: true, condominio: novoCond });
+  });
+
+  // ==========================================
+  // 16. CONEXÃO WHATSAPP & QR CODE (EVOLUTION API)
+  // ==========================================
+
+  router.get('/whatsapp/status', requireAuth(), async (_req: Request, res: Response) => {
+    try {
+      const status = await evolutionService.checkConnectionStatus();
+      res.json(status);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  router.get('/whatsapp/qrcode', requireAuth(), async (_req: Request, res: Response) => {
+    try {
+      const qrData = await evolutionService.getQrCode();
+      res.json(qrData);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  router.post('/whatsapp/disconnect', requireAuth(['admin', 'sindico']), async (_req: Request, res: Response) => {
+    try {
+      const ok = await evolutionService.disconnect();
+      res.json({ success: ok, message: ok ? 'Instância desconectada com sucesso.' : 'Falha ao desconectar.' });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  router.post('/whatsapp/restart', requireAuth(['admin']), async (_req: Request, res: Response) => {
+    try {
+      const ok = await evolutionService.restart();
+      res.json({ success: ok, message: ok ? 'Instância reiniciada.' : 'Falha ao reiniciar.' });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  router.post('/whatsapp/config', requireAuth(['admin']), (req: Request, res: Response) => {
+    const { apiUrl, apiKey, instanceName } = req.body;
+    try {
+      const cfg = configService.getConfig();
+      const updated = configService.updateConfig({
+        evolution: {
+          apiUrl: apiUrl || cfg.evolution.apiUrl,
+          apiKey: apiKey || cfg.evolution.apiKey,
+          instanceName: instanceName || cfg.evolution.instanceName,
+        }
+      });
+      res.json({ success: true, evolution: updated.evolution });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ==========================================
+  // 17. PORTARIA DIGITAL: VISITAS & ENCOMENDAS
+  // ==========================================
+
+  router.get('/portaria/visitas', requireAuth(), (_req: Request, res: Response) => {
+    res.json(dbService.getVisitas());
+  });
+
+  router.post('/portaria/visitas', requireAuth(), async (req: Request, res: Response) => {
+    const { visitanteNome, documento, unidade, tipo, estacionamento, notificarWhatsapp, telefoneMorador } = req.body;
+    if (!visitanteNome || !unidade) {
+      return res.status(400).json({ error: 'visitanteNome e unidade são obrigatórios' });
+    }
+
+    const agora = new Date();
+    const horaStr = `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+    const token = `QR-VIS-${unidade.replace(/[^0-9]/g, '')}-${Date.now().toString().slice(-4)}`;
+
+    const novaVisita: Visita = {
+      id: `vis_${Date.now()}`,
+      visitanteNome,
+      documento: documento || undefined,
+      unidade,
+      tipo: tipo || 'visita',
+      dataEntrada: 'Hoje',
+      horaEntrada: horaStr,
+      estacionamento: estacionamento || undefined,
+      qrCodeToken: token,
+      status: 'autorizado',
+      criadoEm: agora.toISOString()
+    };
+
+    dbService.saveVisita(novaVisita);
+
+    // Notificação ao morador via WhatsApp se solicitado
+    if (notificarWhatsapp && telefoneMorador) {
+      const msg = [
+        `🎟️ *PASSE DIGITAL DE VISITANTE — PORTARIA*`,
+        `----------------------------------------`,
+        `Olá! Um novo convite/acesso foi gerado para sua unidade:`,
+        `• *Visitante:* ${visitanteNome}`,
+        `• *Unidade:* ${unidade}`,
+        `• *Horário de Entrada:* ${horaStr}`,
+        `• *Vaga/Estacionamento:* ${estacionamento || 'Não alocada'}`,
+        `• *Token de Liberação:* \`${token}\``,
+        `----------------------------------------`,
+        `A portaria está autorizada para liberação automática com este código.`
+      ].join('\n');
+
+      try {
+        await evolutionService.sendText(`${telefoneMorador}@s.whatsapp.net`, msg);
+      } catch (e) {}
+    }
+
+    res.status(201).json({ success: true, visita: novaVisita });
+  });
+
+  router.put('/portaria/visitas/:id/status', requireAuth(), (req: Request, res: Response) => {
+    const { status } = req.body;
+    const ok = dbService.updateVisitaStatus(req.params.id, status || 'entrou');
+    res.json({ success: ok });
+  });
+
+  router.get('/portaria/encomendas', requireAuth(), (_req: Request, res: Response) => {
+    res.json(dbService.getEncomendas());
+  });
+
+  router.post('/portaria/encomendas', requireAuth(), async (req: Request, res: Response) => {
+    const { destinatarioNome, unidade, transportadora, codigoRastreio, fotoUrl, telefoneMorador } = req.body;
+    if (!destinatarioNome || !unidade) {
+      return res.status(400).json({ error: 'destinatarioNome e unidade são obrigatórios' });
+    }
+
+    const agora = new Date();
+    const horaStr = `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+    const codigoRetirada = `RET-${unidade.replace(/[^0-9]/g, '')}-${Date.now().toString().slice(-3)}`;
+
+    const novaEncomenda: Encomenda = {
+      id: `enc_${Date.now()}`,
+      destinatarioNome,
+      unidade,
+      transportadora: transportadora || 'Entrega Registrada',
+      codigoRastreio: codigoRastreio || `PKG-${Date.now().toString().slice(-6)}`,
+      dataChegada: 'Hoje',
+      horaChegada: horaStr,
+      codigoRetirada,
+      status: 'aguardando_retirada',
+      fotoUrl: fotoUrl || undefined,
+      notificadoWhatsapp: true,
+      criadoEm: agora.toISOString()
+    };
+
+    dbService.saveEncomenda(novaEncomenda);
+
+    // Notificação via WhatsApp ao condômino
+    const targetJid = telefoneMorador ? `${telefoneMorador}@s.whatsapp.net` : '5511999990001@s.whatsapp.net';
+    const msgEncomenda = [
+      `📦 *NOVA ENCOMENDA RECEBIDA NA PORTARIA!*`,
+      `----------------------------------------`,
+      `Olá, *${destinatarioNome}* (${unidade})!`,
+      `Um pacote acabou de ser entregue e catalogado na portaria:`,
+      ``,
+      `• *Transportadora / Remetente:* ${novaEncomenda.transportadora}`,
+      `• *Horário de Recebimento:* ${horaStr}`,
+      `• *Código de Retirada:* \`${codigoRetirada}\``,
+      `----------------------------------------`,
+      `Apresente este código na portaria para retirar seu pacote.`,
+      `Retirada disponível 24h!`
+    ].join('\n');
+
+    try {
+      await evolutionService.sendText(targetJid, msgEncomenda);
+    } catch (e) {}
+
+    res.status(201).json({ success: true, encomenda: novaEncomenda });
+  });
+
+  router.put('/portaria/encomendas/:id/status', requireAuth(), (req: Request, res: Response) => {
+    const { status } = req.body;
+    const ok = dbService.updateEncomendaStatus(req.params.id, status || 'entregue');
+    res.json({ success: ok });
+  });
+
+  // ==========================================
+  // 18. COMUNICADOS OFICIAIS & DISPAROS WHATSAPP
+  // ==========================================
+
+  router.get('/comunicados', requireAuth(), (_req: Request, res: Response) => {
+    res.json(dbService.getComunicados());
+  });
+
+  router.post('/comunicados', requireAuth(['admin', 'sindico']), async (req: Request, res: Response) => {
+    const { titulo, conteudo, publico, categoria, dispararWhatsapp } = req.body;
+    if (!titulo || !conteudo) {
+      return res.status(400).json({ error: 'Título e conteúdo são obrigatórios' });
+    }
+
+    const user = (req as any).user;
+    const novo: Comunicado = {
+      id: `com_${Date.now()}`,
+      condominioId: 'condo_1',
+      condominioNome: 'Residencial Jardins do Bosque',
+      titulo,
+      conteudo,
+      data: new Date().toLocaleDateString('pt-BR'),
+      categoria: categoria || 'geral',
+      autor: user?.name || 'Administração',
+      publico: publico || 'Todos os Condôminos',
+      disparadoWhatsapp: Boolean(dispararWhatsapp)
+    };
+
+    dbService.saveComunicado(novo);
+
+    if (dispararWhatsapp) {
+      try {
+        await evolutionService.sendGroupAnnouncement(
+          '120363028123456789@g.us',
+          novo.condominioNome,
+          novo.titulo,
+          novo.conteudo,
+          novo.categoria === 'urgente'
+        );
+      } catch (e) {}
+    }
+
+    res.status(201).json({ success: true, comunicado: novo });
   });
 
   return router;

@@ -1,6 +1,9 @@
 import { SessionManager } from './session.manager.js';
 import { EvolutionService } from '../services/evolution.service.js';
 import { SisconService } from '../services/siscon.service.js';
+import { RagService } from '../services/rag.service.js';
+import { LlmService } from '../services/llm.service.js';
+import { DbService } from '../services/db.service.js';
 import { validarCpf, limparCpf, mascararCpf } from '../utils/cpf.util.js';
 import { formatarMensagemPix } from '../utils/pix.util.js';
 import { config } from '../config.js';
@@ -9,11 +12,17 @@ export class BotOrchestrator {
   private sessionManager: SessionManager;
   private evolutionService: EvolutionService;
   private sisconService: SisconService;
+  private ragService: RagService;
+  private llmService: LlmService;
+  private dbService: DbService;
 
   constructor() {
     this.sessionManager = new SessionManager();
     this.evolutionService = new EvolutionService();
     this.sisconService = new SisconService();
+    this.ragService = RagService.getInstance();
+    this.llmService = LlmService.getInstance();
+    this.dbService = DbService.getInstance();
   }
 
   getSessionManager(): SessionManager {
@@ -153,20 +162,23 @@ export class BotOrchestrator {
     this.sessionManager.updateSession(session);
 
     const mensagem = [
-      `👋 Olá, *${nome}*! Bem-vindo(a) ao *ZELORIS AI* — Inteligência Operacional Condominial.`,
-      `⚡ *Piloto Automático 100% Ativo: Todas as tarefas são resolvidas sem espera e sem intervenção humana!*`,
+      `👋 Olá, *${nome}*! Bem-vindo(a) ao *ZELORIS AI* — Central de Inteligência Condominial.`,
+      `⚡ *Atendimento Autônomo 24h: Respostas imediatas e sem filas.*`,
       ``,
-      `Como posso ajudar você agora? Digite o número ou descreva o que precisa:`,
+      `Como posso ajudar você agora? Digite o número ou descreva sua solicitação:`,
       ``,
       `*1* - 📄 2ª Via de Boleto & Pix Copia e Cola (Recálculo Automático)`,
       `*2* - 🤝 Negociação & Acordo de Débito (Termo Jurídico SHA-256)`,
-      `*3* - 💧 Telemetria & Medição (Água e Gás)`,
+      `*3* - 💧 Telemetria & Medição Individual (Água e Gás)`,
       `*4* - 📅 Reservas de Áreas Comuns (Churrasqueira/Salão)`,
-      `*5* - 📖 Dúvidas do Regimento Interno & Convenção (RAG)`,
-      `*6* - 📦 Notificação de Encomendas & Passes de Visitantes com QR Code`,
+      `*5* - 📖 Dúvidas do Regimento Interno & Convenção (RAG Jurídico)`,
+      `*6* - 📦 Notificação de Encomendas & Passes de Visitantes (QR Code)`,
       `*7* - 🗳️ Votação em Assembleia Virtual`,
       `*8* - 🛠️ Abertura de Chamado / Manutenção Predial`,
+      `*9* - 📜 Certidão Negativa de Débitos (Nada Consta)`,
+      `*0* - 👤 Falar com Atendente Humano`,
       ``,
+      `💡 *Dica:* Você também pode digitar sua dúvida livremente (ex: _"Qual o horário do silêncio no sábado?"_).`,
       `_A qualquer momento, digite *MENU* para retornar ao início._`
     ].join('\n');
 
@@ -174,7 +186,8 @@ export class BotOrchestrator {
   }
 
   private async handleInicio(remoteJid: string, text: string, nome: string): Promise<void> {
-    if (text.includes('boleto') || text.includes('segunda via') || text.includes('pix') || text.includes('pagar')) {
+    const lower = text.toLowerCase();
+    if (lower.includes('boleto') || lower.includes('segunda via') || lower.includes('pix') || lower.includes('pagar')) {
       const session = this.sessionManager.getSession(remoteJid);
       session.state = 'AGUARDANDO_CPF';
       session.tempData = { destinoAposCpf: 'boleto' };
@@ -187,7 +200,7 @@ export class BotOrchestrator {
       return;
     }
 
-    if (text.includes('acordo') || text.includes('parcelar') || text.includes('divida') || text.includes('dívida')) {
+    if (lower.includes('acordo') || lower.includes('parcelar') || lower.includes('divida') || lower.includes('dívida')) {
       const session = this.sessionManager.getSession(remoteJid);
       session.state = 'AGUARDANDO_CPF';
       session.tempData = { destinoAposCpf: 'acordo' };
@@ -200,12 +213,19 @@ export class BotOrchestrator {
       return;
     }
 
-    await this.enviarMenuPrincipal(remoteJid, nome);
+    // Tenta responder pergunta livre via RAG/IA
+    const session = this.sessionManager.getSession(remoteJid);
+    const respondeuPorIa = await this.handleConsultaRAGIA(remoteJid, text, session);
+    if (!respondeuPorIa) {
+      await this.enviarMenuPrincipal(remoteJid, nome);
+    }
   }
 
   private async handleMenuPrincipal(remoteJid: string, text: string, session: any): Promise<void> {
+    const lower = text.toLowerCase().trim();
+
     // 1 - Boleto
-    if (text === '1' || text.includes('boleto') || text.includes('pix')) {
+    if (lower === '1' || (lower.includes('boleto') && !lower.includes('duvida')) || lower === 'pix') {
       session.state = 'AGUARDANDO_CPF';
       session.tempData = { destinoAposCpf: 'boleto' };
       this.sessionManager.updateSession(session);
@@ -216,7 +236,7 @@ export class BotOrchestrator {
       );
     }
     // 2 - Acordo / Parcelamento
-    else if (text === '2' || text.includes('acordo') || text.includes('parcel')) {
+    else if (lower === '2' || lower.includes('acordo') || lower.includes('parcel')) {
       session.state = 'AGUARDANDO_CPF';
       session.tempData = { destinoAposCpf: 'acordo' };
       this.sessionManager.updateSession(session);
@@ -227,40 +247,52 @@ export class BotOrchestrator {
       );
     }
     // 3 - SISCON Medição (Água e Gás)
-    else if (text === '3' || text.includes('medicao') || text.includes('agua') || text.includes('gás')) {
+    else if (lower === '3' || lower.includes('medicao') || lower.includes('medição') || lower.includes('agua') || lower.includes('água') || lower.includes('gás')) {
       await this.handleConsultaMedicao(remoteJid, session);
     }
     // 4 - Reservas de Áreas Comuns
-    else if (text === '4' || text.includes('reserva') || text.includes('salao') || text.includes('churrasqueira')) {
+    else if (lower === '4' || lower.includes('reserva') || lower.includes('salao') || lower.includes('salão') || lower.includes('churrasqueira')) {
       await this.handleInicioReserva(remoteJid, session);
     }
-    // 5 - Certidões / Nada Consta
-    else if (text === '5' || text.includes('certidao') || text.includes('nada consta') || text.includes('quitacao')) {
-      await this.handleCertidaoNadaConsta(remoteJid, session);
+    // 5 - Dúvidas do Regimento Interno & Convenção (RAG)
+    else if (lower === '5' || lower.includes('regimento') || lower.includes('convenção') || lower.includes('convencao') || lower.includes('regras') || lower.includes('normas')) {
+      await this.handleDuvidasRegimento(remoteJid, session);
     }
-    // 6 - Ocorrência
-    else if (text === '6' || text.includes('ocorrencia') || text.includes('manuten')) {
+    // 6 - Encomendas & Passes de Visitantes (QR Code)
+    else if (lower === '6' || lower.includes('encomenda') || lower.includes('visitante') || lower.includes('pacote') || lower.includes('passe') || lower.includes('portaria')) {
+      await this.handleEncomendasEVisitas(remoteJid, session);
+    }
+    // 7 - Assembleia Virtual
+    else if (lower === '7' || lower.includes('assembleia') || lower.includes('voto') || lower.includes('votar')) {
+      await this.handleAssembleiaVirtual(remoteJid, session);
+    }
+    // 8 - Manutenção / Chamado
+    else if (lower === '8' || lower.includes('chamado') || lower.includes('manuten') || lower.includes('ocorrencia') || lower.includes('conserto')) {
       session.state = 'AGUARDANDO_DESCRICAO_OCORRENCIA';
       this.sessionManager.updateSession(session);
 
       await this.reply(
         remoteJid,
-        `🛠️ *Registro de Ocorrência / Chamado*\n\nPor favor, digite uma descrição detalhada do problema (ex: vazamento no hall, lâmpada queimada na garagem, portão travado, etc.):`
+        `🛠️ *Registro de Chamado / Manutenção Predial*\n\nPor favor, digite uma descrição detalhada do problema (ex: lâmpada queimada na garagem, portão travando, vazamento no hall, etc.):`
       );
     }
-    // 7 - Atendente Humano
-    else if (text === '7' || text.includes('atendente') || text.includes('humano')) {
+    // 9 - Certidão Nada Consta
+    else if (lower === '9' || lower.includes('certidao') || lower.includes('certidão') || lower.includes('nada consta') || lower.includes('quitacao') || lower.includes('quitação')) {
+      await this.handleCertidaoNadaConsta(remoteJid, session);
+    }
+    // 0 - Atendente Humano
+    else if (lower === '0' || lower.includes('atendente') || lower.includes('humano') || lower.includes('operador')) {
       session.state = 'ATENDIMENTO_HUMANO';
       this.sessionManager.setHumanHandoff(remoteJid, true);
       this.sessionManager.updateSession(session);
 
       await this.reply(
         remoteJid,
-        `👤 Você foi transferido para a fila de atendimento operacional humano.\n\nUm de nossos atendentes entrará em contato em instantes.\n\n_Para encerrar a fila a qualquer momento, digite *SAIR*._`
+        `👤 *Transferência para Atendimento Humano*\n\nVocê foi transferido para nossa equipe operacional no painel.\nUm colaborador responderá por aqui em instantes.\n\n_Para retornar ao robô autônomo, digite *SAIR* ou *MENU*._`
       );
     }
-    // 8 - Comunicados
-    else if (text === '8' || text.includes('aviso') || text.includes('comunicado')) {
+    // Comunicados
+    else if (lower.includes('aviso') || lower.includes('comunicado')) {
       const comunicados = await this.sisconService.listarComunicados();
       const texto = [
         `📢 *Mural de Comunicados Oficiais — SISCON*`,
@@ -271,12 +303,150 @@ export class BotOrchestrator {
         `Digite *MENU* para retornar ao início.`
       ].join('\n\n');
       await this.reply(remoteJid, texto);
-    } else {
-      await this.reply(
-        remoteJid,
-        `Opção não reconhecida. Por favor, digite um número de *1 a 8* ou envie *MENU* para ver as opções.`
-      );
     }
+    // Pergunta em Linguagem Natural: Fallback para IA / RAG
+    else {
+      const respondeuPorIa = await this.handleConsultaRAGIA(remoteJid, text, session);
+      if (!respondeuPorIa) {
+        await this.reply(
+          remoteJid,
+          `Opção não reconhecida. Por favor, digite um número de *1 a 9* ou digite sua pergunta (ex: _"Qual horário de silêncio no sábado?"_):`
+        );
+      }
+    }
+  }
+
+  // ==========================================
+  // CONSULTA RAG & IA EM TEMPO REAL NO WHATSAPP
+  // ==========================================
+  private async handleConsultaRAGIA(remoteJid: string, text: string, session: any): Promise<boolean> {
+    if (!text || text.trim().length < 4) return false;
+
+    const buscadoc = this.ragService.buscarSemantica(text, 3);
+    if (!buscadoc || buscadoc.length === 0 || buscadoc[0].score < 0.15) {
+      return false;
+    }
+
+    const condoNome = session.morador?.unidades?.[0]?.condominioNome || 'Residencial Jardins do Bosque';
+    const contextRAG = buscadoc.map(r => `[Fonte: ${r.documentoTitulo}]\n${r.chunk.texto}`).join('\n\n');
+
+    try {
+      const respostaIA = await this.llmService.generateAnswer(text, contextRAG, condoNome);
+      const topDoc = buscadoc[0];
+
+      // Grava histórico de auditoria e governança de IA no SQLite
+      this.dbService.saveAIDecision({
+        id: `dec_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        condominioId: 'condo_1',
+        pergunta: text,
+        resposta: respostaIA,
+        artigoCitado: topDoc.chunk.texto.includes('Artigo') ? topDoc.chunk.texto.split('\n')[0] : 'Regulamento Geral',
+        documentoCitado: topDoc.documentoTitulo,
+        scoreConfianca: topDoc.score,
+        nivelAutonomia: 1,
+        statusAprovacao: 'auto_aprovado',
+        aprovadoPor: 'ZELORIS RAG Engine',
+        tokensConsumidos: Math.floor(text.length * 1.5 + respostaIA.length * 1.2),
+        provedor: this.llmService.getConfig().provider,
+        modelo: this.llmService.getConfig().modelName,
+        timestamp: new Date().toISOString()
+      });
+
+      const msgFinal = [
+        `🤖 *ZELORIS AI — Inteligência Condominial*`,
+        `----------------------------------------`,
+        respostaIA,
+        ``,
+        `📚 *Base Consultada:* ${topDoc.documentoTitulo}`,
+        `----------------------------------------`,
+        `_Digite *MENU* para ver as opções ou faça outra pergunta sobre o condomínio._`
+      ].join('\n');
+
+      await this.reply(remoteJid, msgFinal);
+      return true;
+    } catch (err: any) {
+      console.warn('[BotOrchestrator] Falha ao gerar resposta via LLM/RAG:', err.message);
+      return false;
+    }
+  }
+
+  // ==========================================
+  // DÚVIDAS DO REGIMENTO INTERNO (MENU OPÇÃO 5)
+  // ==========================================
+  private async handleDuvidasRegimento(remoteJid: string, session: any): Promise<void> {
+    const docs = this.ragService.listarDocumentos();
+    const titulos = docs.map((d, i) => `• *${i + 1}* - ${d.titulo}`).join('\n');
+
+    const msg = [
+      `📖 *CONSULTA AO REGIMENTO INTERNO & CONVENÇÃO (RAG)*`,
+      `----------------------------------------`,
+      `Nossa inteligência artificial tem acesso direto aos regulamentos oficiais do condomínio:`,
+      titulos,
+      `----------------------------------------`,
+      `💬 *Basta digitar sua pergunta diretamente por aqui!* Exemplos:`,
+      `• _"Até que horas posso fazer barulho no sábado?"_`,
+      `• _"Posso ter cachorro de grande porte no apartamento?"_`,
+      `• _"Como funciona a reserva da churrasqueira e qual o valor?"_`,
+      `• _"Quais são os dias permitidos para mudança?"_`,
+      ``,
+      `Digite sua dúvida agora ou envie *MENU* para retornar.`
+    ].join('\n');
+
+    await this.reply(remoteJid, msg);
+  }
+
+  // ==========================================
+  // ENCOMENDAS & PASSES DE VISITANTES (MENU OPÇÃO 6)
+  // ==========================================
+  private async handleEncomendasEVisitas(remoteJid: string, session: any): Promise<void> {
+    const encomendas = this.dbService.getEncomendas().filter(e => e.status === 'aguardando_retirada');
+    const visitas = this.dbService.getVisitas().slice(0, 3);
+
+    const listaEnc = encomendas.length > 0
+      ? encomendas.map(e => `📦 *${e.transportadora}* (${e.destinatarioNome} - ${e.unidade})\n• Código de Retirada na Portaria: \`${e.codigoRetirada}\`\n• Chegada: ${e.horaChegada}`).join('\n\n')
+      : '✅ Não há encomendas pendentes de retirada no momento.';
+
+    const msg = [
+      `📦 *PORTARIA DIGITAL — ENCOMENDAS & CONVITES QR CODE*`,
+      `----------------------------------------`,
+      `📦 *SUAS ENCOMENDAS NA PORTARIA:*`,
+      listaEnc,
+      `----------------------------------------`,
+      `🎟️ *GERAÇÃO DE PASSE QR CODE PARA VISITANTES:*`,
+      `Para autorizar a entrada de convidados, prestadores ou delivery sem interfonar:`,
+      `• Acesse o app ou solicite à portaria informando o nome e RG do visitante.`,
+      `• O QR Code temporário é enviado instantaneamente aqui no seu WhatsApp.`,
+      `----------------------------------------`,
+      `Digite *MENU* para voltar ao início.`
+    ].join('\n');
+
+    await this.reply(remoteJid, msg);
+  }
+
+  // ==========================================
+  // ASSEMBLEIA VIRTUAL (MENU OPÇÃO 7)
+  // ==========================================
+  private async handleAssembleiaVirtual(remoteJid: string, session: any): Promise<void> {
+    const msg = [
+      `🗳️ *ASSEMBLEIA GERAL ORDINÁRIA (AGO 2026/2027) — DIGITAL*`,
+      `🏢 Residencial Jardins do Bosque`,
+      `📅 Período de Votação: 15/11/2026 a 25/11/2026`,
+      `----------------------------------------`,
+      `📌 *PAUTA 1:* Aprovação da Previsão Orçamentária 2027`,
+      `Status: Aberta para votação`,
+      `Quórum Atual: 58% das frações ideais computadas`,
+      ``,
+      `📌 *PAUTA 2:* Reforma e Pintura da Fachada Externa`,
+      `Status: Em debate no fórum digital`,
+      `----------------------------------------`,
+      `Para registrar o voto da sua unidade pelo WhatsApp:`,
+      `Envie *VOTO 1 SIM* ou *VOTO 1 NAO*`,
+      ``,
+      `_O comprovante criptográfico do voto será emitido na hora com hash de segurança._`,
+      `Digite *MENU* para retornar.`
+    ].join('\n');
+
+    await this.reply(remoteJid, msg);
   }
 
   private async handleAguardandoCpf(remoteJid: string, text: string, session: any): Promise<void> {
