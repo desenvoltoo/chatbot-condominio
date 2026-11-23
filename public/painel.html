@@ -2172,7 +2172,7 @@
         <div class="px-2 pb-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Governança & IA</div>
         <div class="space-y-0.5">
           <!-- Integrações & ERP -->
-          <button onclick="switchTab('configuracoes'); switchConfigSubtab('gerais');" id="nav-configuracoes" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+          <button onclick="switchTab('configuracoes')" id="nav-configuracoes" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
               <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
               <span>Configurações</span>
@@ -2182,7 +2182,7 @@
           </button>
 
           <!-- Hub Multi-IA -->
-          <button onclick="switchTab('configuracoes'); switchConfigSubtab('ia');" id="nav-ai" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+          <button onclick="switchTab('ai')" id="nav-ai" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
               <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M12 8V4H8"/></svg>
               <span>Hub Multi-IA</span>
@@ -4210,7 +4210,7 @@
           <!-- Mapa de Calor de Ocorrências -->
           <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
             <h3 class="font-bold text-sm text-white">Mapa de Demandas da Comunidade</h3>
-            <div id="listaComunicadosContainer" class="space-y-3 text-xs">
+            <div id="mapaDemandasContainer" class="space-y-3 text-xs">
               <div>
                 <div class="flex justify-between mb-1">
                   <span class="text-slate-300">2ª Via de Boleto & Pix</span>
@@ -4838,20 +4838,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             </p>
           </div>
 
-          <!-- Navegação por Módulos (Segmented Pill Switcher Vozko) -->
-          <div class="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100 dark:bg-white/[0.05] border border-slate-200 dark:border-white/10 shrink-0 self-start sm:self-auto">
-            <button type="button" id="btnSubtabGerais" onclick="switchConfigSubtab('gerais')" class="px-4 py-2 rounded-xl font-bold text-xs bg-slate-900 dark:bg-indigo-600 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5">
-              <span>🏛️</span> Configurações Gerais & Carteira
-            </button>
-            <button type="button" id="btnSubtabIA" onclick="switchConfigSubtab('ia')" class="px-4 py-2 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer flex items-center gap-1.5">
-              <span>🤖</span> IA & Automação
-            </button>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono font-bold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> CONEXÕES ATIVAS
+            </span>
           </div>
         </div>
 
-        <!-- ============================================================== -->
-        <!-- SUBABA 1: CONFIGURAÇÕES GERAIS, CARTEIRA MULTI-CONDOMÍNIO & RAG -->
-        <!-- ============================================================== -->
+        <!-- CARDS DE CONFIGURAÇÃO & INTEGRAÇÕES -->
         <div id="subtab-content-gerais" class="space-y-6">
 
           <!-- CARD 1: SELETOR DE ESCOPO / CONDOMÍNIO ATIVO (VOZKO MULTI-TENANT) -->
@@ -5130,117 +5124,6 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             </div>
           </div>
 
-          <!-- CARD 2: DOCUMENTAÇÃO & ONBOARDING DO CLIENTE PARA CONSTRUÇÃO DA BASE RAG -->
-          <div class="p-6 rounded-3xl bg-gradient-to-br from-indigo-500/[0.04] via-white to-purple-500/[0.03] dark:from-indigo-950/30 dark:via-[#111625] dark:to-purple-950/20 border-2 border-indigo-200 dark:border-indigo-500/30 shadow-xs space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-indigo-100 dark:border-white/10">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                  📚
-                </div>
-                <div>
-                  <div class="flex items-center gap-2">
-                    <h2 class="text-base font-bold text-slate-900 dark:text-white">Documentação & Onboarding RAG</h2>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30">BASE DE CONHECIMENTO</span>
-                  </div>
-                  <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                    O que o cliente/síndico precisa fornecer para a IA responder com 100% de precisão jurídica e operacional.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Botão Copiar Mensagem Pronta de Solicitação para WhatsApp -->
-              <button type="button" onclick="copiarMensagemOnboardingWhatsApp()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-xs cursor-pointer flex items-center gap-1.5 shrink-0">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-                <span>Copiar Solicitação para WhatsApp</span>
-              </button>
-            </div>
-
-            <!-- Os 5 Documentos Essenciais da Base RAG (Checklist Interativo Vozko) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              <!-- Doc 1: Convenção Condominial -->
-              <div class="p-3.5 rounded-2xl bg-white dark:bg-[#07090e]/80 border border-slate-200 dark:border-white/10 flex items-start gap-3">
-                <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-200 dark:border-emerald-500/30">
-                  1
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-xs text-slate-900 dark:text-white">Convenção Condominial</span>
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold">PDF INGERIDO</span>
-                  </div>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Destinação dos blocos, fração ideal, regras de inadimplência e quóruns de assembleia.</p>
-                </div>
-              </div>
-
-              <!-- Doc 2: Regimento Interno Atualizado -->
-              <div class="p-3.5 rounded-2xl bg-white dark:bg-[#07090e]/80 border border-slate-200 dark:border-white/10 flex items-start gap-3">
-                <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-200 dark:border-emerald-500/30">
-                  2
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-xs text-slate-900 dark:text-white">Regimento Interno Atualizado</span>
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold">PDF INGERIDO</span>
-                  </div>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Horários de silêncio, mudanças aos sábados, normas de pets, vagas de garagem e reformas.</p>
-                </div>
-              </div>
-
-              <!-- Doc 3: Tabela de Taxas & Espaços Comuns -->
-              <div class="p-3.5 rounded-2xl bg-white dark:bg-[#07090e]/80 border border-slate-200 dark:border-white/10 flex items-start gap-3">
-                <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-200 dark:border-emerald-500/30">
-                  3
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-xs text-slate-900 dark:text-white">Tabela de Taxas & Áreas Comuns</span>
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold">CONFIGURADO</span>
-                  </div>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Valores de reserva do salão de festas, churrasqueira, taxa de limpeza e regras de cancelamento.</p>
-                </div>
-              </div>
-
-              <!-- Doc 4: Atas de Assembleia Recentes -->
-              <div class="p-3.5 rounded-2xl bg-white dark:bg-[#07090e]/80 border border-slate-200 dark:border-white/10 flex items-start gap-3">
-                <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-sm shrink-0 border border-indigo-200 dark:border-indigo-500/30">
-                  4
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-xs text-slate-900 dark:text-white">Últimas Atas de Assembleia (AGO/AGE)</span>
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-bold">3 ATAS</span>
-                  </div>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Decisões votadas: taxa extra de fachada, regras provisórias de delivery e reajuste da cota.</p>
-                </div>
-              </div>
-
-              <!-- Doc 5: Contatos de Emergência & Prestadores -->
-              <div class="p-3.5 rounded-2xl bg-white dark:bg-[#07090e]/80 border border-slate-200 dark:border-white/10 flex items-start gap-3 md:col-span-2">
-                <div class="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm shrink-0 border border-purple-200 dark:border-purple-500/30">
-                  5
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-xs text-slate-900 dark:text-white">Contatos de Emergência, Zeladoria & Prestadores Homologados</span>
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold">INTEGRADO</span>
-                  </div>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Telefone da portaria, manutenção dos elevadores (Atlas/Otis), desentupidora 24h, seguradora e chaveiro.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Ações e Atalhos da RAG -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-indigo-100 dark:border-white/10 text-xs">
-              <span class="text-slate-500 dark:text-slate-400">
-                Documentação completa disponível em <code class="px-2 py-0.5 rounded bg-slate-100 dark:bg-white/10 font-mono text-[11px]">docs/checklist_onboarding_cliente.md</code>
-              </span>
-              <div class="flex items-center gap-2">
-                <button type="button" onclick="switchTab('rag')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-800 dark:text-white font-semibold transition-all cursor-pointer">
-                  Ir para Gerenciador RAG Completo ➔
-                </button>
-              </div>
-            </div>
-          </div>
-
           <!-- CARD 3: INTEGRAÇÃO COM ERP SISCON & WEBHOOK (MULTITENANT) -->
           <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-5">
             <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
@@ -5345,226 +5228,10 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
         </div>
 
-        <!-- ============================================================== -->
-        <!-- SUBABA 2: CONFIGURAÇÕES DE IA & AUTOMAÇÃO (AI ENGINE VOZKO) -->
-        <!-- ============================================================== -->
-        <div id="subtab-content-ia" class="space-y-6 hidden">
-
-          <!-- CARD 1: SELEÇÃO DE PROVEDOR & MODELO LLM -->
-          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-5">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg border border-indigo-200 dark:border-indigo-500/30">
-                  ⚡
-                </div>
-                <div>
-                  <h2 class="text-base font-bold text-slate-900 dark:text-white">Motor de Inteligência Artificial</h2>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">Selecione o provedor neural, configure as chaves de API e defina os limites de inferência.</p>
-                </div>
-              </div>
-              <span id="aiEngineStatusBadge" class="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30">
-                GPT-4o ATIVO
-              </span>
-            </div>
-
-            <!-- Presets Rápidos de Provedor (Vozko Style Pills) -->
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">Provedores Recomendados:</label>
-              <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                <button type="button" onclick="aplicarPresetIA('openai')" class="p-3 rounded-2xl border border-indigo-500/40 bg-indigo-50/50 dark:bg-indigo-950/30 text-left cursor-pointer hover:border-indigo-500 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>OpenAI</span>
-                    <span class="text-[10px] text-indigo-600 dark:text-indigo-400 font-mono">Recomendado</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">GPT-4o & Mini</span>
-                </button>
-
-                <button type="button" onclick="aplicarPresetIA('anthropic')" class="p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-500 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>Anthropic</span>
-                    <span class="text-[10px] text-amber-500 font-mono">Claude 3.5</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Sonnet & Haiku</span>
-                </button>
-
-                <button type="button" onclick="aplicarPresetIA('google')" class="p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-500 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>Google</span>
-                    <span class="text-[10px] text-cyan-500 font-mono">Gemini</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">1.5 Flash / Pro</span>
-                </button>
-
-                <button type="button" onclick="aplicarPresetIA('groq')" class="p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-500 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>Groq</span>
-                    <span class="text-[10px] text-emerald-500 font-mono">Ultra-Rápido</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Llama 3.3 70B</span>
-                </button>
-
-                <button type="button" onclick="aplicarPresetIA('ollama')" class="p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-500 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>Ollama / Local</span>
-                    <span class="text-[10px] text-purple-500 font-mono">Privativo</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Servidor Próprio</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Campos Técnicos do Modelo -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label for="cfgAIProvider" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Provedor Selecionado</label>
-                <select id="cfgAIProvider" onchange="atualizarModelosPorProvedor(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-semibold text-xs focus:ring-2 focus:ring-indigo-500">
-                  <option value="openai" selected>OpenAI (GPT-4o, GPT-4o-mini)</option>
-                  <option value="anthropic">Anthropic (Claude 3.5 Sonnet, Haiku)</option>
-                  <option value="google">Google Gemini (Gemini 1.5 Pro, Flash)</option>
-                  <option value="groq">Groq Cloud (Llama 3.3 70B Versatile)</option>
-                  <option value="custom">Provedor Customizado / Compatível OpenAI</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="cfgAIModel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Modelo Neural</label>
-                <input type="text" id="cfgAIModel" value="gpt-4o" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs focus:ring-2 focus:ring-indigo-500" />
-              </div>
-
-              <div class="sm:col-span-2">
-                <label for="cfgAIApiKey" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Chave de API do Provedor (API Key)</label>
-                <div class="relative">
-                  <input type="password" id="cfgAIApiKey" value="sk-proj-condovolto-live-ai-key-secure" class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs focus:ring-2 focus:ring-indigo-500" />
-                  <button type="button" onclick="togglePasswordVisibility('cfgAIApiKey')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer" title="Mostrar/Ocultar chave">👁️</button>
-                </div>
-              </div>
-
-              <div>
-                <label for="cfgAIBaseUrl" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Endpoint Base URL (Opcional)</label>
-                <input type="text" id="cfgAIBaseUrl" value="https://api.openai.com/v1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs" />
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <div class="flex items-center justify-between mb-1.5">
-                    <label for="cfgAITemperature" class="text-xs font-semibold text-slate-700 dark:text-slate-300">Temperatura</label>
-                    <span id="tempValueDisplay" class="text-[11px] font-mono font-bold text-indigo-600 dark:text-indigo-400">0.2</span>
-                  </div>
-                  <input type="range" id="cfgAITemperature" min="0.0" max="1.0" step="0.05" value="0.2" oninput="document.getElementById('tempValueDisplay').innerText = this.value" class="w-full accent-indigo-600" />
-                  <span class="text-[10px] text-slate-400 block mt-0.5">0.2 = Mais factual e preciso</span>
-                </div>
-
-                <div>
-                  <label for="cfgAIMaxTokens" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Max Tokens</label>
-                  <input type="number" id="cfgAIMaxTokens" value="1024" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs" />
-                </div>
-              </div>
-            </div>
-
-            <!-- Botão Testar Inferência da IA -->
-            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-white/10 text-xs">
-              <span id="aiLatencyResult" class="text-slate-500 dark:text-slate-400 font-mono text-[11px]">Latência média: 320ms • Conexão estável</span>
-              <button type="button" onclick="testarConexaoIACompleta()" class="px-4 py-2 rounded-xl border border-indigo-500/40 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-bold transition-all flex items-center gap-1.5 cursor-pointer">
-                <span>⚡</span> Testar Conexão & Latência da IA
-              </button>
-            </div>
-          </div>
-
-          <!-- CARD 2: GUARDRAILS, NÍVEIS DE AUTONOMIA & LIMITES -->
-          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-4">
-            <div class="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-white/10">
-              <div class="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-lg border border-purple-200 dark:border-purple-500/30">
-                🛡️
-              </div>
-              <div>
-                <h2 class="text-base font-bold text-slate-900 dark:text-white">Guardrails & Níveis de Autonomia</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Controles de segurança para evitar alucinações, vazamento de dados e limites de negociação financeira.</p>
-              </div>
-            </div>
-
-            <div id="listaComunicadosContainer" class="space-y-3 text-xs">
-              <!-- Guardrail 1 -->
-              <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#07090e]/60 border border-slate-200 dark:border-white/10">
-                <div>
-                  <strong class="text-slate-900 dark:text-white block font-semibold">Teto Máximo de Negociação de Inadimplência Autônoma</strong>
-                  <span class="text-slate-500 dark:text-slate-400 text-[11px]">Valores acima deste limite exigem aprovação manual do síndico ou da administradora.</span>
-                </div>
-                <div class="flex items-center gap-2 shrink-0">
-                  <span class="font-mono text-slate-400 font-bold">R$</span>
-                  <input type="number" id="cfgTetoNegociacao" value="3000.00" class="w-28 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111625] text-slate-800 dark:text-slate-200 font-mono font-bold text-right text-xs" />
-                </div>
-              </div>
-
-              <!-- Guardrail 2: Transbordo Humano Obrigatório -->
-              <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#07090e]/60 border border-slate-200 dark:border-white/10">
-                <div>
-                  <strong class="text-slate-900 dark:text-white block font-semibold">Transbordo Imediato para Humano em Caso de Ameaça Jurídica</strong>
-                  <span class="text-slate-500 dark:text-slate-400 text-[11px]">Quando o condômino citar "processo", "advogado" ou "PROCON", pausar a IA e alertar o síndico.</span>
-                </div>
-                <input type="checkbox" id="cfgHandoffJuridico" checked class="w-5 h-5 rounded accent-indigo-600 cursor-pointer" />
-              </div>
-
-              <!-- Guardrail 3: Anonimização LGPD -->
-              <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#07090e]/60 border border-slate-200 dark:border-white/10">
-                <div>
-                  <strong class="text-slate-900 dark:text-white block font-semibold">Mascaramento Estrito de CPF e Dados Bancários (LGPD)</strong>
-                  <span class="text-slate-500 dark:text-slate-400 text-[11px]">Oculta documentos de moradores nos prompts enviados para provedores de nuvem (OpenAI/Anthropic).</span>
-                </div>
-                <input type="checkbox" id="cfgAnonimizacaoLGPD" checked class="w-5 h-5 rounded accent-indigo-600 cursor-pointer" />
-              </div>
-            </div>
-          </div>
-
-          <!-- CARD 3: SYSTEM PROMPT BASE MULTI-CONDOMÍNIO -->
-          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold text-lg border border-cyan-200 dark:border-cyan-500/30">
-                  📜
-                </div>
-                <div>
-                  <h2 class="text-base font-bold text-slate-900 dark:text-white">System Prompt Base (Template Multi-Condomínio)</h2>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">Instrução mestra injetada em todas as sessões. Tags entre chaves são substituídas dinamicamente.</p>
-                </div>
-              </div>
-              <button type="button" onclick="restaurarSystemPromptPadrao()" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold cursor-pointer">
-                Restaurar Padrão
-              </button>
-            </div>
-
-            <div>
-              <textarea id="cfgSystemPrompt" rows="8" class="w-full p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs leading-relaxed focus:ring-2 focus:ring-indigo-500">Você é o assistente virtual oficial do {condominio_nome}, operando integrado ao ERP Siscon.
-Seu tom é cordial, profissional, conciso e resolutivo.
-Você tem acesso aos seguintes dados do morador: {nome_morador}, {unidade}, {status_financeiro}.
-Regras obrigatórias:
-1. Responda apenas com base na Convenção, Regimento Interno e Atas da base RAG do {condominio_nome}. Se não souber com certeza, informe que encaminhará para o síndico.
-2. Ao solicitar 2ª via de boleto ou cota condominial, gere o código Pix Copia e Cola instantaneamente.
-3. Se o morador solicitar acordo de parcelamento, respeite o teto de tolerância e nunca ofereça desconto no valor principal da cota.
-4. Respeite estritamente a LGPD e nunca compartilhe dados de outras unidades.</textarea>
-              <div class="flex items-center gap-2 mt-2 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                <span>Variáveis disponíveis:</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10">{condominio_nome}</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10">{nome_morador}</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10">{unidade}</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10">{status_financeiro}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- BOTÃO SALVAR IA -->
-          <div class="flex items-center justify-end gap-3 pt-2">
-            <button type="button" onclick="salvarConfiguracoesIAVozko()" class="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 transition-all flex items-center gap-2 cursor-pointer">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              <span>Salvar Configurações de IA & Automação</span>
-            </button>
-          </div>
-
         </div>
 
-      </div>
     </main>
 
-    <!-- ============================================================== -->
     <!-- MÓDULO 11: EQUIPE & MATRIZ INTERATIVA DE PERMISSÕES (RBAC) -->
     <!-- ============================================================== -->
     <main id="tab-content-equipe" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
@@ -10253,6 +9920,10 @@ Regras obrigatórias:
     // FUNÇÕES DA CENTRAL DE CONFIGURAÇÕES (VOZKO MULTI-CONDOMÍNIO & IA)
     // ==============================================================
     function switchConfigSubtab(subtab) {
+      if (subtab === 'ia') {
+        switchTab('ai');
+        return;
+      }
       const btnGerais = document.getElementById('btnSubtabGerais');
       const btnIA = document.getElementById('btnSubtabIA');
       const contentGerais = document.getElementById('subtab-content-gerais');
