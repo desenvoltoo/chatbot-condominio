@@ -2,11 +2,2031 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=docs/">
-  <script>window.location.replace("docs/");</script>
-  <title>CondoBot Enterprise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CondoVolto AI | Software para administradoras de condomínios</title>
+  <meta name="description" content="Assuma mais condomínios sem contratar no mesmo ritmo. Finanças, operação, assembleias e equipe em uma só plataforma com agentes de IA.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2315130F'><rect width='24' height='24' rx='6' fill='%2315130F'/><path d='M7 17V7h10v3h-7v2h6v3h-6v2H7z' fill='%23F6F3EE'/></svg>">
+  
+  <!-- Google Fonts: Inter & Instrument Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --dm-bg: #F6F3EE;
+      --dm-dark: #15130F;
+      --dm-card-bg: #FFFFFF;
+      --dm-border: #E6E0D6;
+      --dm-muted: #6B655C;
+      --dm-text: #15130F;
+      --dm-accent-serif: 'Instrument Serif', Georgia, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--dm-bg);
+      color: var(--dm-text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    .serif-italic {
+      font-family: var(--dm-accent-serif);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    /* Header Nav */
+    .dm-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(246, 243, 238, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--dm-border);
+      padding: 0 24px;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1392px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .dm-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--dm-dark);
+    }
+
+    .dm-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--dm-dark);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #F6F3EE;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.05em;
+    }
+
+    .dm-logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--dm-dark);
+    }
+
+    .dm-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .dm-links a {
+      text-decoration: none;
+      color: #4A443B;
+      font-size: 14.5px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .dm-links a:hover {
+      color: var(--dm-dark);
+    }
+
+    .dm-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dm-btn-outline {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--dm-border);
+      background: #FFFFFF;
+      color: var(--dm-dark);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .dm-btn-outline:hover {
+      background: #F1ECE4;
+      border-color: #D6CFC3;
+    }
+
+    .dm-btn-dark {
+      padding: 11px 22px;
+      border-radius: 999px;
+      background: var(--dm-dark);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.15s, transform 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dm-btn-dark:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    /* Hero Section */
+    .dm-wide-hero {
+      padding: 0 16px;
+      display: flex;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .dm-hero-card {
+      width: 100%;
+      max-width: 1392px;
+      border-radius: 28px;
+      background: #15130F;
+      color: #F6F3EE;
+      padding: clamp(80px, 9vw, 130px) 32px clamp(60px, 7vw, 96px);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dm-hero-tag {
+      margin: 0 0 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #A89F91;
+    }
+
+    .dm-hero-h1 {
+      margin: 0;
+      max-width: 960px;
+      font-size: clamp(38px, 5.4vw, 74px);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      font-weight: 600;
+    }
+
+    .dm-hero-h1 span {
+      color: #A89F91;
+      font-size: 1.05em;
+    }
+
+    .dm-hero-sub {
+      margin: 22px 0 0;
+      max-width: 640px;
+      font-size: clamp(17px, 1.8vw, 20px);
+      line-height: 1.5;
+      color: #D6CFC3;
+      text-wrap: balance;
+    }
+
+    .dm-hero-btns {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    .dm-btn-hero-light {
+      padding: 16px 30px;
+      background: #F6F3EE;
+      color: #15130F;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .dm-btn-hero-light:hover {
+      background: #FFFFFF;
+      transform: translateY(-1px);
+    }
+
+    .dm-btn-hero-border {
+      padding: 15px 28px;
+      background: transparent;
+      color: #F6F3EE;
+      border: 1px solid rgba(246, 243, 238, 0.25);
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .dm-btn-hero-border:hover {
+      border-color: rgba(246, 243, 238, 0.6);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Section Headers */
+    .dm-sec-header {
+      max-width: 820px;
+      margin: 0 auto 50px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .dm-sec-tag {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6B655C;
+    }
+
+    .dm-sec-h2 {
+      font-size: clamp(32px, 4vw, 54px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 600;
+      color: var(--dm-dark);
+    }
+
+    .dm-sec-sub {
+      font-size: 18px;
+      line-height: 1.55;
+      color: #4A443B;
+      text-wrap: balance;
+    }
+
+    /* Mockup Suite Styles (Exact AppDomus ds-* rules) */
+    .ds-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .ds-win {
+      background: #F9FAFB;
+      border: 1px solid #E0D9CD;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 70px -36px rgba(21, 19, 15, 0.35);
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #111827;
+    }
+
+    .ds-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .ds-top i {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #D1D5DB;
+      display: inline-block;
+    }
+
+    .ds-url {
+      margin: 0 auto;
+      padding: 5px 18px;
+      border-radius: 999px;
+      background: #F3F4F6;
+      font-size: 12px;
+      color: #4B5563;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ds-body {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      min-height: 580px;
+    }
+
+    .ds-side {
+      background: #FFFFFF;
+      border-right: 1px solid #E5E7EB;
+      padding: 16px 10px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ds-side:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 60px;
+      background: linear-gradient(transparent, #FFFFFF);
+      pointer-events: none;
+    }
+
+    .ds-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .ds-logo svg {
+      color: #111827;
+    }
+
+    .ds-suite {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 2px 12px;
+      padding: 8px 10px;
+      border: 1px solid #E5E7EB;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      background: #FAFAFA;
+      color: #111827;
+    }
+
+    .ds-grp {
+      font-size: 11px;
+      color: #9CA3AF;
+      padding: 12px 10px 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .ds-it {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #4B5563;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .ds-it:hover {
+      background: #F3F4F6;
+      color: #111827;
+    }
+
+    .ds-it[aria-pressed="true"] {
+      background: #111827 !important;
+      color: #FFFFFF !important;
+      font-weight: 600;
+    }
+
+    .ds-it b {
+      margin-left: auto;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #25D366;
+      flex: none;
+    }
+
+    .ds-it[aria-pressed="true"] b {
+      background: #FFFFFF;
+    }
+
+    .ds-main {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      background: #FAFAFA;
+    }
+
+    .ds-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 24px;
+      border-bottom: 1px solid #E5E7EB;
+      background: #FFFFFF;
+      font-size: 12.5px;
+      color: #6B7280;
+    }
+
+    .ds-bld {
+      padding: 5px 12px;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      color: #111827;
+      font-weight: 500;
+      background: #FFFFFF;
+      white-space: nowrap;
+    }
+
+    .ds-pg {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .ds-pg-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .ds-pg-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #111827;
+    }
+
+    .ds-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #111827;
+      color: #FFFFFF;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+    }
+
+    .ds-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ds-tab {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      color: #4B5563;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .ds-tab.on {
+      background: #111827;
+      border-color: #111827;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .ds-kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .ds-kpi {
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .ds-kpi-lbl {
+      font-size: 11.5px;
+      color: #6B7280;
+      display: block;
+    }
+
+    .ds-kpi-val {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 2px;
+      display: block;
+    }
+
+    .ds-tbl {
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .ds-tr {
+      display: grid;
+      gap: 12px;
+      padding: 11px 16px;
+      font-size: 12.5px;
+      align-items: center;
+      border-top: 1px solid #F3F4F6;
+    }
+
+    .ds-th {
+      font-size: 11px;
+      color: #6B7280;
+      background: #F9FAFB;
+      border-top: none;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .ds-tr span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ds-chip {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+
+    /* Floating WhatsApp & Notification Cards */
+    .ds-float {
+      position: absolute;
+      background: #FFFFFF;
+      color: #15130F;
+      border: 1px solid #E6E0D6;
+      border-radius: 18px;
+      box-shadow: 0 24px 48px -20px rgba(21, 19, 15, 0.35);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 20;
+    }
+
+    .ds-chat {
+      right: -32px;
+      top: -46px;
+      width: 330px;
+    }
+
+    .ds-ev {
+      left: -32px;
+      bottom: -32px;
+      width: 300px;
+    }
+
+    .ds-ag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .ds-ag small {
+      display: block;
+      font-weight: 400;
+      color: #6B655C;
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    .ds-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ds-msg {
+      max-width: 88%;
+      padding: 9px 12px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      line-height: 1.35;
+    }
+
+    .ds-who {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .ds-whoc {
+      background: #FFFFFF;
+      border: 1px solid #E6E0D6;
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .ds-whoc-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #F1ECE4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #15130F;
+      flex: none;
+    }
+
+    .ds-whoc-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #15130F;
+    }
+
+    .ds-whoc-desc {
+      font-size: 13px;
+      color: #6B655C;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    /* Clean Card Sections (Finanças, Operação, Assembleias) */
+    .dm-sec-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 110px 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    .dm-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .dm-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .dm-card-clean {
+      background: #FFFFFF;
+      border: 1px solid var(--dm-border);
+      border-radius: 22px;
+      padding: 32px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .dm-card-clean:hover {
+      border-color: #D6CFC3;
+      box-shadow: 0 16px 36px -12px rgba(21, 19, 15, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .dm-card-h3 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--dm-dark);
+      line-height: 1.3;
+    }
+
+    .dm-card-p {
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: #6B655C;
+      margin-top: 8px;
+    }
+
+    .dm-card-tag {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #F1ECE4;
+      color: #4A443B;
+      align-self: flex-start;
+    }
+
+    /* FAQ Details */
+    .dm-faq-item {
+      background: #FFFFFF;
+      border: 1px solid var(--dm-border);
+      border-radius: 18px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+
+    .dm-faq-item[open] {
+      border-color: #15130F;
+    }
+
+    .dm-faq-summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 26px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dm-dark);
+      user-select: none;
+    }
+
+    .dm-faq-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .dm-faq-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8A8378;
+      transition: transform 0.2s;
+    }
+
+    .dm-faq-item[open] .dm-faq-icon {
+      transform: rotate(45deg);
+      color: var(--dm-dark);
+    }
+
+    .dm-faq-body {
+      padding: 0 26px 22px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #6B655C;
+    }
+
+    /* Clean Simulator Section */
+    .dm-sim-frame {
+      background: #FFFFFF;
+      border: 1px solid var(--dm-border);
+      border-radius: 28px;
+      padding: 36px 32px;
+      box-shadow: 0 24px 60px -20px rgba(21, 19, 15, 0.08);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Footer Clean */
+    .dm-footer {
+      background: #15130F;
+      color: #F6F3EE;
+      padding: 80px 24px 40px;
+      margin-top: 120px;
+    }
+
+    .dm-footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .dm-footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+
+    .dm-footer a {
+      color: #A89F91;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.15s;
+    }
+
+    .dm-footer a:hover {
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 980px) {
+      .ds-float {
+        position: static;
+        width: auto;
+      }
+      .ds-floats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 14px;
+      }
+      .dm-grid-2, .dm-grid-3, .dm-footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .dm-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ds-body {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .ds-side {
+        flex-direction: row;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid #E5E7EB;
+        padding: 10px;
+        gap: 6px;
+      }
+      .ds-side:after, .ds-logo, .ds-suite, .ds-grp {
+        display: none;
+      }
+      .ds-floats {
+        grid-template-columns: 1fr;
+      }
+      .ds-tr {
+        grid-template-columns: minmax(0, 1.4fr) auto !important;
+      }
+      .ds-tr > span:not(:first-child):not(:last-child) {
+        display: none;
+      }
+    }
+  
+    /* Ensure 100% responsiveness without any horizontal clipping */
+    html, body {
+      max-width: 100vw !important;
+      overflow-x: hidden !important;
+      width: 100% !important;
+    }
+
+    .ds-wrap {
+      max-width: 100% !important;
+      padding: 0 16px !important;
+      box-sizing: border-box !important;
+    }
+
+    @media (max-width: 1280px) {
+      .ds-chat {
+        right: 0 !important;
+        top: -30px !important;
+      }
+      .ds-ev {
+        left: 0 !important;
+        bottom: -20px !important;
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .ds-float {
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .ds-floats {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 14px !important;
+        margin-top: 16px !important;
+      }
+    }
+
+    @media (max-width: 860px) {
+      #simGrid {
+        grid-template-columns: 1fr !important;
+      }
+      .ds-floats {
+        grid-template-columns: 1fr !important;
+      }
+      .dm-nav {
+        padding: 0 16px !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ds-body {
+        grid-template-columns: 1fr !important;
+        min-height: auto !important;
+      }
+      .ds-side {
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        padding: 8px !important;
+        gap: 6px !important;
+        border-right: none !important;
+        border-bottom: 1px solid #E5E7EB !important;
+      }
+      .ds-side:after, .ds-logo, .ds-suite, .ds-grp {
+        display: none !important;
+      }
+      .ds-it {
+        white-space: nowrap !important;
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+      }
+      .ds-pg {
+        padding: 14px !important;
+      }
+      .ds-tr {
+        grid-template-columns: minmax(0, 1.4fr) auto !important;
+      }
+      .ds-tr > span:not(:first-child):not(:last-child) {
+        display: none !important;
+      }
+    }
+    
+  </style>
 </head>
-<body style="background:#090d16; color:#fff; font-family:sans-serif; text-align:center; padding-top:20vh;">
-  <p>Redirecionando para a demonstração interativa...</p>
+<body>
+
+  <!-- Header Nav -->
+  <header class="dm-nav">
+    <a href="index.html" class="dm-logo-wrap">
+      <div class="dm-logo-icon">CV</div>
+      <span class="dm-logo-text">CondoVolto <span style="font-weight:400;color:#8A8378">AI</span></span>
+    </a>
+
+    <nav>
+      <ul class="dm-links">
+        <li><a href="#software">O Software</a></li>
+        <li><a href="#financas">Finanças</a></li>
+        <li><a href="#operacao">Operação</a></li>
+        <li><a href="#assembleias">Assembleias</a></li>
+        <li><a href="#ponto">Ponto</a></li>
+        <li><a href="#simulador">Simulador WhatsApp</a></li>
+        <li><a href="#faq">Perguntas Frequentes</a></li>
+      </ul>
+    </nav>
+
+    <div class="dm-cta-group">
+      <a href="login.html" class="dm-btn-outline">Entrar</a>
+      <a href="painel.html" class="dm-btn-dark">
+        <span>Painel Operacional</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="dm-wide-hero">
+    <div class="dm-hero-card">
+      <p class="dm-hero-tag">Para administradoras de condomínios</p>
+      
+      <h1 class="dm-hero-h1">
+        Assuma mais condomínios
+        <span class="serif-italic">sem contratar no mesmo ritmo.</span>
+      </h1>
+
+      <p class="dm-hero-sub">
+        Finanças, operação, assembleias e equipe em uma só plataforma, com agentes de IA que a mantêm em dia por você.
+      </p>
+
+      <div class="dm-hero-btns">
+        <a href="#software" class="dm-btn-hero-light">Ver Software em Ação</a>
+        <a href="#simulador" class="dm-btn-hero-border">Testar WhatsApp ao Vivo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Software Showcase Section (Matching User Image) -->
+  <section id="software" style="padding:110px 24px 0; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:1200px; display:flex; flex-direction:column; gap:50px;">
+      
+      <div class="dm-sec-header">
+        <p class="dm-sec-tag">O software</p>
+        <h2 class="dm-sec-h2">
+          Assim fica a sua administradora
+          <span class="serif-italic">quando os agentes trabalham.</span>
+        </h2>
+        <p class="dm-sec-sub">
+          Esta é a plataforma que as administradoras usam hoje com o CondoVolto AI. Toque em um módulo e veja qual agente o alimenta.
+        </p>
+      </div>
+
+      <!-- Browser Window Mockup -->
+      <div class="ds-wrap">
+        <div class="ds-win">
+          <div class="ds-top">
+            <i></i><i></i><i></i>
+            <span class="ds-url">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              admin.condovolto.com.br
+            </span>
+          </div>
+
+          <div class="ds-body">
+            <!-- Sidebar -->
+            <div class="ds-side">
+              <div class="ds-logo">
+                <div style="width:20px;height:20px;border-radius:6px;background:#111827;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">CV</div>
+                <span>CondoVolto AI</span>
+              </div>
+              <div class="ds-suite">
+                <span>CondoVolto Web Suite</span>
+                <span style="color:#9CA3AF">⌄</span>
+              </div>
+
+              <span class="ds-it">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+                Início
+              </span>
+              <span class="ds-it">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Painel administrativo
+              </span>
+
+              <span class="ds-grp">Operação</span>
+              <button class="ds-it" id="btnMod0" onclick="selectModule(0)" aria-pressed="true">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Visitas <b></b>
+              </button>
+              <button class="ds-it" id="btnMod1" onclick="selectModule(1)" aria-pressed="false">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg>
+                Encomendas <b></b>
+              </button>
+              <button class="ds-it" id="btnMod2" onclick="selectModule(2)" aria-pressed="false">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
+                Ocorrências <b></b>
+              </button>
+              <button class="ds-it" id="btnMod3" onclick="selectModule(3)" aria-pressed="false">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2.7l5.7 5.6a8 8 0 1 1-11.3 0z"/></svg>
+                Medidores <b></b>
+              </button>
+              <button class="ds-it" id="btnMod4" onclick="selectModule(4)" aria-pressed="false">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 6h18v15H3zM16 3v6M8 3v6M3 11h18"/></svg>
+                Reservas <b></b>
+              </button>
+              <button class="ds-it" id="btnMod5" onclick="selectModule(5)" aria-pressed="false">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8"/></svg>
+                Comunicados <b></b>
+              </button>
+
+              <span class="ds-grp">Finanças</span>
+              <button class="ds-it" id="btnMod6" onclick="selectModule(6)" aria-pressed="false">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
+                Cobranças <b></b>
+              </button>
+              <button class="ds-it" id="btnMod7" onclick="selectModule(7)" aria-pressed="false">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Receitas <b></b>
+              </button>
+            </div>
+
+            <!-- Main Panel Content -->
+            <div class="ds-main">
+              <div class="ds-bar">
+                <span id="dsBreadcrumb">Visitas</span>
+                <span class="ds-bld">Condomínio Jardim das Flores ▾</span>
+              </div>
+
+              <div class="ds-pg">
+                <div class="ds-pg-head">
+                  <span class="ds-pg-title" id="dsModuleTitle">Visitas</span>
+                  <button class="ds-btn" id="dsActionBtn">+ Registrar</button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="ds-tabs" id="dsTabsContainer">
+                  <span class="ds-tab on">Hoje</span>
+                  <span class="ds-tab">Airbnb</span>
+                  <span class="ds-tab">Estacionamento</span>
+                  <span class="ds-tab">Próximas</span>
+                  <span class="ds-tab">Histórico</span>
+                  <span class="ds-tab">Análises</span>
+                </div>
+
+                <!-- Optional KPIs container -->
+                <div class="ds-kpis" id="dsKpisContainer" style="display:none;"></div>
+
+                <!-- Table -->
+                <div class="ds-tbl" id="dsTableContainer">
+                  <!-- Generated via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Cards (Matching Screenshot) -->
+        <div class="ds-floats">
+          <!-- WhatsApp Floating Card -->
+          <div class="ds-float ds-chat" id="dsChatCard">
+            <div class="ds-ag">
+              <span class="ds-dot" style="background:#25D366">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-12.5 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>
+              </span>
+              <span>
+                <strong id="dsChatAgentName">Assistente Pessoal</strong>
+                <small id="dsChatChannel">WhatsApp</small>
+              </span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; background:#F1ECE4; border-radius:14px; padding:10px" id="dsChatMessages">
+              <div class="ds-msg" style="align-self:flex-end; background:#FFFFFF; color:#15130F">Minha mãe vem às 18h30, o nome dela é Rosa.</div>
+              <div class="ds-msg" style="align-self:flex-start; background:#15130F; color:#FFFFFF">Pronto, enviei um QR de acesso para ela. Te aviso quando ela entrar.</div>
+            </div>
+          </div>
+
+          <!-- Toast Event Floating Card -->
+          <div class="ds-float ds-ev" id="dsEventCard">
+            <div class="ds-ag">
+              <span class="ds-dot" style="background:#F1ECE4">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#15130F" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>
+                <strong id="dsEventTitle">Visita registrada</strong>
+                <small id="dsEventSub">Apto 2511 · hoje, 18:30</small>
+              </span>
+            </div>
+            <span style="align-self:flex-start; font-size:12px; font-weight:600; padding:5px 12px; border-radius:999px; background:#15130F; color:#FFFFFF" id="dsEventBadge">
+              Registrado por Assistente Pessoal
+            </span>
+          </div>
+        </div>
+
+        <!-- Agent Who Does The Work Explanation Cards -->
+        <div class="ds-who" id="dsWhoCards">
+          <div class="ds-whoc">
+            <div class="ds-whoc-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div>
+              <div class="ds-whoc-title">Assistente Pessoal</div>
+              <div class="ds-whoc-desc">O morador registra visitas pelo WhatsApp e recebe um QR de acesso instantâneo.</div>
+            </div>
+          </div>
+
+          <div class="ds-whoc">
+            <div class="ds-whoc-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <div class="ds-whoc-title">Assistente Administrativo</div>
+              <div class="ds-whoc-desc">O porteiro confirma a entrada e tudo fica registrado no histórico sem planilhas.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 2: Finanças sem planilhas -->
+  <section id="financas" class="dm-sec-container">
+    <div class="dm-sec-header">
+      <p class="dm-sec-tag">Finanças</p>
+      <h2 class="dm-sec-h2">
+        Finanças
+        <span class="serif-italic">sem planilhas.</span>
+      </h2>
+      <p class="dm-sec-sub">
+        Emissão em massa, Split Pix BACEN automático, conciliação inteligente e leitura OCR de comprovantes diretamente no WhatsApp.
+      </p>
+    </div>
+
+    <div class="dm-grid-2">
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Arrecadação 1-Clique</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Emita as taxas condominiais de todo o prédio em um clique</h3>
+          <p class="dm-card-p">Gera boletos registrados e códigos Pix Copia e Cola dinâmicos no padrão BACEN. O morador recebe no WhatsApp sem precisar de login.</p>
+        </div>
+        <div style="background:#F9FAFB; border:1px solid #E5E7EB; border-radius:14px; padding:16px; font-size:13px; font-family:monospace; color:#374151">
+          ✓ 120 boletos emitidos • R$ 78.400,00 total • Split 3% automático
+        </div>
+      </div>
+
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Conciliação Automática</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Suba o extrato do banco e a conciliação se faz sozinha</h3>
+          <p class="dm-card-p">A IA cruza o extrato OFX ou API bancária com os boletos pagos e liquida as baixas sem intervenção manual de digitação.</p>
+        </div>
+        <div style="background:#F9FAFB; border:1px solid #E5E7EB; border-radius:14px; padding:16px; font-size:13px; font-family:monospace; color:#374151">
+          ✓ 228 pagamentos identificados • 0 pendências na conta corrente
+        </div>
+      </div>
+
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Visão Computacional</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Envie a foto da nota fiscal e a despesa se preenche sozinha</h3>
+          <p class="dm-card-p">O zelador ou síndico envia a foto do cupom fiscal ou nota fiscal de serviço. O sistema extrai CNPJ, valor, data e categoria no plano de contas.</p>
+        </div>
+        <div style="background:#F9FAFB; border:1px solid #E5E7EB; border-radius:14px; padding:16px; font-size:13px; font-family:monospace; color:#374151">
+          ✓ NF-e #4920 lida com sucesso • Fornecedor: Silva Manutenções Ltda
+        </div>
+      </div>
+
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Split Pix Instantâneo</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">97% na conta do condomínio, 3% na conta da sua administradora</h3>
+          <p class="dm-card-p">Elimine a necessidade de emitir notas de honorários manuais. A taxa de administração é liquidada no exato instante em que o morador paga o Pix.</p>
+        </div>
+        <div style="background:#F9FAFB; border:1px solid #E5E7EB; border-radius:14px; padding:16px; font-size:13px; font-family:monospace; color:#374151">
+          ✓ Homologado no Banco Central do Brasil • Liquidação em D+0
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Operação do dia a dia -->
+  <section id="operacao" class="dm-sec-container">
+    <div class="dm-sec-header">
+      <p class="dm-sec-tag">Operação</p>
+      <h2 class="dm-sec-h2">
+        Operação
+        <span class="serif-italic">do dia a dia.</span>
+      </h2>
+      <p class="dm-sec-sub">
+        Portaria, visitas, encomendas e manutenções funcionando em harmonia pelo WhatsApp.
+      </p>
+    </div>
+
+    <div class="dm-grid-3">
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Portaria Digital</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Quem entra, para qual apartamento e quando</h3>
+          <p class="dm-card-p">Controle de acessos com convites temporários em QR Code. O morador gera pelo WhatsApp e a portaria valida sem filas.</p>
+        </div>
+      </div>
+
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Logística de Pacotes</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Chega uma encomenda e o morador recebe um WhatsApp</h3>
+          <p class="dm-card-p">O porteiro fotografa a etiqueta do pacote e a IA lê o destinatário, notificando o morador com código de retirada imediato.</p>
+        </div>
+      </div>
+
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Zeladoria & Ocorrências</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Morador envia foto do vazamento e a OS nasce pronta</h3>
+          <p class="dm-card-p">A IA analisa a criticidade, categoriza em Hidráulica/Elétrica e já despacha o prestador com protocolo e fotos antes/depois.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Assembleias da convocação à ata -->
+  <section id="assembleias" class="dm-sec-container">
+    <div class="dm-sec-header">
+      <p class="dm-sec-tag">Governança</p>
+      <h2 class="dm-sec-h2">
+        Assembleias
+        <span class="serif-italic">da convocação à ata.</span>
+      </h2>
+      <p class="dm-sec-sub">
+        Votação remota e híbrida com quórum em tempo real, Modo Telão e ata redigida por IA.
+      </p>
+    </div>
+
+    <div class="dm-grid-3">
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Modo Telão</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Projete no Google Meet ou presencial e todos votam</h3>
+          <p class="dm-card-p">QR Code no telão para votação instantânea pelo WhatsApp de cada condômino presente ou online.</p>
+        </div>
+      </div>
+
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Cálculo de Quórum</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Qualquer tipo de pergunta com a fração ideal exata</h3>
+          <p class="dm-card-p">A plataforma calcula maioria simples, 2/3 de todas as frações ideais ou unanimidade de acordo com o Código Civil.</p>
+        </div>
+      </div>
+
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Documentação Automática</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Ata e lista de presença prontas para cartório</h3>
+          <p class="dm-card-p">A transcrição do debate e o resultado das votações geram a minuta de ata em PDF com assinaturas digitais auditáveis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Controle de ponto -->
+  <section id="ponto" class="dm-sec-container">
+    <div class="dm-sec-header">
+      <p class="dm-sec-tag">Equipe</p>
+      <h2 class="dm-sec-h2">
+        Controle de ponto
+        <span class="serif-italic">da sua equipe.</span>
+      </h2>
+      <p class="dm-sec-sub">
+        Escalas 12x36, 5x2 e controle de jornada de porteiros e zeladores sem relógio de ponto físico caro.
+      </p>
+    </div>
+
+    <div class="dm-grid-2">
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Escala Inteligente</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">Planeje o mês de cada colaborador em uma só grade</h3>
+          <p class="dm-card-p">Organize folgas, trocas de turno e plantões com validação automática de descanso entre jornadas da CLT.</p>
+        </div>
+      </div>
+
+      <div class="dm-card-clean">
+        <div>
+          <span class="dm-card-tag">Ponto por Geolocalização</span>
+          <h3 class="dm-card-h3" style="margin-top:14px">O resumo do mês, até o minuto de atraso</h3>
+          <p class="dm-card-p">Registro de entrada e saída via foto e geolocalização pelo WhatsApp ou tablet da portaria, com espelho de ponto para a folha.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Simulador WhatsApp Funcional (Clean Edition) -->
+  <section id="simulador" class="dm-sec-container">
+    <div class="dm-sec-header">
+      <p class="dm-sec-tag">Demonstração Interativa</p>
+      <h2 class="dm-sec-h2">
+        Experimente o WhatsApp da
+        <span class="serif-italic">CondoVolto AI.</span>
+      </h2>
+      <p class="dm-sec-sub">
+        Teste cenários reais agora mesmo: peça 2ª via de boleto com CPF, simule áudio por IA ou consulte as regras do prédio.
+      </p>
+    </div>
+
+    <div class="dm-sim-frame">
+      <div style="display:grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 36px; align-items: center;" id="simGrid">
+        
+        <!-- Controls & Buttons -->
+        <div>
+          <div style="font-size:12px; font-weight:700; color:#15130F; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px">
+            Atalhos para Testar em 1 Clique
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <button onclick="sendQuickSim('Olá, gostaria de tirar uma dúvida')" style="text-align:left; padding:12px 16px; border-radius:12px; border:1px solid #E5E7EB; background:#F9FAFB; cursor:pointer; font-size:13.5px; font-weight:600; color:#111827; display:flex; justify-content:space-between; align-items:center;">
+              <span>1. Menu Principal & Autoatendimento</span>
+              <span style="color:#6B7280; font-size:12px">Testar →</span>
+            </button>
+
+            <button onclick="sendQuickSim('Quero a 2ª via do boleto')" style="text-align:left; padding:12px 16px; border-radius:12px; border:1px solid #E5E7EB; background:#F9FAFB; cursor:pointer; font-size:13.5px; font-weight:600; color:#111827; display:flex; justify-content:space-between; align-items:center;">
+              <span>2. Pedir 2ª Via de Boleto</span>
+              <span style="color:#6B7280; font-size:12px">Testar →</span>
+            </button>
+
+            <button onclick="sendQuickSim('123.456.789-09')" style="text-align:left; padding:12px 16px; border-radius:12px; border:1px solid #E5E7EB; background:#F9FAFB; cursor:pointer; font-size:13.5px; font-weight:600; color:#111827; display:flex; justify-content:space-between; align-items:center;">
+              <span>3. Enviar CPF Válido (123.456.789-09)</span>
+              <span style="color:#10B981; font-size:12px; font-weight:700">Gerar Pix →</span>
+            </button>
+
+            <button onclick="sendQuickSim('Qual o horário de silêncio e uso da piscina?')" style="text-align:left; padding:12px 16px; border-radius:12px; border:1px solid #E5E7EB; background:#F9FAFB; cursor:pointer; font-size:13.5px; font-weight:600; color:#111827; display:flex; justify-content:space-between; align-items:center;">
+              <span>4. Pergunta do Regimento (RAG)</span>
+              <span style="color:#6B7280; font-size:12px">Consultar →</span>
+            </button>
+
+            <button onclick="sendQuickSim('Minha mãe vem às 18h30, o nome dela é Rosa.')" style="text-align:left; padding:12px 16px; border-radius:12px; border:1px solid #E5E7EB; background:#F9FAFB; cursor:pointer; font-size:13.5px; font-weight:600; color:#111827; display:flex; justify-content:space-between; align-items:center;">
+              <span>5. Cadastrar Visitante e QR Code</span>
+              <span style="color:#6B7280; font-size:12px">Acesso →</span>
+            </button>
+          </div>
+
+          <div style="margin-top:20px; padding-top:16px; border-top:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#6B7280">
+            <span>SLA de resposta: <strong>3,2 segundos</strong></span>
+            <button onclick="resetSim()" style="background:none; border:none; color:#EF4444; font-weight:600; cursor:pointer">Reiniciar chat</button>
+          </div>
+        </div>
+
+        <!-- Phone Simulator Mockup -->
+        <div style="display:flex; justify-content:center;">
+          <div style="width:340px; height:530px; background:#FFFFFF; border:8px solid #111827; border-radius:38px; box-shadow:0 25px 60px -15px rgba(0,0,0,0.25); display:flex; flex-direction:column; overflow:hidden;">
+            
+            <!-- WhatsApp Top Bar -->
+            <div style="background:#075E54; padding:14px 14px 10px; color:#FFFFFF; display:flex; align-items:center; gap:10px;">
+              <div style="width:34px; height:34px; border-radius:50%; background:#128C7E; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">CV</div>
+              <div style="flex:1">
+                <div style="font-size:13px; font-weight:700">CondoVolto Oficial</div>
+                <div style="font-size:10px; opacity:0.85">online • Atendimento IA 24/7</div>
+              </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="simChatHistory" style="flex:1; background:#EFEAE2; padding:14px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; font-size:12.5px;">
+              <div style="align-self:flex-start; background:#FFFFFF; padding:8px 12px; border-radius:10px; max-width:85%; box-shadow:0 1px 1px rgba(0,0,0,0.06); line-height:1.35;">
+                Olá! Sou a assistente virtual inteligente da administradora. Como posso ajudar seu condomínio hoje?
+              </div>
+            </div>
+
+            <!-- Input Bar -->
+            <div style="padding:8px 10px; background:#F0F2F5; display:flex; gap:6px; align-items:center; border-top:1px solid #E0E0E0">
+              <input type="text" id="simInput" placeholder="Digite uma mensagem..." style="flex:1; padding:8px 12px; border-radius:20px; border:1px solid #DDD; font-size:12px; outline:none;" onkeydown="if(event.key==='Enter') sendSimInput()">
+              <button onclick="sendSimInput()" style="width:34px; height:34px; border-radius:50%; background:#075E54; color:#FFF; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Perguntas Frequentes (Clean Accordions) -->
+  <section id="faq" class="dm-sec-container">
+    <div class="dm-sec-header">
+      <p class="dm-sec-tag">Perguntas frequentes</p>
+      <h2 class="dm-sec-h2">
+        Tire suas dúvidas
+        <span class="serif-italic">sobre o CondoVolto AI.</span>
+      </h2>
+    </div>
+
+    <div style="max-w:800px; margin:0 auto; width:100%">
+      <details class="dm-faq-item" open>
+        <summary class="dm-faq-summary">
+          <span>O que o CondoVolto AI inclui para uma administradora de condomínios?</span>
+          <span class="dm-faq-icon">+</span>
+        </summary>
+        <div class="dm-faq-body">
+          O CondoVolto AI reúne todos os módulos essenciais: financeiro (emissão em lote, cobrança, conciliação e Split Pix), operacional (portaria digital, encomendas, ocorrências e zeladoria), assembleias (votação híbrida e ata automática) e controle de ponto da equipe. Tudo isso potencializado por agentes de inteligência artificial que atendem condôminos no WhatsApp 24 horas por dia.
+        </div>
+      </details>
+
+      <details class="dm-faq-item">
+        <summary class="dm-faq-summary">
+          <span>Como funciona a conciliação bancária automática?</span>
+          <span class="dm-faq-icon">+</span>
+        </summary>
+        <div class="dm-faq-body">
+          Nossa integração se conecta à API bancária ou lê extratos OFX diariamente. A inteligência cruza os valores, identificadores Pix e títulos liquidados, efetuando as baixas contábeis de forma autônoma e sinalizando apenas depósitos não identificados para revisão humana.
+        </div>
+      </details>
+
+      <details class="dm-faq-item">
+        <summary class="dm-faq-summary">
+          <span>Preciso digitar as notas fiscais das despesas?</span>
+          <span class="dm-faq-icon">+</span>
+        </summary>
+        <div class="dm-faq-body">
+          Não. Zeladores, síndicos ou fornecedores podem simplesmente enviar a foto do cupom ou o arquivo PDF da nota fiscal pelo WhatsApp. O motor de visão computacional extrai os dados fiscais (CNPJ, valor, vencimento) e preenche a despesa automaticamente no sistema.
+        </div>
+      </details>
+
+      <details class="dm-faq-item">
+        <summary class="dm-faq-summary">
+          <span>Como o boleto do condomínio chega a cada morador?</span>
+          <span class="dm-faq-icon">+</span>
+        </summary>
+        <div class="dm-faq-body">
+          O morador não precisa baixar aplicativos nem lembrar senhas. O boleto, código Pix Copia e Cola e a linha digitável são enviados diretamente na conversa do WhatsApp dele, garantindo uma taxa de visualização superior a 95%.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Final CTA Card -->
+  <section style="padding:110px 16px 0; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:1392px; border-radius:28px; background:#15130F; color:#F6F3EE; padding:clamp(60px, 7vw, 100px) 32px; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; text-align:center;">
+      <h2 style="font-size:clamp(32px, 4.4vw, 58px); font-weight:600; line-height:1.06; letter-spacing:-0.03em; max-width:840px;">
+        Você construiu sua administradora.
+        <span class="serif-italic" style="color:#A89F91">Não precisa fazer tudo sozinho.</span>
+      </h2>
+      <p style="margin:20px 0 32px; font-size:18px; color:#D6CFC3; max-width:580px;">
+        Transforme tarefas manuais em processos autônomos e aumente a sua margem de lucro com o CondoVolto AI.
+      </p>
+      <a href="painel.html" class="dm-btn-hero-light" style="padding:16px 36px; font-size:16px">
+        Acessar Painel Operacional Agora
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="dm-footer">
+    <div class="dm-footer-inner">
+      <div class="dm-footer-grid">
+        <div>
+          <div class="dm-logo-wrap" style="color:#FFF; margin-bottom:14px">
+            <div class="dm-logo-icon" style="background:#FFF; color:#15130F">CV</div>
+            <span class="dm-logo-text" style="color:#FFF">CondoVolto AI</span>
+          </div>
+          <p style="font-size:14px; color:#A89F91; max-width:320px; line-height:1.5">
+            Software de inteligência autônoma para administradoras de condomínios que desejam escalar operações com segurança e alta lucratividade.
+          </p>
+        </div>
+
+        <div>
+          <h4 style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px; color:#F6F3EE">Plataforma</h4>
+          <p style="margin-bottom:8px"><a href="#software">O Software</a></p>
+          <p style="margin-bottom:8px"><a href="#financas">Finanças & Pix</a></p>
+          <p style="margin-bottom:8px"><a href="#operacao">Operação 24/7</a></p>
+          <p style="margin-bottom:8px"><a href="#assembleias">Assembleias</a></p>
+        </div>
+
+        <div>
+          <h4 style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px; color:#F6F3EE">Acesso</h4>
+          <p style="margin-bottom:8px"><a href="login.html">Login Corporativo</a></p>
+          <p style="margin-bottom:8px"><a href="painel.html">Painel do Síndico</a></p>
+          <p style="margin-bottom:8px"><a href="#simulador">Simulador WhatsApp</a></p>
+        </div>
+
+        <div>
+          <h4 style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px; color:#F6F3EE">Compliance</h4>
+          <p style="margin-bottom:8px"><a href="#">LGPD e Segurança</a></p>
+          <p style="margin-bottom:8px"><a href="#">Banco Central (BACEN)</a></p>
+          <p style="margin-bottom:8px"><a href="#">Termos de Uso</a></p>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:24px; font-size:13px; color:#6B655C">
+        <p>© 2026 CondoVolto AI Inc. Todos os direitos reservados.</p>
+        <p>admin.condovolto.com.br</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script for Mockup Interactions and WhatsApp Simulator -->
+  <script>
+    // Module Data (Exactly matching AppDomus software suite data)
+    const modulesData = [
+      {
+        id: "visitas",
+        title: "Visitas",
+        tabs: ["Hoje", "Airbnb", "Estacionamento", "Próximas", "Histórico", "Análises"],
+        actionBtn: "+ Registrar",
+        kpis: [],
+        cols: ["Visitante", "Unidade", "Entrada", "Estacionamento", "Status"],
+        rows: [
+          ["Fernanda Rocha", "2511", "10:42", "Vaga 3", { text: "Entrou", color: "#1F6B35", bg: "#E7F6EC" }],
+          ["Técnico de internet", "1204", "11:15", "—", { text: "A caminho", color: "#8A5A00", bg: "#FFF4D6" }],
+          ["Entregador do iFood", "806", "12:03", "—", { text: "Acesso enviado", color: "#4A443B", bg: "#F1ECE4" }]
+        ],
+        chatAgent: "Assistente Pessoal",
+        chatChannel: "WhatsApp",
+        chatMsgs: [
+          { user: true, text: "Minha mãe vem às 18h30, o nome dela é Rosa." },
+          { user: false, text: "Pronto, enviei um QR de acesso para ela. Te aviso quando ela entrar." }
+        ],
+        event: { title: "Visita registrada", sub: "Apto 2511 · hoje, 18:30", badge: "Registrado por Assistente Pessoal" },
+        who: [
+          { title: "Assistente Pessoal", desc: "O morador registra visitas pelo WhatsApp e recebe um QR de acesso instantâneo." },
+          { title: "Assistente Administrativo", desc: "O porteiro confirma a entrada e tudo fica registrado no histórico sem planilhas." }
+        ]
+      },
+      {
+        id: "encomendas",
+        title: "Encomendas",
+        tabs: ["Pendentes", "Histórico", "Análises"],
+        actionBtn: "Registrar chegada",
+        kpis: [],
+        cols: ["Remetente", "Destinatário", "Unidade", "Data", "Ações"],
+        rows: [
+          ["DHL", "Beatriz Santos", "1509", "11/09/2026", { text: "+ Entregar", color: "#4A443B", bg: "#F1ECE4" }],
+          ["Mercado Livre", "Gustavo Ribeiro", "2105", "11/09/2026", { text: "+ Entregar", color: "#4A443B", bg: "#F1ECE4" }],
+          ["iFood", "Juliana Costa", "510", "11/09/2026", { text: "Entregue", color: "#1F6B35", bg: "#E7F6EC" }]
+        ],
+        chatAgent: "Assistente Administrativo",
+        chatChannel: "WhatsApp do porteiro",
+        chatMsgs: [
+          { user: true, text: "Chegou encomenda dos Correios para o 1509 (foto)." },
+          { user: false, text: "Recebimento registrado. Já avisei a Beatriz." }
+        ],
+        event: { title: "Encomenda na portaria", sub: "Moradora avisada pelo WhatsApp", badge: "Assistente Pessoal" },
+        who: [
+          { title: "Assistente Administrativo", desc: "O porteiro envia a foto e o recebimento fica registrado no sistema." },
+          { title: "Assistente Pessoal", desc: "Avisa o morador no WhatsApp e confirma a retirada com código seguro." }
+        ]
+      },
+      {
+        id: "ocorrencias",
+        title: "Ocorrências",
+        tabs: ["Ocorrências", "Multas", "Análises", "Configurações"],
+        actionBtn: "+ Adicionar",
+        kpis: [
+          { label: "Pendentes", val: "41" },
+          { label: "Resolvidas", val: "50" },
+          { label: "Todas", val: "91" }
+        ],
+        cols: ["Prioridade", "Título", "Categoria", "Aberta em", "Status"],
+        rows: [
+          ["Crítica", "Vazamento de água no subsolo 2", "Hidráulica", "11/12/2026", { text: "Em andamento", color: "#8A5A00", bg: "#FFF4D6" }],
+          ["Média", "Controle da TV do coworking", "Áreas comuns", "11/11/2026", { text: "Reportada", color: "#4A443B", bg: "#F1ECE4" }],
+          ["Baixa", "Luz do corredor do 7º andar", "Elétrica", "11/10/2026", { text: "Resolvida", color: "#1F6B35", bg: "#E7F6EC" }]
+        ],
+        chatAgent: "Assistente Pessoal",
+        chatChannel: "WhatsApp",
+        chatMsgs: [
+          { user: true, text: "Tem um vazamento de água no subsolo 2 (foto)." },
+          { user: false, text: "Ocorrência criada com a sua foto e prioridade crítica. Já avisei o administrador." }
+        ],
+        event: { title: "Responsável atribuído", sub: "Vazamento no subsolo 2 · Em andamento", badge: "Assistente Administrativo" },
+        who: [
+          { title: "Assistente Pessoal", desc: "O morador reporta com foto e a ocorrência é criada com severidade avaliada por visão computacional." },
+          { title: "Assistente Administrativo", desc: "Avisa o responsável, acompanha o andamento e exige fotos de comprovação." }
+        ]
+      },
+      {
+        id: "medidores",
+        title: "Medidores",
+        tabs: ["Água individual", "Água comum", "Gás individual", "Energia comum", "Análises"],
+        actionBtn: "+ Ler foto",
+        kpis: [
+          { label: "Total medidores", val: "311" },
+          { label: "Leituras confirmadas", val: "309" },
+          { label: "A validar", val: "2" },
+          { label: "Consumo total", val: "2.350 m³" }
+        ],
+        cols: ["Unidade", "Anterior", "Atual", "Consumo", "Status"],
+        rows: [
+          ["101", "299.00", "311.40", "12.40 m³", { text: "Confirmada", color: "#1F6B35", bg: "#E7F6EC" }],
+          ["102", "187.20", "196.85", "9.65 m³", { text: "Confirmada", color: "#1F6B35", bg: "#E7F6EC" }],
+          ["103", "244.10", "—", "—", { text: "A validar", color: "#8A5A00", bg: "#FFF4D6" }]
+        ],
+        chatAgent: "Assistente Administrativo",
+        chatChannel: "WhatsApp do porteiro",
+        chatMsgs: [
+          { user: true, text: "Medidor de água do 101 (foto)." },
+          { user: false, text: "Leitura registrada: 311,40 m³. Consumo do mês: 12,40 m³." }
+        ],
+        event: { title: "Leitura confirmada", sub: "Unidade 101 · 12,40 m³", badge: "Assistente Administrativo" },
+        who: [
+          { title: "Assistente Administrativo", desc: "O porteiro envia a foto do relógio e a leitura se registra sozinha." },
+          { title: "Software CondoVolto AI", desc: "Calcula o consumo e lança no boleto da unidade sem digitação." }
+        ]
+      },
+      {
+        id: "reservas",
+        title: "Reservas",
+        tabs: ["Reservas", "Análises", "Manutenções", "Penalidades"],
+        actionBtn: "Nova reserva",
+        kpis: [
+          { label: "Confirmadas", val: "55" },
+          { label: "A aprovar", val: "0" },
+          { label: "A devolver", val: "20" },
+          { label: "Totais", val: "168" }
+        ],
+        cols: ["Área comum", "Tipo", "Data", "Horário", "Pagamento"],
+        rows: [
+          ["Churrasqueira nº 01", "Simples", "16/11/2026", "12h – 16h", { text: "Pago", color: "#1F6B35", bg: "#E7F6EC" }],
+          ["Lounge Bar", "Simples", "16/11/2026", "20h – 23h", { text: "No boleto", color: "#8A5A00", bg: "#FFF4D6" }],
+          ["Academia", "Grupo", "17/11/2026", "7h – 8h", { text: "Sem custo", color: "#4A443B", bg: "#F1ECE4" }]
+        ],
+        chatAgent: "Assistente Pessoal",
+        chatChannel: "WhatsApp",
+        chatMsgs: [
+          { user: true, text: "Quero a churrasqueira no domingo ao meio-dia." },
+          { user: false, text: "Reservada das 12h às 16h (R$ 150). Te envio o link de pagamento." }
+        ],
+        event: { title: "Reserva confirmada", sub: "Churrasqueira nº 01 · Dom 16, 12h", badge: "Assistente Pessoal" },
+        who: [
+          { title: "Assistente Pessoal", desc: "Verifica disponibilidade, reserva e envia a cobrança no WhatsApp." },
+          { title: "Software CondoVolto AI", desc: "Aplica as regras da convenção, como trava de reservas para inadimplentes." }
+        ]
+      },
+      {
+        id: "comunicados",
+        title: "Comunicados",
+        tabs: ["Todos os comunicados ▾"],
+        actionBtn: "+ Criar",
+        kpis: [],
+        cols: ["Título", "Categoria", "Destinatários", "Publicado"],
+        rows: [
+          ["Manutenção preventiva de elevadores", "Manutenção", "Todos os moradores", "09/11/2026"],
+          ["Corte de água ter 9h–13h", "Aviso", "Bloco A", "08/11/2026"],
+          ["Convocação de assembleia", "Assembleia", "Proprietários", "05/11/2026"]
+        ],
+        chatAgent: "Assistente Pessoal",
+        chatChannel: "WhatsApp",
+        chatMsgs: [
+          { user: false, text: "A manutenção dos elevadores será na quinta, dia 12." },
+          { user: true, text: "Até que horas?" },
+          { user: false, text: "Das 9h às 13h. O elevador de serviço funciona normalmente." }
+        ],
+        event: { title: "Comunicado enviado", sub: "Para todos os moradores pelo WhatsApp", badge: "Assistente Pessoal" },
+        who: [
+          { title: "Assistente Pessoal", desc: "Envia pelo WhatsApp oficial e responde individualmente às dúvidas dos moradores." },
+          { title: "Assistente Administrativo", desc: "Avisa a portaria e a zeladoria sobre as ações preparatórias." }
+        ]
+      },
+      {
+        id: "cobrancas",
+        title: "Cobranças",
+        tabs: ["Cobranças", "Gestão de dívidas", "Juros e multas", "Emissões", "Notas de crédito", "Parcelamentos"],
+        actionBtn: "Emitir taxas",
+        kpis: [
+          { label: "Total emitido", val: "R$ 59.400" },
+          { label: "Total arrecadado", val: "R$ 41.870" },
+          { label: "A receber", val: "R$ 17.530" },
+          { label: "Unidades pagas", val: "84/120" }
+        ],
+        cols: ["Unidade", "Proprietário", "Dívida", "Acompanhamento", "Status"],
+        rows: [
+          ["1104", "J. Pereira", "R$ 1.920", "3 parcelas", { text: "Parcelamento", color: "#8A5A00", bg: "#FFF4D6" }],
+          ["302", "L. Campos", "R$ 640", "Paga em 15/11", { text: "Promessa de pgto", color: "#4A443B", bg: "#F1ECE4" }],
+          ["805", "R. Santana", "R$ 495", "Pagou via Pix", { text: "Pago", color: "#1F6B35", bg: "#E7F6EC" }]
+        ],
+        chatAgent: "Agente de Cobrança",
+        chatChannel: "WhatsApp / Ligação",
+        chatMsgs: [
+          { user: true, text: "Recebo no dia 15, pago nesse dia." },
+          { user: false, text: "Pronto, registro seu pagamento para 15/11 e te envio o acordo pelo WhatsApp." }
+        ],
+        event: { title: "Promessa de pagamento registrada", sub: "Unidade 302 · R$ 1.720,00 · 15/11", badge: "Agente de Cobrança" },
+        who: [
+          { title: "Agente de Cobrança", desc: "Contata inadimplentes de forma preventiva e registra acordos amigáveis." },
+          { title: "Assistente Pessoal", desc: "Envia a 2ª via atualizada com recálculo de juros e Split Pix BACEN." }
+        ]
+      },
+      {
+        id: "receitas",
+        title: "Receitas",
+        tabs: ["Conciliados", "Não identificados", "Não conciliados", "Rejeitados", "Conciliação"],
+        actionBtn: "Exportar",
+        kpis: [
+          { label: "Total arrecadado", val: "R$ 840.671" },
+          { label: "Taxas", val: "R$ 629.306" },
+          { label: "Outras receitas", val: "R$ 211.365" },
+          { label: "Total pagamentos", val: "2.815" }
+        ],
+        cols: ["Unidade", "Descrição", "Valor", "Origem", "Status"],
+        rows: [
+          ["2511", "Taxa condominial", "R$ 520,00", "WhatsApp", { text: "Conciliado", color: "#1F6B35", bg: "#E7F6EC" }],
+          ["1509", "Taxa condominial", "R$ 520,00", "Banco", { text: "Conciliado", color: "#1F6B35", bg: "#E7F6EC" }],
+          ["—", "Depósito sem ref.", "R$ 310,00", "Banco", { text: "Não identificado", color: "#8A5A00", bg: "#FFF4D6" }]
+        ],
+        chatAgent: "Assistente Pessoal",
+        chatChannel: "WhatsApp",
+        chatMsgs: [
+          { user: true, text: "Paguei a taxa de novembro, te envio o comprovante." },
+          { user: false, text: "Pagamento registrado. Te aviso quando estiver conciliado." }
+        ],
+        event: { title: "Pagamento conciliado", sub: "Unidade 2511 · R$ 860,00", badge: "Software CondoVolto AI" },
+        who: [
+          { title: "Assistente Pessoal", desc: "Recebe o comprovante pelo WhatsApp e lança na unidade correspondente." },
+          { title: "Software CondoVolto AI", desc: "Concilia cada pagamento com o banco e liquida as baixas em D+0." }
+        ]
+      }
+    ];
+
+    let currentModIndex = 0;
+
+    function selectModule(idx) {
+      currentModIndex = idx;
+      const mod = modulesData[idx];
+
+      // Update sidebar buttons
+      for (let i = 0; i < 8; i++) {
+        const btn = document.getElementById(`btnMod${i}`);
+        if (btn) btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+      }
+
+      // Update breadcrumb and title
+      document.getElementById('dsBreadcrumb').textContent = mod.title;
+      document.getElementById('dsModuleTitle').textContent = mod.title;
+      document.getElementById('dsActionBtn').textContent = mod.actionBtn;
+      document.getElementById('dsActionBtn').style.display = mod.actionBtn ? 'block' : 'none';
+
+      // Update tabs
+      const tabsWrap = document.getElementById('dsTabsContainer');
+      tabsWrap.innerHTML = mod.tabs.map((t, i) => `<span class="ds-tab ${i===0?'on':''}">${t}</span>`).join('');
+
+      // Update KPIs
+      const kpisWrap = document.getElementById('dsKpisContainer');
+      if (mod.kpis && mod.kpis.length > 0) {
+        kpisWrap.style.display = 'grid';
+        kpisWrap.innerHTML = mod.kpis.map(k => `
+          <div class="ds-kpi">
+            <span class="ds-kpi-lbl">${k.label}</span>
+            <span class="ds-kpi-val">${k.val}</span>
+          </div>
+        `).join('');
+      } else {
+        kpisWrap.style.display = 'none';
+      }
+
+      // Update Table
+      const colWidth = `repeat(${mod.cols.length}, minmax(0, 1fr))`;
+      let tblHtml = `<div class="ds-tr ds-th" style="grid-template-columns:${colWidth}">`;
+      mod.cols.forEach(c => { tblHtml += `<span>${c}</span>`; });
+      tblHtml += `</div>`;
+
+      mod.rows.forEach(r => {
+        tblHtml += `<div class="ds-tr" style="grid-template-columns:${colWidth}">`;
+        r.forEach(cell => {
+          if (typeof cell === 'object') {
+            tblHtml += `<span><span class="ds-chip" style="background:${cell.bg};color:${cell.color}">${cell.text}</span></span>`;
+          } else {
+            tblHtml += `<span>${cell}</span>`;
+          }
+        });
+        tblHtml += `</div>`;
+      });
+      document.getElementById('dsTableContainer').innerHTML = tblHtml;
+
+      // Update Floating WhatsApp Chat
+      document.getElementById('dsChatAgentName').textContent = mod.chatAgent;
+      document.getElementById('dsChatChannel').textContent = mod.chatChannel;
+      document.getElementById('dsChatMessages').innerHTML = mod.chatMsgs.map(m => `
+        <div class="ds-msg" style="align-self:${m.user ? 'flex-end' : 'flex-start'}; background:${m.user ? '#FFFFFF' : '#15130F'}; color:${m.user ? '#15130F' : '#FFFFFF'}">
+          ${m.text}
+        </div>
+      `).join('');
+
+      // Update Floating Event
+      document.getElementById('dsEventTitle').textContent = mod.event.title;
+      document.getElementById('dsEventSub').textContent = mod.event.sub;
+      document.getElementById('dsEventBadge').textContent = mod.event.badge;
+
+      // Update Who cards
+      document.getElementById('dsWhoCards').innerHTML = mod.who.map(w => `
+        <div class="ds-whoc">
+          <div class="ds-whoc-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div class="ds-whoc-title">${w.title}</div>
+            <div class="ds-whoc-desc">${w.desc}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Initialize module 0 (Visitas)
+    window.addEventListener('DOMContentLoaded', () => {
+      selectModule(0);
+    });
+
+    // Auto rotate every 6s unless user clicked
+    let manualInteracted = false;
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.ds-side button')) manualInteracted = true;
+    });
+    setInterval(() => {
+      if (!manualInteracted) {
+        selectModule((currentModIndex + 1) % modulesData.length);
+      }
+    }, 6500);
+
+    // WhatsApp Simulator Interactions
+    const simChatHistory = document.getElementById('simChatHistory');
+    const simInput = document.getElementById('simInput');
+
+    function sendQuickSim(text) {
+      addSimMsg(text, true);
+      setTimeout(() => {
+        respondSim(text);
+      }, 700);
+    }
+
+    function sendSimInput() {
+      const val = simInput.value.trim();
+      if (!val) return;
+      simInput.value = '';
+      addSimMsg(val, true);
+      setTimeout(() => {
+        respondSim(val);
+      }, 700);
+    }
+
+    function addSimMsg(text, isUser) {
+      const div = document.createElement('div');
+      div.style.alignSelf = isUser ? 'flex-end' : 'flex-start';
+      div.style.background = isUser ? '#DCF8C6' : '#FFFFFF';
+      div.style.padding = '8px 12px';
+      div.style.borderRadius = '10px';
+      div.style.maxWidth = '85%';
+      div.style.boxShadow = '0 1px 1px rgba(0,0,0,0.06)';
+      div.style.lineHeight = '1.35';
+      div.innerHTML = text;
+      simChatHistory.appendChild(div);
+      simChatHistory.scrollTop = simChatHistory.scrollHeight;
+    }
+
+    async function respondSim(text) {
+      const typingDiv = document.createElement('div');
+      typingDiv.id = 'simTyping';
+      typingDiv.style.alignSelf = 'flex-start';
+      typingDiv.style.background = '#FFFFFF';
+      typingDiv.style.padding = '6px 12px';
+      typingDiv.style.borderRadius = '10px';
+      typingDiv.style.fontSize = '11px';
+      typingDiv.style.color = '#6B7280';
+      typingDiv.style.fontStyle = 'italic';
+      typingDiv.textContent = 'digitando...';
+      simChatHistory.appendChild(typingDiv);
+      simChatHistory.scrollTop = simChatHistory.scrollHeight;
+
+      try {
+        const res = await fetch('/api/simulador/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        const el = document.getElementById('simTyping');
+        if (el) el.remove();
+
+        if (data && data.reply) {
+          let formatted = data.reply
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+            .replace(/_(.*?)_/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code style="font-size:11px;background:#f0f0f0;padding:2px 4px;border-radius:4px;word-break:break-all">$1</code>')
+            .replace(/\n/g, '<br>');
+          addSimMsg(formatted, false);
+        } else {
+          fallbackSim(text);
+        }
+      } catch (err) {
+        const el = document.getElementById('simTyping');
+        if (el) el.remove();
+        fallbackSim(text);
+      }
+    }
+
+    function fallbackSim(text) {
+      const lower = text.toLowerCase();
+      if (lower.includes('boleto') || lower.includes('2ª via') || lower.includes('segunda')) {
+        addSimMsg('Com certeza! Para localizar suas cotas condominiais com segurança, por favor <strong>digite o CPF do titular</strong>.', false);
+      } else if (lower.includes('123.456') || lower.includes('123456') || /\d{3}/.test(lower)) {
+        addSimMsg('Localizei a unidade: <strong>Bloco A - Apto 101</strong> (Residencial Jardins).<br><br>Cota 11/2026: <strong>R$ 650,00</strong> (Vence hoje).<br><br>🔑 <strong>Pix Copia e Cola:</strong><br><code style="font-size:10px;background:#f0f0f0;padding:4px;border-radius:4px;display:block;margin:4px 0">00020126580014BR.GOV.BCB.PIX0136condovolto...</code><br>✓ Pagamento compensa em 3 segundos com baixa automática.', false);
+      } else if (lower.includes('silêncio') || lower.includes('piscina') || lower.includes('regimento')) {
+        addSimMsg('📜 <strong>Regimento Interno (Art. 18 & 24):</strong><br>• O horário de silêncio inicia-se rigorosamente às 22h00.<br>• A piscina funciona de terça a domingo das 08h00 às 20h00.<br>• Segunda-feira é reservada para manutenção química.', false);
+      } else if (lower.includes('rosa') || lower.includes('mãe') || lower.includes('visita')) {
+        addSimMsg('Perfeito! Visita autorizada para <strong>Rosa (Mãe)</strong> às 18h30 no Apto 2511.<br><br>📱 QR Code de acesso enviado para o visitante. O porteiro já recebeu a notificação na tela.', false);
+      } else {
+        addSimMsg('Recebido com sucesso! Como posso te ajudar hoje?<br><br>1️⃣ Segunda via de boleto / Pix<br>2️⃣ Autorizar visitantes ou entregas<br>3️⃣ Reservar salão ou churrasqueira<br>4️⃣ Reportar vazamento ou manutenção<br>5️⃣ Falar com atendente humano', false);
+      }
+    }
+
+    async function resetSim() {
+      try {
+        await fetch('/api/simulador/reset', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      } catch (e) {}
+      simChatHistory.innerHTML = '<div style="align-self:flex-start; background:#FFFFFF; padding:8px 12px; border-radius:10px; max-width:85%; box-shadow:0 1px 1px rgba(0,0,0,0.06); line-height:1.35;">Olá! Sou a assistente virtual inteligente da administradora CondoVolto. Como posso ajudar seu condomínio hoje?</div>';
+    }
+  </script>
 </body>
 </html>

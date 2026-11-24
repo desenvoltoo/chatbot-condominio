@@ -1962,7 +1962,51 @@
       simChatHistory.scrollTop = simChatHistory.scrollHeight;
     }
 
-    function respondSim(text) {
+    async function respondSim(text) {
+      const typingDiv = document.createElement('div');
+      typingDiv.id = 'simTyping';
+      typingDiv.style.alignSelf = 'flex-start';
+      typingDiv.style.background = '#FFFFFF';
+      typingDiv.style.padding = '6px 12px';
+      typingDiv.style.borderRadius = '10px';
+      typingDiv.style.fontSize = '11px';
+      typingDiv.style.color = '#6B7280';
+      typingDiv.style.fontStyle = 'italic';
+      typingDiv.textContent = 'digitando...';
+      simChatHistory.appendChild(typingDiv);
+      simChatHistory.scrollTop = simChatHistory.scrollHeight;
+
+      try {
+        const res = await fetch('/api/simulador/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        const el = document.getElementById('simTyping');
+        if (el) el.remove();
+
+        if (data && data.reply) {
+          let formatted = data.reply
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+            .replace(/_(.*?)_/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code style="font-size:11px;background:#f0f0f0;padding:2px 4px;border-radius:4px;word-break:break-all">$1</code>')
+            .replace(/\n/g, '<br>');
+          addSimMsg(formatted, false);
+        } else {
+          fallbackSim(text);
+        }
+      } catch (err) {
+        const el = document.getElementById('simTyping');
+        if (el) el.remove();
+        fallbackSim(text);
+      }
+    }
+
+    function fallbackSim(text) {
       const lower = text.toLowerCase();
       if (lower.includes('boleto') || lower.includes('2ª via') || lower.includes('segunda')) {
         addSimMsg('Com certeza! Para localizar suas cotas condominiais com segurança, por favor <strong>digite o CPF do titular</strong>.', false);
@@ -1977,7 +2021,10 @@
       }
     }
 
-    function resetSim() {
+    async function resetSim() {
+      try {
+        await fetch('/api/simulador/reset', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      } catch (e) {}
       simChatHistory.innerHTML = '<div style="align-self:flex-start; background:#FFFFFF; padding:8px 12px; border-radius:10px; max-width:85%; box-shadow:0 1px 1px rgba(0,0,0,0.06); line-height:1.35;">Olá! Sou a assistente virtual inteligente da administradora CondoVolto. Como posso ajudar seu condomínio hoje?</div>';
     }
   </script>

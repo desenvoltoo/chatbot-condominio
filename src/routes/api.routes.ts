@@ -1300,9 +1300,10 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   router.post('/portaria/visitas', requireAuth(), async (req: Request, res: Response) => {
-    const { visitanteNome, documento, unidade, tipo, estacionamento, notificarWhatsapp, telefoneMorador } = req.body;
+    const visitanteNome = req.body.visitanteNome || req.body.nome;
+    const { documento, unidade, tipo, estacionamento, notificarWhatsapp, telefoneMorador } = req.body;
     if (!visitanteNome || !unidade) {
-      return res.status(400).json({ error: 'visitanteNome e unidade são obrigatórios' });
+      return res.status(400).json({ error: 'visitanteNome (ou nome) e unidade são obrigatórios' });
     }
 
     const agora = new Date();
@@ -1359,9 +1360,10 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   });
 
   router.post('/portaria/encomendas', requireAuth(), async (req: Request, res: Response) => {
-    const { destinatarioNome, unidade, transportadora, codigoRastreio, fotoUrl, telefoneMorador } = req.body;
+    const destinatarioNome = req.body.destinatarioNome || req.body.morador;
+    const { unidade, transportadora, codigoRastreio, fotoUrl, telefoneMorador } = req.body;
     if (!destinatarioNome || !unidade) {
-      return res.status(400).json({ error: 'destinatarioNome e unidade são obrigatórios' });
+      return res.status(400).json({ error: 'destinatarioNome (ou morador) e unidade são obrigatórios' });
     }
 
     const agora = new Date();
@@ -1457,6 +1459,123 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     }
 
     res.status(201).json({ success: true, comunicado: novo });
+  });
+
+  // ==========================================
+  // 19. SIMULADOR INTERATIVO WHATSAPP (SANDBOX)
+  // ==========================================
+  router.post('/simulador/chat', async (req: Request, res: Response) => {
+    try {
+      const { remoteJid = '5511999990101@s.whatsapp.net', message, pushName = 'Carlos Eduardo (Simulador)' } = req.body;
+      if (!message) {
+        return res.status(400).json({ error: 'Mensagem obrigatória' });
+      }
+
+      const sessionManager = orchestrator.getSessionManager();
+      const countBefore = (sessionManager.getSession(remoteJid)?.messages || []).length;
+
+      await orchestrator.processIncomingMessage(remoteJid, message, pushName);
+
+      const session = sessionManager.getSession(remoteJid);
+      const messagesAfter = session.messages || [];
+      const newMessages = messagesAfter.slice(countBefore);
+      const botReplies = newMessages.filter((m: any) => m.sender === 'bot');
+      const replyText = botReplies.map((m: any) => m.text).join('\n\n') ||
+        (messagesAfter.filter((m: any) => m.sender === 'bot').slice(-1)[0]?.text || 'Mensagem processada pelo assistente.');
+
+      res.json({
+        success: true,
+        reply: replyText,
+        state: session.state,
+        humanHandoff: session.isHumanHandoff,
+        morador: session.morador || null
+      });
+    } catch (err: any) {
+      console.error('[Simulador] Erro:', err?.message);
+      res.status(500).json({ error: 'Falha ao processar simulação: ' + err?.message });
+    }
+  });
+
+  router.post('/simulador/reset', (req: Request, res: Response) => {
+    const { remoteJid = '5511999990101@s.whatsapp.net' } = req.body;
+    orchestrator.getSessionManager().resetSession(remoteJid);
+    res.json({ success: true, message: 'Sessão do simulador reiniciada com sucesso.' });
+  });
+
+  // ==========================================
+  // 20. EXPORTAÇÃO DE RELATÓRIOS EXECUTIVOS (CSV)
+  // ==========================================
+  router.get('/relatorios/inadimplencia/csv', requireAuth(['admin', 'sindico', 'operador']), (_req: Request, res: Response) => {
+    const cobrancas = dbService.getCobrancas();
+    const rows = [
+      ['ID Cobranca', 'Unidade', 'Morador', 'Telefone', 'Valor (R$)', 'Vencimento', 'Status', 'Pix Copia e Cola'].join(';')
+    ];
+
+    for (const c of cobrancas) {
+      rows.push([
+        c.id,
+        c.unidadeId,
+        `"${c.moradorNome || ''}"`,
+        c.moradorTelefone || '',
+        c.valor.toFixed(2).replace('.', ','),
+        c.vencimento || '',
+        c.status.toUpperCase(),
+        `"${c.pixCopiaECola || ''}"`
+      ].join(';'));
+    }
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="relatorio_inadimplencia_condovolto.csv"');
+    res.send('\uFEFF' + rows.join('\r\n'));
+  });
+
+  router.get('/relatorios/csat/csv', requireAuth(['admin', 'sindico', 'operador']), (_req: Request, res: Response) => {
+    const avaliacoes = dbService.getAvaliacoesCSAT();
+    const rows = [
+      ['Data/Hora', 'Morador', 'Unidade', 'Carteira', 'Consultor', 'Nota (1 a 5)', 'Comentario'].join(';')
+    ];
+
+    for (const a of avaliacoes) {
+      const dataStr = a.criadoEm ? new Date(a.criadoEm).toLocaleString('pt-BR') : '';
+      rows.push([
+        dataStr,
+        `"${a.moradorNome || ''}"`,
+        a.unidadeId || '',
+        a.carteiraId || '',
+        `"${a.operadorNome || ''}"`,
+        a.nota,
+        `"${(a.comentario || '').replace(/"/g, '""')}"`
+      ].join(';'));
+    }
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="relatorio_csat_nps_condovolto.csv"');
+    res.send('\uFEFF' + rows.join('\r\n'));
+  });
+
+  router.get('/relatorios/atendimentos/csv', requireAuth(['admin', 'sindico', 'operador']), (_req: Request, res: Response) => {
+    const sessions = orchestrator.getSessionManager().getAllSessions();
+    const rows = [
+      ['WhatsApp (JID)', 'Morador', 'Status Ticket', 'Carteira', 'Atendente Humano', 'Total Mensagens', 'Ultima Atualizacao'].join(';')
+    ];
+
+    for (const s of sessions) {
+      const statusLabel = s.status ? s.status.toUpperCase() : (s.isHumanHandoff ? 'HUMANO' : 'RESOLVIDO_IA');
+      const dataStr = s.lastInteraction ? new Date(s.lastInteraction).toLocaleString('pt-BR') : '';
+      rows.push([
+        s.remoteJid,
+        `"${s.morador?.nome || s.pushName || ''}"`,
+        statusLabel,
+        s.carteiraNome || s.carteiraId || 'Geral',
+        `"${s.assignedOperator || (s.isHumanHandoff ? 'Em fila' : 'IA Autônoma')}"`,
+        (s.messages || []).length,
+        dataStr
+      ].join(';'));
+    }
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="relatorio_atendimentos_condovolto.csv"');
+    res.send('\uFEFF' + rows.join('\r\n'));
   });
 
   return router;
