@@ -2229,6 +2229,16 @@
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
 
+          <!-- Carteiras & Grupos (Gestão de Filas) -->
+          <button onclick="switchTab('carteiras')" id="nav-carteiras" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 shrink-0 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+              <span>Carteiras & Grupos</span>
+            </div>
+            <span id="badgeTotalCarteiras" class="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-mono font-bold">4</span>
+            <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+          </button>
+
           <!-- Comunicados & Avisos -->
           <button onclick="switchTab('comunicados')" id="nav-comunicados" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
@@ -2856,6 +2866,149 @@
           <div id="sideMoradorTimeline" class="relative pl-3 space-y-3.5 border-l border-white/10 ml-2"></div>
         </div>
       </aside>
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO: CARTEIRAS DE ATENDIMENTO & GRUPOS DE WHATSAPP -->
+    <!-- ============================================================== -->
+    <main id="tab-content-carteiras" class="flex-1 min-w-0 w-full overflow-y-auto p-4 sm:p-6 md:p-8 bg-[#F6F3EE] dark:bg-[#07090e] hidden">
+      <div class="max-w-6xl mx-auto space-y-6">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1 flex items-center gap-1.5">
+              <span>📂</span> <span>Gestão de Operadores & Filas de Atendimento</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Carteiras de Atendimento & Grupos</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Divisão inteligente de condôminos por carteira, filas de cobrança, demandas do síndico e grupos de WhatsApp dos blocos.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="abrirModalNovaCarteira()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center gap-2 cursor-pointer transition-all">
+              <span>+</span> <span>Nova Carteira</span>
+            </button>
+            <button onclick="carregarCarteirasGrid()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.08] text-xs font-semibold cursor-pointer transition-all">
+              🔄 Atualizar
+            </button>
+          </div>
+        </div>
+
+        <!-- Cards das Carteiras Principais -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="carteirasGridCards">
+          <!-- Card 1: Atendimento Geral -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-lg">📂</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400">Ativa</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-sm">Atendimento Geral & Reservas</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Responsável: <span class="font-semibold text-slate-700 dark:text-slate-300">Mariana Souza</span></p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs">
+              <span class="text-slate-500 dark:text-slate-400 text-[11px]">Conversas:</span>
+              <span id="carteiraCount_atendimento" class="font-bold text-slate-900 dark:text-white font-mono">1</span>
+            </div>
+            <button onclick="irParaCarteira('carteira_atendimento')" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-bold text-xs transition-all cursor-pointer">
+              Ver Conversas ➔
+            </button>
+          </div>
+
+          <!-- Card 2: Cobrança & Acordos -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg">💰</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400">Financeiro</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-sm">Cobrança & Acordos de Dívidas</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Responsável: <span class="font-semibold text-slate-700 dark:text-slate-300">Dra. Roberta Pires</span></p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs">
+              <span class="text-slate-500 dark:text-slate-400 text-[11px]">Inadimplentes:</span>
+              <span id="carteiraCount_cobranca" class="font-bold text-amber-600 dark:text-amber-400 font-mono">1</span>
+            </div>
+            <button onclick="irParaCarteira('carteira_cobranca')" class="w-full py-2 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-900/40 text-amber-900 dark:text-amber-300 font-bold text-xs transition-all cursor-pointer">
+              Ver Inadimplentes ➔
+            </button>
+          </div>
+
+          <!-- Card 3: Demandas do Síndico & Obras -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg">🏗️</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-400">Síndico</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-sm">Demandas do Síndico & Obras</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Responsável: <span class="font-semibold text-slate-700 dark:text-slate-300">Carlos Síndico</span></p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs">
+              <span class="text-slate-500 dark:text-slate-400 text-[11px]">Demandas:</span>
+              <span id="carteiraCount_sindico" class="font-bold text-purple-600 dark:text-purple-400 font-mono">0</span>
+            </div>
+            <button onclick="irParaCarteira('carteira_sindico')" class="w-full py-2 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/30 dark:hover:bg-purple-900/40 text-purple-900 dark:text-purple-300 font-bold text-xs transition-all cursor-pointer">
+              Ver Demandas ➔
+            </button>
+          </div>
+
+          <!-- Card 4: Grupos de WhatsApp -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg">👥</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400">WhatsApp</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-sm">Grupos dos Blocos & Torres</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Responsável: <span class="font-semibold text-slate-700 dark:text-slate-300">Marcos Zelador</span></p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs">
+              <span class="text-slate-500 dark:text-slate-400 text-[11px]">Grupos Conectados:</span>
+              <span id="carteiraCount_grupos" class="font-bold text-emerald-600 dark:text-emerald-400 font-mono">0</span>
+            </div>
+            <button onclick="irParaCarteira('carteira_grupos')" class="w-full py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:hover:bg-emerald-900/40 text-emerald-900 dark:text-emerald-300 font-bold text-xs transition-all cursor-pointer">
+              Ver Grupos ➔
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabela Detalhada de Conversas e Carteiras -->
+        <div class="bg-white dark:bg-[#111625] rounded-3xl border border-slate-200 dark:border-white/10 p-6 shadow-xs space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-white/5">
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-base">Mapeamento Geral de Atendimentos por Carteira</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Visualize qual operador está responsável por cada conversa e altere a carteira com 1 clique.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400">Filtrar por:</span>
+              <select id="tabelaCarteirasFiltroSelect" onchange="renderizarTabelaCarteiras(this.value)" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer">
+                <option value="todas">Todas as Carteiras</option>
+                <option value="carteira_atendimento">Atendimento Geral & Reservas</option>
+                <option value="carteira_cobranca">Cobrança & Acordos</option>
+                <option value="carteira_sindico">Demandas do Síndico & Obras</option>
+                <option value="carteira_grupos">Grupos de WhatsApp</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-slate-400 uppercase tracking-wider font-mono text-[10px] border-b border-slate-100 dark:border-white/5">
+                  <th class="pb-3 font-semibold">Contato / Morador</th>
+                  <th class="pb-3 font-semibold">Condomínio & Unidade</th>
+                  <th class="pb-3 font-semibold">Carteira Atual</th>
+                  <th class="pb-3 font-semibold">Operador Responsável</th>
+                  <th class="pb-3 font-semibold">Status do Chamado</th>
+                  <th class="pb-3 font-semibold text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaCarteirasBody" class="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
+                <!-- Inserido dinamicamente via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- ============================================================== -->
@@ -5779,28 +5932,28 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     const ROLE_PERMISSIONS = {
       admin: {
         nome: 'Administrador Master',
-        allowedTabs: ['portaria_digital', 'atendimento', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'],
+        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
       },
       sindico: {
         nome: 'Síndico Geral',
-        allowedTabs: ['portaria_digital', 'atendimento', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
+        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
       },
       operador: {
         nome: 'Operador Financeiro',
-        allowedTabs: ['cobranca', 'receitas', 'orcamentos', 'atendimento', 'reservas'],
+        allowedTabs: ['cobranca', 'receitas', 'orcamentos', 'atendimento', 'carteiras', 'reservas'],
         canBroadcast: false,
         canEmitPix: true,
         canEditAcordo: true
       },
       portaria: {
         nome: 'Equipe de Portaria',
-        allowedTabs: ['atendimento', 'portaria_digital', 'manutencao', 'medicao', 'reservas'],
+        allowedTabs: ['atendimento', 'carteiras', 'portaria_digital', 'manutencao', 'medicao', 'reservas'],
         canBroadcast: false,
         canEmitPix: false,
         canEditAcordo: false
@@ -5907,7 +6060,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function applyRolePermissions(role) {
       const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
-      const allTabs = ['portaria_digital', 'atendimento', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'];
+      const allTabs = ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'];
       
       allTabs.forEach(t => {
         const navBtn = document.getElementById(`nav-${t}`);
@@ -7011,6 +7164,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const tabLabels = {
         portaria_digital: 'Visitas & Encomendas',
         atendimento: 'Conversas & Chat',
+        carteiras: 'Carteiras & Grupos',
         comunicados: 'Comunicados & Avisos',
         cobranca: 'Cobranças & Acordos',
         receitas: 'Receitas & Fluxo',
@@ -7041,6 +7195,9 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       window.scrollTo({ left: 0, top: 0, behavior: 'instant' });
 
       // 7. Dispara carregadores específicos da aba
+      if (tabName === 'carteiras') {
+        carregarCarteirasGrid();
+      }
       if (tabName === 'portaria_digital') {
         carregarVisitas();
         carregarEncomendas();
@@ -9695,6 +9852,103 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       activeFiltroCarteira = id;
       renderConversationsList();
       showToast('Carteira Criada!', `Nova carteira "${nome.trim()}" criada com sucesso.`, 'success');
+    }
+
+    function irParaCarteira(carteiraId) {
+      switchTab('atendimento');
+      const sel = document.getElementById('selectFiltroCarteira');
+      if (sel) {
+        sel.value = carteiraId;
+        onFiltroCarteiraChange(carteiraId);
+      }
+    }
+
+    function carregarCarteirasGrid() {
+      const countAtendimento = allConversations.filter(c => !c.carteiraId || c.carteiraId === 'carteira_atendimento').length;
+      const countCobranca = allConversations.filter(c => c.carteiraId === 'carteira_cobranca' || c.statusFinanceiro === 'inadimplente').length;
+      const countSindico = allConversations.filter(c => c.carteiraId === 'carteira_sindico').length;
+      const countGrupos = allConversations.filter(c => c.isGroup || c.carteiraId === 'carteira_grupos').length;
+
+      const elA = document.getElementById('carteiraCount_atendimento');
+      if (elA) elA.innerText = countAtendimento;
+      const elC = document.getElementById('carteiraCount_cobranca');
+      if (elC) elC.innerText = countCobranca;
+      const elS = document.getElementById('carteiraCount_sindico');
+      if (elS) elS.innerText = countSindico;
+      const elG = document.getElementById('carteiraCount_grupos');
+      if (elG) elG.innerText = countGrupos;
+
+      const sel = document.getElementById('tabelaCarteirasFiltroSelect');
+      renderizarTabelaCarteiras(sel ? sel.value : 'todas');
+    }
+
+    function renderizarTabelaCarteiras(filtro = 'todas') {
+      const tbody = document.getElementById('tabelaCarteirasBody');
+      if (!tbody) return;
+
+      const lista = allConversations.filter(c => {
+        if (filtro === 'todas') return true;
+        if (filtro === 'carteira_grupos') return c.isGroup || c.carteiraId === 'carteira_grupos';
+        return c.carteiraId === filtro;
+      });
+
+      if (lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">Nenhum atendimento encontrado para esta carteira.</td></tr>`;
+        return;
+      }
+
+      const mapCores = {
+        carteira_atendimento: 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-500/20',
+        carteira_cobranca: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/20',
+        carteira_sindico: 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-500/20',
+        carteira_grupos: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20'
+      };
+
+      tbody.innerHTML = lista.map(c => {
+        const cartId = c.carteiraId || (c.isGroup ? 'carteira_grupos' : 'carteira_atendimento');
+        const cartNome = c.carteiraNome || (cartId === 'carteira_cobranca' ? 'Cobrança & Acordos' : cartId === 'carteira_sindico' ? 'Demandas do Síndico' : cartId === 'carteira_grupos' ? 'Grupos de WhatsApp' : 'Atendimento Geral');
+        const badgeCor = mapCores[cartId] || 'bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border-slate-200';
+        const nome = c.pushName || c.morador?.nome || (c.isGroup ? 'Grupo de Moradores' : 'Condômino');
+        const unidade = c.morador?.unidades?.[0]?.numero ? `Unid. ${c.morador.unidades[0].numero}` : (c.isGroup ? 'Condomínio Geral' : 'WhatsApp');
+        const condo = c.morador?.unidades?.[0]?.condominioNome || 'Residencial Jardins do Bosque';
+        const operador = c.assignedOperator || (cartId === 'carteira_cobranca' ? 'Dra. Roberta Pires' : cartId === 'carteira_sindico' ? 'Carlos Síndico' : cartId === 'carteira_grupos' ? 'Marcos Zelador' : 'Mariana Souza');
+        const statusBadge = c.isHumanHandoff
+          ? '<span class="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 font-bold">Fila Humana</span>'
+          : '<span class="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 font-bold">IA Autônoma</span>';
+
+        return `
+          <tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
+            <td class="py-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-indigo-50 dark:bg-white/5 flex items-center justify-center text-xs">${c.isGroup ? '👥' : '👤'}</span>
+              <span>${nome}</span>
+            </td>
+            <td class="py-3">
+              <span class="font-medium text-slate-700 dark:text-slate-300">${unidade}</span>
+              <span class="block text-[10px] text-slate-400">${condo}</span>
+            </td>
+            <td class="py-3">
+              <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold border ${badgeCor}">${cartNome}</span>
+            </td>
+            <td class="py-3 font-medium text-slate-700 dark:text-slate-300">${operador}</td>
+            <td class="py-3">${statusBadge}</td>
+            <td class="py-3 text-right">
+              <div class="inline-flex items-center gap-1.5">
+                <button onclick="abrirChatDireto('${c.remoteJid}')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-bold text-[11px] transition-all cursor-pointer">
+                  💬 Chat
+                </button>
+                <button onclick="activeRemoteJid = '${c.remoteJid}'; abrirModalAtribuirCarteira();" class="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300 font-bold text-[11px] transition-all cursor-pointer">
+                  🔄 Transferir
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function abrirChatDireto(remoteJid) {
+      switchTab('atendimento');
+      selectConversation(remoteJid);
     }
 
     // ==========================================
