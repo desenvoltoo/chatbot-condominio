@@ -11,7 +11,8 @@ import { requireAuth } from '../middlewares/auth.middleware.js';
 import { formatarMensagemPix, gerarPayloadPix } from '../utils/pix.util.js';
 import { EventsService } from '../services/events.service.js';
 import { SchedulerService } from '../services/scheduler.service.js';
-import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado } from '../types/index.js';
+import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado, Assembleia, AssembleiaVoto, ConsentimentoLGPD } from '../types/index.js';
+import { TranscriptionService } from '../services/transcription.service.js';
 
 export function createApiRouter(orchestrator: BotOrchestrator): Router {
   const router = Router();
@@ -1576,6 +1577,123 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', 'attachment; filename="relatorio_atendimentos_condovolto.csv"');
     res.send('\uFEFF' + rows.join('\r\n'));
+  });
+
+  // ==========================================
+  // 21. ASSEMBLEIAS VIRTUAIS & ATAS COM IA
+  // ==========================================
+  router.get('/assembleias', requireAuth(), (_req: Request, res: Response) => {
+    res.json({ success: true, assembleias: dbService.getAssembleias() });
+  });
+
+  router.get('/assembleias/:id', requireAuth(), (req: Request, res: Response) => {
+    const a = dbService.getAssembleiaById(req.params.id);
+    if (!a) return res.status(404).json({ error: 'Assembleia não encontrada' });
+    res.json({ success: true, assembleia: a });
+  });
+
+  router.post('/assembleias/:id/voto', requireAuth(), (req: Request, res: Response) => {
+    const { pautaId, unidadeId, moradorNome, cpf, voto, canal = 'web' } = req.body;
+    if (!pautaId || !unidadeId || !voto) {
+      return res.status(400).json({ error: 'pautaId, unidadeId e voto são obrigatórios' });
+    }
+    const novoVoto: AssembleiaVoto = {
+      id: `voto_${Date.now()}`,
+      assembleiaId: req.params.id,
+      pautaId,
+      unidadeId,
+      moradorNome: moradorNome || 'Condômino',
+      cpf: (cpf || '12345678909').replace(/\D/g, ''),
+      voto: voto.toLowerCase() as any,
+      canal: canal as any,
+      timestamp: new Date().toISOString(),
+      hashComprovante: ''
+    };
+    dbService.registrarVotoAssembleia(novoVoto);
+    const atualizada = dbService.getAssembleiaById(req.params.id);
+    res.json({ success: true, assembleia: atualizada });
+  });
+
+  router.post('/assembleias/:id/gerar-ata', requireAuth(['admin', 'sindico', 'operador']), async (req: Request, res: Response) => {
+    try {
+      const a = dbService.getAssembleiaById(req.params.id);
+      if (!a) return res.status(404).json({ error: 'Assembleia não encontrada' });
+
+      const ata = await llmService.generateAtaAssembleia(a, 'Residencial Jardins do Bosque');
+      dbService.atualizarAtaAssembleia(req.params.id, ata);
+      res.json({ success: true, ata, geradaEm: new Date().toISOString() });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Falha ao redigir ata por IA: ' + err.message });
+    }
+  });
+
+  router.get('/assembleias/:id/ata/download', requireAuth(), (req: Request, res: Response) => {
+    const a = dbService.getAssembleiaById(req.params.id);
+    if (!a || !a.ataOficialTexto) {
+      return res.status(404).json({ error: 'Ata ainda não elaborada para esta assembleia' });
+    }
+    res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="ata_${a.id}.md"`);
+    res.send('\uFEFF' + a.ataOficialTexto);
+  });
+
+  // ==========================================
+  // 22. CENTRAL DE PRIVACIDADE & LGPD (LEI 13.709)
+  // ==========================================
+  router.get('/lgpd/consentimentos', requireAuth(), (req: Request, res: Response) => {
+    const cpf = req.query.cpf as string | undefined;
+    const consentimentos = dbService.getConsentimentosLGPD(cpf);
+    res.json({ success: true, consentimentos });
+  });
+
+  router.post('/lgpd/consentimento', requireAuth(), (req: Request, res: Response) => {
+    const { cpf, moradorNome, unidadeId, telefone, tipoConsentimento, status = 'aceito', canal = 'painel' } = req.body;
+    if (!cpf || !tipoConsentimento) {
+      return res.status(400).json({ error: 'CPF e tipoConsentimento são obrigatórios' });
+    }
+    const c: ConsentimentoLGPD = {
+      id: `lgpd_${Date.now()}`,
+      cpf: String(cpf).replace(/\D/g, ''),
+      moradorNome: moradorNome || 'Condômino',
+      unidadeId: unidadeId || 'Apt 101',
+      telefone,
+      tipoConsentimento,
+      status,
+      canal,
+      dataHora: new Date().toISOString(),
+      hashAuditoria: ''
+    };
+    dbService.saveConsentimentoLGPD(c);
+    res.status(201).json({ success: true, consentimento: c });
+  });
+
+  router.get('/lgpd/dossie/:cpf', requireAuth(), (req: Request, res: Response) => {
+    const dossie = dbService.gerarDossieLGPD(req.params.cpf);
+    res.json({ success: true, dossie });
+  });
+
+  router.get('/lgpd/dossie/:cpf/download', requireAuth(), (req: Request, res: Response) => {
+    const dossie = dbService.gerarDossieLGPD(req.params.cpf);
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="dossie_lgpd_${req.params.cpf}.json"`);
+    res.send(JSON.stringify(dossie, null, 2));
+  });
+
+  // ==========================================
+  // 23. TRANSCRIÇÃO DE ÁUDIO DO WHATSAPP (WHISPER)
+  // ==========================================
+  router.post('/audio/transcrever', async (req: Request, res: Response) => {
+    try {
+      const { base64Audio, mimeType = 'audio/ogg' } = req.body;
+      if (!base64Audio) {
+        return res.status(400).json({ error: 'base64Audio é obrigatório' });
+      }
+      const transcriptionService = TranscriptionService.getInstance();
+      const text = await transcriptionService.transcribeBase64(base64Audio, mimeType);
+      res.json({ success: true, text });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao transcrever áudio: ' + err.message });
+    }
   });
 
   return router;

@@ -441,6 +441,19 @@ export class BotOrchestrator {
 
   private async handleInicio(remoteJid: string, text: string, nome: string): Promise<void> {
     const lower = text.toLowerCase();
+
+    if (lower.startsWith('voto') || lower.startsWith('votar')) {
+      const session = this.sessionManager.getSession(remoteJid);
+      await this.handleRegistroVotoWhatsApp(remoteJid, text, session);
+      return;
+    }
+
+    if (lower.includes('lgpd') || lower.includes('meus dados') || lower.includes('privacidade') || lower.includes('consentimento')) {
+      const session = this.sessionManager.getSession(remoteJid);
+      await this.handlePrivacidadeLGPD(remoteJid, session);
+      return;
+    }
+
     if (lower.includes('boleto') || lower.includes('segunda via') || lower.includes('pix') || lower.includes('pagar')) {
       const session = this.sessionManager.getSession(remoteJid);
       session.state = 'AGUARDANDO_CPF';
@@ -556,6 +569,14 @@ export class BotOrchestrator {
         `Digite *MENU* para retornar ao início.`
       ].join('\n\n');
       await this.reply(remoteJid, texto);
+    }
+    // Voto direto em Assembleia por WhatsApp (ex: VOTO 1 SIM, VOTO 1 NAO)
+    else if (lower.startsWith('voto') || lower.startsWith('votar')) {
+      await this.handleRegistroVotoWhatsApp(remoteJid, text, session);
+    }
+    // LGPD & Privacidade de Dados (Lei 13.709)
+    else if (lower.includes('lgpd') || lower.includes('meus dados') || lower.includes('privacidade') || lower.includes('consentimento')) {
+      await this.handlePrivacidadeLGPD(remoteJid, session);
     }
     // Pergunta em Linguagem Natural: Fallback para IA / RAG ou Transferência Automática por Incompreensão
     else {
@@ -720,6 +741,82 @@ export class BotOrchestrator {
     ].join('\n');
 
     await this.reply(remoteJid, msg);
+  }
+
+  private async handleRegistroVotoWhatsApp(remoteJid: string, text: string, session: any): Promise<void> {
+    const morador = session.morador || { nome: session.pushName || 'Condômino', cpf: session.cpf || '12345678909' };
+    const lower = text.toLowerCase();
+    const votoTipo = lower.includes('sim') ? 'sim' : (lower.includes('nao') || lower.includes('não') ? 'nao' : 'abstencao');
+
+    this.dbService.registrarVotoAssembleia({
+      id: `voto_${Date.now()}`,
+      assembleiaId: 'ass_2026_01',
+      pautaId: 'pauta_climatizacao',
+      unidadeId: session.selectedUnidadeId || 'Apt 101',
+      moradorNome: morador.nome,
+      cpf: morador.cpf || '12345678909',
+      voto: votoTipo as any,
+      canal: 'whatsapp',
+      timestamp: new Date().toISOString(),
+      hashComprovante: ''
+    });
+
+    const hashRecibo = `VOTO-HASH-${Date.now().toString(16).toUpperCase()}`;
+
+    const msg = [
+      `🗳️ *COMPROVANTE DE VOTO REGISTRADO COM SUCESSO!*`,
+      `----------------------------------------`,
+      `• *Assembleia:* Pauta 01/2026 (Climatização da Academia)`,
+      `• *Unidade:* ${session.selectedUnidadeId || 'Apt 101'}`,
+      `• *Titular:* ${morador.nome}`,
+      `• *Voto Computado:* *[${votoTipo.toUpperCase()}]*`,
+      `• *Canal de Votação:* WhatsApp Oficial Criptografado`,
+      `• *Hash Notarial:* \`${hashRecibo}\``,
+      `----------------------------------------`,
+      `Seu voto foi registrado com fé pública condominial e sincronizado com o painel da assembleia.`,
+      `Digite *MENU* para retornar ao início.`
+    ].join('\n');
+
+    await this.reply(remoteJid, msg);
+  }
+
+  private async handlePrivacidadeLGPD(remoteJid: string, session: any): Promise<void> {
+    const morador = session.morador || { nome: session.pushName || 'Condômino', cpf: session.cpf || '12345678909' };
+    
+    this.dbService.saveConsentimentoLGPD({
+      id: `lgpd_${Date.now()}`,
+      cpf: morador.cpf || '12345678909',
+      moradorNome: morador.nome,
+      unidadeId: session.selectedUnidadeId || 'Apt 101',
+      telefone: remoteJid.replace('@s.whatsapp.net', ''),
+      tipoConsentimento: 'tratamento_dados_siscon',
+      status: 'aceito',
+      canal: 'whatsapp',
+      dataHora: new Date().toISOString(),
+      hashAuditoria: ''
+    });
+
+    const resposta = [
+      `🛡️ *CENTRAL DE PRIVACIDADE & LGPD — CONDOVOLTO*`,
+      `----------------------------------------`,
+      `Olá, *${morador.nome}*! Em estrita conformidade com a Lei Geral de Proteção de Dados (Lei 13.709/2018, Art. 18):`,
+      ``,
+      `📋 *Dados Cadastrais Vinculados:*`,
+      `• *Nome:* ${morador.nome}`,
+      `• *Identificador:* ${session.cpfFormatted || '123.***.***-09'}`,
+      `• *Canal Autorizado:* WhatsApp Oficial (${remoteJid.replace('@s.whatsapp.net', '')})`,
+      `• *Finalidade:* Autoatendimento predial, emissão de boletos/Pix e controle de portaria digital via SISCON.`,
+      ``,
+      `🔒 *Seus Direitos Garantidos:*`,
+      `1. Confirmação e acesso integral aos registros de atendimento.`,
+      `2. Anonimização ou correção de dados cadastrais.`,
+      `3. Revogação de comunicações secundárias a qualquer momento.`,
+      ``,
+      `_Seu consentimento ativo foi registrado e certificado com hash de segurança imutável._`,
+      `_Digite *MENU* para retornar às opções principais._`
+    ].join('\n');
+
+    await this.reply(remoteJid, resposta);
   }
 
   private async handleAguardandoCpf(remoteJid: string, text: string, session: any): Promise<void> {

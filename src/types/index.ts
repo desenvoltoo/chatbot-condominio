@@ -483,3 +483,64 @@ export interface ReguaDisparo {
   disparadoEm: string;
   status: 'enviado' | 'falha';
 }
+
+export interface PautaAssembleia {
+  id: string;
+  titulo: string;
+  descricao: string;
+  votosSim: number;
+  votosNao: number;
+  votosAbstencao: number;
+}
+
+export interface Assembleia {
+  id: string;
+  titulo: string;
+  tipo: 'ordinaria' | 'extraordinaria';
+  dataInicio: string;
+  dataFim?: string;
+  status: 'aberta' | 'encerrada';
+  quorumPercentual: number;
+  pautas: PautaAssembleia[];
+  ataOficialTexto?: string;
+  ataGeradaEm?: string;
+  criadoEm: string;
+}
+
+export interface AssembleiaVoto {
+  id: string;
+  assembleiaId: string;
+  pautaId: string;
+  unidadeId: string;
+  moradorNome: string;
+  cpf: string;
+  voto: 'sim' | 'nao' | 'abstencao';
+  canal: 'whatsapp' | 'web' | 'presencial';
+  timestamp: string;
+  hashComprovante: string;
+}
+
+export interface ConsentimentoLGPD {
+  id: string;
+  cpf: string;
+  moradorNome: string;
+  unidadeId: string;
+  telefone?: string;
+  tipoConsentimento: 'cobranca_whatsapp' | 'notificacoes_portaria' | 'comunicados_gerais' | 'assembleia_virtual' | 'tratamento_dados_siscon';
+  status: 'aceito' | 'revogado';
+  canal: 'whatsapp' | 'painel' | 'totem';
+  dataHora: string;
+  hashAuditoria: string;
+}
+
+export interface DossieLGPD {
+  cpf: string;
+  morador: Morador | null;
+  consentimentos: ConsentimentoLGPD[];
+  boletosHistorico: Boleto[];
+  ocorrenciasHistorico: Ocorrencia[];
+  visitasHistorico: any[];
+  encomendasHistorico: any[];
+  geradoEm: string;
+  hashValidador: string;
+}

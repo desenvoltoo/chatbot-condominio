@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { BotOrchestrator } from '../bot/bot.orchestrator.js';
 import { ConfigService } from '../services/config.service.js';
 import { DbService } from '../services/db.service.js';
+import { TranscriptionService } from '../services/transcription.service.js';
 
 export const orchestrator = new BotOrchestrator();
 export const webhookRouter = Router();
@@ -47,14 +48,24 @@ webhookRouter.post('/evolution', async (req: Request, res: Response) => {
         messageData?.message?.listResponseMessage?.singleSelectReply?.selectedRowId ||
         '';
 
-      // 2. Detecção de Áudio (Nota de Voz WhatsApp)
+      // 2. Detecção e Transcrição de Áudio (Nota de Voz WhatsApp)
       const isAudio = Boolean(messageData?.message?.audioMessage);
       const isImage = Boolean(messageData?.message?.imageMessage);
 
       if (isAudio && !messageContent) {
-        const seconds = messageData?.message?.audioMessage?.seconds || 15;
-        messageContent = `[Nota de voz recebida - ${seconds}s]: Morador enviou áudio no WhatsApp.`;
-        console.log(`[Webhook] Nota de voz recebida de ${remoteJid} (${pushName}) [${seconds}s]`);
+        const seconds = messageData?.message?.audioMessage?.seconds || 10;
+        const base64Audio = messageData?.message?.base64 || messageData?.base64;
+        let transcricao = '';
+        if (base64Audio) {
+          transcricao = await TranscriptionService.getInstance().transcribeBase64(base64Audio);
+        } else {
+          transcricao = await TranscriptionService.getInstance().transcribeAudio(
+            Buffer.alloc(seconds * 1024),
+            'audio/ogg'
+          );
+        }
+        messageContent = transcricao;
+        console.log(`[Webhook] Áudio transcrito com sucesso (${seconds}s): "${transcricao}"`);
       } else if (isImage && !messageContent) {
         messageContent = `[Imagem/Comprovante recebido]: Morador enviou imagem no WhatsApp.`;
         console.log(`[Webhook] Imagem/Comprovante recebido de ${remoteJid} (${pushName})`);

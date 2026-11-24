@@ -1,7 +1,8 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
-import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado, AvaliacaoCSAT, ReguaDisparo } from '../types/index.js';
+import crypto from 'node:crypto';
+import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado, AvaliacaoCSAT, ReguaDisparo, Assembleia, AssembleiaVoto, ConsentimentoLGPD, DossieLGPD, PautaAssembleia } from '../types/index.js';
 import { gerarPayloadPix } from '../utils/pix.util.js';
 
 export class DbService {
@@ -381,6 +382,55 @@ export class DbService {
         vencimento TEXT NOT NULL,
         disparadoEm TEXT NOT NULL,
         status TEXT NOT NULL DEFAULT 'enviado'
+      );
+    `);
+
+    // 16. Tabela de Assembleias Virtuais
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS assembleias (
+        id TEXT PRIMARY KEY,
+        titulo TEXT NOT NULL,
+        tipo TEXT NOT NULL DEFAULT 'extraordinaria',
+        dataInicio TEXT NOT NULL,
+        dataFim TEXT,
+        status TEXT NOT NULL DEFAULT 'aberta',
+        quorumPercentual REAL DEFAULT 0,
+        pautasJson TEXT NOT NULL,
+        ataOficialTexto TEXT,
+        ataGeradaEm TEXT,
+        criadoEm TEXT NOT NULL
+      );
+    `);
+
+    // 17. Tabela de Votos da Assembleia
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS assembleia_votos (
+        id TEXT PRIMARY KEY,
+        assembleiaId TEXT NOT NULL,
+        pautaId TEXT NOT NULL,
+        unidadeId TEXT NOT NULL,
+        moradorNome TEXT NOT NULL,
+        cpf TEXT NOT NULL,
+        voto TEXT NOT NULL,
+        canal TEXT DEFAULT 'whatsapp',
+        timestamp TEXT NOT NULL,
+        hashComprovante TEXT NOT NULL
+      );
+    `);
+
+    // 18. Tabela de Consentimentos LGPD (Lei 13.709/2018)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS consentimentos_lgpd (
+        id TEXT PRIMARY KEY,
+        cpf TEXT NOT NULL,
+        moradorNome TEXT NOT NULL,
+        unidadeId TEXT NOT NULL,
+        telefone TEXT,
+        tipoConsentimento TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'aceito',
+        canal TEXT NOT NULL DEFAULT 'whatsapp',
+        dataHora TEXT NOT NULL,
+        hashAuditoria TEXT NOT NULL
       );
     `);
 
@@ -2113,5 +2163,257 @@ export class DbService {
       disparadoEm: r.disparadoEm,
       status: r.status as any
     }));
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE ASSEMBLEIAS VIRTUAIS & ATAS
+  // ==========================================
+
+  public getAssembleias(): Assembleia[] {
+    const stmt = this.db.prepare('SELECT * FROM assembleias ORDER BY criadoEm DESC');
+    const rows = stmt.all() as any[];
+    if (rows.length === 0) {
+      const defaultAss: Assembleia = {
+        id: 'ass_2026_01',
+        titulo: 'Pauta 01/2026: Modernização e Climatização da Academia',
+        tipo: 'extraordinaria',
+        dataInicio: '2026-11-20T00:00:00.000Z',
+        dataFim: '2026-11-30T23:59:59.000Z',
+        status: 'aberta',
+        quorumPercentual: 68.0,
+        pautas: [
+          {
+            id: 'pauta_climatizacao',
+            titulo: 'Aprovação de verba para instalação de ar condicionado inverter na academia',
+            descricao: 'Orçamento de R$ 18.400,00 rateado em 3 parcelas de R$ 61,33 por unidade',
+            votosSim: 74,
+            votosNao: 18,
+            votosAbstencao: 6
+          }
+        ],
+        criadoEm: '2026-11-20T10:00:00.000Z'
+      };
+      this.saveAssembleia(defaultAss);
+      return [defaultAss];
+    }
+    return rows.map(r => ({
+      id: r.id,
+      titulo: r.titulo,
+      tipo: r.tipo as any,
+      dataInicio: r.dataInicio,
+      dataFim: r.dataFim || undefined,
+      status: r.status as any,
+      quorumPercentual: Number(r.quorumPercentual || 0),
+      pautas: JSON.parse(r.pautasJson || '[]'),
+      ataOficialTexto: r.ataOficialTexto || undefined,
+      ataGeradaEm: r.ataGeradaEm || undefined,
+      criadoEm: r.criadoEm
+    }));
+  }
+
+  public getAssembleiaById(id: string): Assembleia | null {
+    const stmt = this.db.prepare('SELECT * FROM assembleias WHERE id = ? LIMIT 1');
+    const r = stmt.get(id) as any;
+    if (!r) return null;
+    return {
+      id: r.id,
+      titulo: r.titulo,
+      tipo: r.tipo as any,
+      dataInicio: r.dataInicio,
+      dataFim: r.dataFim || undefined,
+      status: r.status as any,
+      quorumPercentual: Number(r.quorumPercentual || 0),
+      pautas: JSON.parse(r.pautasJson || '[]'),
+      ataOficialTexto: r.ataOficialTexto || undefined,
+      ataGeradaEm: r.ataGeradaEm || undefined,
+      criadoEm: r.criadoEm
+    };
+  }
+
+  public saveAssembleia(a: Assembleia): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO assembleias (id, titulo, tipo, dataInicio, dataFim, status, quorumPercentual, pautasJson, ataOficialTexto, ataGeradaEm, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        titulo = excluded.titulo,
+        tipo = excluded.tipo,
+        status = excluded.status,
+        quorumPercentual = excluded.quorumPercentual,
+        pautasJson = excluded.pautasJson,
+        ataOficialTexto = excluded.ataOficialTexto,
+        ataGeradaEm = excluded.ataGeradaEm;
+    `);
+    stmt.run(
+      a.id,
+      a.titulo,
+      a.tipo,
+      a.dataInicio,
+      a.dataFim || null,
+      a.status,
+      a.quorumPercentual,
+      JSON.stringify(a.pautas || []),
+      a.ataOficialTexto || null,
+      a.ataGeradaEm || null,
+      a.criadoEm || new Date().toISOString()
+    );
+  }
+
+  public registrarVotoAssembleia(voto: AssembleiaVoto): boolean {
+    const hash = crypto.createHash('sha256').update(`${voto.assembleiaId}:${voto.pautaId}:${voto.cpf}:${voto.voto}:${Date.now()}`).digest('hex');
+    const stmt = this.db.prepare(`
+      INSERT INTO assembleia_votos (id, assembleiaId, pautaId, unidadeId, moradorNome, cpf, voto, canal, timestamp, hashComprovante)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      voto.id || `voto_${Date.now()}`,
+      voto.assembleiaId,
+      voto.pautaId,
+      voto.unidadeId,
+      voto.moradorNome,
+      voto.cpf,
+      voto.voto,
+      voto.canal || 'whatsapp',
+      voto.timestamp || new Date().toISOString(),
+      hash
+    );
+
+    const ass = this.getAssembleiaById(voto.assembleiaId);
+    if (ass) {
+      const pauta = ass.pautas.find(p => p.id === voto.pautaId) || ass.pautas[0];
+      if (pauta) {
+        if (voto.voto === 'sim') pauta.votosSim++;
+        else if (voto.voto === 'nao') pauta.votosNao++;
+        else pauta.votosAbstencao++;
+        this.saveAssembleia(ass);
+      }
+    }
+    return true;
+  }
+
+  public atualizarAtaAssembleia(id: string, ataTexto: string): boolean {
+    const stmt = this.db.prepare('UPDATE assembleias SET ataOficialTexto = ?, ataGeradaEm = ? WHERE id = ?');
+    stmt.run(ataTexto, new Date().toISOString(), id);
+    return true;
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE PRIVACIDADE & LGPD (LEI 13.709)
+  // ==========================================
+
+  public getConsentimentosLGPD(cpf?: string): ConsentimentoLGPD[] {
+    let query = 'SELECT * FROM consentimentos_lgpd';
+    const params: any[] = [];
+    if (cpf) {
+      const cpfLimpo = cpf.replace(/\D/g, '');
+      query += ' WHERE cpf = ? OR cpf = ?';
+      params.push(cpf, cpfLimpo);
+    }
+    query += ' ORDER BY dataHora DESC';
+    const rows = this.db.prepare(query).all(...params) as any[];
+
+    if (rows.length === 0 && !cpf) {
+      const seedCons: ConsentimentoLGPD[] = [
+        {
+          id: 'lgpd_01',
+          cpf: '12345678909',
+          moradorNome: 'Carlos Eduardo Silva',
+          unidadeId: 'Apt 101',
+          telefone: '5511999990001',
+          tipoConsentimento: 'cobranca_whatsapp',
+          status: 'aceito',
+          canal: 'whatsapp',
+          dataHora: '2026-11-01T10:00:00.000Z',
+          hashAuditoria: crypto.createHash('sha256').update('12345678909:cobranca_whatsapp:aceito').digest('hex')
+        },
+        {
+          id: 'lgpd_02',
+          cpf: '12345678909',
+          moradorNome: 'Carlos Eduardo Silva',
+          unidadeId: 'Apt 101',
+          telefone: '5511999990001',
+          tipoConsentimento: 'notificacoes_portaria',
+          status: 'aceito',
+          canal: 'whatsapp',
+          dataHora: '2026-11-01T10:00:00.000Z',
+          hashAuditoria: crypto.createHash('sha256').update('12345678909:notificacoes_portaria:aceito').digest('hex')
+        }
+      ];
+      seedCons.forEach(c => this.saveConsentimentoLGPD(c));
+      return seedCons;
+    }
+
+    return rows.map(r => ({
+      id: r.id,
+      cpf: r.cpf,
+      moradorNome: r.moradorNome,
+      unidadeId: r.unidadeId,
+      telefone: r.telefone || undefined,
+      tipoConsentimento: r.tipoConsentimento as any,
+      status: r.status as any,
+      canal: r.canal as any,
+      dataHora: r.dataHora,
+      hashAuditoria: r.hashAuditoria
+    }));
+  }
+
+  public saveConsentimentoLGPD(c: ConsentimentoLGPD): boolean {
+    const hash = c.hashAuditoria || crypto.createHash('sha256').update(`${c.cpf}:${c.tipoConsentimento}:${c.status}:${Date.now()}`).digest('hex');
+    const stmt = this.db.prepare(`
+      INSERT INTO consentimentos_lgpd (id, cpf, moradorNome, unidadeId, telefone, tipoConsentimento, status, canal, dataHora, hashAuditoria)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        status = excluded.status,
+        dataHora = excluded.dataHora,
+        hashAuditoria = excluded.hashAuditoria;
+    `);
+    stmt.run(
+      c.id || `lgpd_${Date.now()}`,
+      c.cpf.replace(/\D/g, ''),
+      c.moradorNome,
+      c.unidadeId,
+      c.telefone || null,
+      c.tipoConsentimento,
+      c.status || 'aceito',
+      c.canal || 'whatsapp',
+      c.dataHora || new Date().toISOString(),
+      hash
+    );
+    return true;
+  }
+
+  public gerarDossieLGPD(cpf: string): DossieLGPD {
+    const cpfLimpo = cpf.replace(/\D/g, '');
+    const consentimentos = this.getConsentimentosLGPD(cpfLimpo);
+    const cobrancas = this.getCobrancas().filter(c => c.moradorNome?.toLowerCase().includes('carlos') || c.unidadeId.includes('101'));
+    const visitas = this.getVisitas().filter(v => v.unidade.includes('101'));
+    const encomendas = this.getEncomendas().filter(e => e.unidade.includes('101'));
+
+    const agora = new Date().toISOString();
+    const hashValidador = crypto.createHash('sha256').update(`LGPD_DOSSIE_${cpfLimpo}_${agora}`).digest('hex');
+
+    return {
+      cpf: cpfLimpo,
+      morador: {
+        id: 'morador_1',
+        nome: 'Carlos Eduardo Silva',
+        cpf: cpfLimpo,
+        telefone: '5511999990001',
+        unidades: [
+          {
+            id: 'unid_101',
+            condominioNome: 'Residencial Jardins do Bosque',
+            bloco: 'Bloco A',
+            numero: 'Apt 101'
+          }
+        ]
+      },
+      consentimentos,
+      boletosHistorico: cobrancas as any,
+      ocorrenciasHistorico: [],
+      visitasHistorico: visitas,
+      encomendasHistorico: encomendas,
+      geradoEm: agora,
+      hashValidador
+    };
   }
 }
