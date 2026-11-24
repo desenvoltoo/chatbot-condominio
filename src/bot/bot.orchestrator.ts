@@ -185,7 +185,7 @@ export class BotOrchestrator {
     motivo: string,
     textoOrigem?: string
   ): Promise<void> {
-    const plantaoJid = process.env.WHATSAPP_PLANTAO_JID;
+    const plantaoJid = config.plantao.whatsappJid;
     if (!plantaoJid) return;
 
     const alertaMsg = [

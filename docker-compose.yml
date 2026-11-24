@@ -44,6 +44,19 @@ services:
     volumes:
       - evolution_redisdata:/data
 
+  condovolto-ai:
+    build: .
+    container_name: condovolto_ai
+    restart: always
+    ports:
+      - "${PORT:-3001}:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - evolution-api
+
 volumes:
   evolution_pgdata:
   evolution_redisdata:

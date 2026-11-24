@@ -23,4 +23,13 @@ export const config = {
     telefoneSuporte: process.env.TELEFONE_SUPORTE || '5511999999999',
     horarioAtendimento: process.env.HORARIO_ATENDIMENTO || 'Segunda a Sexta, das 08h às 18h',
   },
+
+  plantao: {
+    whatsappJid: process.env.WHATSAPP_PLANTAO_JID || (process.env.TELEFONE_SUPORTE ? `${process.env.TELEFONE_SUPORTE.replace(/\D/g, '')}@s.whatsapp.net` : ''),
+  },
+
+  regua: {
+    autoEnabled: process.env.REGUA_AUTO_ENABLED !== 'false',
+    horaDisparo: parseInt(process.env.REGUA_HORA_DISPARO || '9', 10),
+  },
 };

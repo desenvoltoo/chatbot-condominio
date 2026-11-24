@@ -10,6 +10,7 @@ import { DbService } from '../services/db.service.js';
 import { requireAuth } from '../middlewares/auth.middleware.js';
 import { formatarMensagemPix, gerarPayloadPix } from '../utils/pix.util.js';
 import { EventsService } from '../services/events.service.js';
+import { SchedulerService } from '../services/scheduler.service.js';
 import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado } from '../types/index.js';
 
 export function createApiRouter(orchestrator: BotOrchestrator): Router {
@@ -21,6 +22,7 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   const llmService = LlmService.getInstance();
   const ragService = RagService.getInstance();
   const dbService = DbService.getInstance();
+  const schedulerService = new SchedulerService(dbService, evolutionService);
 
   // ==========================================
   // 1. HEALTH CHECK & STATUS PÚBLICO
@@ -647,112 +649,19 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
   // RÉGUA DE COBRANÇA PREVENTIVA (D-3, D-0, D+3)
   // ==========================================
 
-  router.post('/financeiro/regua/executar', requireAuth(['admin', 'sindico', 'operador']), async (req: Request, res: Response) => {
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-
-    const cobrancas = dbService.getCobrancas({ status: 'aberto' });
-    let disparosRealizados = 0;
-    const detalhes: any[] = [];
-
-    for (const cob of cobrancas) {
-      if (!cob.vencimento) continue;
-      const targetJid = cob.remoteJid || (cob.moradorTelefone ? `${cob.moradorTelefone.replace(/\D/g, '')}@s.whatsapp.net` : null);
-      if (!targetJid) continue;
-
-      let vencDate: Date | null = null;
-      if (cob.vencimento.includes('/')) {
-        const [d, m, y] = cob.vencimento.split('/').map(Number);
-        vencDate = new Date(y, m - 1, d);
-      } else if (cob.vencimento.includes('-')) {
-        const [y, m, d] = cob.vencimento.split('-').map(Number);
-        vencDate = new Date(y, m - 1, d);
-      }
-      if (!vencDate) continue;
-      vencDate.setHours(0, 0, 0, 0);
-
-      const diffDias = Math.round((vencDate.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24));
-      let tipoRegua: 'D-3' | 'D-0' | 'D+3' | null = null;
-
-      if (diffDias === 3) tipoRegua = 'D-3';
-      else if (diffDias === 0) tipoRegua = 'D-0';
-      else if (diffDias === -3) tipoRegua = 'D+3';
-
-      if (!tipoRegua) continue;
-      if (dbService.jaDisparouRegua(cob.id, tipoRegua)) continue;
-
-      const valorFmt = cob.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-      let textoMsg = '';
-
-      if (tipoRegua === 'D-3') {
-        textoMsg = [
-          `📅 *Lembrete de Vencimento — CondoVolto AI*`,
-          `----------------------------------------`,
-          `Olá, *${cob.moradorNome}*! Tudo bem?`,
-          `Sua cota condominial da unidade *${cob.unidadeId}* vence em *3 dias* (${cob.vencimento}).`,
-          ``,
-          `💰 *Valor:* ${valorFmt}`,
-          `📋 *Pix Copia e Cola:*`,
-          `\`${cob.pixCopiaECola}\``,
-          `----------------------------------------`,
-          `_Pague com rapidez e segurança pelo app do seu banco._`
-        ].join('\n');
-      } else if (tipoRegua === 'D-0') {
-        textoMsg = [
-          `⏰ *Vencimento Hoje — CondoVolto AI*`,
-          `----------------------------------------`,
-          `Olá, *${cob.moradorNome}*!`,
-          `Hoje é o dia de vencimento da cota condominial da unidade *${cob.unidadeId}*.`,
-          ``,
-          `💰 *Valor:* ${valorFmt}`,
-          `📋 *Pix Copia e Cola (Evite Multas e Juros):*`,
-          `\`${cob.pixCopiaECola}\``,
-          `----------------------------------------`,
-          `_Agradecemos sua colaboração e pontualidade!_`
-        ].join('\n');
-      } else if (tipoRegua === 'D+3') {
-        textoMsg = [
-          `⚠️ *Aviso de Pendência — CondoVolto AI*`,
-          `----------------------------------------`,
-          `Olá, *${cob.moradorNome}*!`,
-          `Notamos que a cota da unidade *${cob.unidadeId}* vencida em ${cob.vencimento} consta em aberto.`,
-          ``,
-          `💰 *Valor Original:* ${valorFmt}`,
-          `📋 *Pix Copia e Cola Atualizado:*`,
-          `\`${cob.pixCopiaECola}\``,
-          `----------------------------------------`,
-          `_Caso queira parcelar ou simular um acordo de dívida, responda *ACORDO* por aqui._`
-        ].join('\n');
-      }
-
-      try {
-        await evolutionService.sendText(targetJid, textoMsg);
-        dbService.registrarDisparoRegua({
-          id: `regua_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-          cobrancaId: cob.id,
-          remoteJid: targetJid,
-          moradorNome: cob.moradorNome,
-          unidadeId: cob.unidadeId,
-          tipoRegua,
-          valor: cob.valor,
-          vencimento: cob.vencimento,
-          disparadoEm: new Date().toISOString(),
-          status: 'enviado'
-        });
-        disparosRealizados++;
-        detalhes.push({ cobrancaId: cob.id, unidadeId: cob.unidadeId, tipoRegua, moradorNome: cob.moradorNome });
-      } catch (e: any) {
-        console.warn(`[ReguaCobranca] Falha ao enviar para ${targetJid}:`, e?.message);
-      }
+  router.post('/financeiro/regua/executar', requireAuth(['admin', 'sindico', 'operador']), async (_req: Request, res: Response) => {
+    try {
+      const resultado = await schedulerService.executarReguaPreventiva();
+      res.json({
+        success: true,
+        disparosRealizados: resultado.disparosRealizados,
+        totalAbertos: resultado.totalAnalisados,
+        detalhes: resultado.detalhes,
+        message: `Régua executada com sucesso. ${resultado.disparosRealizados} lembrete(s) enviado(s).`
+      });
+    } catch (e: any) {
+      res.status(500).json({ success: false, message: 'Falha ao executar régua preventiva: ' + e?.message });
     }
-
-    res.json({
-      success: true,
-      disparosRealizados,
-      totalAbertos: cobrancas.length,
-      detalhes,
-      message: `Régua executada com sucesso. ${disparosRealizados} lembrete(s) enviado(s).`
-    });
   });
 
   router.get('/financeiro/regua/historico', requireAuth(), (_req: Request, res: Response) => {

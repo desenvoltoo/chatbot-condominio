@@ -4,6 +4,7 @@ import path from 'path';
 import { config } from './config.js';
 import { webhookRouter, orchestrator } from './routes/webhook.routes.js';
 import { createApiRouter } from './routes/api.routes.js';
+import { SchedulerService } from './services/scheduler.service.js';
 
 const app = express();
 
@@ -46,4 +47,8 @@ app.listen(config.port, () => {
   console.log(`🔗 Webhook Evolution API:  http://localhost:${config.port}/webhook/evolution`);
   console.log(`⚙️ Provedor ERP Conectado: ${config.erp.provider.toUpperCase()}`);
   console.log(`=======================================================`);
+
+  // Inicia o agendador automático diário da régua de cobrança preventiva
+  const scheduler = new SchedulerService();
+  scheduler.iniciarAgendador();
 });
