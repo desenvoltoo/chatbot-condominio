@@ -318,14 +318,13 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     const sessionManager = orchestrator.getSessionManager();
 
     if (acao === 'finalizar' || acao === 'fechar') {
-      sessionManager.setTicketStatus(remoteJid, 'closed', operadorNome);
-      try {
-        await evolutionService.sendText(
-          remoteJid,
-          '✅ *Atendimento Encerrado:*\nSeu chamado foi finalizado pela administração do condomínio.\nCaso precise de algo mais, basta nos enviar uma nova mensagem!'
-        );
-      } catch (e) {}
-      return res.json({ success: true, status: 'closed', message: 'Atendimento finalizado com sucesso.' });
+      const session = sessionManager.getSession(remoteJid);
+      await orchestrator.enviarPesquisaCSAT(remoteJid, session);
+      return res.json({
+        success: true,
+        status: 'closed',
+        message: 'Atendimento finalizado com sucesso e pesquisa de satisfação (CSAT) disparada no WhatsApp.'
+      });
     }
 
     if (acao === 'assumir' || isHuman === true || acao === 'humano') {
@@ -642,6 +641,174 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       protocolo: `SAQUE-PIX-${Date.now().toString().slice(-6)}`,
       mensagem: `Saque de R$ ${valor} solicitado com sucesso para a chave ${chavePix}. TED/Pix liquidado.`
     });
+  });
+
+  // ==========================================
+  // RÉGUA DE COBRANÇA PREVENTIVA (D-3, D-0, D+3)
+  // ==========================================
+
+  router.post('/financeiro/regua/executar', requireAuth(['admin', 'sindico', 'operador']), async (req: Request, res: Response) => {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const cobrancas = dbService.getCobrancas({ status: 'aberto' });
+    let disparosRealizados = 0;
+    const detalhes: any[] = [];
+
+    for (const cob of cobrancas) {
+      if (!cob.vencimento) continue;
+      const targetJid = cob.remoteJid || (cob.moradorTelefone ? `${cob.moradorTelefone.replace(/\D/g, '')}@s.whatsapp.net` : null);
+      if (!targetJid) continue;
+
+      let vencDate: Date | null = null;
+      if (cob.vencimento.includes('/')) {
+        const [d, m, y] = cob.vencimento.split('/').map(Number);
+        vencDate = new Date(y, m - 1, d);
+      } else if (cob.vencimento.includes('-')) {
+        const [y, m, d] = cob.vencimento.split('-').map(Number);
+        vencDate = new Date(y, m - 1, d);
+      }
+      if (!vencDate) continue;
+      vencDate.setHours(0, 0, 0, 0);
+
+      const diffDias = Math.round((vencDate.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24));
+      let tipoRegua: 'D-3' | 'D-0' | 'D+3' | null = null;
+
+      if (diffDias === 3) tipoRegua = 'D-3';
+      else if (diffDias === 0) tipoRegua = 'D-0';
+      else if (diffDias === -3) tipoRegua = 'D+3';
+
+      if (!tipoRegua) continue;
+      if (dbService.jaDisparouRegua(cob.id, tipoRegua)) continue;
+
+      const valorFmt = cob.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      let textoMsg = '';
+
+      if (tipoRegua === 'D-3') {
+        textoMsg = [
+          `📅 *Lembrete de Vencimento — CondoVolto AI*`,
+          `----------------------------------------`,
+          `Olá, *${cob.moradorNome}*! Tudo bem?`,
+          `Sua cota condominial da unidade *${cob.unidadeId}* vence em *3 dias* (${cob.vencimento}).`,
+          ``,
+          `💰 *Valor:* ${valorFmt}`,
+          `📋 *Pix Copia e Cola:*`,
+          `\`${cob.pixCopiaECola}\``,
+          `----------------------------------------`,
+          `_Pague com rapidez e segurança pelo app do seu banco._`
+        ].join('\n');
+      } else if (tipoRegua === 'D-0') {
+        textoMsg = [
+          `⏰ *Vencimento Hoje — CondoVolto AI*`,
+          `----------------------------------------`,
+          `Olá, *${cob.moradorNome}*!`,
+          `Hoje é o dia de vencimento da cota condominial da unidade *${cob.unidadeId}*.`,
+          ``,
+          `💰 *Valor:* ${valorFmt}`,
+          `📋 *Pix Copia e Cola (Evite Multas e Juros):*`,
+          `\`${cob.pixCopiaECola}\``,
+          `----------------------------------------`,
+          `_Agradecemos sua colaboração e pontualidade!_`
+        ].join('\n');
+      } else if (tipoRegua === 'D+3') {
+        textoMsg = [
+          `⚠️ *Aviso de Pendência — CondoVolto AI*`,
+          `----------------------------------------`,
+          `Olá, *${cob.moradorNome}*!`,
+          `Notamos que a cota da unidade *${cob.unidadeId}* vencida em ${cob.vencimento} consta em aberto.`,
+          ``,
+          `💰 *Valor Original:* ${valorFmt}`,
+          `📋 *Pix Copia e Cola Atualizado:*`,
+          `\`${cob.pixCopiaECola}\``,
+          `----------------------------------------`,
+          `_Caso queira parcelar ou simular um acordo de dívida, responda *ACORDO* por aqui._`
+        ].join('\n');
+      }
+
+      try {
+        await evolutionService.sendText(targetJid, textoMsg);
+        dbService.registrarDisparoRegua({
+          id: `regua_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+          cobrancaId: cob.id,
+          remoteJid: targetJid,
+          moradorNome: cob.moradorNome,
+          unidadeId: cob.unidadeId,
+          tipoRegua,
+          valor: cob.valor,
+          vencimento: cob.vencimento,
+          disparadoEm: new Date().toISOString(),
+          status: 'enviado'
+        });
+        disparosRealizados++;
+        detalhes.push({ cobrancaId: cob.id, unidadeId: cob.unidadeId, tipoRegua, moradorNome: cob.moradorNome });
+      } catch (e: any) {
+        console.warn(`[ReguaCobranca] Falha ao enviar para ${targetJid}:`, e?.message);
+      }
+    }
+
+    res.json({
+      success: true,
+      disparosRealizados,
+      totalAbertos: cobrancas.length,
+      detalhes,
+      message: `Régua executada com sucesso. ${disparosRealizados} lembrete(s) enviado(s).`
+    });
+  });
+
+  router.get('/financeiro/regua/historico', requireAuth(), (_req: Request, res: Response) => {
+    res.json(dbService.getHistoricoRegua());
+  });
+
+  // ==========================================
+  // PESQUISA DE SATISFAÇÃO CSAT / NPS
+  // ==========================================
+
+  router.get('/csat/metricas', requireAuth(), (_req: Request, res: Response) => {
+    res.json(dbService.getEstatisticasCSAT());
+  });
+
+  router.get('/csat/avaliacoes', requireAuth(), (_req: Request, res: Response) => {
+    res.json(dbService.getAvaliacoesCSAT());
+  });
+
+  // ==========================================
+  // RESPOSTAS RÁPIDAS (MACROS / SNIPPETS)
+  // ==========================================
+
+  router.get('/macros', requireAuth(), (_req: Request, res: Response) => {
+    const macros = [
+      {
+        atalho: '/pix',
+        titulo: 'Chave Pix Oficial',
+        texto: '🪙 Segue a chave Pix oficial do condomínio: *financeiro@condominio.com.br* (Banco Inter / CondoVolto). Por favor, nos envie o comprovante por aqui assim que efetuar o pagamento.'
+      },
+      {
+        atalho: '/regras-salao',
+        titulo: 'Regras do Salão de Festas',
+        texto: '🎉 O Salão de Festas pode ser utilizado até às 23h00 (música ambiente até 22h). A taxa de uso e limpeza é de R$ 150,00 lançada no próximo boleto condominial. O cancelamento sem ônus deve ser feito com 48h de antecedência.'
+      },
+      {
+        atalho: '/mudanca',
+        titulo: 'Horários de Mudança',
+        texto: '📦 Mudanças e transporte de cargas pesadas são autorizados de segunda a sexta-feira das 08h às 17h e aos sábados das 08h às 12h, com agendamento prévio na portaria para reserva do elevador de serviço com capa acolchoada protetora.'
+      },
+      {
+        atalho: '/silencio',
+        titulo: 'Horário de Silêncio',
+        texto: '🤫 O horário de silêncio vigora das 22h00 às 08h00 nos dias úteis e até às 09h00 aos fins de semana e feriados. Contamos com a colaboração de todos para mantermos a harmonia condominial.'
+      },
+      {
+        atalho: '/acordo',
+        titulo: 'Simulação de Acordo SISCON',
+        texto: '🤝 Temos condições especiais para regularização da sua cota condominial no sistema SISCON, com parcelamento facilitado em até 12x e desconto na multa de mora. Deseja que eu monte uma proposta agora?'
+      },
+      {
+        atalho: '/sindico',
+        titulo: 'Atendimento do Síndico',
+        texto: '🏢 O síndico e a administração atendem presencialmente na sala administrativa às terças e quintas-feiras das 18h às 20h. Para urgências, nossa equipe permanece conectada por este canal.'
+      }
+    ];
+    res.json(macros);
   });
 
   // ==========================================

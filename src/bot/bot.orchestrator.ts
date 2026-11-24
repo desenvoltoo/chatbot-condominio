@@ -128,6 +128,36 @@ export class BotOrchestrator {
       'CondoVolto AI (Auto-Transfer)',
       `[Transferência Automática para Consultor] Morador encaminhado para ${rec.operadorNome} na carteira "${rec.carteiraNome}". Motivo: ${motivo}`
     );
+
+    // 1. Gera briefing executivo via IA para o consultor humano não perder tempo
+    const historicoMsg = (session.messages || []).map((m: any) => ({
+      sender: m.sender,
+      text: m.text
+    }));
+    const moradorNome = session.morador?.nome || session.pushName || 'Morador';
+    const unidadeDesc = session.morador?.unidades?.[0]
+      ? `${session.morador.unidades[0].condominioNome} • Apt ${session.morador.unidades[0].numero}`
+      : 'Unidade sob identificação';
+
+    try {
+      const briefing = await this.llmService.generateExecutiveBriefing(
+        moradorNome,
+        unidadeDesc,
+        motivo,
+        historicoMsg
+      );
+      this.sessionManager.addNotaInterna(
+        remoteJid,
+        'CondoVolto AI (Briefing)',
+        `[Briefing IA para Consultor]\n${briefing}`
+      );
+    } catch (e: any) {
+      console.warn('[Orchestrator] Falha ao gerar briefing executivo:', e?.message);
+    }
+
+    // 2. Alerta proativo no WhatsApp do consultor/plantão
+    await this.notificarConsultorPlantao(remoteJid, moradorNome, unidadeDesc, rec, motivo, textoOrigem);
+
     this.sessionManager.updateSession(session);
 
     const msg = [
@@ -145,6 +175,36 @@ export class BotOrchestrator {
     ].join('\n');
 
     await this.reply(remoteJid, msg);
+  }
+
+  private async notificarConsultorPlantao(
+    remoteJid: string,
+    moradorNome: string,
+    unidadeDesc: string,
+    rec: any,
+    motivo: string,
+    textoOrigem?: string
+  ): Promise<void> {
+    const plantaoJid = process.env.WHATSAPP_PLANTAO_JID;
+    if (!plantaoJid) return;
+
+    const alertaMsg = [
+      `🚨 *[CondoVolto AI — Alerta de Transbordo Prioritário]*`,
+      `----------------------------------------`,
+      `👤 *Morador:* ${moradorNome} (${unidadeDesc})`,
+      `📂 *Carteira:* ${rec.carteiraNome}`,
+      `💼 *Consultor(a):* ${rec.operadorNome}`,
+      `⚠️ *Motivo:* ${motivo}`,
+      textoOrigem ? `💬 *Última Mensagem:* "${textoOrigem.slice(0, 150)}"` : '',
+      `----------------------------------------`,
+      `👉 Acesse o painel CondoVolto para responder ao morador.`
+    ].filter(Boolean).join('\n');
+
+    try {
+      await this.evolutionService.sendText(plantaoJid, alertaMsg);
+    } catch (e: any) {
+      console.warn('[Orchestrator] Falha no envio de alerta ao plantão:', e?.message);
+    }
   }
 
   async reply(remoteJid: string, text: string): Promise<void> {
@@ -273,13 +333,12 @@ export class BotOrchestrator {
 
       case 'ATENDIMENTO_HUMANO':
         if (lowerText === 'sair' || lowerText === 'finalizar') {
-          this.sessionManager.setHumanHandoff(remoteJid, false);
-          this.sessionManager.resetSession(remoteJid);
-          await this.reply(
-            remoteJid,
-            '✅ Atendimento humano encerrado. Se precisar de algo mais, basta mandar uma nova mensagem!'
-          );
+          await this.enviarPesquisaCSAT(remoteJid, session);
         }
+        break;
+
+      case 'AVALIANDO_ATENDIMENTO':
+        await this.handleAvaliacaoAtendimento(remoteJid, rawText, session);
         break;
 
       default:
@@ -287,6 +346,68 @@ export class BotOrchestrator {
         await this.enviarMenuPrincipal(remoteJid, nomeUsuario);
         break;
     }
+  }
+
+  public async enviarPesquisaCSAT(remoteJid: string, session: any): Promise<void> {
+    session.state = 'AVALIANDO_ATENDIMENTO';
+    this.sessionManager.setHumanHandoff(remoteJid, false);
+    session.status = 'closed';
+    this.sessionManager.updateSession(session);
+
+    const msg = [
+      `⭐ *Pesquisa de Satisfação — CondoVolto AI*`,
+      `----------------------------------------`,
+      `Seu atendimento com a administração foi concluído!`,
+      ``,
+      `Como você avalia o atendimento recebido hoje?`,
+      `Digite apenas o número de *1 a 5*:`,
+      ``,
+      `*5* - ⭐⭐⭐⭐⭐ Excelente`,
+      `*4* - ⭐⭐⭐⭐ Muito Bom`,
+      `*3* - ⭐⭐⭐ Regular`,
+      `*2* - ⭐⭐ Ruim`,
+      `*1* - ⭐ Insatisfeito`,
+      `----------------------------------------`,
+      `_Sua avaliação é sigilosa e nos ajuda a melhorar nossos serviços continuamente._`
+    ].join('\n');
+
+    await this.reply(remoteJid, msg);
+  }
+
+  private async handleAvaliacaoAtendimento(remoteJid: string, text: string, session: any): Promise<void> {
+    const rawClean = text.trim();
+    const match = rawClean.match(/[1-5]/);
+    const nota = match ? parseInt(match[0], 10) : (rawClean.toLowerCase().includes('excelente') ? 5 : rawClean.toLowerCase().includes('bom') ? 4 : 5);
+
+    const moradorNome = session.morador?.nome || session.pushName || 'Morador';
+    const unidadeId = session.selectedUnidadeId || session.morador?.unidades?.[0]?.id || 'unidade_geral';
+
+    this.dbService.saveAvaliacaoCSAT({
+      id: `csat_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      remoteJid,
+      moradorNome,
+      unidadeId,
+      carteiraId: session.carteiraId || 'carteira_atendimento',
+      operadorId: session.assignedOperatorId || 'op_mariana',
+      operadorNome: session.assignedOperator || 'Mariana Souza (Atendimento)',
+      nota,
+      comentario: text.length > 2 ? text : undefined,
+      criadoEm: Date.now()
+    });
+
+    this.sessionManager.addNotaInterna(
+      remoteJid,
+      'Sistema CSAT',
+      `[Avaliação do Morador] Nota ${nota}/5 recebida. Comentário: "${text}"`
+    );
+
+    this.sessionManager.resetSession(remoteJid);
+
+    const estrelas = '⭐'.repeat(nota);
+    await this.reply(
+      remoteJid,
+      `🙏 *Muito obrigado pelo seu feedback!*\nSua nota *${nota}/5* (${estrelas}) foi registrada no painel da administração.\n\n_Sempre que precisar de 2ª via, reservas, acordos ou informações, basta enviar uma nova mensagem! Tenha um ótimo dia!_ 😊`
+    );
   }
 
   private async enviarMenuPrincipal(remoteJid: string, nome: string): Promise<void> {

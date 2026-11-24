@@ -1,7 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
-import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado } from '../types/index.js';
+import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado, AvaliacaoCSAT, ReguaDisparo } from '../types/index.js';
 import { gerarPayloadPix } from '../utils/pix.util.js';
 
 export class DbService {
@@ -352,6 +352,38 @@ export class DbService {
       );
     `);
 
+    // 14. Tabela de Avaliações de Satisfação (CSAT / NPS)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS avaliacoes_csat (
+        id TEXT PRIMARY KEY,
+        remoteJid TEXT NOT NULL,
+        moradorNome TEXT,
+        unidadeId TEXT,
+        carteiraId TEXT,
+        operadorId TEXT,
+        operadorNome TEXT,
+        nota INTEGER NOT NULL,
+        comentario TEXT,
+        criadoEm INTEGER NOT NULL
+      );
+    `);
+
+    // 15. Tabela de Disparos da Régua de Cobrança Preventiva
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS regua_disparos (
+        id TEXT PRIMARY KEY,
+        cobrancaId TEXT NOT NULL,
+        remoteJid TEXT NOT NULL,
+        moradorNome TEXT,
+        unidadeId TEXT,
+        tipoRegua TEXT NOT NULL,
+        valor REAL NOT NULL,
+        vencimento TEXT NOT NULL,
+        disparadoEm TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'enviado'
+      );
+    `);
+
     // Alimentação inicial de dados operacionais (se tabelas estiverem vazias)
     this.seedInitialOperationalData();
   }
@@ -568,8 +600,29 @@ export class DbService {
       resolvidosIA: Number(m.resolvidosIA || 0)
     }));
 
+    // Métricas de CSAT / NPS por carteira
+    const mapCsat = new Map<string, { media: number; total: number }>();
+    try {
+      const stmtCsat = this.db.prepare(`
+        SELECT carteiraId, avg(nota) as media, count(*) as total
+        FROM avaliacoes_csat
+        WHERE carteiraId IS NOT NULL
+        GROUP BY carteiraId
+      `);
+      const csatRows = stmtCsat.all() as any[];
+      csatRows.forEach(c => {
+        if (c.carteiraId) {
+          mapCsat.set(c.carteiraId, {
+            media: Number(Number(c.media || 0).toFixed(1)),
+            total: Number(c.total || 0)
+          });
+        }
+      });
+    } catch (e) {}
+
     return rows.map(r => {
       const met = mapMetrics.get(r.id) || { total: 0, aguardandoHumano: 0, emAtendimento: 0, resolvidosIA: 0 };
+      const csat = mapCsat.get(r.id) || { media: 5.0, total: 0 };
       return {
         id: r.id,
         nome: r.nome,
@@ -582,7 +635,9 @@ export class DbService {
         totalConversas: met.total,
         aguardandoHumano: met.aguardandoHumano,
         emAtendimento: met.emAtendimento,
-        resolvidosIA: met.resolvidosIA
+        resolvidosIA: met.resolvidosIA,
+        mediaCSAT: csat.media,
+        totalAvaliacoes: csat.total
       };
     });
   }
@@ -1944,5 +1999,119 @@ export class DbService {
 
   public getAcordos(): any[] {
     return this.db.prepare('SELECT * FROM acordos ORDER BY criadoEm DESC').all();
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE AVALIAÇÃO DE SATISFAÇÃO (CSAT / NPS)
+  // ==========================================
+
+  public saveAvaliacaoCSAT(av: AvaliacaoCSAT): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO avaliacoes_csat (id, remoteJid, moradorNome, unidadeId, carteiraId, operadorId, operadorNome, nota, comentario, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      av.id,
+      av.remoteJid,
+      av.moradorNome || null,
+      av.unidadeId || null,
+      av.carteiraId || null,
+      av.operadorId || null,
+      av.operadorNome || null,
+      av.nota,
+      av.comentario || null,
+      av.criadoEm || Date.now()
+    );
+  }
+
+  public getAvaliacoesCSAT(): AvaliacaoCSAT[] {
+    const stmt = this.db.prepare('SELECT * FROM avaliacoes_csat ORDER BY criadoEm DESC LIMIT 100');
+    const rows = stmt.all() as any[];
+    return rows.map(r => ({
+      id: r.id,
+      remoteJid: r.remoteJid,
+      moradorNome: r.moradorNome || undefined,
+      unidadeId: r.unidadeId || undefined,
+      carteiraId: r.carteiraId || undefined,
+      operadorId: r.operadorId || undefined,
+      operadorNome: r.operadorNome || undefined,
+      nota: r.nota,
+      comentario: r.comentario || undefined,
+      criadoEm: r.criadoEm
+    }));
+  }
+
+  public getEstatisticasCSAT() {
+    const stmt = this.db.prepare(`
+      SELECT 
+        avg(nota) as media,
+        count(*) as total,
+        sum(CASE WHEN nota = 5 THEN 1 ELSE 0 END) as nota5,
+        sum(CASE WHEN nota = 4 THEN 1 ELSE 0 END) as nota4,
+        sum(CASE WHEN nota = 3 THEN 1 ELSE 0 END) as nota3,
+        sum(CASE WHEN nota = 2 THEN 1 ELSE 0 END) as nota2,
+        sum(CASE WHEN nota = 1 THEN 1 ELSE 0 END) as nota1
+      FROM avaliacoes_csat
+    `);
+    const r = stmt.get() as any;
+    const total = Number(r?.total || 0);
+    const media = total > 0 ? Number(Number(r?.media || 0).toFixed(1)) : 5.0;
+    return {
+      mediaGeral: media,
+      totalAvaliacoes: total,
+      distribuicao: {
+        5: Number(r?.nota5 || 0),
+        4: Number(r?.nota4 || 0),
+        3: Number(r?.nota3 || 0),
+        2: Number(r?.nota2 || 0),
+        1: Number(r?.nota1 || 0)
+      }
+    };
+  }
+
+  // ==========================================
+  // OPERAÇÕES DA RÉGUA DE COBRANÇA PREVENTIVA
+  // ==========================================
+
+  public registrarDisparoRegua(regua: ReguaDisparo): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO regua_disparos (id, cobrancaId, remoteJid, moradorNome, unidadeId, tipoRegua, valor, vencimento, disparadoEm, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      regua.id,
+      regua.cobrancaId,
+      regua.remoteJid,
+      regua.moradorNome || null,
+      regua.unidadeId || null,
+      regua.tipoRegua,
+      regua.valor,
+      regua.vencimento,
+      regua.disparadoEm,
+      regua.status || 'enviado'
+    );
+  }
+
+  public jaDisparouRegua(cobrancaId: string, tipoRegua: string): boolean {
+    const stmt = this.db.prepare('SELECT id FROM regua_disparos WHERE cobrancaId = ? AND tipoRegua = ? LIMIT 1');
+    const r = stmt.get(cobrancaId, tipoRegua);
+    return Boolean(r);
+  }
+
+  public getHistoricoRegua(): ReguaDisparo[] {
+    const stmt = this.db.prepare('SELECT * FROM regua_disparos ORDER BY disparadoEm DESC LIMIT 100');
+    const rows = stmt.all() as any[];
+    return rows.map(r => ({
+      id: r.id,
+      cobrancaId: r.cobrancaId,
+      remoteJid: r.remoteJid,
+      moradorNome: r.moradorNome || undefined,
+      unidadeId: r.unidadeId || undefined,
+      tipoRegua: r.tipoRegua as any,
+      valor: r.valor,
+      vencimento: r.vencimento,
+      disparadoEm: r.disparadoEm,
+      status: r.status as any
+    }));
   }
 }

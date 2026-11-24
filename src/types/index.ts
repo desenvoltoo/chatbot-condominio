@@ -7,7 +7,8 @@ export type SessionState =
   | 'SIMULANDO_ACORDO'
   | 'CONFIRMANDO_ACORDO'
   | 'RESERVANDO_AREA'
-  | 'ATENDIMENTO_HUMANO';
+  | 'ATENDIMENTO_HUMANO'
+  | 'AVALIANDO_ATENDIMENTO';
 
 export interface Unidade {
   id: string;
@@ -71,6 +72,8 @@ export interface Carteira {
   aguardandoHumano?: number;
   emAtendimento?: number;
   resolvidosIA?: number;
+  mediaCSAT?: number;
+  totalAvaliacoes?: number;
 }
 
 export interface ChatMessage {
@@ -453,4 +456,30 @@ export interface PendenciaSupervisao {
   justificativa?: string;
   criadoEm: string;
   respondidoEm?: string;
+}
+
+export interface AvaliacaoCSAT {
+  id: string;
+  remoteJid: string;
+  moradorNome?: string;
+  unidadeId?: string;
+  carteiraId?: string;
+  operadorId?: string;
+  operadorNome?: string;
+  nota: number; // 1 to 5
+  comentario?: string;
+  criadoEm: number;
+}
+
+export interface ReguaDisparo {
+  id: string;
+  cobrancaId: string;
+  remoteJid: string;
+  moradorNome?: string;
+  unidadeId?: string;
+  tipoRegua: 'D-3' | 'D-0' | 'D+3';
+  valor: number;
+  vencimento: string;
+  disparadoEm: string;
+  status: 'enviado' | 'falha';
 }

@@ -261,4 +261,72 @@ export class LlmService {
 
     return `Olá! Sou o assistente de IA do ${condoName}. Com base no nosso regimento interno: Para esta solicitação específica, recomendo consultar a convenção do condomínio ou digitar *7* para falar com um atendente humano.`;
   }
+
+  public async generateExecutiveBriefing(
+    moradorNome: string,
+    unidadeDesc: string,
+    motivoHandoff: string,
+    historico: { sender: string; text: string }[]
+  ): Promise<string> {
+    const cfg = this.currentConfig;
+    const hasLiveKey = Boolean(cfg.apiKey && cfg.apiKey.length > 5 && !cfg.apiKey.includes('••••'));
+
+    const ultimasMensagens = (historico || [])
+      .slice(-6)
+      .map(m => `${m.sender === 'user' ? 'Morador' : 'Bot'}: ${m.text}`)
+      .join('\n');
+
+    if (hasLiveKey) {
+      try {
+        const endpoint = `${cfg.baseUrl || 'https://api.openai.com/v1'}/chat/completions`;
+        const res = await axios.post(
+          endpoint,
+          {
+            model: cfg.modelName || 'gpt-4o-mini',
+            temperature: 0.1,
+            max_tokens: 220,
+            messages: [
+              {
+                role: 'system',
+                content: 'Você é um assistente de triagem que gera resumos executivos ultra-concisos para atendentes humanos de condomínio. Responda ESTRITAMENTE em 3 tópicos claros em português: 1) Perfil e Unidade, 2) Dor/Demanda Central, 3) Sugestão de Resolução Prática.'
+              },
+              {
+                role: 'user',
+                content: `Morador: ${moradorNome} (${unidadeDesc})\nMotivo do transbordo: ${motivoHandoff}\n\nHistórico recente:\n${ultimasMensagens}`
+              }
+            ]
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${cfg.apiKey}`
+            },
+            timeout: 8000
+          }
+        );
+
+        const content = res.data?.choices?.[0]?.message?.content;
+        if (content) return content.trim();
+      } catch (err: any) {
+        console.warn('[LlmService] Falha ao chamar LLM para briefing executivo:', err.message);
+      }
+    }
+
+    // Heurística executiva rápida offline / sandbox
+    let sugestao = 'Acolher a solicitação e consultar o regulamento do condomínio.';
+    const motivoLower = (motivoHandoff || '').toLowerCase();
+    if (motivoLower.includes('jurídico') || motivoLower.includes('processo') || motivoLower.includes('procon')) {
+      sugestao = 'Verificar histórico de notificações da unidade e acionar a assessoria jurídica se necessário.';
+    } else if (motivoLower.includes('acordo') || motivoLower.includes('dívida') || motivoLower.includes('desconto')) {
+      sugestao = 'Avaliar parcelamento flexível em até 6x no SISCON com isenção parcial de juros de mora.';
+    } else if (motivoLower.includes('insatisfação') || motivoLower.includes('frustração')) {
+      sugestao = 'Prestar atendimento empático imediato e esclarecer o ponto de atrito.';
+    }
+
+    return [
+      `👤 *Perfil:* ${moradorNome} (${unidadeDesc})`,
+      `🎯 *Demanda Central:* ${motivoHandoff}`,
+      `💡 *Recomendação:* ${sugestao}`
+    ].join('\n');
+  }
 }

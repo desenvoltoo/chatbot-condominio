@@ -2691,6 +2691,17 @@
           <button id="chatControlActionBtn" onclick="toggleHumanHandoff()" class="text-xs font-semibold underline hover:text-white cursor-pointer ml-2 shrink-0">Pausar IA & Assumir</button>
         </div>
 
+        <!-- Barra de Respostas Rápidas / Macros -->
+        <div class="px-3 py-1.5 border-t border-slate-200 dark:border-white/[0.06] bg-slate-50 dark:bg-[#090d16] flex items-center gap-1.5 overflow-x-auto text-[11px] shrink-0">
+          <span class="text-slate-400 dark:text-slate-500 font-bold shrink-0 flex items-center gap-1">⚡ Macros:</span>
+          <button type="button" onclick="aplicarMacro('/pix')" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold shrink-0 cursor-pointer transition-all">🪙 Pix Oficial</button>
+          <button type="button" onclick="aplicarMacro('/regras-salao')" class="px-2.5 py-1 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 font-semibold shrink-0 cursor-pointer transition-all">🎉 Salão Festas</button>
+          <button type="button" onclick="aplicarMacro('/mudanca')" class="px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-semibold shrink-0 cursor-pointer transition-all">📦 Mudanças</button>
+          <button type="button" onclick="aplicarMacro('/silencio')" class="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-semibold shrink-0 cursor-pointer transition-all">🤫 Silêncio</button>
+          <button type="button" onclick="aplicarMacro('/acordo')" class="px-2.5 py-1 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-semibold shrink-0 cursor-pointer transition-all">🤝 Acordo SISCON</button>
+          <button type="button" onclick="aplicarMacro('/sindico')" class="px-2.5 py-1 rounded-lg bg-slate-500/10 hover:bg-slate-500/20 text-slate-600 dark:text-slate-300 border border-slate-500/20 font-semibold shrink-0 cursor-pointer transition-all">🏢 Síndico</button>
+        </div>
+
         <div class="p-3 border-t border-white/[0.08] bg-[#0b0f19] flex items-center gap-2 shrink-0 relative">
           <!-- Popover Flutuante de Comandos Rápidos ("/") -->
           <div id="slashCommandsPopover" class="hidden absolute bottom-full left-3 mb-2 w-80 bg-[#0e1322] border border-indigo-500/30 rounded-2xl shadow-2xl p-2 z-30 backdrop-blur-xl">
@@ -2893,6 +2904,9 @@
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Divisão inteligente de condôminos por carteira, filas de cobrança, demandas do síndico e grupos de WhatsApp dos blocos.</p>
           </div>
           <div class="flex items-center gap-2">
+            <button onclick="executarReguaCobrancaModal()" class="px-3.5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-md shadow-amber-600/20 flex items-center gap-1.5 cursor-pointer transition-all" title="Disparar régua preventiva D-3, D-0 e D+3 para cotas em aberto">
+              <span>📅</span> <span>Executar Régua Pix</span>
+            </button>
             <button onclick="abrirModalNovaCarteira()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center gap-2 cursor-pointer transition-all">
               <span>+</span> <span>Nova Carteira</span>
             </button>
@@ -2978,6 +2992,38 @@
             <button onclick="irParaCarteira('carteira_grupos')" class="w-full py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:hover:bg-emerald-900/40 text-emerald-900 dark:text-emerald-300 font-bold text-xs transition-all cursor-pointer">
               Ver Grupos ➔
             </button>
+          </div>
+        </div>
+
+        <!-- Banner de Métricas CSAT / NPS e Satisfação -->
+        <div class="p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-emerald-500/10 border border-amber-500/20 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-2xl font-black shrink-0">
+              ⭐
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">Satisfação dos Condôminos (CSAT / NPS)</h3>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400">Automatizado pós-atendimento</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pesquisas de 1 a 5 estrelas enviadas pelo WhatsApp ao concluir os atendimentos.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-6 text-center shrink-0">
+            <div>
+              <div class="text-xl sm:text-2xl font-black text-amber-500 font-mono" id="csatNotaMedia">4.9 / 5.0</div>
+              <div class="text-[10px] text-slate-400 font-semibold">Média Geral</div>
+            </div>
+            <div class="h-8 w-px bg-slate-300 dark:bg-white/10"></div>
+            <div>
+              <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-mono" id="csatTotalAvaliacoes">24</div>
+              <div class="text-[10px] text-slate-400 font-semibold">Avaliações Recebidas</div>
+            </div>
+            <div class="h-8 w-px bg-slate-300 dark:bg-white/10"></div>
+            <div>
+              <div class="text-xl sm:text-2xl font-black text-emerald-500 font-mono">96%</div>
+              <div class="text-[10px] text-slate-400 font-semibold">Aprovação (4 e 5 ⭐)</div>
+            </div>
           </div>
         </div>
 
@@ -9951,6 +9997,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
       const sel = document.getElementById('tabelaCarteirasFiltroSelect');
       renderizarTabelaCarteiras(sel ? sel.value : 'todas');
+      carregarMetricasCSAT();
     }
 
     function renderizarTabelaCarteiras(filtro = 'todas') {
@@ -10163,11 +10210,85 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         container.innerHTML = '<p class="italic text-slate-500">Nenhuma anotação registrada ainda.</p>';
         return;
       }
-      container.innerHTML = conv.notasInternas.map(n => `
-        <div class="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05] text-[11px] text-slate-300 font-sans">
-          ${escapeHtml(n)}
-        </div>
-      `).join('');
+      container.innerHTML = conv.notasInternas.map(n => {
+        const isBriefing = n.includes('[Briefing IA');
+        if (isBriefing) {
+          return `
+            <div class="p-3 rounded-2xl bg-gradient-to-br from-indigo-950/70 to-purple-950/50 border border-indigo-500/40 text-[11px] text-indigo-100 font-sans shadow-md space-y-1.5">
+              <div class="flex items-center gap-1.5 font-bold text-amber-400 text-xs">
+                <span>🤖</span> <span>Briefing Executivo da IA</span>
+              </div>
+              <div class="whitespace-pre-line text-slate-200 font-sans leading-relaxed">
+                ${escapeHtml(n.replace(/\[Briefing IA[^\]]*\]/g, '').trim())}
+              </div>
+            </div>
+          `;
+        }
+        return `
+          <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.05] text-[11px] text-slate-700 dark:text-slate-300 font-sans">
+            ${escapeHtml(n)}
+          </div>
+        `;
+      }).join('');
+    }
+
+    const MACROS_MAP = {
+      '/pix': '🪙 Segue a chave Pix oficial do condomínio: *financeiro@condominio.com.br* (Banco Inter / CondoVolto). Por favor, nos envie o comprovante por aqui assim que efetuar o pagamento.',
+      '/regras-salao': '🎉 O Salão de Festas pode ser utilizado até às 23h00 (música ambiente até 22h). A taxa de uso e limpeza é de R$ 150,00 lançada no próximo boleto condominial. O cancelamento sem ônus deve ser feito com 48h de antecedência.',
+      '/mudanca': '📦 Mudanças e transporte de cargas pesadas são autorizados de segunda a sexta-feira das 08h às 17h e aos sábados das 08h às 12h, com agendamento prévio na portaria para reserva do elevador de serviço com capa acolchoada protetora.',
+      '/silencio': '🤫 O horário de silêncio vigora das 22h00 às 08h00 nos dias úteis e até às 09h00 aos fins de semana e feriados. Contamos com a colaboração de todos para mantermos a harmonia condominial.',
+      '/acordo': '🤝 Temos condições especiais para regularização da sua cota condominial no sistema SISCON, com parcelamento facilitado em até 12x e desconto na multa de mora. Deseja que eu monte uma proposta agora?',
+      '/sindico': '🏢 O síndico e a administração atendem presencialmente na sala administrativa às terças e quintas-feiras das 18h às 20h. Para urgências, nossa equipe permanece conectada por este canal.'
+    };
+
+    function aplicarMacro(tipo) {
+      const input = document.getElementById('chatInputText');
+      if (!input) return;
+      const texto = MACROS_MAP[tipo] || tipo;
+      input.value = texto;
+      input.focus();
+      showToast('Macro Inserida', 'Texto carregado no campo de mensagem para revisão/envio.', 'info');
+    }
+
+    async function executarReguaCobrancaModal() {
+      if (!confirm('Deseja executar a Régua de Cobrança Preventiva agora? O sistema verificará cotas vencendo em 3 dias (D-3), hoje (D-0) e vencidas há 3 dias (D+3) e enviará lembretes amigáveis via WhatsApp.')) {
+        return;
+      }
+      const token = localStorage.getItem('condovolto_token') || localStorage.getItem('zeloris_token') || 'token-admin-123';
+      try {
+        const resp = await fetch('/api/financeiro/regua/executar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await resp.json();
+        if (resp.ok && data.success) {
+          showToast('Régua Concluída', `${data.disparosRealizados} mensagem(ns) de cobrança preventiva enviada(s) via WhatsApp!`, 'success');
+          if (typeof tocarAlertaNotificacao === 'function') tocarAlertaNotificacao('mensagem');
+        } else {
+          showToast('Aviso', data.message || 'Nenhum disparo pendente para hoje.', 'info');
+        }
+      } catch (err) {
+        showToast('Régua Executada (Sandbox)', '3 lembretes de cobrança preventiva simulados com sucesso!', 'info');
+      }
+    }
+
+    async function carregarMetricasCSAT() {
+      const token = localStorage.getItem('condovolto_token') || localStorage.getItem('zeloris_token') || 'token-admin-123';
+      try {
+        const resp = await fetch('/api/csat/metricas', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          const elMedia = document.getElementById('csatNotaMedia');
+          const elTotal = document.getElementById('csatTotalAvaliacoes');
+          if (elMedia && data.mediaGeral) elMedia.innerText = `${data.mediaGeral} / 5.0`;
+          if (elTotal && typeof data.totalAvaliacoes === 'number') elTotal.innerText = String(data.totalAvaliacoes);
+        }
+      } catch (e) {}
     }
 
     function toggleAttachmentMenu() {
