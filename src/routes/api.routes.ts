@@ -418,6 +418,32 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
     res.json({ success: true, session });
   });
 
+  router.post('/conversas/:remoteJid/transferir-consultor', requireAuth(), async (req: Request, res: Response) => {
+    const { remoteJid } = req.params;
+    const { motivo, textoOrigem } = req.body;
+    const user = (req as any).user;
+    const operadorNome = user?.nome || user?.name || 'Administrador';
+
+    const session = orchestrator.getSessionManager().getSession(remoteJid);
+    if (!session) {
+      return res.status(404).json({ error: 'Conversa não encontrada' });
+    }
+
+    await orchestrator.transferirParaConsultorAutomatico(
+      remoteJid,
+      session,
+      motivo || `Transferência solicitada no painel por ${operadorNome}`,
+      textoOrigem || 'Transferência via Painel'
+    );
+
+    const updatedSession = orchestrator.getSessionManager().getSession(remoteJid);
+    res.json({
+      success: true,
+      session: updatedSession,
+      message: 'Atendimento transferido para consultor com sucesso.'
+    });
+  });
+
   // ==========================================
   // 6. GERAÇÃO DE PIX OFICIAL & WEBHOOK BANCÁRIO
   // ==========================================

@@ -103,6 +103,50 @@ export class BotOrchestrator {
     };
   }
 
+  public async transferirParaConsultorAutomatico(
+    remoteJid: string,
+    session: any,
+    motivo: string,
+    textoOrigem?: string
+  ): Promise<void> {
+    const rec = this.detectarCarteiraRecomendada(session, textoOrigem || motivo);
+
+    session.state = 'ATENDIMENTO_HUMANO';
+    session.isHumanHandoff = true;
+    session.status = 'waiting_human';
+    session.assignedOperator = rec.operadorNome;
+    session.assignedOperatorId = rec.operadorId;
+    session.carteiraId = rec.carteiraId;
+    session.carteiraNome = rec.carteiraNome;
+    if (!session.slaStartedAt) session.slaStartedAt = new Date().toISOString();
+
+    this.sessionManager.atribuirCarteira(remoteJid, rec.carteiraId, rec.carteiraNome, rec.operadorId, rec.operadorNome);
+    this.sessionManager.setHumanHandoff(remoteJid, true, rec.operadorNome);
+
+    this.sessionManager.addNotaInterna(
+      remoteJid,
+      'CondoVolto AI (Auto-Transfer)',
+      `[Transferência Automática para Consultor] Morador encaminhado para ${rec.operadorNome} na carteira "${rec.carteiraNome}". Motivo: ${motivo}`
+    );
+    this.sessionManager.updateSession(session);
+
+    const msg = [
+      `👤 *Atendimento Transferido para um Consultor*`,
+      `----------------------------------------`,
+      `Identifiquei sua solicitação e transferi seu atendimento diretamente para nosso(a) consultor(a) humano(a):`,
+      ``,
+      `💼 *Consultor(a) Responsável:* ${rec.operadorNome}`,
+      `📂 *Carteira:* ${rec.carteiraNome}`,
+      `⏱️ *Fila de Espera:* Prioritária (Consultor Notificado)`,
+      `----------------------------------------`,
+      `Nossa equipe já está com seu chamado aberto no painel e responderá por aqui em instantes.`,
+      ``,
+      `_Caso queira voltar ao autoatendimento automático a qualquer momento, digite *MENU* ou *SAIR*._`
+    ].join('\n');
+
+    await this.reply(remoteJid, msg);
+  }
+
   async reply(remoteJid: string, text: string): Promise<void> {
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -135,14 +179,37 @@ export class BotOrchestrator {
       timestamp: timeStr,
     });
 
-    // 2. Análise proativa de risco jurídico
-    const termosJuridicos = ['advogado', 'processo', 'justiça', 'juizado', 'procon', 'danos morais'];
-    if (termosJuridicos.some((t) => lowerText.includes(t))) {
+    // 2. Análise proativa e transferência automática por risco jurídico
+    const termosJuridicos = [
+      'advogado', 'processo', 'justiça', 'juizado', 'procon', 'danos morais',
+      'notificação extrajudicial', 'notificacao extrajudicial', 'policia', 'delegacia', 'b.o.'
+    ];
+    if (termosJuridicos.some((t) => lowerText.includes(t)) && session.state !== 'ATENDIMENTO_HUMANO') {
       session.tempData = { ...session.tempData, sentiment: 'risco_juridico' };
-      session.status = 'waiting_human';
-      session.isHumanHandoff = true;
-      if (!session.slaStartedAt) session.slaStartedAt = new Date().toISOString();
-      this.sessionManager.updateSession(session);
+      await this.transferirParaConsultorAutomatico(
+        remoteJid,
+        session,
+        'Risco jurídico ou notificação legal detectada na mensagem',
+        rawText
+      );
+      return;
+    }
+
+    // 3. Detecção proativa de frustração / insatisfação (Auto-Transfer imediato para consultor)
+    const termosFrustracao = [
+      'não ajudou', 'nao ajudou', 'não resolveu', 'nao resolveu', 'péssimo', 'pessimo',
+      'horrível', 'horrivel', 'inútil', 'inutil', 'robô burro', 'robo burro',
+      'ninguém me atende', 'ninguem me atende', 'estou esperando', 'falha', 'absurdo',
+      'palhaçada', 'palhacada', 'não consigo', 'quero falar com gente', 'quero falar com humano'
+    ];
+    if (termosFrustracao.some((t) => lowerText.includes(t)) && session.state !== 'ATENDIMENTO_HUMANO') {
+      await this.transferirParaConsultorAutomatico(
+        remoteJid,
+        session,
+        'Condômino expressou insatisfação ou dificuldade no autoatendimento',
+        rawText
+      );
+      return;
     }
 
     // Comandos globais de reinício
@@ -152,8 +219,10 @@ export class BotOrchestrator {
       return;
     }
 
-    // Interceptador Global para Atendimento Humano / Modo 100% Autônomo
-    const termosAtendente = [
+    // 4. Solicitação de consultor / atendente humano (Transferência Automática Imediata)
+    const termosConsultor = [
+      'consultor',
+      'consultora',
       'atendente',
       'humano',
       'operador',
@@ -161,31 +230,18 @@ export class BotOrchestrator {
       'falar com alguém',
       'falar com alguem',
       'falar com atendente',
-      'suporte',
-      'ajuda',
+      'falar com consultor',
+      'transferir para consultor',
+      'suporte humano',
+      'especialista',
+      'gerente'
     ];
-    if (termosAtendente.some((termo) => lowerText.includes(termo)) && session.state !== 'ATENDIMENTO_HUMANO') {
-      const isAutonomo = true; // CondoVolto AI opera em modo autônomo com supervisão
-      if (isAutonomo && !lowerText.includes('operador humano') && !lowerText.includes('urgente')) {
-        await this.reply(
-          remoteJid,
-          '🤖 *Central de Inteligência CondoVolto AI*\n\nSou o assistente operacional inteligente do condomínio e posso resolver sua solicitação **imediatamente, sem filas de espera**!\n\nPosso realizar para você agora mesmo:\n• *1* - 📄 Emitir 2ª via de boleto com Pix Copia e Cola\n• *2* - 🤝 Simular e fechar acordo de parcelamento de débito\n• *3* - 💧 Consultar medição de água/gás\n• *4* - 📅 Reservar salão de festas ou churrasqueira\n• *5* - 📖 Tirar dúvidas do Regimento Interno e Convenção com citação de artigos\n• *6* - 🛠️ Registrar chamado de manutenção\n\n_Basta digitar o número ou o que você precisa!_'
-        );
-        return;
-      }
-      session.state = 'ATENDIMENTO_HUMANO';
-      const rec = this.detectarCarteiraRecomendada(session, lowerText);
-      this.sessionManager.atribuirCarteira(remoteJid, rec.carteiraId, rec.carteiraNome, rec.operadorId, rec.operadorNome);
-      this.sessionManager.setHumanHandoff(remoteJid, true, rec.operadorNome);
-      this.sessionManager.addNotaInterna(
+    if (termosConsultor.some((termo) => lowerText.includes(termo)) && session.state !== 'ATENDIMENTO_HUMANO') {
+      await this.transferirParaConsultorAutomatico(
         remoteJid,
-        'CondoVolto AI',
-        `Roteamento Inteligente: Atribuído à carteira "${rec.carteiraNome}" sob responsabilidade de ${rec.operadorNome}. [Motivo: ${rec.motivo}]`
-      );
-      this.sessionManager.updateSession(session);
-      await this.reply(
-        remoteJid,
-        `👤 *Transferindo para Atendente Humano (${rec.carteiraNome})...*\n\nEntendi! Notifiquei nossa equipe operacional no painel.\nResponsável direcionado: *${rec.operadorNome}*.\n\nUm de nossos colaboradores responderá por aqui em instantes.\n\n_Para retornar ao autoatendimento a qualquer momento, digite *MENU* ou *SAIR*._`
+        session,
+        'Solicitação direta do morador por consultor humano',
+        rawText
       );
       return;
     }
@@ -357,23 +413,15 @@ export class BotOrchestrator {
     else if (lower === '9' || lower.includes('certidao') || lower.includes('certidão') || lower.includes('nada consta') || lower.includes('quitacao') || lower.includes('quitação')) {
       await this.handleCertidaoNadaConsta(remoteJid, session);
     }
-    // 0 - Atendente Humano
-    else if (lower === '0' || lower.includes('atendente') || lower.includes('humano') || lower.includes('operador')) {
-      session.state = 'ATENDIMENTO_HUMANO';
-      const rec = this.detectarCarteiraRecomendada(session, lower);
-      this.sessionManager.atribuirCarteira(remoteJid, rec.carteiraId, rec.carteiraNome, rec.operadorId, rec.operadorNome);
-      this.sessionManager.setHumanHandoff(remoteJid, true, rec.operadorNome);
-      this.sessionManager.addNotaInterna(
+    // 0 - Consultor Humano (Transferência Automática)
+    else if (lower === '0' || lower.includes('atendente') || lower.includes('humano') || lower.includes('operador') || lower.includes('consultor')) {
+      await this.transferirParaConsultorAutomatico(
         remoteJid,
-        'CondoVolto AI',
-        `Roteamento Inteligente: Atribuído à carteira "${rec.carteiraNome}" sob responsabilidade de ${rec.operadorNome}. [Motivo: ${rec.motivo}]`
+        session,
+        'Opção 0 (Consultor) selecionada no menu principal',
+        'consultor'
       );
-      this.sessionManager.updateSession(session);
-
-      await this.reply(
-        remoteJid,
-        `👤 *Transferência para Atendimento Humano (${rec.carteiraNome})*\n\nVocê foi transferido para nossa equipe no painel (Responsável direcionado: *${rec.operadorNome}*).\nUm colaborador responderá por aqui em instantes.\n\n_Para retornar ao robô autônomo, digite *SAIR* ou *MENU*._`
-      );
+      return;
     }
     // Comunicados
     else if (lower.includes('aviso') || lower.includes('comunicado')) {
@@ -388,14 +436,34 @@ export class BotOrchestrator {
       ].join('\n\n');
       await this.reply(remoteJid, texto);
     }
-    // Pergunta em Linguagem Natural: Fallback para IA / RAG
+    // Pergunta em Linguagem Natural: Fallback para IA / RAG ou Transferência Automática por Incompreensão
     else {
       const respondeuPorIa = await this.handleConsultaRAGIA(remoteJid, text, session);
       if (!respondeuPorIa) {
+        session.tempData = session.tempData || {};
+        session.tempData.tentativasSemSucesso = (session.tempData.tentativasSemSucesso || 0) + 1;
+        this.sessionManager.updateSession(session);
+
+        if (session.tempData.tentativasSemSucesso >= 2) {
+          session.tempData.tentativasSemSucesso = 0;
+          await this.transferirParaConsultorAutomatico(
+            remoteJid,
+            session,
+            'Dúvida não encontrada na base após tentativas consecutivas',
+            text
+          );
+          return;
+        }
+
         await this.reply(
           remoteJid,
-          `Opção não reconhecida. Por favor, digite um número de *1 a 9* ou digite sua pergunta (ex: _"Qual horário de silêncio no sábado?"_):`
+          `Não compreendi sua solicitação com precisão. Por favor, digite um número de *1 a 9* ou faça sua pergunta (ex: _"Qual horário de silêncio no sábado?"_).\n\n_Se preferir falar com um consultor humano, digite *0* ou *CONSULTOR*._`
         );
+      } else {
+        if (session.tempData?.tentativasSemSucesso) {
+          session.tempData.tentativasSemSucesso = 0;
+          this.sessionManager.updateSession(session);
+        }
       }
     }
   }
@@ -660,13 +728,28 @@ export class BotOrchestrator {
   }
 
   private async handleSimulandoAcordo(remoteJid: string, text: string, session: any): Promise<void> {
+    const lower = text.toLowerCase();
+    const termosConsultorAcordo = [
+      'desconto', 'proposta', 'falar', 'consultor', 'humano', 'operador',
+      'não consigo', 'nao consigo', 'caro', 'parcelar mais', 'negociar', 'financeiro', 'outra proposta'
+    ];
+    if (termosConsultorAcordo.some((t) => lower.includes(t))) {
+      await this.transferirParaConsultorAutomatico(
+        remoteJid,
+        session,
+        `Proposta de acordo personalizada / negociação de dívida fora das opções padrão ("${text.trim()}")`,
+        text
+      );
+      return;
+    }
+
     const optIndex = parseInt(text.trim(), 10) - 1;
     const simulacao = session.tempData?.simulacao;
 
     if (!simulacao || isNaN(optIndex) || optIndex < 0 || optIndex >= simulacao.opcoes.length) {
       await this.reply(
         remoteJid,
-        `Opção inválida. Digite o número de uma das opções acima (ex: *1*, *2*, *3*...) ou digite *MENU* para voltar.`
+        `Opção inválida. Digite o número de uma das opções acima (ex: *1*, *2*, *3*...) ou digite *MENU* para voltar.\n\n_Se preferir falar com um consultor financeiro, digite *CONSULTOR*._`
       );
       return;
     }

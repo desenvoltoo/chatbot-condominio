@@ -2583,6 +2583,16 @@
 
           <!-- Controles de Atendimento no Header -->
           <div class="flex items-center gap-2 shrink-0">
+            <!-- Botão Transferir para Consultor -->
+            <button 
+              id="btnTransferirConsultor" 
+              onclick="transferirParaConsultorRapido()" 
+              title="Transferir atendimento automaticamente para consultor humano com roteamento inteligente"
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 cursor-pointer shadow-sm">
+              <span>👤</span>
+              <span class="hidden sm:inline">Transferir p/ Consultor</span>
+            </button>
+
             <!-- Toggle Autonomia IA vs Humano -->
             <button 
               id="btnToggleHandoff" 
@@ -9598,6 +9608,67 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
 
       showToast(newHandoff ? '[Modo Sandbox] Operador Assumiu' : '[Modo Sandbox] Devolvido à IA', 'Status do atendimento atualizado no painel.', 'info');
+    }
+
+    async function transferirParaConsultorRapido(motivoPersonalizado) {
+      if (!activeRemoteJid) {
+        showToast('Aviso', 'Nenhuma conversa selecionada no momento.', 'warning');
+        return;
+      }
+      const motivo = motivoPersonalizado || prompt('Motivo da transferência para consultor:', 'Transferência manual solicitada pelo painel');
+      if (motivo === null) return; // cancelou o prompt
+
+      const token = localStorage.getItem('condovolto_token') || localStorage.getItem('zeloris_token') || 'token-admin-123';
+      try {
+        const resp = await fetch(`/api/conversas/${encodeURIComponent(activeRemoteJid)}/transferir-consultor`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            motivo: motivo || 'Transferência manual para consultor',
+            textoOrigem: 'Painel CondoVolto'
+          })
+        });
+
+        const data = await resp.json();
+        if (resp.ok && data.success) {
+          showToast('Transferência Concluída', 'Atendimento transferido para consultor humano com sucesso!', 'success');
+          if (typeof tocarAlertaNotificacao === 'function') tocarAlertaNotificacao('handoff');
+
+          const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
+          if (conv) {
+            conv.isHumanHandoff = true;
+            conv.status = 'in_service';
+            if (data.session) {
+              conv.carteiraNome = data.session.carteiraNome || conv.carteiraNome;
+              conv.assignedOperator = data.session.assignedOperator || conv.assignedOperator;
+              conv.assignedOperatorId = data.session.assignedOperatorId || conv.assignedOperatorId;
+            }
+          }
+          updateHandoffButton(true);
+          selectConversation(activeRemoteJid);
+          renderConversationsList();
+          if (typeof carregarCarteirasMetrics === 'function') carregarCarteirasMetrics();
+        } else {
+          showToast('Erro ao Transferir', data.error || 'Não foi possível transferir.', 'error');
+        }
+      } catch (err) {
+        console.warn('[Transferir Consultor] Modo offline/fallback:', err);
+        const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
+        if (conv) {
+          conv.isHumanHandoff = true;
+          conv.status = 'in_service';
+          if (!conv.notasInternas) conv.notasInternas = [];
+          const nowStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          conv.notasInternas.push(`[${nowStr} - Sistema]: [Transferência para Consultor] ${motivo}`);
+        }
+        updateHandoffButton(true);
+        selectConversation(activeRemoteJid);
+        renderConversationsList();
+        showToast('Transferido (Local)', 'Atendimento marcado como consultor humano no painel.', 'info');
+      }
     }
 
     function updateHandoffButton(isHuman) {
