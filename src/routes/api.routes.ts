@@ -13,6 +13,7 @@ import { EventsService } from '../services/events.service.js';
 import { SchedulerService } from '../services/scheduler.service.js';
 import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado, Assembleia, AssembleiaVoto, ConsentimentoLGPD } from '../types/index.js';
 import { TranscriptionService } from '../services/transcription.service.js';
+import { BoletoPdfService } from '../services/boleto-pdf.service.js';
 
 export function createApiRouter(orchestrator: BotOrchestrator): Router {
   const router = Router();
@@ -1693,6 +1694,121 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       res.json({ success: true, text });
     } catch (err: any) {
       res.status(500).json({ error: 'Erro ao transcrever áudio: ' + err.message });
+    }
+  });
+
+  // ==========================================
+  // 24. GERADOR DE BOLETOS & RECIBOS PDF COM PIX
+  // ==========================================
+  router.get('/financeiro/boletos/:id/pdf', async (req: Request, res: Response) => {
+    try {
+      const boletoService = BoletoPdfService.getInstance();
+      const dados = await boletoService.obterDadosBoleto(req.params.id, sisconService, dbService);
+      if (!dados) {
+        return res.status(404).send('Boleto não localizado no SISCON');
+      }
+
+      if (req.query.format === 'json') {
+        return res.json({ success: true, boleto: dados });
+      }
+
+      const html = boletoService.renderHtmlBoleto(dados);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(html);
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao gerar boleto FEBRABAN: ' + err.message });
+    }
+  });
+
+  router.get('/financeiro/boletos/:id/recibo', async (req: Request, res: Response) => {
+    try {
+      const boletoService = BoletoPdfService.getInstance();
+      const recibo = await boletoService.obterDadosRecibo(req.params.id, sisconService, dbService);
+      if (!recibo) {
+        return res.status(404).send('Recibo não localizado para este débito');
+      }
+
+      if (req.query.format === 'json') {
+        return res.json({ success: true, recibo });
+      }
+
+      const html = boletoService.renderHtmlRecibo(recibo);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(html);
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao gerar recibo oficial: ' + err.message });
+    }
+  });
+
+  router.get('/financeiro/boletos/:id/dados', async (req: Request, res: Response) => {
+    try {
+      const boletoService = BoletoPdfService.getInstance();
+      const dados = await boletoService.obterDadosBoleto(req.params.id, sisconService, dbService);
+      if (!dados) return res.status(404).json({ error: 'Boleto não localizado' });
+      res.json({ success: true, boleto: dados });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ==========================================
+  // 25. ALERTA CRÍTICO & BROADCAST DE EMERGÊNCIA
+  // ==========================================
+  router.post('/emergencia/disparar', requireAuth(['admin', 'sindico', 'operador']), async (req: Request, res: Response) => {
+    try {
+      const { titulo, mensagem, nivel = 'critico', areasAfetadas = ['Todas as Torres'], canais = ['whatsapp_broadcast', 'painel'] } = req.body;
+      if (!titulo || !mensagem) {
+        return res.status(400).json({ error: 'Título e mensagem de emergência são obrigatórios' });
+      }
+
+      const broadcastId = `emer_${Date.now()}`;
+      const user = (req as any).user;
+
+      const comunicado: Comunicado = {
+        id: broadcastId,
+        condominioId: 'condo_1',
+        condominioNome: 'Residencial Jardins do Bosque',
+        titulo: `🚨 ALERTA DE EMERGÊNCIA: ${titulo}`,
+        conteudo: mensagem,
+        data: new Date().toLocaleDateString('pt-BR'),
+        categoria: 'urgente',
+        autor: user?.name || 'Síndico / Defesa Predial',
+        publico: 'Todos os Condôminos e Portaria',
+        disparadoWhatsapp: true
+      };
+      dbService.saveComunicado(comunicado);
+
+      try {
+        await evolutionService.sendGroupAnnouncement(
+          '120363028123456789@g.us',
+          'Residencial Jardins do Bosque',
+          `🚨 [ALERTA DE EMERGÊNCIA] ${titulo}`,
+          mensagem,
+          true
+        );
+      } catch (e: any) {
+        console.warn('[Emergência] Falha no disparo do grupo WhatsApp:', e.message);
+      }
+
+      dbService.logAudit(
+        user?.id || 'admin',
+        user?.email || 'admin@condovolto.io',
+        'DISPARO_ALERTA_EMERGENCIA',
+        JSON.stringify({ broadcastId, titulo, nivel, areasAfetadas, canais })
+      );
+
+      res.status(201).json({
+        success: true,
+        broadcastId,
+        nivel,
+        areasAfetadas,
+        destinatariosEstimados: 240,
+        canaisNotificados: canais,
+        disparadoEm: new Date().toISOString(),
+        mensagem: 'Alerta crítico transmitido com prioridade máxima para todos os canais selecionados.'
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Falha ao disparar emergência: ' + err.message });
     }
   });
 

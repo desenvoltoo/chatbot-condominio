@@ -491,6 +491,16 @@ export class BotOrchestrator {
   private async handleMenuPrincipal(remoteJid: string, text: string, session: any): Promise<void> {
     const lower = text.toLowerCase().trim();
 
+    if (lower.startsWith('voto') || lower.startsWith('votar')) {
+      await this.handleRegistroVotoWhatsApp(remoteJid, text, session);
+      return;
+    }
+
+    if (lower.includes('lgpd') || lower.includes('meus dados') || lower.includes('privacidade') || lower.includes('consentimento')) {
+      await this.handlePrivacidadeLGPD(remoteJid, session);
+      return;
+    }
+
     // 1 - Boleto
     if (lower === '1' || (lower.includes('boleto') && !lower.includes('duvida')) || lower === 'pix') {
       session.state = 'AGUARDANDO_CPF';
@@ -874,6 +884,8 @@ export class BotOrchestrator {
 
     const boleto = boletos[0];
     const valorFmt = boleto.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+    const linkBoleto = `${baseUrl}/api/financeiro/boletos/${boleto.id}/pdf`;
 
     const textoBoleto = [
       `✅ *Boleto SISCON Localizado com Sucesso!*`,
@@ -890,18 +902,24 @@ export class BotOrchestrator {
       ``,
       formatarMensagemPix(boleto.codigoPix, boleto.valor, boleto.vencimento),
       ``,
-      `📎 _Estou enviando o arquivo PDF do boleto logo abaixo..._`
+      `📄 *Visualizar / Imprimir Boleto Bancário:*`,
+      linkBoleto,
+      ``,
+      `📎 _Estou enviando o arquivo do boleto logo abaixo..._`
     ].join('\n');
 
     await this.reply(remoteJid, textoBoleto);
 
-    if (boleto.pdfUrl) {
+    const pdfEnvio = (boleto.pdfUrl && !boleto.pdfUrl.includes('dummy')) ? boleto.pdfUrl : linkBoleto;
+    try {
       await this.evolutionService.sendMedia(
         remoteJid,
-        boleto.pdfUrl,
+        pdfEnvio,
         `Boleto_${unidadePrincipal.numero}_${boleto.mesReferencia.replace('/', '-')}.pdf`,
         `Boleto cota condominial ref. ${boleto.mesReferencia}`
       );
+    } catch {
+      // Ignora falha de mídia se offline
     }
 
     session.state = 'MENU_PRINCIPAL';

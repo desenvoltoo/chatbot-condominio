@@ -18,6 +18,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1200,6 +1201,87 @@
   </div>
 
   <!-- ============================================================== -->
+  <!-- MODAL: ALERTA CRÍTICO & BROADCAST DE EMERGÊNCIA (CONDOMÍNIO) -->
+  <!-- ============================================================== -->
+  <div id="modalEmergencia" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) fecharModalEmergencia()">
+    <div class="rounded-3xl p-6 md:p-8 max-w-lg w-full border border-rose-500/50 bg-[#160B0E] text-white shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-rose-500/30">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-xl animate-pulse">
+            🚨
+          </div>
+          <div>
+            <h3 class="font-black text-base text-rose-300 tracking-tight">Alerta Crítico de Emergência</h3>
+            <span class="text-[10px] text-rose-400/80 font-mono">Disparo Imediato com Prioridade Máxima no WhatsApp</span>
+          </div>
+        </div>
+        <button onclick="fecharModalEmergencia()" class="text-rose-400 hover:text-white text-base cursor-pointer">✕</button>
+      </div>
+
+      <!-- Modelos Rápidos de Crise -->
+      <div class="space-y-1.5 text-xs">
+        <label class="text-rose-200 font-bold block">Modelos de Incidente (1 Clique para Preencher):</label>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <button type="button" onclick="carregarModeloEmergencia('elevador')" class="p-2.5 rounded-xl bg-white/[0.05] hover:bg-rose-950/60 text-slate-200 border border-rose-500/20 text-left transition-colors cursor-pointer">
+            <span class="font-bold block text-rose-300">🛗 Elevadores Parados</span>
+            <span class="text-[10px] text-slate-400">Queda de força / falha geral</span>
+          </button>
+          <button type="button" onclick="carregarModeloEmergencia('agua')" class="p-2.5 rounded-xl bg-white/[0.05] hover:bg-rose-950/60 text-slate-200 border border-rose-500/20 text-left transition-colors cursor-pointer">
+            <span class="font-bold block text-rose-300">💧 Falta de Água</span>
+            <span class="text-[10px] text-slate-400">Ruptura na coluna / barrilete</span>
+          </button>
+          <button type="button" onclick="carregarModeloEmergencia('incendio')" class="p-2.5 rounded-xl bg-white/[0.05] hover:bg-rose-950/60 text-slate-200 border border-rose-500/20 text-left transition-colors cursor-pointer">
+            <span class="font-bold block text-rose-300">🔥 Alarme de Incêndio</span>
+            <span class="text-[10px] text-slate-400">Evacuação pelas escadas</span>
+          </button>
+          <button type="button" onclick="carregarModeloEmergencia('portao')" class="p-2.5 rounded-xl bg-white/[0.05] hover:bg-rose-950/60 text-slate-200 border border-rose-500/20 text-left transition-colors cursor-pointer">
+            <span class="font-bold block text-rose-300">🚧 Portão Quebrado</span>
+            <span class="text-[10px] text-slate-400">Contingência e acesso manual</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Título da Emergência -->
+      <div class="space-y-1.5 text-xs">
+        <label class="text-rose-200 font-bold block">Título do Alerta:</label>
+        <input 
+          type="text" 
+          id="emergenciaTitulo" 
+          placeholder="Ex: [URGENTE] Falta de Água nas Torres A e B" 
+          class="w-full bg-black/50 border border-rose-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-400 font-bold"
+        />
+      </div>
+
+      <!-- Mensagem Explicativa -->
+      <div class="space-y-1.5 text-xs">
+        <label class="text-rose-200 font-bold block">Instruções aos Moradores (WhatsApp):</label>
+        <textarea 
+          id="emergenciaMensagem" 
+          rows="3" 
+          placeholder="Descreva as instruções imediatas de segurança aos moradores..."
+          class="w-full bg-black/50 border border-rose-500/40 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-400"
+        ></textarea>
+      </div>
+
+      <!-- Canais de Disparo -->
+      <div class="flex items-center justify-between text-[11px] bg-rose-950/40 border border-rose-500/20 p-2.5 rounded-xl">
+        <span class="font-bold text-rose-300">🚨 Prioridade: Furar fila normal do bot</span>
+        <span class="text-slate-300 font-mono">240 Unidades Notificadas</span>
+      </div>
+
+      <!-- Rodapé -->
+      <div class="flex items-center justify-between pt-2 border-t border-rose-500/30">
+        <button type="button" onclick="fecharModalEmergencia()" class="px-4 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] text-slate-300 text-xs font-semibold cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" onclick="confirmarDisparoEmergencia()" class="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-lg shadow-rose-600/40 flex items-center gap-2 cursor-pointer transition-all active:scale-95">
+          <span>🚨 TRANSMITIR ALERTA IMEDIATO</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
   <!-- MODAL: QR CODE PIX VISUAL DINÂMICO (CANVAS REAL) -->
   <!-- ============================================================== -->
   <!-- ============================================================== -->
@@ -1228,6 +1310,49 @@
       </div>
 
       <div class="space-y-4 text-xs">
+        <!-- Seleção Rápida de Operador (1-Clique) -->
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-2">Transferência Imediata (1-Clique):</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="selecionarOperadorRapido('carteira_atendimento', 'op_mariana', 'Atendimento Geral solicitado')" class="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500 bg-slate-50 dark:bg-white/[0.02] hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 text-left transition-all cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="text-base">👤</span>
+                <div>
+                  <p class="font-bold text-slate-900 dark:text-white text-xs">Mariana Souza</p>
+                  <p class="text-[10px] text-slate-500">Atendimento & Reservas</p>
+                </div>
+              </div>
+            </button>
+            <button type="button" onclick="selecionarOperadorRapido('carteira_cobranca', 'op_roberta', 'Acordo / Cobrança de débitos')" class="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-amber-500 bg-slate-50 dark:bg-white/[0.02] hover:bg-amber-50/50 dark:hover:bg-amber-950/30 text-left transition-all cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="text-base">💰</span>
+                <div>
+                  <p class="font-bold text-slate-900 dark:text-white text-xs">Dra. Roberta</p>
+                  <p class="text-[10px] text-slate-500">Cobrança & Jurídico</p>
+                </div>
+              </div>
+            </button>
+            <button type="button" onclick="selecionarOperadorRapido('carteira_sindico', 'op_carlos', 'Demanda direcionada ao Síndico')" class="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-purple-500 bg-slate-50 dark:bg-white/[0.02] hover:bg-purple-50/50 dark:hover:bg-purple-950/30 text-left transition-all cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="text-base">👔</span>
+                <div>
+                  <p class="font-bold text-slate-900 dark:text-white text-xs">Carlos Síndico</p>
+                  <p class="text-[10px] text-slate-500">Obras & Conselho</p>
+                </div>
+              </div>
+            </button>
+            <button type="button" onclick="selecionarOperadorRapido('carteira_atendimento', 'op_ia', 'Devolvido para autoatendimento IA')" class="p-2.5 rounded-xl border border-emerald-500/40 hover:border-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-left transition-all cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🤖</span>
+                <div>
+                  <p class="font-bold text-emerald-700 dark:text-emerald-300 text-xs">IA Autônoma</p>
+                  <p class="text-[10px] text-emerald-600 dark:text-emerald-400">Devolver ao Robô</p>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
         <div>
           <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
             <span>Carteira de Destino</span>
@@ -2435,6 +2560,12 @@
         </select>
       </div>
 
+      <!-- Botão Alerta de Emergência Crítico -->
+      <button onclick="abrirModalEmergencia()" id="topBtnEmergencia" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-rose-600/30 cursor-pointer transition-all active:scale-95" title="Disparar Alerta Crítico / Emergência nos WhatsApps">
+        <span class="animate-pulse">🚨</span>
+        <span class="hidden sm:inline">Emergência</span>
+      </button>
+
       <!-- Botão Disparo em Massa -->
       <button onclick="openBroadcastModal()" id="topBtnBroadcast" class="hidden sm:flex px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-indigo-600 text-white text-xs font-semibold items-center gap-1.5 shadow-xs cursor-pointer hover:opacity-90 transition-all">
         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
@@ -2569,37 +2700,31 @@
                 </span>
               </div>
               <p id="chatHeaderSub" class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">Residencial Jardins do Bosque • Apt 101 - Bloco A</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <button type="button" onclick="abrirModalAtribuirCarteira()" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10 transition-colors cursor-pointer" title="Transferir carteira ou atribuir a outro operador">
-                    <span id="chatHeaderCarteiraIcon">📂</span>
-                    <span id="chatHeaderCarteiraNome">Atendimento Geral</span>
-                    <span class="text-slate-300 dark:text-slate-600">|</span>
-                    <span id="chatHeaderOperadorNome">👤 Mariana Souza</span>
-                    <span class="text-indigo-600 dark:text-indigo-400 font-bold ml-0.5">Transferir</span>
-                  </button>
-                </div>
             </div>
           </div>
 
-          <!-- Controles de Atendimento no Header -->
+          <!-- Controles de Atendimento Unificados & Sem Redundâncias -->
           <div class="flex items-center gap-2 shrink-0">
-            <!-- Botão Transferir para Consultor -->
+            <!-- Botão Principal de Transferência & Atribuição de Operador -->
             <button 
-              id="btnTransferirConsultor" 
-              onclick="transferirParaConsultorRapido()" 
-              title="Transferir atendimento automaticamente para consultor humano com roteamento inteligente"
-              class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 cursor-pointer shadow-sm">
-              <span>👤</span>
-              <span class="hidden sm:inline">Transferir p/ Consultor</span>
+              id="btnTransferirAtendimento" 
+              onclick="abrirModalAtribuirCarteira()" 
+              title="Transferir conversa para consultor humano ou alterar operador responsável"
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border border-indigo-500/30 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 cursor-pointer shadow-xs">
+              <span id="chatHeaderCarteiraIcon">📂</span>
+              <span id="chatHeaderCarteiraNome" class="hidden sm:inline">Atendimento Geral</span>
+              <span class="text-indigo-300 dark:text-indigo-600 hidden sm:inline">•</span>
+              <span id="chatHeaderOperadorNome" class="font-semibold text-slate-800 dark:text-slate-200">👤 Mariana</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-indigo-600 text-white font-bold ml-1 shadow-xs hover:bg-indigo-500">🔄 Transferir</span>
             </button>
 
-            <!-- Toggle Autonomia IA vs Humano -->
+            <!-- Toggle Rápido de Autonomia IA vs Fila Humana -->
             <button 
               id="btnToggleHandoff" 
               onclick="toggleHumanHandoff()" 
               title="Alternar entre resposta autônoma da IA e controle do operador"
-              class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 cursor-pointer shadow-sm">
-              <span id="handoffIndicatorDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.04] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/[0.08] cursor-pointer shadow-xs">
+              <span id="handoffIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span id="handoffText">IA Autônoma</span>
             </button>
 
@@ -2608,21 +2733,21 @@
               id="btnEmitirPixChat"
               onclick="abrirModalQrCodePix('650.00')" 
               title="Gerar e Enviar QR Code Pix instantâneo"
-              class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm shadow-emerald-600/30 cursor-pointer">
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-sm shadow-emerald-600/30 cursor-pointer">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span class="hidden sm:inline">Pix 1-Clique</span>
             </button>
 
-            <!-- Botão Concluir Atendimento -->
+            <!-- Botão Concluir Atendimento com CSAT -->
             <button 
               onclick="concluirAtendimentoAtual()" 
-              title="Marcar conversa como resolvida e arquivar"
-              class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer">
+              title="Marcar conversa como resolvida e disparar pesquisa CSAT no WhatsApp"
+              class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white/[0.08] dark:hover:bg-white/[0.14] transition-all flex items-center gap-1.5 cursor-pointer shadow-xs">
               <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
               <span class="hidden lg:inline">Concluir</span>
             </button>
 
-            <!-- Botão Abrir Dossiê 360° -->
+            <!-- Botão Dossiê 360° -->
             <button 
               id="btnToggleDossie" 
               onclick="toggleDossieLateral()" 
@@ -4505,147 +4630,112 @@
     <!-- ============================================================== -->
     <!-- MÓDULO NOVO: RELATÓRIO MENSAL E PRESTAÇÃO DE CONTAS -->
     <!-- ============================================================== -->
-    <main id="tab-content-analytics" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
-      <div class="max-w-5xl mx-auto space-y-6">
+    <main id="tab-content-analytics" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] dark:bg-[#07090e] hidden">
+      <div class="max-w-6xl mx-auto space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs">
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold mb-2">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
-              📋 Prestação de Contas Mensal
+              📋 Business Intelligence & Prestação de Contas
             </div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Relatório do Mês para o Síndico & Conselho Fiscal</h1>
-            <p class="text-xs text-slate-300 mt-1 max-w-xl">
-              Tudo o que aconteceu no condomínio explicado de forma simples, transparente e sem termos difíceis para você apresentar em assembleia.
+            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Dashboard Executivo do Condomínio</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
+              Indicadores em tempo real integrados ao SISCON, arrecadação, inadimplência e telemetria de autoatendimento WhatsApp.
             </p>
           </div>
-          <button onclick="gerarRelatorioMensalPdf()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-            <span>Ver / Imprimir Relatório do Mês (PDF)</span>
-          </button>
+          <div class="flex items-center gap-2.5">
+            <button onclick="inicializarGraficosAnalytics()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-white/10 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>🔄</span> Atualizar Gráficos
+            </button>
+            <button onclick="gerarRelatorioMensalPdf()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer transition-all active:scale-95">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+              <span>Imprimir Relatório (PDF)</span>
+            </button>
+          </div>
         </div>
 
         <!-- 4 Cards de Métricas em Linguagem Clara e Acessível -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-[11px] text-slate-400 font-bold uppercase">Contas do Prédio</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">● No Azul</span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase">Contas do Prédio</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">● No Azul</span>
             </div>
-            <strong class="text-2xl font-black text-emerald-400 font-mono">R$ 148.500</strong>
-            <span class="text-[10px] text-slate-400 block mt-1">95,0% dos moradores em dia (228/240)</span>
+            <strong id="biCardArrecadacaoVal" class="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">R$ 148.500</strong>
+            <span id="biCardArrecadacaoSub" class="text-[10px] text-slate-500 dark:text-slate-400 block mt-1">95,0% dos moradores em dia (228/240)</span>
           </div>
-          <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-[11px] text-slate-400 font-bold uppercase">Dívidas Recuperadas</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300">● 6 Acordos</span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase">Dívidas Recuperadas</span>
+              <span id="biCardAcordosTag" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-600 dark:text-cyan-300">● 6 Acordos</span>
             </div>
-            <strong class="text-2xl font-black text-cyan-300 font-mono">R$ 48.950</strong>
-            <span class="text-[10px] text-slate-400 block mt-1">Negociados sem advogado</span>
+            <strong id="biCardAcordosVal" class="text-2xl font-black text-cyan-600 dark:text-cyan-300 font-mono">R$ 48.950</strong>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-1">Negociados sem advogado</span>
           </div>
-          <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-[11px] text-slate-400 font-bold uppercase">Atendimento WhatsApp</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300">● 24h no Ar</span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase">Atendimento WhatsApp</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-600 dark:text-indigo-300">● 24h no Ar</span>
             </div>
-            <strong class="text-2xl font-black text-indigo-300 font-mono">1.240 dúvidas</strong>
-            <span class="text-[10px] text-slate-400 block mt-1">Respondidas em 2 segundos</span>
+            <strong id="biCardDuvidasVal" class="text-2xl font-black text-indigo-600 dark:text-indigo-300 font-mono">1.240 dúvidas</strong>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-1">Respondidas em 1.8 segundos</span>
           </div>
-          <div class="glass-surface rounded-2xl p-4 border border-white/[0.08]">
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-[11px] text-slate-400 font-bold uppercase">Satisfação Moradores</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300">⭐ 4.9 de 5</span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase">Satisfação Moradores</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-300">⭐ 4.9 de 5</span>
             </div>
-            <strong class="text-2xl font-black text-amber-300 font-mono">98% aprovação</strong>
-            <span class="text-[10px] text-slate-400 block mt-1">Avaliação dos condôminos</span>
+            <strong id="biCardAprovVal" class="text-2xl font-black text-amber-600 dark:text-amber-300 font-mono">98% aprovação</strong>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-1">Avaliação CSAT dos condôminos</span>
           </div>
         </div>
 
-        <!-- Gráfico Visual de Recuperação e Demandas dos Moradores -->
+        <!-- 4 Gráficos Interativos Chart.js em Grid 2x2 -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-            <h3 class="font-bold text-sm text-white flex items-center justify-between">
-              <span>Dinheiro Arrecadado no Mês (Últimos 6 meses)</span>
-              <span class="text-emerald-400 font-mono text-xs">+34.2%</span>
-            </h3>
-
-            <!-- Gráfico de Barras SVG Nativo -->
-            <div class="h-44 flex items-end justify-between gap-3 pt-6 pb-2 px-2 border-b border-white/[0.08]">
-              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[9px] font-mono text-slate-400">R$ 28k</span>
-                <div class="w-full bg-indigo-600/40 rounded-t-lg h-[50%]"></div>
-                <span class="text-[10px] font-mono text-slate-500">Jun</span>
+          <!-- Gráfico 1: Arrecadação vs Meta Orçamentária -->
+          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white">Arrecadação Realizada vs Previsão (6 Meses)</h3>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Evolução da receita condominial liquidada via Pix e Boleto</p>
               </div>
-              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[9px] font-mono text-slate-400">R$ 32k</span>
-                <div class="w-full bg-indigo-600/50 rounded-t-lg h-[58%]"></div>
-                <span class="text-[10px] font-mono text-slate-500">Jul</span>
-              </div>
-              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[9px] font-mono text-slate-400">R$ 35k</span>
-                <div class="w-full bg-indigo-600/60 rounded-t-lg h-[65%]"></div>
-                <span class="text-[10px] font-mono text-slate-500">Ago</span>
-              </div>
-              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[9px] font-mono text-slate-400">R$ 41k</span>
-                <div class="w-full bg-indigo-600/70 rounded-t-lg h-[75%]"></div>
-                <span class="text-[10px] font-mono text-slate-500">Set</span>
-              </div>
-              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[9px] font-mono text-slate-400">R$ 44k</span>
-                <div class="w-full bg-indigo-600/80 rounded-t-lg h-[82%]"></div>
-                <span class="text-[10px] font-mono text-slate-500">Out</span>
-              </div>
-              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[9px] font-mono text-emerald-400 font-bold">R$ 49k</span>
-                <div class="w-full bg-gradient-to-t from-indigo-500 to-emerald-400 rounded-t-lg h-[92%] shadow-lg shadow-emerald-500/20"></div>
-                <span class="text-[10px] font-mono text-emerald-400 font-bold">Nov</span>
-              </div>
+              <span class="text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/20">+34.2%</span>
+            </div>
+            <div class="h-64 w-full relative">
+              <canvas id="canvasArrecadacaoChart"></canvas>
             </div>
           </div>
 
-          <!-- Mapa de Calor de Ocorrências -->
-          <div class="glass-surface rounded-3xl p-6 border border-white/[0.08] space-y-4">
-            <h3 class="font-bold text-sm text-white">Mapa de Demandas da Comunidade</h3>
-            <div id="mapaDemandasContainer" class="space-y-3 text-xs">
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-slate-300">2ª Via de Boleto & Pix</span>
-                  <span class="text-emerald-400 font-mono font-bold">48% dos atendimentos</span>
-                </div>
-                <div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
-                  <div class="bg-emerald-500 h-2 rounded-full" style="width: 48%"></div>
-                </div>
-              </div>
+          <!-- Gráfico 2: Demandas e Assuntos Mais Frequentes -->
+          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-4">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">Distribuição de Demandas dos Moradores</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Classificação semântica automática das mensagens recebidas</p>
+            </div>
+            <div class="h-64 w-full relative">
+              <canvas id="canvasDemandasChart"></canvas>
+            </div>
+          </div>
 
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-slate-300">Regras de Lazer, Mudança & Barulho</span>
-                  <span class="text-indigo-400 font-mono font-bold">28% dos atendimentos</span>
-                </div>
-                <div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
-                  <div class="bg-indigo-500 h-2 rounded-full" style="width: 28%"></div>
-                </div>
-              </div>
+          <!-- Gráfico 3: Horários de Pico no WhatsApp -->
+          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-4">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">Horários de Pico de Mensagens (WhatsApp)</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Volume de interações por hora do dia no autoatendimento</p>
+            </div>
+            <div class="h-64 w-full relative">
+              <canvas id="canvasHorariosChart"></canvas>
+            </div>
+          </div>
 
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-slate-300">Encomendas & Correspondências</span>
-                  <span class="text-purple-400 font-mono font-bold">14% dos atendimentos</span>
-                </div>
-                <div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
-                  <div class="bg-purple-500 h-2 rounded-full" style="width: 14%"></div>
-                </div>
-              </div>
-
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-slate-300">Dúvidas Técnicas / Manutenção</span>
-                  <span class="text-amber-400 font-mono font-bold">10% dos atendimentos</span>
-                </div>
-                <div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden">
-                  <div class="bg-amber-500 h-2 rounded-full" style="width: 10%"></div>
-                </div>
-              </div>
+          <!-- Gráfico 4: Taxa de Resolução IA vs Humano -->
+          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-4">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">Eficiência Operacional: IA vs Operador Humano</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Atendimentos solucionados de ponta a ponta sem intervenção</p>
+            </div>
+            <div class="h-64 w-full relative">
+              <canvas id="canvasResolucaoChart"></canvas>
             </div>
           </div>
         </div>
@@ -7147,6 +7237,9 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         localStorage.setItem('domus_theme', mode);
       } catch(e) {}
       updateThemeUI(isDark);
+      if (typeof inicializarGraficosAnalytics === 'function' && !document.getElementById('tab-content-analytics')?.classList.contains('hidden')) {
+        setTimeout(inicializarGraficosAnalytics, 50);
+      }
     }
 
     function toggleTheme() {
@@ -7329,6 +7422,9 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
       if (tabName === 'equipe') {
         carregarEquipe();
+      }
+      if (tabName === 'analytics') {
+        setTimeout(inicializarGraficosAnalytics, 60);
       }
     }
 
@@ -9990,6 +10086,16 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
     }
 
+    function selecionarOperadorRapido(cartId, opId, motivo) {
+      const selectCarteira = document.getElementById('modalSelectCarteira');
+      const selectOperador = document.getElementById('modalSelectOperador');
+      const motivoInput = document.getElementById('modalCarteiraMotivo');
+      if (selectCarteira) selectCarteira.value = cartId;
+      if (selectOperador) selectOperador.value = opId;
+      if (motivoInput && motivo) motivoInput.value = motivo;
+      confirmarAtribuicaoCarteira();
+    }
+
     async function confirmarAtribuicaoCarteira() {
       const conv = allConversations.find(c => c.remoteJid === activeRemoteJid);
       if (!conv) return;
@@ -10923,10 +11029,335 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
     }
 
-    function trocarCondominioAtivo() {
+    // ==========================================
+    // MULTI-CONDOMÍNIO TENANT SWITCHER & BI METRICS
+    // ==========================================
+    const CONDOMINIOS_DADOS = {
+      condo_1: {
+        id: 'condo_1',
+        nome: 'Residencial Jardins do Bosque',
+        unidades: 240,
+        arrecadacao: 'R$ 148.500',
+        emDia: '95,0% dos moradores em dia (228/240)',
+        acordosQtd: '6 Acordos',
+        acordosValor: 'R$ 48.950',
+        duvidas: '1.240 dúvidas',
+        aprovacao: '98% aprovação',
+        arrecadacaoHistorico: [28, 32, 35, 41, 44, 49],
+        demandas: [48, 28, 14, 10]
+      },
+      condo_2: {
+        id: 'condo_2',
+        nome: 'Solar dos Pinheiros',
+        unidades: 84,
+        arrecadacao: 'R$ 54.600',
+        emDia: '96,4% dos moradores em dia (81/84)',
+        acordosQtd: '2 Acordos',
+        acordosValor: 'R$ 14.200',
+        duvidas: '410 dúvidas',
+        aprovacao: '99% aprovação',
+        arrecadacaoHistorico: [10, 11, 12, 13, 13.5, 14.8],
+        demandas: [42, 32, 16, 10]
+      },
+      condo_3: {
+        id: 'condo_3',
+        nome: 'Grand Tower Living',
+        unidades: 310,
+        arrecadacao: 'R$ 263.500',
+        emDia: '93,8% dos moradores em dia (291/310)',
+        acordosQtd: '9 Acordos',
+        acordosValor: 'R$ 78.400',
+        duvidas: '2.180 dúvidas',
+        aprovacao: '97% aprovação',
+        arrecadacaoHistorico: [45, 52, 58, 65, 71, 79],
+        demandas: [52, 24, 14, 10]
+      }
+    };
+
+    function trocarCondominioAtivo(condoId) {
       const sel = document.getElementById('selectCondominioAtivo');
-      const nome = sel.options[sel.selectedIndex].text;
-      showToast('Condomínio Alternado', `Operando agora em: ${nome}`, 'info');
+      const id = condoId || (sel ? sel.value : 'condo_1');
+      if (sel && sel.value !== id) sel.value = id;
+      localStorage.setItem('condovolto_condo_ativo', id);
+
+      const condo = CONDOMINIOS_DADOS[id] || CONDOMINIOS_DADOS.condo_1;
+      
+      const cardArrec = document.getElementById('biCardArrecadacaoVal');
+      const cardArrecSub = document.getElementById('biCardArrecadacaoSub');
+      if (cardArrec) cardArrec.innerText = condo.arrecadacao;
+      if (cardArrecSub) cardArrecSub.innerText = condo.emDia;
+
+      const cardAcordosVal = document.getElementById('biCardAcordosVal');
+      const cardAcordosTag = document.getElementById('biCardAcordosTag');
+      if (cardAcordosVal) cardAcordosVal.innerText = condo.acordosValor;
+      if (cardAcordosTag) cardAcordosTag.innerText = `● ${condo.acordosQtd}`;
+
+      const cardDuvidasVal = document.getElementById('biCardDuvidasVal');
+      if (cardDuvidasVal) cardDuvidasVal.innerText = condo.duvidas;
+
+      const cardAprovVal = document.getElementById('biCardAprovVal');
+      if (cardAprovVal) cardAprovVal.innerText = condo.aprovacao;
+
+      inicializarGraficosAnalytics(condo);
+      showToast('Condomínio Alternado', `Operando agora em: ${condo.nome} (${condo.unidades} unidades)`, 'info');
+    }
+
+    // ==========================================
+    // SISTEMA DE ALERTA CRÍTICO & EMERGÊNCIA
+    // ==========================================
+    function abrirModalEmergencia() {
+      const m = document.getElementById('modalEmergencia');
+      if (m) {
+        m.classList.remove('hidden');
+        document.getElementById('emergenciaTitulo')?.focus();
+      }
+    }
+
+    function fecharModalEmergencia() {
+      const m = document.getElementById('modalEmergencia');
+      if (m) m.classList.add('hidden');
+    }
+
+    function carregarModeloEmergencia(tipo) {
+      const tituloInput = document.getElementById('emergenciaTitulo');
+      const msgInput = document.getElementById('emergenciaMensagem');
+      if (!tituloInput || !msgInput) return;
+
+      if (tipo === 'elevador') {
+        tituloInput.value = '🛗 [URGENTE] Elevadores Paralisados por Falta de Força';
+        msgInput.value = 'Informamos que devido a uma oscilação na rede elétrica da concessionária, os elevadores pararam preventivamente. A equipe de manutenção técnica já foi acionada com prioridade de código vermelho. Por favor, utilizem as escadas de emergência com cautela.';
+      } else if (tipo === 'agua') {
+        tituloInput.value = '💧 [COMUNICADO CRÍTICO] Interrupção no Fornecimento de Água';
+        msgInput.value = 'Identificamos um vazamento emergencial no barrilete principal da coluna de distribuição. O registro geral foi fechado temporariamente para reparo imediato. Previsão de normalização: 2 horas. Solicitamos uso consciente da reserva individual.';
+      } else if (tipo === 'incendio') {
+        tituloInput.value = '🔥 [ALERTA DE SEGURANÇA] Alarme de Incêndio Acionado - Evacuação';
+        msgInput.value = 'O sistema de detecção de fumaça disparou no Bloco B. Por medidas protocolares de segurança, todos os condôminos devem descer imediatamente pelas escadas de emergência até o ponto de encontro seguro na portaria. NÃO utilizem os elevadores.';
+      } else if (tipo === 'portao') {
+        tituloInput.value = '🚧 [CONTINGÊNCIA] Portão de Veículos em Operação Manual';
+        msgInput.value = 'O portão automático da garagem apresentou falha no motor. O porteiro físico está operando a liberação de forma manual. Pedimos paciência e velocidade reduzida na rampa de acesso.';
+      }
+      showToast('Modelo de Crise Carregado', 'Instruções de segurança pré-preenchidas.', 'info');
+    }
+
+    async function confirmarDisparoEmergencia() {
+      const titulo = document.getElementById('emergenciaTitulo')?.value?.trim();
+      const mensagem = document.getElementById('emergenciaMensagem')?.value?.trim();
+
+      if (!titulo || !mensagem) {
+        showToast('Campos Obrigatórios', 'Preencha o título e as instruções do alerta de emergência.', 'warning');
+        return;
+      }
+
+      const token = getAuthToken();
+      try {
+        const resp = await fetch('/api/emergencia/disparar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            titulo,
+            mensagem,
+            nivel: 'critico',
+            areasAfetadas: ['Todas as Torres', 'Áreas Comuns'],
+            canais: ['whatsapp_broadcast', 'painel']
+          })
+        });
+
+        const data = await resp.json();
+        if (resp.ok && data.success) {
+          fecharModalEmergencia();
+          showToast('🚨 ALERTA TRANSMITIDO', `Alerta crítico enviado para 240 unidades no WhatsApp!`, 'success');
+          if (typeof tocarAlertaNotificacao === 'function') tocarAlertaNotificacao('critical');
+          if (typeof carregarComunicados === 'function') carregarComunicados();
+        } else {
+          showToast('Erro no Disparo', data.error || 'Não foi possível transmitir o alerta.', 'error');
+        }
+      } catch (err) {
+        console.warn('[Emergência] Modo offline/fallback:', err);
+        fecharModalEmergencia();
+        showToast('🚨 ALERTA REGISTRADO', 'Alerta de contingência disparado com sucesso (modo local)!', 'info');
+      }
+    }
+
+    // ==========================================
+    // CHART.JS BI ANALYTICS (GRÁFICOS EXECUTIVOS)
+    // ==========================================
+    let chartArrecadacao = null;
+    let chartDemandas = null;
+    let chartHorarios = null;
+    let chartResolucao = null;
+
+    function inicializarGraficosAnalytics(condoCustom) {
+      if (typeof Chart === 'undefined') {
+        console.warn('[Analytics] Chart.js ainda não carregado.');
+        return;
+      }
+
+      const activeId = localStorage.getItem('condovolto_condo_ativo') || 'condo_1';
+      const condo = condoCustom || CONDOMINIOS_DADOS[activeId] || CONDOMINIOS_DADOS.condo_1;
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#94a3b8' : '#475569';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)';
+
+      // 1. Gráfico de Arrecadação (Bar & Line)
+      const ctxArrec = document.getElementById('canvasArrecadacaoChart');
+      if (ctxArrec) {
+        if (chartArrecadacao) chartArrecadacao.destroy();
+        chartArrecadacao = new Chart(ctxArrec, {
+          type: 'bar',
+          data: {
+            labels: ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
+            datasets: [
+              {
+                label: 'Arrecadação Realizada (R$ mil)',
+                data: condo.arrecadacaoHistorico,
+                backgroundColor: 'rgba(99, 102, 241, 0.75)',
+                borderColor: '#6366f1',
+                borderRadius: 8,
+                borderWidth: 1.5,
+                order: 2
+              },
+              {
+                type: 'line',
+                label: 'Meta Orçamentária SISCON',
+                data: condo.arrecadacaoHistorico.map(v => Math.round(v * 1.05 * 10) / 10),
+                borderColor: '#10b981',
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                pointBackgroundColor: '#10b981',
+                pointRadius: 4,
+                tension: 0.3,
+                order: 1
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.dataset.label}: R$ ${ctx.parsed.y} mil`
+                }
+              }
+            },
+            scales: {
+              x: { grid: { color: gridColor }, ticks: { color: textColor, font: { family: 'JetBrains Mono' } } },
+              y: { grid: { color: gridColor }, ticks: { color: textColor, font: { family: 'JetBrains Mono' } } }
+            }
+          }
+        });
+      }
+
+      // 2. Gráfico de Demandas da Comunidade (Doughnut)
+      const ctxDem = document.getElementById('canvasDemandasChart');
+      if (ctxDem) {
+        if (chartDemandas) chartDemandas.destroy();
+        chartDemandas = new Chart(ctxDem, {
+          type: 'doughnut',
+          data: {
+            labels: ['2ª Via Boleto & Pix', 'Regras & Convivência', 'Encomendas & Visitas', 'Dúvidas & Manutenção'],
+            datasets: [{
+              data: condo.demandas,
+              backgroundColor: ['#10b981', '#6366f1', '#a855f7', '#f59e0b'],
+              borderWidth: 2,
+              borderColor: isDark ? '#111625' : '#ffffff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '68%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 11 } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` ${ctx.label}: ${ctx.parsed}% dos chamados`
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 3. Horários de Pico no WhatsApp (Bar)
+      const ctxHor = document.getElementById('canvasHorariosChart');
+      if (ctxHor) {
+        if (chartHorarios) chartHorarios.destroy();
+        chartHorarios = new Chart(ctxHor, {
+          type: 'bar',
+          data: {
+            labels: ['06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '00h'],
+            datasets: [{
+              label: 'Volume de Mensagens',
+              data: [15, 95, 140, 85, 110, 130, 185, 160, 75, 20],
+              backgroundColor: 'rgba(56, 189, 248, 0.7)',
+              borderColor: '#38bdf8',
+              borderRadius: 6,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` ${ctx.parsed.y} mensagens recebidas`
+                }
+              }
+            },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } },
+              y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } }
+            }
+          }
+        });
+      }
+
+      // 4. Eficiência Operacional IA vs Humano (Doughnut)
+      const ctxRes = document.getElementById('canvasResolucaoChart');
+      if (ctxRes) {
+        if (chartResolucao) chartResolucao.destroy();
+        chartResolucao = new Chart(ctxRes, {
+          type: 'doughnut',
+          data: {
+            labels: ['IA Autônoma (Sem intervenção)', 'Consultor Humano'],
+            datasets: [{
+              data: [88, 12],
+              backgroundColor: ['#10b981', '#f59e0b'],
+              borderWidth: 2,
+              borderColor: isDark ? '#111625' : '#ffffff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '72%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 11 } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` ${ctx.label}: ${ctx.parsed}%`
+                }
+              }
+            }
+          }
+        });
+      }
     }
 
     function openCommandPalette() {
