@@ -1252,6 +1252,14 @@
           </select>
         </div>
 
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
+            <span>Nota de Transferência / Motivo</span>
+            <span class="text-[10px] text-slate-400 font-normal">Opcional</span>
+          </label>
+          <input type="text" id="modalCarteiraMotivo" placeholder="Ex: Morador solicitou acordo de débitos" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-[#0e1320] text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+
         <div class="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-500/20 text-[11px] text-indigo-900 dark:text-indigo-200">
           💡 Ao atribuir esta conversa à carteira, todas as mensagens e demandas serão organizadas na visão do operador responsável.
         </div>
@@ -5361,7 +5369,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
                 </div>
 
                 <div>
-                  <label for="cfgEvolutionWebhook" class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">URL de Webhook (Evolution ➔ Backend ZELORIS)</label>
+                  <label for="cfgEvolutionWebhook" class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">URL de Webhook (Evolution ➔ Backend CondoVolto)</label>
                   <div class="flex items-center gap-2">
                     <input type="text" id="cfgEvolutionWebhook" readonly value="http://localhost:3000/webhook/evolution" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#07090e]/60 text-slate-600 dark:text-slate-300 font-mono text-xs cursor-default" />
                     <button type="button" onclick="copiarTextoDoInput('cfgEvolutionWebhook', 'URL de Webhook copiada!')" class="px-3.5 py-2.5 rounded-xl bg-slate-900 dark:bg-white/10 hover:bg-slate-800 dark:hover:bg-white/20 text-white font-bold text-xs shrink-0 cursor-pointer">
@@ -8895,6 +8903,44 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       }
     }
 
+    let audioNotificationCtx = null;
+    function playNotificationChime(tipo = 'message') {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        if (!audioNotificationCtx) audioNotificationCtx = new AudioContext();
+        if (audioNotificationCtx.state === 'suspended') audioNotificationCtx.resume();
+
+        const now = audioNotificationCtx.currentTime;
+        const osc = audioNotificationCtx.createOscillator();
+        const gain = audioNotificationCtx.createGain();
+
+        if (tipo === 'handoff') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, now); // D5
+          osc.frequency.setValueAtTime(880.00, now + 0.12); // A5
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+          osc.connect(gain);
+          gain.connect(audioNotificationCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.38);
+        } else {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.connect(gain);
+          gain.connect(audioNotificationCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        }
+      } catch (e) {
+        console.debug('[Audio] Alerta sonoro silenciado ou não permitido:', e);
+      }
+    }
+
     function handleRealtimeEvent(event) {
       if (!event || !event.type) return;
 
@@ -8917,6 +8963,10 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           allConversations = [conv, ...allConversations.filter(c => c.remoteJid !== remoteJid)];
           renderConversationsList();
 
+          if (msg.sender === 'user') {
+            playNotificationChime('message');
+          }
+
           if (activeRemoteJid === remoteJid) {
             renderActiveConversationStream(conv);
           } else {
@@ -8933,6 +8983,10 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             if (typeof data?.isHuman === 'boolean') conv.isHumanHandoff = data.isHuman;
             if (data?.status) conv.status = data.status;
             if (data?.operatorName) conv.assignedOperator = data.operatorName;
+          }
+          if (data?.isHuman || conv.status === 'waiting_human') {
+            playNotificationChime('handoff');
+            showToast('🔔 Atendimento Humano Solicitado', `${conv.pushName || 'Morador'} (${conv.carteiraNome || 'Atendimento'})`, 'warning');
           }
           renderConversationsList();
           if (activeRemoteJid === remoteJid) {
@@ -9543,6 +9597,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     function fecharModalAtribuirCarteira() {
       const modal = document.getElementById('modalAtribuirCarteira');
       if (modal) modal.classList.add('hidden');
+      const motivoInput = document.getElementById('modalCarteiraMotivo');
+      if (motivoInput) motivoInput.value = '';
     }
 
     function onModalCarteiraChange(carteiraId) {
@@ -9564,6 +9620,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
       const selectCarteira = document.getElementById('modalSelectCarteira');
       const selectOperador = document.getElementById('modalSelectOperador');
+      const motivoInput = document.getElementById('modalCarteiraMotivo');
+      const motivo = motivoInput ? motivoInput.value.trim() : '';
 
       const carteiraId = selectCarteira ? selectCarteira.value : 'carteira_atendimento';
       const carteiraNome = selectCarteira ? selectCarteira.options[selectCarteira.selectedIndex].text.replace(/^[^\w]+/, '').trim() : 'Atendimento Geral';
@@ -9574,6 +9632,14 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       conv.carteiraNome = carteiraNome;
       conv.assignedOperator = operadorNome;
       conv.assignedOperatorId = operadorId;
+
+      if (motivo) {
+        if (!conv.notasInternas) conv.notasInternas = [];
+        const timestamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const user = getAuthUser() ? JSON.parse(getAuthUser()) : null;
+        const autor = user?.nome || 'Operador';
+        conv.notasInternas.push(`[${timestamp} - ${autor}]: [Transferência para ${carteiraNome}] ${motivo}`);
+      }
 
       fecharModalAtribuirCarteira();
       selectConversation(activeRemoteJid);
@@ -9594,7 +9660,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
               carteiraId,
               carteiraNome,
               operadorId,
-              operadorNome
+              operadorNome,
+              motivo
             })
           });
         } catch (e) {

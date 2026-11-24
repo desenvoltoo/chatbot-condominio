@@ -12,7 +12,7 @@ const DEFAULT_AI_CONFIG: AIConfig = {
   modelName: 'gpt-4o-mini',
   temperature: 0.2,
   maxTokens: 600,
-  systemPrompt: `Você é o ZELORIS AI, assistente inteligente oficial do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP predial.
+  systemPrompt: `Você é o CondoVolto AI, assistente inteligente oficial do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP predial.
 Você opera com alta autonomia e precisão operacional, resolvendo as solicitações dos condôminos com base estrita nos regulamentos do condomínio:
 
 CAPACIDADES AUTÔNOMAS IMEDIATAS:

@@ -86,7 +86,7 @@ export class SessionManager {
           sender: 'bot',
           text: 'Encontrei seu boleto no sistema predial:\n\n📄 Cota Condominial - 11/2026\n💰 Valor: R$ 650,00\n📅 Vencimento: 15/11/2026\n\nLinha Digitável:\n`34191.79001 01043.510047 91020.150008 8 95420000065000`',
           timestamp: '09:31',
-          pixCode: '00020126580014BR.GOV.BCB.PIX0128financeiro@condominio.com.br5204000053039865406650.005802BR5925CONDOMINIO JARDINS DO BO6009SAO PAULO62130509ZELORIS016304E8A2'
+          pixCode: '00020126580014BR.GOV.BCB.PIX0128financeiro@condominio.com.br5204000053039865406650.005802BR5925CONDOMINIO JARDINS DO BO6009SAO PAULO62130509CONDOVOLTO016304E8A2'
         },
       ],
       tempData: {

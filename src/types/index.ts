@@ -68,6 +68,9 @@ export interface Carteira {
   tipo?: 'contatos' | 'grupos' | 'misto';
   criadoEm?: number;
   totalConversas?: number;
+  aguardandoHumano?: number;
+  emAtendimento?: number;
+  resolvidosIA?: number;
 }
 
 export interface ChatMessage {

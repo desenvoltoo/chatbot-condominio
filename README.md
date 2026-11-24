@@ -1,11 +1,11 @@
-# 🏢 ZELORIS AI — Inteligência Operacional & Automação Condominial
+# 🏢 CondoVolto AI — Inteligência Operacional & Automação Condominial
 
 [![GitHub Pages](https://img.shields.io/badge/Demo%20Online-GitHub%20Pages-22c55e?style=for-the-badge&logo=github)](https://desenvoltoo.github.io/chatbot-condominio/docs/)
 [![Evolution API](https://img.shields.io/badge/WhatsApp-Evolution%20API-075E54?style=for-the-badge&logo=whatsapp)](https://github.com/EvolutionAPI/evolution-api)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-**ZELORIS AI** é o cérebro operacional do condomínio: uma plataforma completa de autoatendimento via **WhatsApp**, cobrança com split Pix instantâneo no Banco Central, portaria digital, RAG regimental com citação legal de artigos e cockpit de supervisão humano-no-loop para administradoras e síndicos profissionais.
+**CondoVolto AI** é o cérebro operacional do condomínio: uma plataforma completa de autoatendimento via **WhatsApp**, cobrança com split Pix instantâneo no Banco Central, portaria digital, RAG regimental com citação legal de artigos e cockpit de supervisão humano-no-loop para administradoras e síndicos profissionais.
 
 Elimina até **80% dos chamados repetitivos**, permitindo que os condôminos consultem débitos, copiem o **Pix Copia e Cola**, recebam a **linha digitável** e baixem o **arquivo PDF do boleto** em segundos, além de registrar ocorrências de manutenção e transferir para atendimento humano quando necessário.
 

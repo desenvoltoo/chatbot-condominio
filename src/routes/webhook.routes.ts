@@ -86,6 +86,6 @@ webhookRouter.get('/health', (_req: Request, res: Response) => {
   res.json({
     status: 'online',
     timestamp: new Date().toISOString(),
-    service: 'ZELORIS AI - Evolution Webhook Gateway',
+    service: 'CondoVolto AI - Evolution Webhook Gateway',
   });
 });

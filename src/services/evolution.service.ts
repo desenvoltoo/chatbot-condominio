@@ -189,7 +189,7 @@ export class EvolutionService {
     }
 
     // Fallback de alta fidelidade visual (SVG QR Code decorativo com payload da instância)
-    const mockCode = `2@${Date.now()}ZelorisEvolution${instanceName}`;
+    const mockCode = `2@${Date.now()}CondoVoltoEvolution${instanceName}`;
     const svgQrMock = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200"><rect width="200" height="200" fill="%23ffffff"/><g fill="%230f172a"><rect x="20" y="20" width="45" height="45" fill="none" stroke="%230f172a" stroke-width="8"/><rect x="32" y="32" width="21" height="21"/><rect x="135" y="20" width="45" height="45" fill="none" stroke="%230f172a" stroke-width="8"/><rect x="147" y="32" width="21" height="21"/><rect x="20" y="135" width="45" height="45" fill="none" stroke="%230f172a" stroke-width="8"/><rect x="32" y="147" width="21" height="21"/><rect x="80" y="30" width="12" height="12"/><rect x="100" y="45" width="15" height="15"/><rect x="80" y="80" width="40" height="40"/><rect x="40" y="85" width="15" height="15"/><rect x="145" y="85" width="20" height="15"/><rect x="90" y="140" width="25" height="15"/><rect x="135" y="145" width="15" height="30"/><rect x="165" y="135" width="15" height="15"/><circle cx="100" cy="100" r="14" fill="%2322c55e"/></g></svg>`;
 
     return {

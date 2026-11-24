@@ -33,6 +33,76 @@ export class BotOrchestrator {
     return this.sisconService;
   }
 
+  public detectarCarteiraRecomendada(session: any, texto: string = ''): {
+    carteiraId: string;
+    carteiraNome: string;
+    operadorId: string;
+    operadorNome: string;
+    motivo: string;
+  } {
+    const lower = (texto || '').toLowerCase();
+
+    // 1. Grupos de WhatsApp
+    if (session.isGroup || session.remoteJid.endsWith('@g.us')) {
+      return {
+        carteiraId: 'carteira_grupos',
+        carteiraNome: 'Grupos de WhatsApp dos Blocos',
+        operadorId: 'op_zelador',
+        operadorNome: 'Marcos Zelador / Portaria',
+        motivo: 'Conversa originada de grupo de condomínio'
+      };
+    }
+
+    // 2. Cobrança e Acordos de Dívidas
+    const termosCobranca = [
+      'acordo', 'negociar', 'parcelar', 'parcelamento', 'dívida', 'divida',
+      'inadimplente', 'atrasado', 'juros', 'segunda via', '2ª via', 'boleto', 'cota', 'protesto'
+    ];
+    if (
+      session.statusFinanceiro === 'inadimplente' ||
+      session.state === 'SIMULANDO_ACORDO' ||
+      session.state === 'CONFIRMANDO_ACORDO' ||
+      termosCobranca.some((t: string) => lower.includes(t))
+    ) {
+      return {
+        carteiraId: 'carteira_cobranca',
+        carteiraNome: 'Cobrança & Acordos de Dívidas',
+        operadorId: 'op_roberta',
+        operadorNome: 'Roberta Dias (Financeiro)',
+        motivo: 'Contexto financeiro ou negociação de débito'
+      };
+    }
+
+    // 3. Síndico, Obras, Barulho e Ocorrências Estruturais
+    const termosSindico = [
+      'síndico', 'sindico', 'obra', 'barulho', 'som alto', 'vazamento',
+      'infiltração', 'infiltracao', 'multa', 'notificação', 'notificacao',
+      'assembleia', 'assemblea', 'conselho', 'administradora', 'reunião', 'reuniao',
+      'advogado', 'processo', 'justiça', 'juizado', 'procon', 'danos morais', 'manuten'
+    ];
+    if (
+      session.state === 'AGUARDANDO_DESCRICAO_OCORRENCIA' ||
+      termosSindico.some((t: string) => lower.includes(t))
+    ) {
+      return {
+        carteiraId: 'carteira_sindico',
+        carteiraNome: 'Demandas do Síndico & Obras',
+        operadorId: 'op_carlos',
+        operadorNome: 'Carlos Síndico Profissional',
+        motivo: 'Demanda de governança, síndico, ocorrência predial ou jurídico'
+      };
+    }
+
+    // 4. Atendimento Geral e Reservas de Lazer
+    return {
+      carteiraId: 'carteira_atendimento',
+      carteiraNome: 'Atendimento Geral & Reservas',
+      operadorId: 'op_mariana',
+      operadorNome: 'Mariana Souza (Atendimento)',
+      motivo: 'Atendimento geral e reservas de lazer'
+    };
+  }
+
   async reply(remoteJid: string, text: string): Promise<void> {
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -95,20 +165,27 @@ export class BotOrchestrator {
       'ajuda',
     ];
     if (termosAtendente.some((termo) => lowerText.includes(termo)) && session.state !== 'ATENDIMENTO_HUMANO') {
-      const isAutonomo = true; // ZELORIS AI opera em modo autônomo com supervisão
+      const isAutonomo = true; // CondoVolto AI opera em modo autônomo com supervisão
       if (isAutonomo && !lowerText.includes('operador humano') && !lowerText.includes('urgente')) {
         await this.reply(
           remoteJid,
-          '🤖 *Central de Inteligência ZELORIS AI*\n\nSou o assistente operacional inteligente do condomínio e posso resolver sua solicitação **imediatamente, sem filas de espera**!\n\nPosso realizar para você agora mesmo:\n• *1* - 📄 Emitir 2ª via de boleto com Pix Copia e Cola\n• *2* - 🤝 Simular e fechar acordo de parcelamento de débito\n• *3* - 💧 Consultar medição de água/gás\n• *4* - 📅 Reservar salão de festas ou churrasqueira\n• *5* - 📖 Tirar dúvidas do Regimento Interno e Convenção com citação de artigos\n• *6* - 🛠️ Registrar chamado de manutenção\n\n_Basta digitar o número ou o que você precisa!_'
+          '🤖 *Central de Inteligência CondoVolto AI*\n\nSou o assistente operacional inteligente do condomínio e posso resolver sua solicitação **imediatamente, sem filas de espera**!\n\nPosso realizar para você agora mesmo:\n• *1* - 📄 Emitir 2ª via de boleto com Pix Copia e Cola\n• *2* - 🤝 Simular e fechar acordo de parcelamento de débito\n• *3* - 💧 Consultar medição de água/gás\n• *4* - 📅 Reservar salão de festas ou churrasqueira\n• *5* - 📖 Tirar dúvidas do Regimento Interno e Convenção com citação de artigos\n• *6* - 🛠️ Registrar chamado de manutenção\n\n_Basta digitar o número ou o que você precisa!_'
         );
         return;
       }
       session.state = 'ATENDIMENTO_HUMANO';
-      this.sessionManager.setHumanHandoff(remoteJid, true);
+      const rec = this.detectarCarteiraRecomendada(session, lowerText);
+      this.sessionManager.atribuirCarteira(remoteJid, rec.carteiraId, rec.carteiraNome, rec.operadorId, rec.operadorNome);
+      this.sessionManager.setHumanHandoff(remoteJid, true, rec.operadorNome);
+      this.sessionManager.addNotaInterna(
+        remoteJid,
+        'CondoVolto AI',
+        `Roteamento Inteligente: Atribuído à carteira "${rec.carteiraNome}" sob responsabilidade de ${rec.operadorNome}. [Motivo: ${rec.motivo}]`
+      );
       this.sessionManager.updateSession(session);
       await this.reply(
         remoteJid,
-        '👤 *Transferindo para Atendente Humano...*\n\nEntendi! Notifiquei nossa equipe operacional no painel.\n\nUm de nossos colaboradores responderá por aqui em instantes.\n\n_Para retornar ao autoatendimento a qualquer momento, digite *MENU* ou *SAIR*._'
+        `👤 *Transferindo para Atendente Humano (${rec.carteiraNome})...*\n\nEntendi! Notifiquei nossa equipe operacional no painel.\nResponsável direcionado: *${rec.operadorNome}*.\n\nUm de nossos colaboradores responderá por aqui em instantes.\n\n_Para retornar ao autoatendimento a qualquer momento, digite *MENU* ou *SAIR*._`
       );
       return;
     }
@@ -162,7 +239,7 @@ export class BotOrchestrator {
     this.sessionManager.updateSession(session);
 
     const mensagem = [
-      `👋 Olá, *${nome}*! Bem-vindo(a) ao *ZELORIS AI* — Central de Inteligência Condominial.`,
+      `👋 Olá, *${nome}*! Bem-vindo(a) ao *CondoVolto AI* — Central de Inteligência Condominial.`,
       `⚡ *Atendimento Autônomo 24h: Respostas imediatas e sem filas.*`,
       ``,
       `Como posso ajudar você agora? Digite o número ou descreva sua solicitação:`,
@@ -283,12 +360,19 @@ export class BotOrchestrator {
     // 0 - Atendente Humano
     else if (lower === '0' || lower.includes('atendente') || lower.includes('humano') || lower.includes('operador')) {
       session.state = 'ATENDIMENTO_HUMANO';
-      this.sessionManager.setHumanHandoff(remoteJid, true);
+      const rec = this.detectarCarteiraRecomendada(session, lower);
+      this.sessionManager.atribuirCarteira(remoteJid, rec.carteiraId, rec.carteiraNome, rec.operadorId, rec.operadorNome);
+      this.sessionManager.setHumanHandoff(remoteJid, true, rec.operadorNome);
+      this.sessionManager.addNotaInterna(
+        remoteJid,
+        'CondoVolto AI',
+        `Roteamento Inteligente: Atribuído à carteira "${rec.carteiraNome}" sob responsabilidade de ${rec.operadorNome}. [Motivo: ${rec.motivo}]`
+      );
       this.sessionManager.updateSession(session);
 
       await this.reply(
         remoteJid,
-        `👤 *Transferência para Atendimento Humano*\n\nVocê foi transferido para nossa equipe operacional no painel.\nUm colaborador responderá por aqui em instantes.\n\n_Para retornar ao robô autônomo, digite *SAIR* ou *MENU*._`
+        `👤 *Transferência para Atendimento Humano (${rec.carteiraNome})*\n\nVocê foi transferido para nossa equipe no painel (Responsável direcionado: *${rec.operadorNome}*).\nUm colaborador responderá por aqui em instantes.\n\n_Para retornar ao robô autônomo, digite *SAIR* ou *MENU*._`
       );
     }
     // Comunicados
@@ -345,7 +429,7 @@ export class BotOrchestrator {
         scoreConfianca: topDoc.score,
         nivelAutonomia: 1,
         statusAprovacao: 'auto_aprovado',
-        aprovadoPor: 'ZELORIS RAG Engine',
+        aprovadoPor: 'CondoVolto RAG Engine',
         tokensConsumidos: Math.floor(text.length * 1.5 + respostaIA.length * 1.2),
         provedor: this.llmService.getConfig().provider,
         modelo: this.llmService.getConfig().modelName,
@@ -353,7 +437,7 @@ export class BotOrchestrator {
       });
 
       const msgFinal = [
-        `🤖 *ZELORIS AI — Inteligência Condominial*`,
+        `🤖 *CondoVolto AI — Inteligência Condominial*`,
         `----------------------------------------`,
         respostaIA,
         ``,
