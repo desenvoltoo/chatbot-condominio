@@ -3027,6 +3027,25 @@
             <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-mono font-bold">LEI</span>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
+
+          <!-- Balancetes Oficiais & Prestação de Contas -->
+          <button onclick="switchTab('balancetes')" id="nav-balancetes" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 shrink-0 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span>Balancetes Oficiais</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-mono font-bold">A4 PDF</span>
+            <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+          </button>
+
+          <!-- Portal Morador WebApp (Link Mágico PWA) -->
+          <a href="/portal?token=token_morador_101" target="_blank" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 shrink-0 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              <span>Portal Morador (PWA)</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-mono font-bold">ABRIR ↗</span>
+          </a>
         </div>
       </div>
 
@@ -4701,6 +4720,131 @@
             </table>
           </div>
         </div>
+      </div>
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO: BALANCETES MENSAIS & PRESTAÇÃO DE CONTAS OFICIAL -->
+    <!-- ============================================================== -->
+    <main id="tab-content-balancetes" class="flex-1 min-w-0 w-full overflow-y-auto p-6 bg-[#F6F3EE] hidden">
+      <div class="max-w-6xl mx-auto space-y-6">
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-semibold mb-2">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Transparência & Conformidade Fiscal Contábil
+            </div>
+            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Balancetes Oficiais & Prestação de Contas</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+              Consolidação contábil mensal de receitas ordinárias e extraordinárias, liquidação de despesas por centro de custo, auditoria atuarial algorítmica, parecer formal do Conselho Fiscal e carimbo digital SHA-256.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="carregarBalancetesPainel()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.08] text-xs font-semibold cursor-pointer transition-all flex items-center gap-1.5" title="Atualizar balancetes">
+              <span>🔄</span> <span>Atualizar</span>
+            </button>
+            <button onclick="fecharNovoMesBalancete()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>📅</span> <span>Fechar Novo Mês</span>
+            </button>
+            <a href="/portal?token=token_morador_101" target="_blank" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>📱</span> <span>Abrir Portal PWA</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards de Balancete Oficial -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Receitas Consolidadas (Mês)</span>
+            <h3 id="kpiBalReceitas" class="text-2xl font-black text-emerald-600 mt-1 font-mono">R$ 156.800,00</h3>
+            <span class="text-[11px] text-emerald-700 dark:text-emerald-400 block mt-1">+0.2% vs orçado</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Despesas Liquidadas (Mês)</span>
+            <h3 id="kpiBalDespesas" class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 130.800,00</h3>
+            <span class="text-[11px] text-emerald-600 block mt-1">-1.3% de economia operacional</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Resultado Líquido (Superávit)</span>
+            <h3 id="kpiBalSuperavit" class="text-2xl font-black text-emerald-600 mt-1 font-mono">+R$ 26.000,00</h3>
+            <span class="text-[11px] text-emerald-700 block mt-1">Superávit contábil no período</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Saldo Consolidado dos Fundos</span>
+            <h3 id="kpiBalSaldoTotal" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1 font-mono">R$ 363.150,00</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Reserva + Obras + Movimento</span>
+          </div>
+        </div>
+
+        <!-- Tabela de Balancetes Mensais Oficiais -->
+        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">Demonstrativos Mensais Fechados & Homologados</h3>
+              <p class="text-xs text-slate-400">Clique para abrir a visualização A4 oficial com parecer e QR Code de auditoria</p>
+            </div>
+            <span class="text-xs font-mono font-semibold text-emerald-600" id="totalBalancetesCont">2 Balancetes</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-slate-100 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <th class="py-3.5 px-6">Competência</th>
+                  <th class="py-3.5 px-6">Receitas Totais</th>
+                  <th class="py-3.5 px-6">Despesas Totais</th>
+                  <th class="py-3.5 px-6">Resultado do Mês</th>
+                  <th class="py-3.5 px-6">Patrimônio Consolidado</th>
+                  <th class="py-3.5 px-6">Status / Conselho</th>
+                  <th class="py-3.5 px-6 text-right">Ações Oficiais</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaBalancetesBody" class="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
+                <!-- Inserido dinamicamente via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Card Integrado: Gerador de Link Mágico do Morador (Portal PWA) -->
+        <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border-2 border-indigo-200 dark:border-indigo-500/30 shadow-xs space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-white/10 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg border border-indigo-200 dark:border-indigo-500/30">
+                🔑
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Portal do Morador: Gerador de Links Mágicos</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Emita links de acesso instantâneo sem necessidade de login/senha para condôminos.</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30">
+              PORTAL PWA ATIVO
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Unidade</label>
+              <input type="text" id="magLinkUnidade" value="Apt 101" placeholder="Ex: Apt 101" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-semibold" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Nome do Morador</label>
+              <input type="text" id="magLinkNome" value="Carlos Eduardo Silva" placeholder="Ex: Carlos Eduardo" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-semibold" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Telefone (WhatsApp)</label>
+              <input type="text" id="magLinkTelefone" value="5511999990001" placeholder="5511999990001" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono" />
+            </div>
+            <div class="flex items-end">
+              <button type="button" onclick="dispararLinkMagicoWhatsapp()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span>💬</span> <span>Enviar Link no WhatsApp</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
 
@@ -7071,21 +7215,21 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     const ROLE_PERMISSIONS = {
       admin: {
         nome: 'Administrador Master',
-        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'],
+        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'balancetes', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
       },
       sindico: {
         nome: 'Síndico Geral',
-        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
+        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'balancetes', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
       },
       operador: {
         nome: 'Operador Financeiro',
-        allowedTabs: ['cobranca', 'receitas', 'orcamentos', 'contratos', 'atendimento', 'carteiras', 'reservas'],
+        allowedTabs: ['cobranca', 'receitas', 'orcamentos', 'contratos', 'balancetes', 'atendimento', 'carteiras', 'reservas'],
         canBroadcast: false,
         canEmitPix: true,
         canEditAcordo: true
@@ -7199,7 +7343,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function applyRolePermissions(role) {
       const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
-      const allTabs = ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'];
+      const allTabs = ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'balancetes', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'];
       
       allTabs.forEach(t => {
         const navBtn = document.getElementById(`nav-${t}`);
@@ -14147,6 +14291,232 @@ Regras obrigatórias:
         showToast('Erro', err.message, 'error');
       }
     }
+
+    // ==========================================
+    // BALANCETES MENSAIS & PRESTAÇÃO DE CONTAS OFICIAL
+    // ==========================================
+    let listaBalancetes = [];
+
+    async function carregarBalancetesPainel() {
+      const tbody = document.getElementById('tabelaBalancetesBody');
+      if (!tbody) return;
+
+      try {
+        const res = await fetch('/api/balancetes');
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.balancetes)) {
+          listaBalancetes = json.balancetes;
+        } else {
+          listaBalancetes = [];
+        }
+      } catch (err) {
+        console.error('Erro ao buscar balancetes:', err);
+      }
+
+      const totalEl = document.getElementById('totalBalancetesCont');
+      if (totalEl) totalEl.innerText = `${listaBalancetes.length} Balancete${listaBalancetes.length !== 1 ? 's' : ''}`;
+
+      if (listaBalancetes.length > 0) {
+        const maisRecente = listaBalancetes[0];
+        const formatMoeda = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+        const kpiRec = document.getElementById('kpiBalReceitas');
+        const kpiDesp = document.getElementById('kpiBalDespesas');
+        const kpiSup = document.getElementById('kpiBalSuperavit');
+        const kpiSaldo = document.getElementById('kpiBalSaldoTotal');
+        if (kpiRec) kpiRec.innerText = formatMoeda(maisRecente.receitasTotal);
+        if (kpiDesp) kpiDesp.innerText = formatMoeda(maisRecente.despesasTotal);
+        if (kpiSup) {
+          const sup = maisRecente.resultadoMes >= 0;
+          kpiSup.innerText = (sup ? '+' : '') + formatMoeda(maisRecente.resultadoMes);
+          kpiSup.className = `text-2xl font-black mt-1 font-mono ${sup ? 'text-emerald-600' : 'text-rose-600'}`;
+        }
+        if (kpiSaldo) kpiSaldo.innerText = formatMoeda(maisRecente.saldoConsolidadoTotal);
+      }
+
+      if (listaBalancetes.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-8 text-center text-slate-400">
+              Nenhum balancete mensal fechado ainda. Clique em "+ Fechar Novo Mês" para gerar o demonstrativo.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const formatMoeda = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+
+      tbody.innerHTML = listaBalancetes.map(b => {
+        const superavit = b.resultadoMes >= 0;
+        const statusBadge = b.status === 'aprovado_conselho'
+          ? '<span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">✓ Homologado Conselho</span>'
+          : '<span class="badge-status-amber px-2 py-0.5 rounded text-[10px] font-bold">Publicado / Em Análise</span>';
+
+        return `
+          <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+            <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white font-mono">
+              <div class="flex items-center gap-2">
+                <span class="text-base">📑</span>
+                <div>
+                  <span class="text-sm font-bold">${b.competencia}</span>
+                  <span class="block text-[10px] text-slate-400 font-normal">SHA: ${b.hashAuditoria ? b.hashAuditoria.substring(0, 10) : 'N/A'}...</span>
+                </div>
+              </div>
+            </td>
+            <td class="py-3.5 px-6 font-mono text-emerald-600 font-bold">
+              ${formatMoeda(b.receitasTotal)}
+            </td>
+            <td class="py-3.5 px-6 font-mono text-slate-700 dark:text-slate-300">
+              ${formatMoeda(b.despesasTotal)}
+            </td>
+            <td class="py-3.5 px-6 font-mono font-bold ${superavit ? 'text-emerald-600' : 'text-rose-600'}">
+              ${superavit ? '+' : ''}${formatMoeda(b.resultadoMes)}
+            </td>
+            <td class="py-3.5 px-6 font-mono text-indigo-600 dark:text-indigo-400 font-bold">
+              ${formatMoeda(b.saldoConsolidadoTotal)}
+            </td>
+            <td class="py-3.5 px-6">
+              ${statusBadge}
+              <span class="block text-[10px] text-slate-400 mt-0.5">Inadimplência: ${b.inadimplenciaPercentual}%</span>
+            </td>
+            <td class="py-3.5 px-6 text-right space-x-1.5 whitespace-nowrap">
+              <a href="/api/balancetes/${b.id}/html-view" target="_blank" class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 font-semibold text-[11px] inline-flex items-center gap-1 transition-all">
+                <span>📄</span> Ver Balancete
+              </a>
+              <button onclick="aprovarConselhoModal('${b.id}')" class="px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 font-semibold text-[11px] cursor-pointer transition-all">
+                🏛️ Aprovar
+              </button>
+              <button onclick="dispararBalanceteWhatsPainel('${b.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 font-semibold text-[11px] cursor-pointer transition-all">
+                💬 WhatsApp
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function fecharNovoMesBalancete() {
+      const comp = prompt('Digite o mês/ano de competência para fechamento contábil (formato MM/AAAA):', '12/2026');
+      if (!comp) return;
+
+      const token = getAuthToken();
+      try {
+        const res = await fetch('/api/balancetes/fechar-mes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({ competencia: comp })
+        });
+
+        const json = await res.json();
+        if (json && json.success) {
+          if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 70 });
+          showToast('Balancete Fechado!', `Competência ${comp} compilada e auditada com sucesso sob hash SHA-256.`, 'success');
+          carregarBalancetesPainel();
+        } else {
+          showToast('Erro', json.error || 'Falha ao fechar mês.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    async function aprovarConselhoModal(id) {
+      const token = getAuthToken();
+      const parecer = prompt('Parecer do Conselho Fiscal:', 'O Conselho Fiscal examinou a conciliação bancária, extratos e comprovantes de despesas, atestando conformidade plena.');
+      if (parecer === null) return;
+
+      try {
+        const res = await fetch(`/api/balancetes/${id}/aprovar-conselho`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({
+            parecerConselho: parecer,
+            conselheiros: ['Paulo Sérgio (Apt 802)', 'Cláudia Mendonça (Apt 1504)', 'Roberto Vasconcelos (Apt 301)']
+          })
+        });
+
+        const json = await res.json();
+        if (json && json.success) {
+          if (typeof confetti === 'function') confetti({ particleCount: 40, spread: 60 });
+          showToast('Aprovado!', 'Balancete homologado pelo Conselho Fiscal com sucesso.', 'success');
+          carregarBalancetesPainel();
+        } else {
+          showToast('Erro', json.error || 'Falha ao aprovar balancete.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    async function dispararBalanceteWhatsPainel(id) {
+      const token = getAuthToken();
+      try {
+        const res = await fetch(`/api/balancetes/${id}/disparar-whatsapp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          }
+        });
+
+        const json = await res.json();
+        if (json && json.success) {
+          showToast('WhatsApp Disparado!', json.mensagem || 'Resumo do balancete enviado.', 'success');
+        } else {
+          showToast('Erro', json.error || 'Falha ao disparar no WhatsApp.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    async function dispararLinkMagicoWhatsapp() {
+      const unidadeId = document.getElementById('magLinkUnidade')?.value;
+      const moradorNome = document.getElementById('magLinkNome')?.value;
+      const telefone = document.getElementById('magLinkTelefone')?.value;
+      const token = getAuthToken();
+
+      if (!unidadeId || !moradorNome) {
+        showToast('Campos Obrigatórios', 'Informe a unidade e o nome do morador.', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/portal/enviar-link-whatsapp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({
+            unidadeId,
+            moradorNome,
+            telefone
+          })
+        });
+
+        const json = await res.json();
+        if (json && json.success) {
+          if (typeof confetti === 'function') confetti({ particleCount: 45, spread: 65 });
+          showToast('Link Mágico Enviado!', `Link do Portal do Condômino enviado no WhatsApp para ${moradorNome}.`, 'success');
+        } else {
+          showToast('Erro', json.error || 'Falha ao enviar link.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    // Inicialização automática dos balancetes
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(carregarBalancetesPainel, 800);
+    });
 </script>
 </body>
 </html>

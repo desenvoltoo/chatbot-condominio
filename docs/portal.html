@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Portal do Morador - CondoVolto AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header Mobile Fixo -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-lg shadow-sm border border-indigo-400/30">
+          🏢
+        </div>
+        <div>
+          <h1 class="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+            CondoVolto AI
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/30">Morador</span>
+          </h1>
+          <p id="condoNomeHeader" class="text-xs text-slate-300 font-medium">Condomínio Residencial Jardins do Bosque</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <span id="badgeUnidadeHeader" class="inline-block bg-white/10 text-white text-xs font-semibold px-2.5 py-1 rounded-lg border border-white/10 shadow-inner">
+          Apt ...
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Saudação & Perfil do Morador -->
+  <section class="bg-white border-b border-slate-200">
+    <div class="max-w-md mx-auto px-4 py-3.5 flex items-center justify-between">
+      <div>
+        <div class="text-xs text-slate-500 font-medium">Bem-vindo(a) ao seu portal,</div>
+        <div id="moradorNome" class="text-base font-bold text-slate-900">Carregando perfil...</div>
+        <div id="moradorSub" class="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
+          <span>Unidade: <strong id="moradorUnidade" class="text-slate-700">...</strong></span>
+          <span>•</span>
+          <span class="text-emerald-600 font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Conectado
+          </span>
+        </div>
+      </div>
+      <button onclick="copiarLinkAcesso()" title="Compartilhar Link Mágico de Acesso" class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition active:scale-95 flex items-center gap-1.5 text-xs font-semibold">
+        🔗 Compartilhar
+      </button>
+    </div>
+  </section>
+
+  <!-- Navegação por Abas Mobile -->
+  <nav class="bg-white border-b border-slate-200 sticky top-[61px] z-30 shadow-sm">
+    <div class="max-w-md mx-auto flex items-center justify-between px-2 overflow-x-auto no-scrollbar">
+      <button onclick="trocarAba('cota')" id="tabBtnCota" class="tab-btn flex-1 py-3 px-2 text-center text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 flex flex-col items-center gap-1">
+        <span>💰</span>
+        <span>Minha Cota</span>
+      </button>
+      <button onclick="trocarAba('passes')" id="tabBtnPasses" class="tab-btn flex-1 py-3 px-2 text-center text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex flex-col items-center gap-1">
+        <span>🎟️</span>
+        <span>Passes PIN</span>
+      </button>
+      <button onclick="trocarAba('encomendas')" id="tabBtnEncomendas" class="tab-btn flex-1 py-3 px-2 text-center text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex flex-col items-center gap-1">
+        <span>📦</span>
+        <span class="relative">
+          Encomendas
+          <span id="badgeEncCount" class="hidden absolute -top-1 -right-3 w-4 h-4 bg-amber-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center">0</span>
+        </span>
+      </button>
+      <button onclick="trocarAba('ocorrencias')" id="tabBtnOcorrencias" class="tab-btn flex-1 py-3 px-2 text-center text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex flex-col items-center gap-1">
+        <span>🛠️</span>
+        <span>Chamados</span>
+      </button>
+      <button onclick="trocarAba('comunicados')" id="tabBtnComunicados" class="tab-btn flex-1 py-3 px-2 text-center text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex flex-col items-center gap-1">
+        <span>📢</span>
+        <span>Avisos</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Container Principal -->
+  <main class="flex-1 max-w-md mx-auto w-full p-4 space-y-4">
+
+    <!-- ============================================== -->
+    <!-- ABA 1: COTA CONDOMINIAL & PIX EM 1 TOQUE      -->
+    <!-- ============================================== -->
+    <div id="abaCota" class="space-y-4">
+      <!-- Card da Cota Vigente -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600"></div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Cota Condominial Vigente</span>
+          <span id="cotaStatusBadge" class="bg-amber-100 text-amber-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-amber-200">
+            Aguardando Pagamento
+          </span>
+        </div>
+
+        <div class="flex items-baseline justify-between mb-2">
+          <div>
+            <div id="cotaValor" class="text-3xl font-extrabold text-slate-900 tracking-tight">R$ 685,00</div>
+            <div id="cotaCompVenc" class="text-xs text-slate-500 mt-0.5">Competência: <strong>11/2026</strong> • Vencimento: <strong>10/11/2026</strong></div>
+          </div>
+          <div class="text-right">
+            <span class="text-[11px] text-slate-400 block">Fração Ideal</span>
+            <span class="text-xs font-bold text-slate-600">0.00360</span>
+          </div>
+        </div>
+
+        <!-- Botões de Ação Imediata -->
+        <div class="mt-4 pt-4 border-t border-slate-100 space-y-2">
+          <button id="btnCopiarPix" onclick="copiarPixCopiaCola()" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-sm shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition">
+            <span class="text-base">⚡</span>
+            <span>Copiar Pix Copia e Cola</span>
+          </button>
+          
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button onclick="abrirModalLinhaDigitavel()" class="py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <span>🔢</span>
+              <span>Linha Digitável</span>
+            </button>
+            <button onclick="visualizarBoletoPdf()" class="py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <span>📄</span>
+              <span>Boleto FEBRABAN</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chave Pix Oficial -->
+        <div class="mt-3 bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-slate-500 font-medium">Chave Pix Favorecida:</span>
+          <code id="cotaPixChave" class="text-slate-700 font-mono font-semibold">financeiro@condominio.com.br</code>
+        </div>
+      </div>
+
+      <!-- Detalhamento de Composição da Cota -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <span>📊</span> Composição da sua Cota
+        </h3>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-600">Despesas Ordinárias (Pessoal, Energia, Manutenção)</span>
+            <span class="font-bold text-slate-800">R$ 582,25</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-600">Fundo de Reserva Obrigatório (10%)</span>
+            <span class="font-bold text-slate-800">R$ 68,50</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-600">Fundo de Obras & Modernização (5%)</span>
+            <span class="font-bold text-slate-800">R$ 34,25</span>
+          </div>
+          <div class="flex justify-between py-1.5 pt-2 font-bold text-slate-900 bg-slate-50 px-2 rounded-lg">
+            <span>Total da Cota Mensal</span>
+            <span class="text-emerald-700 font-extrabold text-sm">R$ 685,00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Histórico de Cotas Anteriores -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <span>📑</span> Histórico de Meses Anteriores
+        </h3>
+        <div id="historicoCotasLista" class="space-y-2">
+          <!-- Renderizado via JS -->
+          <div class="text-xs text-slate-400 text-center py-2">Carregando histórico...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ABA 2: PASSES DE VISITANTES COM PIN           -->
+    <!-- ============================================== -->
+    <div id="abaPasses" class="space-y-4 hidden">
+      <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white rounded-2xl p-4 shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-bold">Passes Digitais & Convites Express</h2>
+            <p class="text-xs text-indigo-100 mt-0.5">Libere convidados e prestadores com PIN de 4 dígitos na portaria.</p>
+          </div>
+          <button onclick="abrirModalNovoPasse()" class="bg-white text-indigo-700 hover:bg-indigo-50 font-bold px-3 py-2 rounded-xl text-xs shadow-sm transition active:scale-95">
+            + Novo Convite
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de Passes Ativos -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Passes Cadastrados</h3>
+          <span id="passesCount" class="text-xs text-slate-500 font-semibold">0 ativos</span>
+        </div>
+        <div id="passesLista" class="space-y-3">
+          <!-- Renderizado via JS -->
+          <div class="text-xs text-slate-400 text-center py-4">Nenhum passe ativo no momento.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ABA 3: MINHAS ENCOMENDAS                      -->
+    <!-- ============================================== -->
+    <div id="abaEncomendas" class="space-y-4 hidden">
+      <!-- Encomendas Disponíveis na Portaria -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+            <span>📦</span> Aguardando Retirada na Portaria
+          </h3>
+          <span id="badgeEncPendentes" class="bg-amber-100 text-amber-800 text-[11px] font-bold px-2 py-0.5 rounded-full">0</span>
+        </div>
+        <div id="encomendasPendentesLista" class="space-y-2.5">
+          <!-- Renderizado via JS -->
+          <div class="text-xs text-slate-400 text-center py-4">Nenhuma encomenda aguardando retirada.</div>
+        </div>
+      </div>
+
+      <!-- Histórico de Encomendas Retiradas -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <span>✅</span> Encomendas Já Retiradas
+        </h3>
+        <div id="encomendasRetiradasLista" class="space-y-2">
+          <!-- Renderizado via JS -->
+          <div class="text-xs text-slate-400 text-center py-2">Nenhum histórico recente.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ABA 4: CHAMADOS & OCORRÊNCIAS                -->
+    <!-- ============================================== -->
+    <div id="abaOcorrencias" class="space-y-4 hidden">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Abertura de Chamado</h3>
+          <span class="text-xs text-indigo-600 font-semibold">Resposta Direta do Síndico</span>
+        </div>
+        <form onsubmit="registrarOcorrencia(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Categoria</label>
+            <select id="ocCategoria" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="manutencao">🛠️ Manutenção Predial / Hidráulica / Elétrica</option>
+              <option value="barulho">🔊 Barulho / Desrespeito ao Horário do Silêncio</option>
+              <option value="garagem">🚗 Garagem / Vaga / Obstrução</option>
+              <option value="limpeza">🧹 Limpeza das Áreas Comuns</option>
+              <option value="sugestao">💡 Sugestão para a Administração</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Descrição Detalhada</label>
+            <textarea id="ocDescricao" required rows="3" placeholder="Descreva o que aconteceu ou o reparo necessário..." class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+          </div>
+          <button type="submit" id="btnSalvarOcorrencia" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition active:scale-95">
+            Registrar Ocorrência
+          </button>
+        </form>
+      </div>
+
+      <!-- Meus Chamados Recentes -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Meus Chamados Recentes</h3>
+        <div id="ocorrenciasLista" class="space-y-2.5">
+          <!-- Renderizado via JS -->
+          <div class="text-xs text-slate-400 text-center py-2">Nenhum chamado aberto.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ABA 5: AVISOS & REGIMENTO IA                  -->
+    <!-- ============================================== -->
+    <div id="abaComunicados" class="space-y-4 hidden">
+      <!-- Balancete Oficial Destaque -->
+      <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-4 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full uppercase border border-emerald-500/30">Transparência Atuarial</span>
+            <h3 class="text-sm font-bold mt-1">Balancete Mensal Oficial</h3>
+            <p class="text-xs text-slate-300 mt-0.5">Consulte a prestação de contas com parecer do Conselho Fiscal.</p>
+          </div>
+          <a href="/api/balancetes/bal_2026_10/html-view" target="_blank" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-3 py-2 rounded-xl text-xs transition active:scale-95 flex items-center gap-1">
+            <span>📄</span> Ver Balancete
+          </a>
+        </div>
+      </div>
+
+      <!-- Comunicados Oficiais -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <span>📢</span> Comunicados Oficiais da Administração
+        </h3>
+        <div id="comunicadosLista" class="space-y-3">
+          <!-- Renderizado via JS -->
+          <div class="text-xs text-slate-400 text-center py-2">Carregando avisos...</div>
+        </div>
+      </div>
+
+      <!-- Dúvidas Frequentes & Regimento Interno com IA -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <span>🤖</span> FAQ Rápido do Condomínio
+        </h3>
+        <div class="space-y-2 text-xs">
+          <details class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 cursor-pointer">
+            <summary class="font-bold text-slate-700">Qual o horário de silêncio?</summary>
+            <p class="mt-1.5 text-slate-600 pl-2 border-l-2 border-indigo-500">De acordo com o Art. 22 do Regimento Interno, o horário de silêncio vigora das 22h00 às 08h00 nos dias úteis, e até às 09h00 aos sábados, domingos e feriados.</p>
+          </details>
+          <details class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 cursor-pointer">
+            <summary class="font-bold text-slate-700">Como funciona a reserva do salão de festas e churrasqueira?</summary>
+            <p class="mt-1.5 text-slate-600 pl-2 border-l-2 border-indigo-500">As reservas devem ser solicitadas com até 30 dias de antecedência pelo WhatsApp da administração ou portal, sujeitas à taxa de higienização de R$ 80,00.</p>
+          </details>
+          <details class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 cursor-pointer">
+            <summary class="font-bold text-slate-700">Regras para animais de estimação (Pets)</summary>
+            <p class="mt-1.5 text-slate-600 pl-2 border-l-2 border-indigo-500">Permitido trânsito em coleira e guia pelas áreas comuns e elevador de serviço. É dever do tutor higienizar eventuais sujidades imediatamente.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Rodapé Seguro -->
+  <footer class="bg-white border-t border-slate-200 text-center py-4 safe-bottom text-xs text-slate-400">
+    <div>CondoVolto AI • Portaria & Inteligência Condominial</div>
+    <div class="text-[10px] text-slate-400 mt-0.5">Acesso Seguro Criptografado • Sem Senhas Necessárias</div>
+  </footer>
+
+  <!-- Modal: Novo Convite de Visitante -->
+  <div id="modalNovoPasse" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-800">🎟️ Emitir Passe de Visitante</h3>
+        <button onclick="fecharModalNovoPasse()" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+      </div>
+
+      <form onsubmit="salvarNovoPasse(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo do Convidado *</label>
+          <input type="text" id="visNome" required placeholder="Ex: Roberto Carlos" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Tipo</label>
+            <select id="visTipo" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+              <option value="visitante">Visitante</option>
+              <option value="prestador">Prestador de Serviço</option>
+              <option value="delivery">Entrega / Delivery</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Data</label>
+            <input type="date" id="visData" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">RG ou CPF (Opcional)</label>
+          <input type="text" id="visDocumento" placeholder="Para agilizar na guarita" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Observações / Veículo</label>
+          <input type="text" id="visObs" placeholder="Ex: Estacionamento vaga visitante" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+        </div>
+
+        <button type="submit" id="btnGerarPasseSubmit" class="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition active:scale-95">
+          Gerar Passe com PIN de Liberação
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Passe Emitido com Sucesso (PIN & WhatsApp) -->
+  <div id="modalPasseSucesso" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl text-center space-y-4">
+      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+        ✓
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-slate-800">Passe Emitido com Sucesso!</h3>
+        <p class="text-xs text-slate-500 mt-1">Informe o PIN abaixo ao convidado para liberação na guarita express:</p>
+      </div>
+
+      <div class="bg-slate-900 text-white py-4 px-6 rounded-2xl border border-slate-700 shadow-inner">
+        <div class="text-[10px] text-slate-400 font-semibold tracking-widest uppercase">PIN DE ACESSO EXPRESS</div>
+        <div id="displayPinAcesso" class="text-4xl font-extrabold tracking-widest text-emerald-400 mt-1 font-mono">----</div>
+        <div id="displayVisitanteNome" class="text-xs text-slate-300 mt-1">Convidado: ...</div>
+      </div>
+
+      <div class="space-y-2 pt-2">
+        <button id="btnCompartilharPasseWhats" class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+          <span>💬</span> Enviar Convite pelo WhatsApp
+        </button>
+        <button onclick="fecharModalPasseSucesso()" class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Linha Digitável do Boleto -->
+  <div id="modalLinhaDigitavel" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h3 class="text-sm font-bold text-slate-800">Linha Digitável FEBRABAN</h3>
+        <button onclick="document.getElementById('modalLinhaDigitavel').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+      </div>
+      <p class="text-xs text-slate-500">Copie o código de barras abaixo para pagamento no app do seu banco:</p>
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-xs text-slate-800 break-all select-all leading-relaxed" id="textoLinhaDigitavel">
+        34191.09008 00000.123456 78900.123456 1 91230000068500
+      </div>
+      <button onclick="copiarLinhaDigitavel()" id="btnCopiarLinha" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition">
+        Copiar Linha Digitável
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Flutuante -->
+  <div id="toastNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2.5 rounded-full text-xs font-semibold shadow-xl border border-slate-700 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
+    <span id="toastIcon">✓</span>
+    <span id="toastMsg">Mensagem</span>
+  </div>
+
+  <script>
+    // Estado Global da Aplicação
+    let appDados = null;
+    let magicToken = '';
+
+    // Extrai token da URL ou fallback para demonstração
+    function obterTokenUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('token') || params.get('unidade') || 'token_morador_101';
+    }
+
+    // Inicialização
+    window.addEventListener('DOMContentLoaded', async () => {
+      magicToken = obterTokenUrl();
+      const hoje = new Date().toISOString().split('T')[0];
+      const elData = document.getElementById('visData');
+      if (elData) elData.value = hoje;
+      await carregarDadosPortal();
+    });
+
+    async function carregarDadosPortal() {
+      try {
+        const res = await fetch(`/api/portal/dados?token=${encodeURIComponent(magicToken)}`);
+        const json = await res.json();
+        if (!json.success || !json.data) {
+          showToast('Erro ao carregar dados do portal.', '❌');
+          return;
+        }
+
+        appDados = json.data;
+        renderizarInterface();
+      } catch (err) {
+        console.error('Erro na requisição:', err);
+        showToast('Falha na comunicação com o servidor.', '❌');
+      }
+    }
+
+    function renderizarInterface() {
+      if (!appDados) return;
+
+      const p = appDados.perfil;
+      document.getElementById('condoNomeHeader').textContent = p.condominioNome || 'Condomínio Residencial';
+      document.getElementById('badgeUnidadeHeader').textContent = p.unidadeId || 'Apt';
+      document.getElementById('moradorNome').textContent = p.moradorNome || 'Morador';
+      document.getElementById('moradorUnidade').textContent = `${p.unidadeId} (${p.bloco || 'Bloco'})`;
+
+      // Cota Vigente
+      if (appDados.cotaAtual) {
+        const c = appDados.cotaAtual;
+        const formatMoeda = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+        document.getElementById('cotaValor').textContent = formatMoeda(c.valor);
+        document.getElementById('cotaCompVenc').innerHTML = `Competência: <strong>${c.competencia}</strong> • Vencimento: <strong>${c.vencimento}</strong>`;
+        
+        const badge = document.getElementById('cotaStatusBadge');
+        if (c.status === 'pago') {
+          badge.className = 'bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200';
+          badge.textContent = 'Pago ✓';
+          document.getElementById('btnCopiarPix').classList.add('opacity-50');
+        } else {
+          badge.className = 'bg-amber-100 text-amber-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-amber-200';
+          badge.textContent = 'Aguardando Pagamento';
+        }
+      }
+
+      if (appDados.pixChaveOficial) {
+        document.getElementById('cotaPixChave').textContent = appDados.pixChaveOficial;
+      }
+
+      // Histórico de Cotas
+      renderizarHistoricoCotas();
+
+      // Passes
+      renderizarPasses();
+
+      // Encomendas
+      renderizarEncomendas();
+
+      // Chamados
+      renderizarOcorrencias();
+
+      // Comunicados
+      renderizarComunicados();
+    }
+
+    function renderizarHistoricoCotas() {
+      const container = document.getElementById('historicoCotasLista');
+      const cotas = appDados.historicoCotas || [];
+      if (cotas.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-400 text-center py-2">Nenhum histórico disponível.</div>';
+        return;
+      }
+
+      const formatMoeda = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+      container.innerHTML = cotas.map(c => `
+        <div class="flex items-center justify-between p-2.5 rounded-xl border border-slate-100 bg-slate-50 text-xs">
+          <div>
+            <div class="font-bold text-slate-800">Mês ${c.competencia}</div>
+            <div class="text-[11px] text-slate-500">Venceu em: ${c.vencimento}</div>
+          </div>
+          <div class="text-right">
+            <div class="font-bold text-slate-900">${formatMoeda(c.valor)}</div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${c.status === 'pago' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+              ${c.status === 'pago' ? 'Pago' : 'Pendente'}
+            </span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderizarPasses() {
+      const container = document.getElementById('passesLista');
+      const passes = appDados.passesAtivos || [];
+      document.getElementById('passesCount').textContent = `${passes.length} ativo(s)`;
+
+      if (passes.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">Nenhum passe ativo. Clique em "+ Novo Convite" para gerar.</div>';
+        return;
+      }
+
+      container.innerHTML = passes.map(p => `
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+              <span>👤</span> ${p.visitanteNome}
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 uppercase">
+              ${p.tipo || 'visitante'}
+            </span>
+          </div>
+          <div class="flex items-center justify-between bg-white p-2.5 rounded-lg border border-slate-200">
+            <div>
+              <div class="text-[10px] text-slate-400 font-semibold uppercase">PIN da Guarita</div>
+              <div class="text-lg font-mono font-extrabold text-indigo-600 tracking-wider">${p.pinAcesso || '9999'}</div>
+            </div>
+            <button onclick="compartilharWhatsGenerico('${p.visitanteNome}', '${p.pinAcesso || '9999'}')" class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-2.5 py-1.5 rounded-lg hover:bg-emerald-100 transition flex items-center gap-1">
+              <span>💬</span> Enviar
+            </button>
+          </div>
+          <div class="text-[11px] text-slate-500 flex justify-between">
+            <span>Data: ${p.dataVisita} ${p.horaEstimada ? 'às ' + p.horaEstimada : ''}</span>
+            <span class="text-slate-400">${p.observacao || ''}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderizarEncomendas() {
+      const pendentesContainer = document.getElementById('encomendasPendentesLista');
+      const retiradasContainer = document.getElementById('encomendasRetiradasLista');
+      const pendentes = appDados.encomendasPendentes || [];
+      const retiradas = appDados.encomendasRetiradas || [];
+
+      document.getElementById('badgeEncPendentes').textContent = pendentes.length;
+      const badgeTab = document.getElementById('badgeEncCount');
+      if (pendentes.length > 0) {
+        badgeTab.textContent = pendentes.length;
+        badgeTab.classList.remove('hidden');
+      } else {
+        badgeTab.classList.add('hidden');
+      }
+
+      if (pendentes.length === 0) {
+        pendentesContainer.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">Nenhuma encomenda aguardando retirada.</div>';
+      } else {
+        pendentesContainer.innerHTML = pendentes.map(e => `
+          <div class="p-3 rounded-xl border border-amber-200 bg-amber-50/60 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-800 text-xs">📦 ${e.transportadora || 'Entrega'}</span>
+              <span class="text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Na Guarita</span>
+            </div>
+            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-amber-200">
+              <div class="text-xs text-slate-600">Código para Retirada:</div>
+              <div class="text-sm font-mono font-extrabold text-amber-700">${e.codigoRetirada || 'RET-0000'}</div>
+            </div>
+            <div class="text-[10px] text-slate-500">
+              Recebida em: ${e.dataChegada} às ${e.horaChegada} • Rastreio: ${e.codigoRastreio || 'N/A'}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (retiradas.length === 0) {
+        retiradasContainer.innerHTML = '<div class="text-xs text-slate-400 text-center py-2">Nenhum histórico recente.</div>';
+      } else {
+        retiradasContainer.innerHTML = retiradas.map(e => `
+          <div class="flex items-center justify-between p-2 rounded-lg border border-slate-100 bg-slate-50 text-xs text-slate-600">
+            <div>
+              <span class="font-semibold text-slate-800">${e.transportadora}</span>
+              <span class="text-[10px] text-slate-400 block">Retirado em: ${e.retiradoEm ? new Date(e.retiradoEm).toLocaleDateString('pt-BR') : 'Entregue'}</span>
+            </div>
+            <span class="text-emerald-600 font-bold text-xs">✓ Entregue</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderizarOcorrencias() {
+      const container = document.getElementById('ocorrenciasLista');
+      const ocorrencias = appDados.ocorrenciasRecentes || [];
+
+      if (ocorrencias.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-400 text-center py-2">Nenhum chamado aberto recentemente.</div>';
+        return;
+      }
+
+      container.innerHTML = ocorrencias.map(o => `
+        <div class="p-3 rounded-xl border border-slate-100 bg-slate-50 text-xs space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800 capitalize">🛠️ ${o.tipo}</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${o.status === 'resolvida' ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'}">
+              ${o.status}
+            </span>
+          </div>
+          <p class="text-slate-600">${o.descricao}</p>
+          <div class="text-[10px] text-slate-400 pt-1">Aberto em: ${new Date(o.dataCriacao).toLocaleDateString('pt-BR')}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderizarComunicados() {
+      const container = document.getElementById('comunicadosLista');
+      const comunicados = appDados.comunicadosRecentes || [];
+
+      if (comunicados.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-400 text-center py-2">Nenhum comunicado recente.</div>';
+        return;
+      }
+
+      container.innerHTML = comunicados.map(c => `
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 text-xs space-y-1.5">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-900">${c.titulo}</h4>
+            <span class="text-[10px] text-slate-400">${c.data}</span>
+          </div>
+          <p class="text-slate-600 leading-relaxed">${c.conteudo}</p>
+          <div class="text-[10px] text-indigo-600 font-medium">Emitido por: ${c.autor || 'Administração'}</div>
+        </div>
+      `).join('');
+    }
+
+    // Ações de Botões e Modais
+    function trocarAba(aba) {
+      ['cota', 'passes', 'encomendas', 'ocorrencias', 'comunicados'].forEach(a => {
+        const el = document.getElementById('aba' + a.charAt(0).toUpperCase() + a.slice(1));
+        const btn = document.getElementById('tabBtn' + a.charAt(0).toUpperCase() + a.slice(1));
+        if (el && btn) {
+          if (a === aba) {
+            el.classList.remove('hidden');
+            btn.className = 'tab-btn flex-1 py-3 px-2 text-center text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 flex flex-col items-center gap-1';
+          } else {
+            el.classList.add('hidden');
+            btn.className = 'tab-btn flex-1 py-3 px-2 text-center text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex flex-col items-center gap-1';
+          }
+        }
+      });
+    }
+
+    function copiarPixCopiaCola() {
+      const pixPayload = '00020126580014BR.GOV.BCB.PIX0136financeiro@condominio.com.br5204000053039865406685.005802BR5925CONDOMINIO RESIDENCIAL6009SAO PAULO62070503***6304E8A2';
+      navigator.clipboard.writeText(pixPayload).then(() => {
+        showToast('Código Pix Copia e Cola copiado com sucesso!', '⚡');
+        const btn = document.getElementById('btnCopiarPix');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>✓</span> Copiado para Área de Transferência!';
+        btn.classList.replace('bg-emerald-600', 'bg-emerald-700');
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.replace('bg-emerald-700', 'bg-emerald-600');
+        }, 3000);
+      }).catch(() => {
+        showToast('Erro ao copiar Pix.', '❌');
+      });
+    }
+
+    function abrirModalLinhaDigitavel() {
+      document.getElementById('modalLinhaDigitavel').classList.remove('hidden');
+    }
+
+    function copiarLinhaDigitavel() {
+      const texto = document.getElementById('textoLinhaDigitavel').textContent.trim();
+      navigator.clipboard.writeText(texto).then(() => {
+        showToast('Linha digitável copiada!', '📋');
+        document.getElementById('modalLinhaDigitavel').classList.add('hidden');
+      });
+    }
+
+    function visualizarBoletoPdf() {
+      showToast('Abrindo visualizador do boleto...', '📄');
+      window.open('/api/cobrancas', '_blank');
+    }
+
+    function copiarLinkAcesso() {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Link do Portal copiado! Compartilhe com quem reside com você.', '🔗');
+      });
+    }
+
+    // Gerenciador de Passes
+    function abrirModalNovoPasse() {
+      document.getElementById('modalNovoPasse').classList.remove('hidden');
+    }
+
+    function fecharModalNovoPasse() {
+      document.getElementById('modalNovoPasse').classList.add('hidden');
+    }
+
+    function fecharModalPasseSucesso() {
+      document.getElementById('modalPasseSucesso').classList.add('hidden');
+    }
+
+    async function salvarNovoPasse(e) {
+      e.preventDefault();
+      const nome = document.getElementById('visNome').value;
+      const tipo = document.getElementById('visTipo').value;
+      const data = document.getElementById('visData').value;
+      const doc = document.getElementById('visDocumento').value;
+      const obs = document.getElementById('visObs').value;
+
+      const btn = document.getElementById('btnGerarPasseSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Gerando Passe...';
+
+      try {
+        const res = await fetch('/api/portal/passes-visitantes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token: magicToken,
+            visitanteNome: nome,
+            tipo,
+            dataVisita: data,
+            rgOuCpf: doc,
+            observacao: obs
+          })
+        });
+
+        const json = await res.json();
+        btn.disabled = false;
+        btn.textContent = 'Gerar Passe com PIN de Liberação';
+
+        if (!json.success) {
+          showToast(json.error || 'Erro ao gerar passe.', '❌');
+          return;
+        }
+
+        fecharModalNovoPasse();
+        
+        // Exibe PIN no modal de sucesso
+        document.getElementById('displayPinAcesso').textContent = json.pin;
+        document.getElementById('displayVisitanteNome').textContent = `Convidado: ${nome}`;
+        
+        // Configura botão WhatsApp
+        const btnWhats = document.getElementById('btnCompartilharPasseWhats');
+        btnWhats.onclick = () => compartilharWhatsGenerico(nome, json.pin);
+
+        document.getElementById('modalPasseSucesso').classList.remove('hidden');
+
+        // Recarrega dados
+        await carregarDadosPortal();
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Gerar Passe com PIN de Liberação';
+        showToast('Erro ao comunicar com o servidor.', '❌');
+      }
+    }
+
+    function compartilharWhatsGenerico(nome, pin) {
+      const unidade = appDados?.perfil?.unidadeId || 'Apt 101';
+      const condom = appDados?.perfil?.condominioNome || 'Condomínio Residencial Jardins do Bosque';
+      const texto = `🎟️ *CONVITE DE ACESSO - ${condom}*\n\nOlá, *${nome}*!\nVocê foi autorizado(a) para visitar o *${unidade}*.\n\n🔑 *Seu PIN de Acesso na Guarita:* *${pin}*\n\nBasta digitar este PIN ou informar na portaria para liberação imediata.`;
+      const urlWhats = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+      window.open(urlWhats, '_blank');
+    }
+
+    // Abertura de Ocorrências
+    async function registrarOcorrencia(e) {
+      e.preventDefault();
+      const cat = document.getElementById('ocCategoria').value;
+      const desc = document.getElementById('ocDescricao').value;
+      const btn = document.getElementById('btnSalvarOcorrencia');
+
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      try {
+        const res = await fetch('/api/portal/ocorrencias', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token: magicToken,
+            categoria: cat,
+            descricao: desc
+          })
+        });
+
+        const json = await res.json();
+        btn.disabled = false;
+        btn.textContent = 'Registrar Ocorrência';
+
+        if (!json.success) {
+          showToast(json.error || 'Erro ao registrar chamado.', '❌');
+          return;
+        }
+
+        showToast('Chamado registrado com sucesso!', '✓');
+        document.getElementById('ocDescricao').value = '';
+        await carregarDadosPortal();
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Registrar Ocorrência';
+        showToast('Erro na conexão.', '❌');
+      }
+    }
+
+    // Toast de Feedback
+    function showToast(msg, icon = '✓') {
+      const t = document.getElementById('toastNotification');
+      document.getElementById('toastMsg').textContent = msg;
+      document.getElementById('toastIcon').textContent = icon;
+      t.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        t.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

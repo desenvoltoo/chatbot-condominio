@@ -57,6 +57,7 @@ export interface Ocorrencia {
   dataCriacao: string;
   dataResolucao?: string;
   hashAuditoria?: string;
+  fotos?: string[];
 }
 
 export interface EnqueteOpcao {
@@ -461,12 +462,19 @@ export interface Visita {
   id: string;
   visitanteNome: string;
   documento?: string;
+  rgOuCpf?: string;
   unidade: string;
-  tipo: 'visita' | 'prestador' | 'delivery' | 'airbnb';
+  tipo: 'visita' | 'prestador' | 'delivery' | 'airbnb' | 'visitante';
   dataEntrada: string;
   horaEntrada: string;
+  dataVisita?: string;
+  horaEstimada?: string;
   estacionamento?: string;
   qrCodeToken: string;
+  qrCode?: string;
+  pinAcesso?: string;
+  moradorResponsavel?: string;
+  observacao?: string;
   status: 'autorizado' | 'entrou' | 'saiu' | 'expirado';
   criadoEm: string;
 }
@@ -693,5 +701,74 @@ export interface AlertaContrato {
   diasRestantes: number;
   severidade: 'info' | 'alerta' | 'critico';
   notificadoWhatsapp: boolean;
+  criadoEm: string;
+}
+
+// ==========================================
+// MÓDULO 2: PORTAL WEBAPP DO CONDÔMINO (LINK MÁGICO)
+// ==========================================
+export interface PortalMoradorPerfil {
+  unidadeId: string;
+  unidadeDescricao: string;
+  moradorNome: string;
+  cpf: string;
+  telefone: string;
+  email?: string;
+  bloco?: string;
+  condominioNome: string;
+}
+
+export interface PortalMoradorDados {
+  perfil: PortalMoradorPerfil;
+  cotaAtual?: Cobranca;
+  historicoCotas: Cobranca[];
+  passesAtivos: Visita[];
+  encomendasPendentes: Encomenda[];
+  encomendasRetiradas: Encomenda[];
+  ocorrenciasRecentes: Ocorrencia[];
+  comunicadosRecentes: Comunicado[];
+  pixChaveOficial: string;
+  magicToken: string;
+}
+
+// ==========================================
+// MÓDULO 5: BALANCETE MENSAL CONSOLIDADO & PRESTAÇÃO DE CONTAS
+// ==========================================
+export interface BalanceteItemConta {
+  categoria: string;
+  descricao: string;
+  valor: number;
+  tipo: 'receita' | 'despesa';
+}
+
+export interface BalanceteMensal {
+  id: string;
+  competencia: string; // Ex: "11/2026", "10/2026"
+  mes: number;
+  ano: number;
+  saldoAnterior: number;
+  receitasOrdinarias: number;
+  receitasExtraordinarias: number;
+  receitasTotal: number;
+  despesasPessoal: number;
+  despesasConcessionarias: number;
+  despesasManutencao: number;
+  despesasAdministrativas: number;
+  despesasSegurosLaudos: number;
+  despesasTotal: number;
+  resultadoMes: number; // receitasTotal - despesasTotal (Superávit/Déficit)
+  saldoAtualMovimento: number;
+  fundoReservaSaldo: number;
+  fundoObrasSaldo: number;
+  saldoConsolidadoTotal: number;
+  inadimplenciaPercentual: number;
+  inadimplenciaValorTotal: number;
+  parecerConselhoFiscal: string;
+  parecerIa: string;
+  status: 'em_elaboracao' | 'aprovado_conselho' | 'publicado';
+  aprovadoConselhoEm?: string;
+  conselheirosAssinantes?: string[];
+  itens?: BalanceteItemConta[];
+  hashAuditoria: string;
   criadoEm: string;
 }

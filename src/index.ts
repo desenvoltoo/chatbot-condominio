@@ -33,6 +33,11 @@ app.get('/painel', (_req, res) => {
   res.sendFile(path.join(publicPath, 'painel.html'));
 });
 
+// Portal WebApp do Condômino (Acesso Rápido via Link Mágico)
+app.get('/portal', (_req, res) => {
+  res.sendFile(path.join(publicPath, 'portal.html'));
+});
+
 // Root Route: serves login page by default
 app.get('/', (_req, res) => {
   res.sendFile(path.join(publicPath, 'login.html'));

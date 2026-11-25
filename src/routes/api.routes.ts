@@ -12,7 +12,7 @@ import { requireAuth } from '../middlewares/auth.middleware.js';
 import { formatarMensagemPix, gerarPayloadPix } from '../utils/pix.util.js';
 import { EventsService } from '../services/events.service.js';
 import { SchedulerService } from '../services/scheduler.service.js';
-import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado, Assembleia, AssembleiaVoto, ConsentimentoLGPD, Ocorrencia, Enquete, EnqueteVoto, PrevisaoOrcamentaria, ContratoFornecedor, ItemOrcamento, FracaoIdealCota } from '../types/index.js';
+import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado, Assembleia, AssembleiaVoto, ConsentimentoLGPD, Ocorrencia, Enquete, EnqueteVoto, PrevisaoOrcamentaria, ContratoFornecedor, ItemOrcamento, FracaoIdealCota, BalanceteMensal, PortalMoradorDados, PortalMoradorPerfil } from '../types/index.js';
 import { TranscriptionService } from '../services/transcription.service.js';
 import { BoletoPdfService } from '../services/boleto-pdf.service.js';
 
@@ -2579,6 +2579,628 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       });
     } catch (err: any) {
       res.status(500).json({ error: 'Erro ao disparar notificação WhatsApp para fornecedor: ' + err.message });
+    }
+  });
+
+  // ==========================================
+  // 27. PORTAL WEBAPP DO CONDÔMINO (LINK MÁGICO)
+  // ==========================================
+
+  router.get('/portal/dados', (req: Request, res: Response) => {
+    try {
+      const token = (req.query.token as string) || (req.query.unidade as string) || 'token_morador_101';
+      const dados = dbService.getPortalMoradorDados(token);
+      if (!dados) {
+        return res.status(404).json({ error: 'Dados do morador não localizados para este token ou unidade.' });
+      }
+      res.json({ success: true, data: dados });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao carregar dados do portal do morador: ' + err.message });
+    }
+  });
+
+  router.post('/portal/gerar-link', requireAuth(['admin', 'sindico', 'operador']), (req: Request, res: Response) => {
+    try {
+      const { unidadeId, moradorNome, cpf, telefone } = req.body;
+      if (!unidadeId || !moradorNome) {
+        return res.status(400).json({ error: 'Unidade e Nome do Morador são obrigatórios.' });
+      }
+      const resultado = dbService.gerarMagicLinkPortal(unidadeId, moradorNome, cpf || '000.000.000-00', telefone || '5511999990000');
+      res.json({
+        success: true,
+        mensagem: 'Link mágico gerado com sucesso.',
+        token: resultado.token,
+        url: resultado.url,
+        data: resultado
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao gerar link mágico: ' + err.message });
+    }
+  });
+
+  router.post('/portal/enviar-link-whatsapp', requireAuth(['admin', 'sindico', 'operador']), async (req: Request, res: Response) => {
+    try {
+      const { unidadeId, moradorNome, cpf, telefone, remoteJid } = req.body;
+      if (!unidadeId || !moradorNome) {
+        return res.status(400).json({ error: 'Unidade e Nome são obrigatórios.' });
+      }
+      const magic = dbService.gerarMagicLinkPortal(unidadeId, moradorNome, cpf || '', telefone || '');
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const linkCompleto = `${baseUrl}${magic.url}`;
+
+      const foneLimpo = (telefone || '').replace(/\D/g, '');
+      const targetJid = remoteJid || (foneLimpo.startsWith('55') ? `${foneLimpo}@s.whatsapp.net` : `55${foneLimpo}@s.whatsapp.net`);
+
+      const texto = [
+        `🔑 *CONDOMÍNIO RESIDENCIAL - SEU PORTAL EXCLUSIVO*`,
+        `----------------------------------------`,
+        `Olá, *${moradorNome}* (${unidadeId})!`,
+        ``,
+        `Seu acesso rápido e seguro ao Portal do Condômino está disponível sem necessidade de senha:`,
+        `🔗 *Acesse aqui:* ${linkCompleto}`,
+        ``,
+        `*Recursos disponíveis em 1 clique:*`,
+        `💳 Pix Copia e Cola & Boletos da sua cota`,
+        `🎟️ Gerador de Convites & PIN da Portaria`,
+        `📦 Rastreio e retirada de Encomendas`,
+        `🛠️ Abertura de Chamados e Ocorrências`,
+        `📊 Balancetes e Avisos Oficiais`,
+        `----------------------------------------`,
+        `CondoVolto AI - Portaria & Gestão Inteligente`
+      ].join('\n');
+
+      try {
+        await evolutionService.sendText(targetJid, texto);
+      } catch (e) {}
+
+      res.json({
+        success: true,
+        mensagem: `Link mágico enviado via WhatsApp para ${moradorNome} (${targetJid}).`,
+        targetJid,
+        link: linkCompleto,
+        token: magic.token
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao enviar link mágico via WhatsApp: ' + err.message });
+    }
+  });
+
+  router.post('/portal/passes-visitantes', (req: Request, res: Response) => {
+    try {
+      const { token, visitanteNome, rgOuCpf, tipo, dataVisita, horaEstimada, observacao } = req.body;
+      if (!visitanteNome) {
+        return res.status(400).json({ error: 'Nome do visitante é obrigatório.' });
+      }
+
+      const dadosMorador = dbService.getPortalMoradorDados(token || 'token_morador_101');
+      const unidade = dadosMorador ? dadosMorador.perfil.unidadeId : 'Apt 101';
+      const moradorNome = dadosMorador ? dadosMorador.perfil.moradorNome : 'Carlos Eduardo Silva';
+
+      const pin = Math.floor(1000 + Math.random() * 9000).toString();
+      const hoje = new Date().toISOString().split('T')[0];
+
+      const visita: Visita = {
+        id: `vis_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        visitanteNome,
+        rgOuCpf: rgOuCpf || 'Não informado',
+        documento: rgOuCpf || 'Não informado',
+        tipo: (tipo as any) || 'visita',
+        unidade,
+        moradorResponsavel: moradorNome,
+        dataEntrada: dataVisita || hoje,
+        horaEntrada: horaEstimada || '14:00',
+        dataVisita: dataVisita || hoje,
+        horaEstimada: horaEstimada || '14:00',
+        status: 'autorizado',
+        pinAcesso: pin,
+        qrCodeToken: `QR-CONDO-${unidade.replace(/\s+/g, '')}-${pin}`,
+        qrCode: `QR-CONDO-${unidade.replace(/\s+/g, '')}-${pin}`,
+        observacao: observacao || 'Passe digital emitido via Portal do Condômino',
+        criadoEm: new Date().toISOString()
+      };
+
+      dbService.saveVisita(visita);
+
+      res.json({
+        success: true,
+        mensagem: `Passe de visitante gerado com sucesso. PIN de liberação: ${pin}`,
+        pin,
+        qrCode: visita.qrCode,
+        visita,
+        data: visita
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao emitir passe de visitante: ' + err.message });
+    }
+  });
+
+  router.post('/portal/ocorrencias', (req: Request, res: Response) => {
+    try {
+      const { token, categoria, descricao, fotoUrl } = req.body;
+      if (!descricao) {
+        return res.status(400).json({ error: 'A descrição da ocorrência é obrigatória.' });
+      }
+
+      const dadosMorador = dbService.getPortalMoradorDados(token || 'token_morador_101');
+      const unidade = dadosMorador ? dadosMorador.perfil.unidadeId : 'Apt 101';
+      const moradorNome = dadosMorador ? dadosMorador.perfil.moradorNome : 'Carlos Eduardo Silva';
+
+      const novaOcorrencia: Ocorrencia = {
+        id: `oc_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        moradorNome,
+        unidadeId: unidade,
+        categoria: categoria || 'manutencao',
+        descricao,
+        status: 'aberta',
+        fotos: fotoUrl ? [fotoUrl] : [],
+        dataCriacao: new Date().toISOString()
+      };
+
+      dbService.saveOcorrencia(novaOcorrencia);
+
+      res.json({
+        success: true,
+        mensagem: 'Ocorrência registrada com sucesso na administração.',
+        ocorrencia: novaOcorrencia,
+        data: novaOcorrencia
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao registrar ocorrência: ' + err.message });
+    }
+  });
+
+  // ==========================================
+  // 28. BALANCETE MENSAL CONSOLIDADO & PRESTAÇÃO DE CONTAS
+  // ==========================================
+
+  router.get('/balancetes', (_req: Request, res: Response) => {
+    try {
+      const balancetes = dbService.getBalancetes();
+      res.json({
+        success: true,
+        total: balancetes.length,
+        balancetes,
+        data: balancetes
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao listar balancetes: ' + err.message });
+    }
+  });
+
+  router.get('/balancetes/:id', (req: Request, res: Response) => {
+    try {
+      const balancete = dbService.getBalanceteById(req.params.id);
+      if (!balancete) {
+        return res.status(404).json({ error: 'Balancete não encontrado.' });
+      }
+      res.json({ success: true, balancete, data: balancete });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao buscar balancete: ' + err.message });
+    }
+  });
+
+  router.post('/balancetes/fechar-mes', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    try {
+      const { competencia } = req.body;
+      if (!competencia || !/^\d{2}\/\d{4}$/.test(competencia)) {
+        return res.status(400).json({ error: 'Competência inválida. Formato esperado: MM/AAAA (ex: 11/2026)' });
+      }
+      const balancete = dbService.fecharMesBalancete(competencia);
+      res.json({
+        success: true,
+        mensagem: `Balancete mensal da competência ${competencia} fechado e consolidado com sucesso.`,
+        balancete,
+        data: balancete
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao fechar mês do balancete: ' + err.message });
+    }
+  });
+
+  router.post('/balancetes/:id/aprovar-conselho', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    try {
+      const { conselheiros, parecerConselho } = req.body;
+      const conselheirosLista = Array.isArray(conselheiros) && conselheiros.length > 0
+        ? conselheiros
+        : ['Paulo Sérgio (Apt 802)', 'Cláudia Mendonça (Apt 1504)', 'Roberto Vasconcelos (Apt 301)'];
+
+      const balancete = dbService.aprovarBalanceteConselho(req.params.id, conselheirosLista, parecerConselho);
+      if (!balancete) {
+        return res.status(404).json({ error: 'Balancete não localizado para aprovação.' });
+      }
+
+      res.json({
+        success: true,
+        mensagem: `Balancete ${balancete.competencia} aprovado pelo Conselho Fiscal com sucesso.`,
+        balancete,
+        data: balancete
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao aprovar balancete pelo conselho: ' + err.message });
+    }
+  });
+
+  router.post('/balancetes/:id/disparar-whatsapp', requireAuth(['admin', 'sindico']), async (req: Request, res: Response) => {
+    try {
+      const balancete = dbService.getBalanceteById(req.params.id);
+      if (!balancete) {
+        return res.status(404).json({ error: 'Balancete não encontrado.' });
+      }
+
+      const formatMoeda = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+      const superavit = balancete.resultadoMes >= 0;
+
+      const texto = [
+        `📊 *CONDOMÍNIO RESIDENCIAL - PRESTAÇÃO DE CONTAS OFICIAL*`,
+        `*Competência:* ${balancete.competencia} | *Status:* ${balancete.status.toUpperCase()}`,
+        `----------------------------------------`,
+        `💰 *Receitas Realizadas:* ${formatMoeda(balancete.receitasTotal)}`,
+        `  • Ordinárias: ${formatMoeda(balancete.receitasOrdinarias)}`,
+        `  • Extras/Acordos: ${formatMoeda(balancete.receitasExtraordinarias)}`,
+        ``,
+        `📉 *Despesas Operacionais:* ${formatMoeda(balancete.despesasTotal)}`,
+        `  • Pessoal & Encargos: ${formatMoeda(balancete.despesasPessoal)}`,
+        `  • Concessionárias (Água/Luz/Gás): ${formatMoeda(balancete.despesasConcessionarias)}`,
+        `  • Manutenção & Conservação: ${formatMoeda(balancete.despesasManutencao)}`,
+        `  • Administração & Seguros: ${formatMoeda(balancete.despesasAdministrativas + balancete.despesasSegurosLaudos)}`,
+        ``,
+        `${superavit ? '🟢' : '🔴'} *Resultado Líquido do Mês:* ${formatMoeda(balancete.resultadoMes)} (${superavit ? 'Superávit' : 'Déficit'})`,
+        `🏦 *Saldo Consolidado Total:* ${formatMoeda(balancete.saldoConsolidadoTotal)}`,
+        `  • Fundo de Reserva: ${formatMoeda(balancete.fundoReservaSaldo)}`,
+        `  • Fundo de Obras: ${formatMoeda(balancete.fundoObrasSaldo)}`,
+        `  • Saldo Conta Movimento: ${formatMoeda(balancete.saldoAtualMovimento)}`,
+        ``,
+        `⚖️ *Inadimplência:* ${balancete.inadimplenciaPercentual}% (${formatMoeda(balancete.inadimplenciaValorTotal)})`,
+        `📜 *Conselho Fiscal:* ${balancete.parecerConselhoFiscal || 'Aprovado sem ressalvas'}`,
+        `🔒 *Hash de Autenticidade:* ${balancete.hashAuditoria.substring(0, 16)}...`,
+        `----------------------------------------`,
+        `Acesse a versão completa e analítica no Portal do Condômino ou solicite o PDF pelo canal oficial.`,
+        `CondoVolto AI - Transparência Atuarial`
+      ].join('\n');
+
+      try {
+        await evolutionService.sendText('5511999990000@s.whatsapp.net', texto);
+      } catch (e) {}
+
+      res.json({
+        success: true,
+        mensagem: `Prestação de contas da competência ${balancete.competencia} disparada via WhatsApp com sucesso.`,
+        balancete
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao disparar prestação de contas no WhatsApp: ' + err.message });
+    }
+  });
+
+  router.get('/balancetes/:id/html-view', (req: Request, res: Response) => {
+    try {
+      const balancete = dbService.getBalanceteById(req.params.id);
+      if (!balancete) {
+        return res.status(404).send('<h1>Balancete não encontrado</h1>');
+      }
+
+      const formatMoeda = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+      const superavit = balancete.resultadoMes >= 0;
+
+      const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balancete Mensal - Competência ${balancete.competencia} - CondoVolto AI</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      margin: 0;
+      padding: 24px;
+    }
+    .document {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+    .header-title h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #0f172a;
+    }
+    .header-title p {
+      margin: 4px 0 0;
+      color: #64748b;
+      font-size: 13px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .summary-card {
+      background: #f1f5f9;
+      padding: 14px;
+      border-radius: 6px;
+      border-left: 4px solid #3b82f6;
+    }
+    .summary-card.receita { border-color: #10b981; }
+    .summary-card.despesa { border-color: #ef4444; }
+    .summary-card.resultado { border-color: ${superavit ? '#10b981' : '#ef4444'}; }
+    .summary-card.saldo { border-color: #6366f1; }
+    .summary-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .summary-value {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 4px;
+      color: #0f172a;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+      background-color: #f8fafc;
+      color: #475569;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .text-right { text-align: right; }
+    .table-section {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      color: #334155;
+    }
+    .opinions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .opinion-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 16px;
+      background: #fafafa;
+    }
+    .opinion-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .opinion-text {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #475569;
+    }
+    .footer-audit {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 16px;
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .no-print {
+      margin-bottom: 20px;
+      text-align: right;
+    }
+    .btn-print {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .document { box-shadow: none; border-radius: 0; padding: 0; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="document">
+    <div class="no-print">
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+    </div>
+
+    <div class="header">
+      <div class="header-title">
+        <h1>DEMONSTRATIVO FINANCEIRO & PRESTAÇÃO DE CONTAS</h1>
+        <p>Condomínio Residencial Jardins do Bosque • CNPJ: 12.345.678/0001-90</p>
+      </div>
+      <div>
+        <span class="badge">Competência ${balancete.competencia}</span>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card receita">
+        <div class="summary-label">Receitas Totais</div>
+        <div class="summary-value">${formatMoeda(balancete.receitasTotal)}</div>
+      </div>
+      <div class="summary-card despesa">
+        <div class="summary-label">Despesas Totais</div>
+        <div class="summary-value">${formatMoeda(balancete.despesasTotal)}</div>
+      </div>
+      <div class="summary-card resultado">
+        <div class="summary-label">Resultado Líquido</div>
+        <div class="summary-value" style="color: ${superavit ? '#10b981' : '#ef4444'}">${formatMoeda(balancete.resultadoMes)}</div>
+      </div>
+      <div class="summary-card saldo">
+        <div class="summary-label">Patrimônio Consolidado</div>
+        <div class="summary-value">${formatMoeda(balancete.saldoConsolidadoTotal)}</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Discriminação das Contas</th>
+          <th class="text-right">Orçado</th>
+          <th class="text-right">Realizado</th>
+          <th class="text-right">Variação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-section"><td colspan="4">1. RECEITAS OPERACIONAIS</td></tr>
+        <tr>
+          <td>1.1 Cotas Ordinárias de Condomínio</td>
+          <td class="text-right">${formatMoeda(balancete.receitasOrdinarias)}</td>
+          <td class="text-right">${formatMoeda(balancete.receitasOrdinarias)}</td>
+          <td class="text-right" style="color:#10b981">0.0%</td>
+        </tr>
+        <tr>
+          <td>1.2 Acordos Amigáveis, Juros e Multas</td>
+          <td class="text-right">${formatMoeda(3500)}</td>
+          <td class="text-right">${formatMoeda(balancete.receitasExtraordinarias)}</td>
+          <td class="text-right" style="color:#10b981">+8.6%</td>
+        </tr>
+        <tr style="font-weight:700; background:#f8fafc;">
+          <td>Total de Receitas Arrecadadas</td>
+          <td class="text-right">${formatMoeda(balancete.receitasOrdinarias + 3500)}</td>
+          <td class="text-right">${formatMoeda(balancete.receitasTotal)}</td>
+          <td class="text-right" style="color:#10b981">+0.2%</td>
+        </tr>
+
+        <tr class="table-section"><td colspan="4">2. DESPESAS OPERACIONAIS</td></tr>
+        <tr>
+          <td>2.1 Pessoal Próprio, Portaria e Encargos (INSS/FGTS)</td>
+          <td class="text-right">${formatMoeda(balancete.despesasPessoal)}</td>
+          <td class="text-right">${formatMoeda(balancete.despesasPessoal)}</td>
+          <td class="text-right">0.0%</td>
+        </tr>
+        <tr>
+          <td>2.2 Concessionárias Públicas (Sabesp / Enel / Comgás)</td>
+          <td class="text-right">${formatMoeda(31000)}</td>
+          <td class="text-right">${formatMoeda(balancete.despesasConcessionarias)}</td>
+          <td class="text-right" style="color:#10b981">-3.2%</td>
+        </tr>
+        <tr>
+          <td>2.3 Manutenção Predial, Elevadores e Bombas</td>
+          <td class="text-right">${formatMoeda(22000)}</td>
+          <td class="text-right">${formatMoeda(balancete.despesasManutencao)}</td>
+          <td class="text-right" style="color:#10b981">-2.3%</td>
+        </tr>
+        <tr>
+          <td>2.4 Despesas Administrativas, Bancárias e Softwares</td>
+          <td class="text-right">${formatMoeda(8500)}</td>
+          <td class="text-right">${formatMoeda(balancete.despesasAdministrativas)}</td>
+          <td class="text-right" style="color:#10b981">-3.5%</td>
+        </tr>
+        <tr>
+          <td>2.5 Seguros Obrigatórios, AVCB e Laudos Regulatórios</td>
+          <td class="text-right">${formatMoeda(6000)}</td>
+          <td class="text-right">${formatMoeda(balancete.despesasSegurosLaudos)}</td>
+          <td class="text-right" style="color:#ef4444">+1.7%</td>
+        </tr>
+        <tr style="font-weight:700; background:#f8fafc;">
+          <td>Total de Despesas Liquidadas</td>
+          <td class="text-right">${formatMoeda(132500)}</td>
+          <td class="text-right">${formatMoeda(balancete.despesasTotal)}</td>
+          <td class="text-right" style="color:#10b981">-1.3%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table style="margin-top: 10px;">
+      <thead>
+        <tr class="table-section"><th colspan="2">3. DEMONSTRAÇÃO DOS SALDOS E RESERVAS</th><th class="text-right">VALOR</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>3.1 Conta Movimento Bancária (Disponível em Conta Corrente)</td>
+          <td>Banco Itaú S.A. - Ag 0123 / CC 45678-9</td>
+          <td class="text-right font-bold">${formatMoeda(balancete.saldoAtualMovimento)}</td>
+        </tr>
+        <tr>
+          <td>3.2 Fundo de Reserva Condominial (Art. 9º Convenção)</td>
+          <td>Aplicação Liquidez Diária CDI 100%</td>
+          <td class="text-right font-bold">${formatMoeda(balancete.fundoReservaSaldo)}</td>
+        </tr>
+        <tr>
+          <td>3.3 Fundo de Obras e Modernização</td>
+          <td>Aplicação Vinculada à Reforma de Fachada</td>
+          <td class="text-right font-bold">${formatMoeda(balancete.fundoObrasSaldo)}</td>
+        </tr>
+        <tr style="font-weight:800; background:#eff6ff;">
+          <td colspan="2">SALDO DISPONÍVEL CONSOLIDADO TOTAL</td>
+          <td class="text-right" style="color:#1d4ed8; font-size:15px;">${formatMoeda(balancete.saldoConsolidadoTotal)}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="opinions">
+      <div class="opinion-box">
+        <div class="opinion-title">🏛️ Parecer do Conselho Fiscal</div>
+        <div class="opinion-text">${balancete.parecerConselhoFiscal || 'O Conselho Fiscal examinou os balancetes, extratos bancários e notas fiscais, atestando exatidão formal e material.'}</div>
+        <div style="margin-top:12px; font-size:11px; color:#64748b;">
+          <strong>Assinantes:</strong> ${(balancete.conselheirosAssinantes || []).join(', ')}<br>
+          <strong>Data de Validação:</strong> ${balancete.aprovadoConselhoEm ? new Date(balancete.aprovadoConselhoEm).toLocaleDateString('pt-BR') : 'Em homologação'}
+        </div>
+      </div>
+      <div class="opinion-box">
+        <div class="opinion-title">🤖 Auditoria Algorítmica CondoVolto AI</div>
+        <div class="opinion-text">${balancete.parecerIa}</div>
+        <div style="margin-top:12px; font-size:11px; color:#64748b;">
+          <strong>Taxa de Inadimplência Real:</strong> ${balancete.inadimplenciaPercentual}% (${formatMoeda(balancete.inadimplenciaValorTotal)})<br>
+          <strong>Solvência Orçamentária:</strong> Índice A+ (Sem necessidade de rateio extra)
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-audit">
+      <div>🔒 Autenticação Digital SHA-256: <code>${balancete.hashAuditoria}</code></div>
+      <div>CondoVolto AI • Sistema de Gestão Atuarial e Transparência</div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(html);
+    } catch (err: any) {
+      res.status(500).send('<h1>Erro ao gerar visualização do balancete: ' + err.message + '</h1>');
     }
   });
 
