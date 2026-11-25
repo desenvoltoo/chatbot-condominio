@@ -448,6 +448,12 @@ export class BotOrchestrator {
       return;
     }
 
+    if (lower.startsWith('enquete') || lower.startsWith('sondagem') || lower === '8') {
+      const session = this.sessionManager.getSession(remoteJid);
+      await this.handleEnqueteWhatsApp(remoteJid, text, session);
+      return;
+    }
+
     if (lower.includes('lgpd') || lower.includes('meus dados') || lower.includes('privacidade') || lower.includes('consentimento')) {
       const session = this.sessionManager.getSession(remoteJid);
       await this.handlePrivacidadeLGPD(remoteJid, session);
@@ -493,6 +499,11 @@ export class BotOrchestrator {
 
     if (lower.startsWith('voto') || lower.startsWith('votar')) {
       await this.handleRegistroVotoWhatsApp(remoteJid, text, session);
+      return;
+    }
+
+    if (lower.startsWith('enquete') || lower.startsWith('sondagem')) {
+      await this.handleEnqueteWhatsApp(remoteJid, text, session);
       return;
     }
 
@@ -1193,14 +1204,130 @@ export class BotOrchestrator {
 
   private async handleRegistroOcorrencia(remoteJid: string, text: string, session: any): Promise<void> {
     const moradorId = session.morador?.id || 'morador_anonimo';
-    const ocorrencia = await this.sisconService.registrarOcorrencia(moradorId, 'Manutenção/Geral', text);
+    const moradorNome = session.morador?.nome || session.pushName || 'Condômino';
+    const unidadeId = session.morador?.unidades?.[0] ? `${session.morador.unidades[0].bloco} - ${session.morador.unidades[0].numero}` : 'Apt 101 - Bloco A';
+    const telefone = session.telefone || remoteJid.replace(/\D/g, '');
+
+    // Classificação inteligente da categoria
+    let categoria = 'outros';
+    const lower = text.toLowerCase();
+    if (lower.includes('barulho') || lower.includes('som') || lower.includes('festa') || lower.includes('gritaria')) {
+      categoria = 'barulho';
+    } else if (lower.includes('vaga') || lower.includes('garagem') || lower.includes('estacion')) {
+      categoria = 'vaga_garagem';
+    } else if (lower.includes('pet') || lower.includes('cachorro') || lower.includes('gato') || lower.includes('animal')) {
+      categoria = 'pet';
+    } else if (lower.includes('obra') || lower.includes('reforma') || lower.includes('furadeira')) {
+      categoria = 'obras';
+    } else if (lower.includes('lixo') || lower.includes('sujeira')) {
+      categoria = 'lixo';
+    }
+
+    // Enquadramento automático no Regimento
+    let artigoRegimento = 'Art. 10 do Regimento Interno (Normas Gerais de Convivência)';
+    let gravidade: 'leve' | 'media' | 'grave' = 'media';
+    if (categoria === 'barulho') {
+      artigoRegimento = 'Art. 42 da Convenção e Art. 1.336, IV do Código Civil (Sossegado descanso dos condôminos)';
+      gravidade = 'grave';
+    } else if (categoria === 'vaga_garagem') {
+      artigoRegimento = 'Art. 18 do Regimento Interno (Uso estrito e exclusivo das vagas demarcadas)';
+      gravidade = 'media';
+    }
+
+    const protocolo = `SISCON-OC-${Date.now().toString().slice(-6)}`;
+    const novaOc = {
+      id: `oc_${Date.now()}`,
+      protocolo,
+      moradorId,
+      moradorNome,
+      moradorTelefone: telefone,
+      unidadeId,
+      categoria,
+      gravidade,
+      descricao: text,
+      artigoRegimento,
+      status: 'aberta' as const,
+      prazoDefesaDias: 10,
+      dataCriacao: new Date().toISOString()
+    };
+    this.dbService.saveOcorrencia(novaOc);
 
     session.state = 'MENU_PRINCIPAL';
     this.sessionManager.updateSession(session);
 
     await this.reply(
       remoteJid,
-      `✅ *Ocorrência registrada no SISCON com sucesso!*\n\nProtocolo: *#${ocorrencia.id.slice(-6)}*\nData: ${new Date().toLocaleDateString('pt-BR')}\n\nO chamado foi gravado no painel da administração e direcionado para a equipe responsável.\n\nDigite *MENU* para retornar ao início.`
+      `✅ *Ocorrência Registrada com Sucesso!*\n\n` +
+      `📋 *Protocolo Oficial:* \`${protocolo}\`\n` +
+      `⚖️ *Enquadramento Inicial:* ${artigoRegimento}\n` +
+      `📅 *Data de Registro:* ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}\n\n` +
+      `O chamado foi protocolado e encaminhado ao síndico e à administradora para análise e eventuais providências formais (notificação ou advertência).\n\n` +
+      `Digite *MENU* para retornar ao início.`
+    );
+  }
+
+  public async handleEnqueteWhatsApp(remoteJid: string, text: string, session: any): Promise<void> {
+    const enquetes = this.dbService.getEnquetes().filter(e => e.status === 'aberta');
+    if (enquetes.length === 0) {
+      await this.reply(remoteJid, `📊 *Enquetes Condominiais*\n\nNo momento não há nenhuma enquete ativa aberta para votação.\n\nDigite *MENU* para retornar.`);
+      return;
+    }
+
+    const enquete = enquetes[0];
+    const partes = text.trim().split(/\s+/);
+    // Se o morador passou o voto direto: "enquete 1" ou "votar enquete 2"
+    let opcaoEscolhida = partes.length > 1 ? partes[1].replace(/\D/g, '') : null;
+
+    if (!opcaoEscolhida) {
+      const opcoesTxt = enquete.opcoes.map(o => `*${o.id}* - ${o.label}`).join('\n');
+      const msg = [
+        `📊 *Enquete Condominial Ativa — CondoVolto AI*`,
+        `----------------------------------------`,
+        `*${enquete.titulo}*`,
+        `_${enquete.descricao}_`,
+        ``,
+        `Opções de Voto:`,
+        opcoesTxt,
+        ``,
+        `Para registrar o seu voto, responda com:`,
+        `👉 *ENQUETE 1* ou *ENQUETE 2*`,
+        `----------------------------------------`,
+        `Total de votos apurados: ${enquete.totalVotos}`
+      ].join('\n');
+      await this.reply(remoteJid, msg);
+      return;
+    }
+
+    const opcao = enquete.opcoes.find(o => o.id === opcaoEscolhida);
+    if (!opcao) {
+      await this.reply(remoteJid, `⚠️ Opção de voto inválida. Por favor, vote usando *ENQUETE 1*, *ENQUETE 2*, etc.`);
+      return;
+    }
+
+    const cpf = session.cpf || session.morador?.cpf || ('123' + remoteJid.replace(/\D/g, '').slice(-8));
+    const nome = session.morador?.nome || session.pushName || 'Morador';
+    const unidade = session.morador?.unidades?.[0]?.numero || 'Apt 101';
+
+    const sucesso = this.dbService.registrarVotoEnquete({
+      id: `ev_${Date.now()}`,
+      enqueteId: enquete.id,
+      cpf,
+      moradorNome: nome,
+      unidadeId: unidade,
+      opcaoId: opcao.id,
+      opcaoLabel: opcao.label,
+      canal: 'whatsapp',
+      dataHora: new Date().toISOString()
+    });
+
+    if (!sucesso) {
+      await this.reply(remoteJid, `ℹ️ *Voto Já Registrado!*\n\nIdentificamos que a sua unidade/CPF já registrou o voto nesta enquete.\n\nObrigado pela participação! Digite *MENU* para retornar.`);
+      return;
+    }
+
+    await this.reply(
+      remoteJid,
+      `✅ *Voto Computado com Sucesso!*\n\n📊 *Enquete:* ${enquete.titulo}\n🗳️ *Seu Voto:* ${opcao.label}\n🏠 *Unidade:* ${unidade}\n🕒 *Data/Hora:* ${new Date().toLocaleTimeString('pt-BR')}\n\nObrigado por ajudar a decidir o futuro do condomínio!\n\nDigite *MENU* para retornar ao início.`
     );
   }
 }

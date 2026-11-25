@@ -39,11 +39,55 @@ export interface Morador {
 
 export interface Ocorrencia {
   id: string;
-  moradorId: string;
+  protocolo?: string;
+  moradorId?: string;
+  moradorNome?: string;
+  moradorTelefone?: string;
+  unidadeId?: string;
+  unidadeInfratora?: string;
   categoria: string;
+  gravidade?: 'leve' | 'media' | 'grave' | 'gravissima';
   descricao: string;
+  artigoRegimento?: string;
+  status: 'aberta' | 'em_analise' | 'advertida' | 'multada' | 'resolvida' | 'arquivada';
+  tipoAcaoTomada?: 'notificacao_amigavel' | 'advertencia_formal' | 'multa' | 'arquivamento';
+  valorMulta?: number;
+  prazoDefesaDias?: number;
+  parecerSindico?: string;
   dataCriacao: string;
-  status: 'aberta' | 'em_analise' | 'resolvida';
+  dataResolucao?: string;
+  hashAuditoria?: string;
+}
+
+export interface EnqueteOpcao {
+  id: string;
+  label: string;
+  votos: number;
+}
+
+export interface Enquete {
+  id: string;
+  titulo: string;
+  descricao: string;
+  opcoes: EnqueteOpcao[];
+  status: 'aberta' | 'encerrada';
+  dataInicio: string;
+  dataFim?: string;
+  totalVotos: number;
+  criadoPor: string;
+  criadoEm: string;
+}
+
+export interface EnqueteVoto {
+  id: string;
+  enqueteId: string;
+  cpf: string;
+  moradorNome: string;
+  unidadeId: string;
+  opcaoId: string;
+  opcaoLabel: string;
+  canal: 'whatsapp' | 'painel';
+  dataHora: string;
 }
 
 export interface Comunicado {

@@ -2,7 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado, AvaliacaoCSAT, ReguaDisparo, Assembleia, AssembleiaVoto, ConsentimentoLGPD, DossieLGPD, PautaAssembleia } from '../types/index.js';
+import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado, AvaliacaoCSAT, ReguaDisparo, Assembleia, AssembleiaVoto, ConsentimentoLGPD, DossieLGPD, PautaAssembleia, Ocorrencia, Enquete, EnqueteVoto, EnqueteOpcao } from '../types/index.js';
 import { gerarPayloadPix } from '../utils/pix.util.js';
 
 export class DbService {
@@ -431,6 +431,63 @@ export class DbService {
         canal TEXT NOT NULL DEFAULT 'whatsapp',
         dataHora TEXT NOT NULL,
         hashAuditoria TEXT NOT NULL
+      );
+    `);
+
+    // 19. Tabela de Ocorrências & Notificações de Infração
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS ocorrencias (
+        id TEXT PRIMARY KEY,
+        protocolo TEXT NOT NULL UNIQUE,
+        moradorId TEXT,
+        moradorNome TEXT NOT NULL,
+        moradorTelefone TEXT,
+        unidadeId TEXT NOT NULL,
+        unidadeInfratora TEXT,
+        categoria TEXT NOT NULL,
+        gravidade TEXT NOT NULL DEFAULT 'media',
+        descricao TEXT NOT NULL,
+        artigoRegimento TEXT,
+        status TEXT NOT NULL DEFAULT 'aberta',
+        tipoAcaoTomada TEXT,
+        valorMulta REAL DEFAULT 0,
+        prazoDefesaDias INTEGER DEFAULT 10,
+        parecerSindico TEXT,
+        dataCriacao TEXT NOT NULL,
+        dataResolucao TEXT,
+        hashAuditoria TEXT NOT NULL
+      );
+    `);
+
+    // 20. Tabela de Enquetes Rápidas
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS enquetes (
+        id TEXT PRIMARY KEY,
+        titulo TEXT NOT NULL,
+        descricao TEXT NOT NULL,
+        opcoesJson TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'aberta',
+        dataInicio TEXT NOT NULL,
+        dataFim TEXT,
+        totalVotos INTEGER DEFAULT 0,
+        criadoPor TEXT DEFAULT 'admin',
+        criadoEm TEXT NOT NULL
+      );
+    `);
+
+    // 21. Tabela de Votos de Enquete
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS enquete_votos (
+        id TEXT PRIMARY KEY,
+        enqueteId TEXT NOT NULL,
+        cpf TEXT NOT NULL,
+        moradorNome TEXT NOT NULL,
+        unidadeId TEXT NOT NULL,
+        opcaoId TEXT NOT NULL,
+        opcaoLabel TEXT NOT NULL,
+        canal TEXT NOT NULL DEFAULT 'whatsapp',
+        dataHora TEXT NOT NULL,
+        UNIQUE(enqueteId, cpf)
       );
     `);
 
@@ -2409,11 +2466,309 @@ export class DbService {
       },
       consentimentos,
       boletosHistorico: cobrancas as any,
-      ocorrenciasHistorico: [],
+      ocorrenciasHistorico: this.getOcorrencias().filter(o => o.moradorNome?.toLowerCase().includes('carlos') || (o.unidadeId && o.unidadeId.includes('101'))),
       visitasHistorico: visitas,
       encomendasHistorico: encomendas,
       geradoEm: agora,
       hashValidador
     };
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE OCORRÊNCIAS & INFRAÇÕES
+  // ==========================================
+
+  public getOcorrencias(): Ocorrencia[] {
+    const stmt = this.db.prepare('SELECT * FROM ocorrencias ORDER BY dataCriacao DESC');
+    const rows = stmt.all() as any[];
+    if (rows.length === 0) {
+      const defaultOcs: Ocorrencia[] = [
+        {
+          id: 'oc_2026_01',
+          protocolo: 'SISCON-OC-2026-001',
+          moradorNome: 'Juliana Mendes',
+          moradorTelefone: '5511999990002',
+          unidadeId: 'Apt 402 - Bloco B',
+          unidadeInfratora: 'Apt 502 - Bloco B',
+          categoria: 'barulho',
+          gravidade: 'grave',
+          descricao: 'Som excessivamente alto e festa com gritaria após as 23h30 em dia de semana.',
+          artigoRegimento: 'Art. 42 da Convenção e Art. 1.336, IV do Código Civil (Sossegado descanso dos condôminos)',
+          status: 'advertida',
+          tipoAcaoTomada: 'advertencia_formal',
+          prazoDefesaDias: 10,
+          parecerSindico: 'Primeira reincidência comprovada com registro em livro de portaria. Advertência formal expedida.',
+          dataCriacao: '2026-11-20T23:45:00.000Z',
+          hashAuditoria: 'E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855'
+        },
+        {
+          id: 'oc_2026_02',
+          protocolo: 'SISCON-OC-2026-002',
+          moradorNome: 'Roberto Lima',
+          moradorTelefone: '5511999990003',
+          unidadeId: 'Apt 201 - Bloco A',
+          unidadeInfratora: 'Apt 203 - Bloco A',
+          categoria: 'vaga_garagem',
+          gravidade: 'media',
+          descricao: 'Veículo SUV estacionado fora da demarcação ocupando 30cm da vaga vizinha.',
+          artigoRegimento: 'Art. 18 do Regimento Interno (Uso exclusivo das vagas demarcadas)',
+          status: 'em_analise',
+          tipoAcaoTomada: 'notificacao_amigavel',
+          parecerSindico: 'Notificação amigável enviada via WhatsApp para alinhamento amigável.',
+          dataCriacao: '2026-11-22T08:15:00.000Z',
+          hashAuditoria: 'A1B2C3D4E5F60718293A4B5C6D7E8F90123456789ABCDEF0123456789ABCDEF0'
+        }
+      ];
+      for (const oc of defaultOcs) {
+        this.saveOcorrencia(oc);
+      }
+      return defaultOcs;
+    }
+    return rows.map(r => ({
+      id: r.id,
+      protocolo: r.protocolo,
+      moradorId: r.moradorId,
+      moradorNome: r.moradorNome,
+      moradorTelefone: r.moradorTelefone,
+      unidadeId: r.unidadeId,
+      unidadeInfratora: r.unidadeInfratora,
+      categoria: r.categoria,
+      gravidade: r.gravidade,
+      descricao: r.descricao,
+      artigoRegimento: r.artigoRegimento,
+      status: r.status,
+      tipoAcaoTomada: r.tipoAcaoTomada,
+      valorMulta: r.valorMulta,
+      prazoDefesaDias: r.prazoDefesaDias,
+      parecerSindico: r.parecerSindico,
+      dataCriacao: r.dataCriacao,
+      dataResolucao: r.dataResolucao,
+      hashAuditoria: r.hashAuditoria
+    }));
+  }
+
+  public getOcorrenciaById(id: string): Ocorrencia | null {
+    const stmt = this.db.prepare('SELECT * FROM ocorrencias WHERE id = ? OR protocolo = ? LIMIT 1');
+    const r = stmt.get(id, id) as any;
+    if (!r) return null;
+    return {
+      id: r.id,
+      protocolo: r.protocolo,
+      moradorId: r.moradorId,
+      moradorNome: r.moradorNome,
+      moradorTelefone: r.moradorTelefone,
+      unidadeId: r.unidadeId,
+      unidadeInfratora: r.unidadeInfratora,
+      categoria: r.categoria,
+      gravidade: r.gravidade,
+      descricao: r.descricao,
+      artigoRegimento: r.artigoRegimento,
+      status: r.status,
+      tipoAcaoTomada: r.tipoAcaoTomada,
+      valorMulta: r.valorMulta,
+      prazoDefesaDias: r.prazoDefesaDias,
+      parecerSindico: r.parecerSindico,
+      dataCriacao: r.dataCriacao,
+      dataResolucao: r.dataResolucao,
+      hashAuditoria: r.hashAuditoria
+    };
+  }
+
+  public saveOcorrencia(oc: Ocorrencia): void {
+    const protocolo = oc.protocolo || `SISCON-OC-${Date.now().toString().slice(-6)}`;
+    const hash = oc.hashAuditoria || crypto.createHash('sha256').update(`${protocolo}:${oc.unidadeId}:${oc.categoria}:${Date.now()}`).digest('hex');
+    const stmt = this.db.prepare(`
+      INSERT INTO ocorrencias (
+        id, protocolo, moradorId, moradorNome, moradorTelefone, unidadeId, unidadeInfratora,
+        categoria, gravidade, descricao, artigoRegimento, status, tipoAcaoTomada, valorMulta,
+        prazoDefesaDias, parecerSindico, dataCriacao, dataResolucao, hashAuditoria
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        status = excluded.status,
+        tipoAcaoTomada = excluded.tipoAcaoTomada,
+        valorMulta = excluded.valorMulta,
+        prazoDefesaDias = excluded.prazoDefesaDias,
+        parecerSindico = excluded.parecerSindico,
+        dataResolucao = excluded.dataResolucao,
+        artigoRegimento = excluded.artigoRegimento,
+        gravidade = excluded.gravidade
+    `);
+    stmt.run(
+      oc.id,
+      protocolo,
+      oc.moradorId || null,
+      oc.moradorNome || 'Morador',
+      oc.moradorTelefone || null,
+      oc.unidadeId || 'Geral',
+      oc.unidadeInfratora || null,
+      oc.categoria,
+      oc.gravidade || 'media',
+      oc.descricao,
+      oc.artigoRegimento || null,
+      oc.status || 'aberta',
+      oc.tipoAcaoTomada || null,
+      oc.valorMulta || 0,
+      oc.prazoDefesaDias || 10,
+      oc.parecerSindico || null,
+      oc.dataCriacao || new Date().toISOString(),
+      oc.dataResolucao || null,
+      hash
+    );
+  }
+
+  public aplicarAcaoOcorrencia(id: string, acao: 'notificacao_amigavel' | 'advertencia_formal' | 'multa' | 'arquivamento', parecer: string, valorMulta?: number): Ocorrencia | null {
+    const oc = this.getOcorrenciaById(id);
+    if (!oc) return null;
+    let novoStatus: Ocorrencia['status'] = 'em_analise';
+    if (acao === 'notificacao_amigavel') novoStatus = 'em_analise';
+    if (acao === 'advertencia_formal') novoStatus = 'advertida';
+    if (acao === 'multa') novoStatus = 'multada';
+    if (acao === 'arquivamento') novoStatus = 'arquivada';
+
+    oc.status = novoStatus;
+    oc.tipoAcaoTomada = acao;
+    oc.parecerSindico = parecer;
+    if (typeof valorMulta === 'number') oc.valorMulta = valorMulta;
+    if (acao === 'arquivamento') oc.dataResolucao = new Date().toISOString();
+    this.saveOcorrencia(oc);
+    return oc;
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE ENQUETES RÁPIDAS
+  // ==========================================
+
+  public getEnquetes(): Enquete[] {
+    const stmt = this.db.prepare('SELECT * FROM enquetes ORDER BY criadoEm DESC');
+    const rows = stmt.all() as any[];
+    if (rows.length === 0) {
+      const defaultEnquete: Enquete = {
+        id: 'enq_2026_01',
+        titulo: 'Horário de Funcionamento da Academia nos Domingos',
+        descricao: 'Deseja estender o horário de fechamento da academia aos domingos das 18h para as 22h?',
+        opcoes: [
+          { id: '1', label: 'Sim, estender até 22h', votos: 34 },
+          { id: '2', label: 'Não, manter até 18h', votos: 8 },
+          { id: '3', label: 'Indiferente / Não utilizo', votos: 5 }
+        ],
+        status: 'aberta',
+        dataInicio: '2026-11-20T08:00:00.000Z',
+        dataFim: '2026-11-30T23:59:59.000Z',
+        totalVotos: 47,
+        criadoPor: 'Síndico Master',
+        criadoEm: '2026-11-20T08:00:00.000Z'
+      };
+      this.saveEnquete(defaultEnquete);
+      return [defaultEnquete];
+    }
+    return rows.map(r => {
+      let opcoes: EnqueteOpcao[] = [];
+      try {
+        opcoes = JSON.parse(r.opcoesJson);
+      } catch (e) {
+        opcoes = [];
+      }
+      return {
+        id: r.id,
+        titulo: r.titulo,
+        descricao: r.descricao,
+        opcoes,
+        status: r.status,
+        dataInicio: r.dataInicio,
+        dataFim: r.dataFim,
+        totalVotos: r.totalVotos,
+        criadoPor: r.criadoPor,
+        criadoEm: r.criadoEm
+      };
+    });
+  }
+
+  public getEnqueteById(id: string): Enquete | null {
+    const stmt = this.db.prepare('SELECT * FROM enquetes WHERE id = ? LIMIT 1');
+    const r = stmt.get(id) as any;
+    if (!r) return null;
+    let opcoes: EnqueteOpcao[] = [];
+    try {
+      opcoes = JSON.parse(r.opcoesJson);
+    } catch (e) {
+      opcoes = [];
+    }
+    return {
+      id: r.id,
+      titulo: r.titulo,
+      descricao: r.descricao,
+      opcoes,
+      status: r.status,
+      dataInicio: r.dataInicio,
+      dataFim: r.dataFim,
+      totalVotos: r.totalVotos,
+      criadoPor: r.criadoPor,
+      criadoEm: r.criadoEm
+    };
+  }
+
+  public saveEnquete(enquete: Enquete): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO enquetes (id, titulo, descricao, opcoesJson, status, dataInicio, dataFim, totalVotos, criadoPor, criadoEm)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        titulo = excluded.titulo,
+        descricao = excluded.descricao,
+        opcoesJson = excluded.opcoesJson,
+        status = excluded.status,
+        totalVotos = excluded.totalVotos,
+        dataFim = excluded.dataFim
+    `);
+    stmt.run(
+      enquete.id,
+      enquete.titulo,
+      enquete.descricao,
+      JSON.stringify(enquete.opcoes),
+      enquete.status || 'aberta',
+      enquete.dataInicio || new Date().toISOString(),
+      enquete.dataFim || null,
+      enquete.totalVotos || 0,
+      enquete.criadoPor || 'admin',
+      enquete.criadoEm || new Date().toISOString()
+    );
+  }
+
+  public registrarVotoEnquete(voto: EnqueteVoto): boolean {
+    const enquete = this.getEnqueteById(voto.enqueteId);
+    if (!enquete || enquete.status !== 'aberta') return false;
+
+    try {
+      const stmt = this.db.prepare(`
+        INSERT INTO enquete_votos (id, enqueteId, cpf, moradorNome, unidadeId, opcaoId, opcaoLabel, canal, dataHora)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      stmt.run(
+        voto.id || `ev_${Date.now()}`,
+        voto.enqueteId,
+        voto.cpf.replace(/\D/g, ''),
+        voto.moradorNome,
+        voto.unidadeId,
+        voto.opcaoId,
+        voto.opcaoLabel,
+        voto.canal || 'whatsapp',
+        voto.dataHora || new Date().toISOString()
+      );
+
+      // Incrementa voto na opção e no total
+      const opcao = enquete.opcoes.find(o => o.id === voto.opcaoId);
+      if (opcao) {
+        opcao.votos = (opcao.votos || 0) + 1;
+      }
+      enquete.totalVotos = (enquete.totalVotos || 0) + 1;
+      this.saveEnquete(enquete);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  public getEnqueteVotos(enqueteId: string): EnqueteVoto[] {
+    const stmt = this.db.prepare('SELECT * FROM enquete_votos WHERE enqueteId = ? ORDER BY dataHora DESC');
+    return stmt.all(enqueteId) as unknown as EnqueteVoto[];
   }
 }
