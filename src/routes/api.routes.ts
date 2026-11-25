@@ -12,7 +12,7 @@ import { requireAuth } from '../middlewares/auth.middleware.js';
 import { formatarMensagemPix, gerarPayloadPix } from '../utils/pix.util.js';
 import { EventsService } from '../services/events.service.js';
 import { SchedulerService } from '../services/scheduler.service.js';
-import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado, Assembleia, AssembleiaVoto, ConsentimentoLGPD, Ocorrencia, Enquete, EnqueteVoto } from '../types/index.js';
+import { Cobranca, Reserva, OrdemManutencao, Condominio, PendenciaSupervisao, AIDecision, Visita, Encomenda, Comunicado, Assembleia, AssembleiaVoto, ConsentimentoLGPD, Ocorrencia, Enquete, EnqueteVoto, PrevisaoOrcamentaria, ContratoFornecedor, ItemOrcamento, FracaoIdealCota } from '../types/index.js';
 import { TranscriptionService } from '../services/transcription.service.js';
 import { BoletoPdfService } from '../services/boleto-pdf.service.js';
 
@@ -2252,6 +2252,333 @@ export function createApiRouter(orchestrator: BotOrchestrator): Router {
       });
     } catch (err: any) {
       res.status(500).json({ error: 'Erro ao buscar telemetria do WhatsApp: ' + err.message });
+    }
+  });
+
+  // ==========================================
+  // 30. PREVISÃO ORÇAMENTÁRIA ANUAL & SIMULADOR DE COTA IA
+  // ==========================================
+
+  router.get('/orcamentos/previsao', requireAuth(), (_req: Request, res: Response) => {
+    try {
+      const previsoes = dbService.getPrevisoesOrcamentarias();
+      res.json({
+        success: true,
+        total: previsoes.length,
+        previsoes,
+        data: previsoes
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao listar previsões orçamentárias: ' + err.message });
+    }
+  });
+
+  router.get('/orcamentos/previsao/:id', requireAuth(), (req: Request, res: Response) => {
+    try {
+      const previsao = dbService.getPrevisaoOrcamentariaById(req.params.id);
+      if (!previsao) {
+        return res.status(404).json({ error: 'Previsão orçamentária não encontrada.' });
+      }
+      res.json({
+        success: true,
+        previsao,
+        data: previsao
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao obter previsão orçamentária: ' + err.message });
+    }
+  });
+
+  router.post('/orcamentos/simular', requireAuth(), (req: Request, res: Response) => {
+    try {
+      const {
+        anoExercicio,
+        inflacaoProjetada,
+        fundoReservaPercentual,
+        fundoObrasPercentual,
+        despesaBaseAnual,
+        totalUnidades,
+        fracoesCustomizadas
+      } = req.body;
+
+      const resultado = dbService.simularCotaOrcamentaria({
+        anoExercicio: anoExercicio ? Number(anoExercicio) : undefined,
+        inflacaoProjetada: inflacaoProjetada !== undefined ? Number(inflacaoProjetada) : undefined,
+        fundoReservaPercentual: fundoReservaPercentual !== undefined ? Number(fundoReservaPercentual) : undefined,
+        fundoObrasPercentual: fundoObrasPercentual !== undefined ? Number(fundoObrasPercentual) : undefined,
+        despesaBaseAnual: despesaBaseAnual ? Number(despesaBaseAnual) : undefined,
+        totalUnidades: totalUnidades ? Number(totalUnidades) : undefined,
+        fracoesCustomizadas
+      });
+
+      res.json({
+        success: true,
+        simulacao: resultado,
+        data: resultado
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao realizar simulação orçamentária: ' + err.message });
+    }
+  });
+
+  router.post('/orcamentos/previsao', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    try {
+      const {
+        anoExercicio,
+        titulo,
+        despesasOrcadasTotal,
+        receitasPrevistasTotal,
+        totalUnidades,
+        cotaSugeridaUnitaria,
+        fundoReservaPercentual,
+        fundoObrasPercentual,
+        inflacaoProjetada,
+        parecerIa,
+        itens,
+        fracoes
+      } = req.body;
+
+      if (!anoExercicio || !titulo || !despesasOrcadasTotal) {
+        return res.status(400).json({ error: 'Ano de exercício, título e total de despesas orçadas são obrigatórios.' });
+      }
+
+      const novaPrevisao: PrevisaoOrcamentaria = {
+        id: `orc_${anoExercicio}_${Date.now().toString(36).substring(2, 6)}`,
+        anoExercicio: Number(anoExercicio),
+        titulo,
+        status: 'em_estudo',
+        despesasOrcadasTotal: Number(despesasOrcadasTotal),
+        receitasPrevistasTotal: Number(receitasPrevistasTotal || despesasOrcadasTotal),
+        totalUnidades: Number(totalUnidades || 240),
+        cotaSugeridaUnitaria: Number(cotaSugeridaUnitaria || (Number(despesasOrcadasTotal) / 12 / (Number(totalUnidades) || 240))),
+        fundoReservaPercentual: Number(fundoReservaPercentual || 10),
+        fundoObrasPercentual: Number(fundoObrasPercentual || 5),
+        inflacaoProjetada: Number(inflacaoProjetada || 4.5),
+        parecerIa: parecerIa || undefined,
+        itens: itens || [],
+        fracoes: fracoes || [],
+        criadoEm: new Date().toISOString()
+      };
+
+      dbService.savePrevisaoOrcamentaria(novaPrevisao);
+      res.status(201).json({
+        success: true,
+        previsao: novaPrevisao,
+        data: novaPrevisao
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao criar previsão orçamentária: ' + err.message });
+    }
+  });
+
+  router.post('/orcamentos/previsao/:id/aprovar-ago', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    try {
+      const { ataProtocolo } = req.body;
+      const aprovada = dbService.aprovarPrevisaoAgo(req.params.id, ataProtocolo);
+      if (!aprovada) {
+        return res.status(404).json({ error: 'Previsão orçamentária não encontrada.' });
+      }
+      res.json({
+        success: true,
+        mensagem: `Previsão Orçamentária para o exercício ${aprovada.anoExercicio} aprovada com sucesso para a AGO sob protocolo ${aprovada.ataProtocolo}.`,
+        previsao: aprovada,
+        data: aprovada
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao aprovar previsão orçamentária em AGO: ' + err.message });
+    }
+  });
+
+  // ==========================================
+  // 31. GESTÃO DE CONTRATOS, LAUDOS REGULATÓRIOS & SEGURO PREDIAL
+  // ==========================================
+
+  router.get('/contratos', requireAuth(), (req: Request, res: Response) => {
+    try {
+      const { status, categoria, laudoObrigatorio } = req.query;
+      const contratos = dbService.getContratosFornecedores({
+        status: status as string,
+        categoria: categoria as string,
+        laudoObrigatorio: laudoObrigatorio !== undefined ? laudoObrigatorio === 'true' : undefined
+      });
+
+      const totalVigentes = contratos.filter(c => c.status === 'vigente').length;
+      const totalVencem30d = contratos.filter(c => (c.diasParaVencer !== undefined && c.diasParaVencer <= 30 && c.diasParaVencer >= 0)).length;
+      const totalVencidos = contratos.filter(c => (c.diasParaVencer !== undefined && c.diasParaVencer < 0)).length;
+      const totalLaudosLegais = contratos.filter(c => c.laudoObrigatorioPorLei).length;
+      const custoMensalTotal = contratos.reduce((acc, cur) => acc + (cur.valorMensal || 0), 0);
+
+      res.json({
+        success: true,
+        total: contratos.length,
+        estatisticas: {
+          totalVigentes,
+          totalVencem30d,
+          totalVencidos,
+          totalLaudosLegais,
+          custoMensalTotal
+        },
+        contratos,
+        data: contratos
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao listar contratos e laudos: ' + err.message });
+    }
+  });
+
+  router.get('/contratos/:id', requireAuth(), (req: Request, res: Response) => {
+    try {
+      const contrato = dbService.getContratoFornecedorById(req.params.id);
+      if (!contrato) {
+        return res.status(404).json({ error: 'Contrato não encontrado.' });
+      }
+      res.json({
+        success: true,
+        contrato,
+        data: contrato
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao obter contrato: ' + err.message });
+    }
+  });
+
+  router.post('/contratos', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    try {
+      const {
+        fornecedorNome,
+        cnpj,
+        servicoCategoria,
+        descricao,
+        valorMensal,
+        valorTotalAnual,
+        dataInicio,
+        dataVencimento,
+        renovacaoAutomatica,
+        contatoNome,
+        contatoTelefone,
+        contatoEmail,
+        laudoObrigatorioPorLei,
+        artigoLegal,
+        apoliceNumero,
+        seguradoraNome,
+        alertaDiasAntecedencia
+      } = req.body;
+
+      if (!fornecedorNome || !servicoCategoria || !dataInicio || !dataVencimento || !contatoNome || !contatoTelefone) {
+        return res.status(400).json({ error: 'Fornecedor, categoria, datas de início/vencimento e contato são obrigatórios.' });
+      }
+
+      const vMensal = Number(valorMensal || 0);
+      const novoContrato: ContratoFornecedor = {
+        id: `contr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`,
+        fornecedorNome,
+        cnpj: cnpj || undefined,
+        servicoCategoria,
+        descricao: descricao || 'Contrato de prestação de serviços',
+        valorMensal: vMensal,
+        valorTotalAnual: Number(valorTotalAnual || (vMensal * 12)),
+        dataInicio,
+        dataVencimento,
+        renovacaoAutomatica: Boolean(renovacaoAutomatica),
+        contatoNome,
+        contatoTelefone,
+        contatoEmail: contatoEmail || undefined,
+        status: 'vigente',
+        laudoObrigatorioPorLei: Boolean(laudoObrigatorioPorLei),
+        artigoLegal: artigoLegal || undefined,
+        apoliceNumero: apoliceNumero || undefined,
+        seguradoraNome: seguradoraNome || undefined,
+        alertaDiasAntecedencia: alertaDiasAntecedencia || [60, 30, 15],
+        alertasDisparados: [],
+        criadoEm: new Date().toISOString()
+      };
+
+      dbService.saveContratoFornecedor(novoContrato);
+      res.status(201).json({
+        success: true,
+        contrato: novoContrato,
+        data: novoContrato
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao cadastrar contrato: ' + err.message });
+    }
+  });
+
+  router.post('/contratos/:id/renovar', requireAuth(['admin', 'sindico']), (req: Request, res: Response) => {
+    try {
+      const { novaDataVencimento, novoValorMensal } = req.body;
+      if (!novaDataVencimento) {
+        return res.status(400).json({ error: 'Nova data de vencimento é obrigatória.' });
+      }
+
+      const renovado = dbService.renovarContratoFornecedor(
+        req.params.id,
+        novaDataVencimento,
+        novoValorMensal ? Number(novoValorMensal) : undefined
+      );
+
+      if (!renovado) {
+        return res.status(404).json({ error: 'Contrato não encontrado.' });
+      }
+
+      res.json({
+        success: true,
+        mensagem: `Contrato ${renovado.fornecedorNome} renovado com sucesso até ${renovado.dataVencimento}.`,
+        contrato: renovado,
+        data: renovado
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao renovar contrato: ' + err.message });
+    }
+  });
+
+  router.post('/contratos/verificar-alertas', requireAuth(['admin', 'sindico']), (_req: Request, res: Response) => {
+    try {
+      const alertas = dbService.verificarAlertasContratos();
+      res.json({
+        success: true,
+        totalAlertas: alertas.length,
+        alertas,
+        data: alertas
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao verificar alertas de contratos: ' + err.message });
+    }
+  });
+
+  router.post('/contratos/:id/notificar-whatsapp', requireAuth(['admin', 'sindico']), async (req: Request, res: Response) => {
+    try {
+      const contrato = dbService.getContratoFornecedorById(req.params.id);
+      if (!contrato) return res.status(404).json({ error: 'Contrato não encontrado.' });
+
+      const foneLimpo = contrato.contatoTelefone.replace(/\D/g, '');
+      const targetJid = foneLimpo.startsWith('55') ? `${foneLimpo}@s.whatsapp.net` : `55${foneLimpo}@s.whatsapp.net`;
+
+      const msgAlerta = [
+        `📋 *CONDOMÍNIO RESIDENCIAL - AVISO DE VENCIMENTO / RENOVAÇÃO*`,
+        `----------------------------------------`,
+        `Prezado(a) *${contrato.contatoNome}* (${contrato.fornecedorNome}),`,
+        ``,
+        `Constatamos que o contrato/laudo regulatório de *${contrato.servicoCategoria.toUpperCase()}* está programado para vencer em *${new Date(contrato.dataVencimento).toLocaleDateString('pt-BR')}* (restam aproximadamente ${contrato.diasParaVencer} dias).`,
+        contrato.artigoLegal ? `⚖️ *Conformidade Legal:* ${contrato.artigoLegal}` : '',
+        ``,
+        `Solicitamos o envio da proposta atualizada de renovação ou agendamento da vistoria técnica para emissão do novo certificado.`,
+        `----------------------------------------`,
+        `Administração Condominial - CondoVolto AI`
+      ].filter(Boolean).join('\n');
+
+      try {
+        await evolutionService.sendText(targetJid, msgAlerta);
+      } catch (e) {}
+
+      res.json({
+        success: true,
+        mensagem: `Notificação enviada com sucesso para ${contrato.fornecedorNome} (${contrato.contatoTelefone}).`,
+        targetJid,
+        contrato
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Erro ao disparar notificação WhatsApp para fornecedor: ' + err.message });
     }
   });
 

@@ -1561,6 +1561,237 @@
   </div>
 
   <!-- ============================================================== -->
+  <!-- MODAL: NOVO CONTRATO OU LAUDO REGULATÓRIO -->
+  <!-- ============================================================== -->
+  <div id="modalNovoContrato" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) fecharModalNovoContrato()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-xl w-full border border-indigo-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white">Cadastrar Contrato / Laudo Regulatório</h3>
+            <span class="text-[10px] text-slate-400 font-mono">Conformidade Legal & Gestão de Fornecedores</span>
+          </div>
+        </div>
+        <button onclick="fecharModalNovoContrato()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="salvarNovoContrato(event)" class="space-y-3.5 text-xs text-slate-300">
+        <div>
+          <label class="block font-semibold mb-1 text-slate-200">Razão Social / Nome do Fornecedor *</label>
+          <input type="text" id="novoContrFornecedor" required placeholder="Ex: Porto Seguro S.A. ou Otis Elevadores Ltda" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">CNPJ do Fornecedor</label>
+            <input type="text" id="novoContrCnpj" placeholder="00.000.000/0001-00" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 font-mono" />
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Categoria do Serviço *</label>
+            <select id="novoContrCategoria" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white">
+              <option value="seguro_predial">🛡️ Seguro Predial Obrigatório (Art. 1.346 CC)</option>
+              <option value="avcb_bombeiros">🔥 AVCB / Bombeiros (Decreto Estadual)</option>
+              <option value="elevadores">🛗 Manutenção de Elevadores & RIA</option>
+              <option value="spda_para_raios">⚡ SPDA Para-raios (NBR 5419)</option>
+              <option value="caixa_dagua">💧 Limpeza Semestral de Caixas d'Água</option>
+              <option value="portaria_seguranca">👮 Portaria & Segurança Privada</option>
+              <option value="limpeza_conservacao">🧹 Limpeza & Conservação</option>
+              <option value="gerador">⚙️ Grupo Gerador & Cabine Primária</option>
+              <option value="dedetizacao">🦗 Desinsetização & Desratização</option>
+              <option value="gas_encanado">🔥 Instalações de Gás Encanado</option>
+              <option value="outros">📦 Outros Serviços</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-slate-200">Objeto / Descrição do Contrato</label>
+          <input type="text" id="novoContrDescricao" placeholder="Ex: Cobertura contra incêndio, danos elétricos e responsabilidade civil do condomínio" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500" />
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Valor Mensal (R$) *</label>
+            <input type="number" step="0.01" id="novoContrValorMensal" required placeholder="3450.00" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white font-mono" />
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Início da Vigência *</label>
+            <input type="date" id="novoContrDataInicio" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white" />
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Data de Vencimento *</label>
+            <input type="date" id="novoContrDataVencimento" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white" />
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-[#0a0e18] border border-white/[0.08] space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="novoContrObrigatorio" checked class="rounded border-slate-700 text-indigo-600 focus:ring-indigo-500" />
+            <span class="font-bold text-white text-xs">Exigência Legal Obrigatória para o Síndico</span>
+          </label>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-0.5">Amparo / Artigo Legal</label>
+              <input type="text" id="novoContrArtigoLegal" placeholder="Ex: Art. 1.346 Código Civil" class="w-full bg-black/40 border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-600" />
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-0.5">Nº Apólice / Certificado</label>
+              <input type="text" id="novoContrApolice" placeholder="Ex: AP-98124 ou AVCB-2026" class="w-full bg-black/40 border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-600 font-mono" />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Nome do Contato *</label>
+            <input type="text" id="novoContrContatoNome" required placeholder="Ex: Marcos Siqueira" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500" />
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">WhatsApp / Telefone *</label>
+            <input type="text" id="novoContrContatoTelefone" required placeholder="11988887711" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 font-mono" />
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">E-mail</label>
+            <input type="email" id="novoContrContatoEmail" placeholder="contato@fornecedor.com.br" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500" />
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+            Salvar Contrato & Ativar Monitoramento de Vencimento
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: RENOVAÇÃO DE CONTRATO / LAUDO -->
+  <!-- ============================================================== -->
+  <div id="modalRenovarContrato" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) fecharModalRenovarContrato()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-md w-full border border-emerald-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+          <span>Renovar Vigência de Contrato</span>
+        </h3>
+        <button onclick="fecharModalRenovarContrato()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="confirmarRenovacaoContrato(event)" class="space-y-3.5 text-xs text-slate-300">
+        <input type="hidden" id="renovarContrId" />
+        <div class="p-3 rounded-xl bg-[#0a0e18] border border-white/[0.08] space-y-1">
+          <span class="text-[10px] text-slate-500 uppercase block font-mono">Fornecedor Selecionado:</span>
+          <strong id="renovarContrNome" class="text-sm text-white block">Nome do Fornecedor</strong>
+          <span id="renovarContrVencAtual" class="text-[11px] text-amber-400 block font-mono">Vencimento atual: 10/12/2026</span>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-slate-200">Nova Data de Vencimento *</label>
+          <input type="date" id="renovarContrNovaData" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white" />
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-slate-200">Novo Valor Mensal (R$) (Deixe em branco se mantido)</label>
+          <input type="number" step="0.01" id="renovarContrNovoValor" placeholder="Ex: 3600.00" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white font-mono" />
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+          Confirmar Renovação & Atualizar Status
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: NOVA PREVISÃO ORÇAMENTÁRIA ANUAL -->
+  <!-- ============================================================== -->
+  <div id="modalNovaPrevisao" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) fecharModalNovaPrevisao()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-md w-full border border-indigo-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <span>📊</span>
+          <span>Cadastrar Nova Previsão Orçamentária</span>
+        </h3>
+        <button onclick="fecharModalNovaPrevisao()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="salvarNovaPrevisao(event)" class="space-y-3.5 text-xs text-slate-300">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Ano de Exercício *</label>
+            <input type="number" id="novaPrevAno" value="2027" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white font-mono font-bold" />
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Total Unidades</label>
+            <input type="number" id="novaPrevUnidades" value="240" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-slate-200">Título do Estudo Orçamentário *</label>
+          <input type="text" id="novaPrevTitulo" required value="Previsão Orçamentária 2027 - Gestão Eficiente" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white" />
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-slate-200">Despesa Anual Total Estimada (R$) *</label>
+          <input type="number" step="1000" id="novaPrevDespesaTotal" value="1965600" required class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white font-mono font-bold" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Inflação IPCA (%)</label>
+            <input type="number" step="0.1" id="novaPrevInflacao" value="4.5" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white font-mono" />
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-slate-200">Fundo Reserva (%)</label>
+            <input type="number" step="1" id="novaPrevFundoReserva" value="10" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white font-mono" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+          Criar Exercício Orçamentário & Iniciar Estudo
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: APROVAR PREVISÃO ORÇAMENTÁRIA EM AGO -->
+  <!-- ============================================================== -->
+  <div id="modalAprovarAgo" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) fecharModalAprovarAgo()">
+    <div class="glass-surface rounded-3xl p-6 md:p-8 max-w-md w-full border border-emerald-500/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <span>📜</span>
+          <span>Homologar Previsão Orçamentária em AGO</span>
+        </h3>
+        <button onclick="fecharModalAprovarAgo()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="confirmarAprovacaoAgo(event)" class="space-y-3.5 text-xs text-slate-300">
+        <div class="p-3 rounded-xl bg-[#0a0e18] border border-white/[0.08] space-y-1">
+          <span class="text-[10px] text-slate-500 uppercase block font-mono">Exercício Selecionado:</span>
+          <strong id="aprovarAgoExercicioTexto" class="text-sm text-white block">Exercício 2027</strong>
+          <span class="text-[11px] text-emerald-400 block font-mono">A aprovação tornará a cota sugerida como valor oficial de cobrança.</span>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-slate-200">Número da Ata / Protocolo da Assembleia *</label>
+          <input type="text" id="aprovarAgoProtocolo" required value="ATA-AGO-2027-REG-502" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white font-mono" />
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+          Homologar Aprovação na AGO & Gerar Auditoria
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
   <!-- MODAL: ACESSO RESTRITO POR PERMISSÃO (RBAC) -->
   <!-- ============================================================== -->
   <div id="modalAcessoNegado" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 hidden p-4" onclick="if(event.target === this) closeAcessoNegadoModal()">
@@ -2781,9 +3012,19 @@
           <button onclick="switchTab('orcamentos')" id="nav-orcamentos" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
             <div class="flex items-center gap-2.5">
               <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v12"/></svg>
-              <span>Orçamentos & Gastos</span>
+              <span>Orçamentos & Previsão IA</span>
             </div>
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
+          </button>
+
+          <!-- Contratos & Laudos Regulatórios -->
+          <button onclick="switchTab('contratos')" id="nav-contratos" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              <span>Contratos & Laudos</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-mono font-bold">LEI</span>
             <span class="sidebar-lock-badge hidden text-slate-500 text-xs">🔒</span>
           </button>
         </div>
@@ -3930,26 +4171,182 @@
     </main>
 
     <!-- ============================================================== -->
-    <!-- MÓDULO: ORÇAMENTOS, PREVISÃO ANUAL & COTAÇÕES -->
-        <!-- ============================================================== -->
-    <!-- MÓDULO: ORÇAMENTOS & GASTOS CONDOMINIAIS (DESPESAS E COTAÇÕES) -->
+    <!-- MÓDULO: ORÇAMENTOS, PREVISÃO ANUAL & SIMULADOR IA -->
     <!-- ============================================================== -->
     <main id="tab-content-orcamentos" class="flex-1 min-w-0 w-full overflow-y-auto p-4 sm:p-6 md:p-8 hidden">
       <div class="max-w-5xl mx-auto space-y-6">
-        <!-- Topo & Ações de Gestão de Gastos -->
+        <!-- Topo & Ações de Previsão Orçamentária -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div class="text-xs text-slate-400 font-medium mb-1">Finanças & Custos</div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Orçamentos & Gastos</h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Previsão orçamentária anual, execução de despesas por categoria e tomadas de preço com 3 cotações.</p>
+            <div class="text-xs text-slate-400 font-medium mb-1">Finanças & Governança AGO</div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Previsão Orçamentária & Simulador IA</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Planejamento orçamentário anual, inflação IPCA, cálculo de cota por fração ideal para AGO e acompanhamento previsto vs. realizado.</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="showToast('Nova Cotação', 'Assistente de Cotações com IA ativado. Insira os dados da solicitação.', 'info')" class="px-4 py-2 rounded-xl bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
-              <span>📝</span> <span>+ Nova Cotação IA</span>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="abrirModalNovaPrevisao()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+              <span>📊</span> <span>+ Nova Previsão</span>
             </button>
-            <button onclick="showToast('Lançamento', 'Formulário de nota fiscal e contas a pagar aberto.', 'info')" class="px-4 py-2 rounded-xl bg-white dark:bg-[#151D2D] hover:bg-slate-50 dark:hover:bg-white/[0.05] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
-              <span>🧾</span> <span>+ Lançar Despesa / NF</span>
+            <button onclick="simularCotaIa()" class="px-4 py-2 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+              <span>🤖</span> <span>Simular com IA</span>
             </button>
+            <button onclick="abrirModalAprovarAgo()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+              <span>📜</span> <span>Aprovar em AGO</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Seletor de Exercício & Status de Homologação -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Exercício em Foco:</span>
+            <select id="selectExercicioOrcamento" onchange="trocarExercicioOrcamento(this.value)" class="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-[#0e1320] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+              <option value="2026">Exercício 2026 (Aprovada em AGO)</option>
+              <option value="2027" selected>Exercício 2027 (Simulação Preliminar IA)</option>
+            </select>
+          </div>
+          <div id="badgeStatusOrcamento" class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-300/40">
+              ⚡ Status: Em Estudo / Simulação IA
+            </span>
+          </div>
+        </div>
+
+        <!-- SIMULADOR INTERATIVO DE COTA CONDOMINIAL COM IA PARA AGO -->
+        <div class="rounded-2xl border border-indigo-200 dark:border-indigo-900/50 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/30 dark:from-indigo-950/20 dark:via-[#151D2D] dark:to-purple-950/20 shadow-xs p-6 space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-100 dark:border-white/10 pb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🤖</span>
+                <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Simulador Atuarial de Cota com Inteligência Artificial</h3>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-bold uppercase">AGO Ready</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Ajuste os parâmetros macroeconômicos e reservas obrigatórias para recalcular as cotas por fração ideal em tempo real.</p>
+            </div>
+            <button onclick="simularCotaIa()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-all self-start sm:self-auto">
+              Recalcular com IA ⚡
+            </button>
+          </div>
+
+          <!-- Parâmetros de Entrada (Sliders & Controles) -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+            <!-- Inflação IPCA -->
+            <div class="p-3.5 rounded-xl bg-white dark:bg-[#0e1320] border border-slate-200 dark:border-white/10 space-y-2">
+              <div class="flex items-center justify-between font-semibold">
+                <span class="text-slate-700 dark:text-slate-300">Inflação IPCA / FIPE</span>
+                <span id="labelInflacaoVal" class="text-indigo-600 dark:text-indigo-400 font-bold font-mono">4.5%</span>
+              </div>
+              <input type="range" id="inputInflacao" min="0" max="15" step="0.1" value="4.5" oninput="document.getElementById('labelInflacaoVal').innerText = this.value + '%'" class="w-full accent-indigo-600 cursor-pointer" />
+              <span class="text-[10px] text-slate-400 block">Projeção Bacen / Mercado</span>
+            </div>
+
+            <!-- Fundo de Reserva Legal -->
+            <div class="p-3.5 rounded-xl bg-white dark:bg-[#0e1320] border border-slate-200 dark:border-white/10 space-y-2">
+              <div class="flex items-center justify-between font-semibold">
+                <span class="text-slate-700 dark:text-slate-300">Fundo de Reserva</span>
+                <span id="labelReservaVal" class="text-indigo-600 dark:text-indigo-400 font-bold font-mono">10%</span>
+              </div>
+              <input type="range" id="inputFundoReserva" min="5" max="20" step="1" value="10" oninput="document.getElementById('labelReservaVal').innerText = this.value + '%'" class="w-full accent-indigo-600 cursor-pointer" />
+              <span class="text-[10px] text-slate-400 block">Art. 1.336 CC / Convenção</span>
+            </div>
+
+            <!-- Fundo de Obras & Melhorias -->
+            <div class="p-3.5 rounded-xl bg-white dark:bg-[#0e1320] border border-slate-200 dark:border-white/10 space-y-2">
+              <div class="flex items-center justify-between font-semibold">
+                <span class="text-slate-700 dark:text-slate-300">Fundo de Obras</span>
+                <span id="labelObrasVal" class="text-indigo-600 dark:text-indigo-400 font-bold font-mono">5%</span>
+              </div>
+              <input type="range" id="inputFundoObras" min="0" max="15" step="1" value="5" oninput="document.getElementById('labelObrasVal').innerText = this.value + '%'" class="w-full accent-indigo-600 cursor-pointer" />
+              <span class="text-[10px] text-slate-400 block">Investimentos & Retrofit</span>
+            </div>
+
+            <!-- Base de Despesas Anuais -->
+            <div class="p-3.5 rounded-xl bg-white dark:bg-[#0e1320] border border-slate-200 dark:border-white/10 space-y-2">
+              <div class="flex items-center justify-between font-semibold">
+                <span class="text-slate-700 dark:text-slate-300">Total de Unidades</span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-bold font-mono">240 aptos</span>
+              </div>
+              <input type="number" id="inputTotalUnidades" value="240" class="w-full px-2.5 py-1 rounded-lg border border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-[#151D2D] text-xs font-mono font-bold" />
+              <span class="text-[10px] text-slate-400 block">Torre A e Torre B</span>
+            </div>
+          </div>
+
+          <!-- 4 Cards Dinâmicos do Resultado da Simulação -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="p-4 rounded-xl bg-white dark:bg-[#0e1320] border border-slate-200 dark:border-white/10 shadow-xs">
+              <span class="text-slate-500 text-xs block font-medium">Despesa Mensal Base</span>
+              <h3 id="simDespesaMensalBase" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 163.800,00</h3>
+              <span class="text-[11px] text-slate-400 block mt-1">Custo operacional ordinário</span>
+            </div>
+            <div class="p-4 rounded-xl bg-white dark:bg-[#0e1320] border border-slate-200 dark:border-white/10 shadow-xs">
+              <span class="text-slate-500 text-xs block font-medium">Total Mensal c/ Reservas</span>
+              <h3 id="simTotalMensalNecessario" class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1 font-mono">R$ 188.370,00</h3>
+              <span class="text-[11px] text-slate-400 block mt-1">+10% reserva +5% obras</span>
+            </div>
+            <div class="p-4 rounded-xl bg-white dark:bg-[#0e1320] border border-slate-200 dark:border-white/10 shadow-xs">
+              <span class="text-slate-500 text-xs block font-medium">Cota Média Sugerida</span>
+              <h3 id="simCotaMediaUnitaria" class="text-xl sm:text-2xl font-black text-emerald-600 mt-1 font-mono">R$ 682,50</h3>
+              <span id="simImpactoBadge" class="text-[11px] text-emerald-600 font-bold block mt-1">+5.0% vs. 2026</span>
+            </div>
+            <div class="p-4 rounded-xl bg-white dark:bg-[#0e1320] border border-slate-200 dark:border-white/10 shadow-xs">
+              <span class="text-slate-500 text-xs block font-medium">Equilíbrio Atuarial</span>
+              <h3 class="text-xl sm:text-2xl font-black text-emerald-600 mt-1 font-mono">100% SEGURO</h3>
+              <span class="text-[11px] text-slate-400 block mt-1">Provisão de 3% inadimplência</span>
+            </div>
+          </div>
+
+          <!-- Parecer Atuarial Emitido por IA -->
+          <div class="p-4 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/70 dark:border-indigo-800/40 text-xs space-y-1.5">
+            <div class="flex items-center gap-2 font-bold text-indigo-900 dark:text-indigo-300">
+              <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="M2 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="M12 22v-4"/><path d="m19.07 19.07-2.83-2.83"/><path d="M22 12h-4"/><path d="m19.07 4.93-2.83 2.83"/></svg>
+              <span>Parecer Atuarial & Jurídico CondoVolto AI</span>
+            </div>
+            <p id="simParecerIaTexto" class="text-slate-700 dark:text-slate-300 leading-relaxed font-sans">
+              Reajuste sugerido de +5% baseado no IPCA projetado de 4.5% e dissídio coletivo da categoria de portaria/limpeza (SECOR). Mantém taxa de inadimplência provisionada em 3% com superávit operacional estimado em R$ 42.000 para emergências prediais. Proposta aprovável em AGO sem necessidade de rateio extra.
+            </p>
+          </div>
+
+          <!-- Detalhamento de Cotas por Fração Ideal -->
+          <div class="space-y-3">
+            <h4 class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
+              <span>Cálculo de Cota Condominial por Tipologia & Fração Ideal</span>
+              <span class="text-[11px] text-slate-400 font-normal">Base: Artigo 1.336, I do Código Civil</span>
+            </h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="bg-slate-50 dark:bg-white/[0.03] text-slate-500 font-semibold border-b border-slate-200 dark:border-white/10">
+                    <th class="py-2.5 px-4">Tipologia da Unidade</th>
+                    <th class="py-2.5 px-4">Qtd Unidades</th>
+                    <th class="py-2.5 px-4">Fração Ideal</th>
+                    <th class="py-2.5 px-4">Cota Mensal Sugerida</th>
+                    <th class="py-2.5 px-4 text-right">Subtotal Mensal</th>
+                  </tr>
+                </thead>
+                <tbody id="simTabelaFracoesBody" class="divide-y divide-slate-100 dark:divide-white/5 font-mono text-xs">
+                  <tr>
+                    <td class="py-2.5 px-4 font-sans font-semibold text-slate-900 dark:text-white">Apto Padrão 2D (65m²)</td>
+                    <td class="py-2.5 px-4">160 unidades</td>
+                    <td class="py-2.5 px-4">0.00360</td>
+                    <td class="py-2.5 px-4 font-bold text-indigo-600 dark:text-indigo-400">R$ 589,68</td>
+                    <td class="py-2.5 px-4 text-right text-slate-700 dark:text-slate-300">R$ 94.348,80</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-sans font-semibold text-slate-900 dark:text-white">Apto 3D Família (92m²)</td>
+                    <td class="py-2.5 px-4">60 unidades</td>
+                    <td class="py-2.5 px-4">0.00450</td>
+                    <td class="py-2.5 px-4 font-bold text-indigo-600 dark:text-indigo-400">R$ 737,10</td>
+                    <td class="py-2.5 px-4 text-right text-slate-700 dark:text-slate-300">R$ 44.226,00</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-sans font-semibold text-slate-900 dark:text-white">Cobertura Duplex (180m²)</td>
+                    <td class="py-2.5 px-4">20 unidades</td>
+                    <td class="py-2.5 px-4">0.00760</td>
+                    <td class="py-2.5 px-4 font-bold text-indigo-600 dark:text-indigo-400">R$ 1.244,88</td>
+                    <td class="py-2.5 px-4 text-right text-slate-700 dark:text-slate-300">R$ 24.897,60</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -3957,8 +4354,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
             <span class="text-slate-500 text-xs block font-medium">Previsão Orçamentária Anual</span>
-            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 1.680.000</h3>
-            <span class="text-[11px] text-slate-400 block mt-1">Aprovado na AGO para 2026</span>
+            <h3 id="cardOrcamentoTotal" class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 1.872.000</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">Homologado na AGO</span>
           </div>
           <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
             <span class="text-slate-500 text-xs block font-medium">Despesas Realizadas (YTD)</span>
@@ -3968,7 +4365,7 @@
           <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
             <span class="text-slate-500 text-xs block font-medium">Gasto Médio Mensal</span>
             <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 134.218</h3>
-            <span class="text-[11px] text-slate-400 block mt-1">Teto mensal estipulado: R$ 140k</span>
+            <span class="text-[11px] text-slate-400 block mt-1">Teto mensal estipulado: R$ 156k</span>
           </div>
           <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
             <span class="text-slate-500 text-xs block font-medium">Economia Gerada por IA</span>
@@ -4212,8 +4609,100 @@
         </div>
       </div>
     </main>
-  
-  
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO NOVO: GESTÃO DE CONTRATOS, LAUDOS & SEGURO PREDIAL -->
+    <!-- ============================================================== -->
+    <main id="tab-content-contratos" class="flex-1 min-w-0 w-full overflow-y-auto p-4 sm:p-6 md:p-8 hidden">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <!-- Topo & Ações -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="text-xs text-slate-400 font-medium mb-1">Conformidade Regulatória & Terceiros</div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Gestão de Contratos, Laudos & Seguro Predial</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Controle de vencimentos e conformidade jurídica (Art. 1.346 Código Civil, AVCB Bombeiros, SPDA Para-raios, Limpeza de Caixas d'Água e Elevadores).</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="abrirModalNovoContrato()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+              <span>📄</span> <span>+ Novo Contrato / Laudo</span>
+            </button>
+            <button onclick="dispararAlertasContratosWpp()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+              <span>📲</span> <span>Verificar Alertas WhatsApp</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards de Conformidade de Contratos -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Contratos Vigentes</span>
+            <h3 id="kpiContratosVigentes" class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">5</h3>
+            <span class="text-[11px] text-emerald-600 font-semibold block mt-1">Empresas e laudos ativos</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Vencem em 30 Dias</span>
+            <h3 id="kpiContratosVencem30" class="text-2xl font-black text-amber-600 mt-1 font-mono">2</h3>
+            <span class="text-[11px] text-amber-600 font-semibold block mt-1">Requerem renovação urgente</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Obrigatórios por Lei</span>
+            <h3 id="kpiContratosLegais" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1 font-mono">5 / 5 (100%)</h3>
+            <span class="text-[11px] text-emerald-600 font-semibold block mt-1">Conformidade total do síndico</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 shadow-xs">
+            <span class="text-slate-500 text-xs block font-medium">Custo Mensal Comprometido</span>
+            <h3 id="kpiContratosCustoMensal" class="text-2xl font-black text-slate-900 dark:text-white mt-1 font-mono">R$ 10.170,00</h3>
+            <span class="text-[11px] text-slate-400 block mt-1">R$ 122.040,00 / ano</span>
+          </div>
+        </div>
+
+        <!-- Banner Informativo de Responsabilidade Civil e Penal do Síndico -->
+        <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-3">
+          <div class="p-2 rounded-xl bg-amber-500/20 shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-900 dark:text-white">Alerta de Conformidade Regulatória (Legislação Federal & Estadual)</h4>
+            <p class="mt-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
+              O síndico responde pessoal e civilmente pela ausência ou vencimento do <strong>Seguro Predial Obrigatório (Art. 1.346 do Código Civil)</strong>, <strong>Auto de Vistoria do Corpo de Bombeiros (AVCB)</strong>, <strong>Laudo de SPDA (Para-raios)</strong> e <strong>Análise Laboratorial Semestral de Potabilidade da Água (Portaria MS nº 888/21)</strong>. O CondoVolto AI monitora e dispara alertas automáticos no WhatsApp a 60, 30 e 15 dias do vencimento.
+            </p>
+          </div>
+        </div>
+
+        <!-- Barra de Filtros e Busca -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-1.5" id="filtrosContratosBtns">
+            <button onclick="filtrarContratos('todos', this)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 dark:bg-white dark:text-slate-900 text-white cursor-pointer transition-all">Todos</button>
+            <button onclick="filtrarContratos('vigente', this)" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer transition-all">Vigentes</button>
+            <button onclick="filtrarContratos('vence_em_breve', this)" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 text-amber-600 hover:bg-slate-50 cursor-pointer transition-all">⚠️ Vencem em 30d</button>
+            <button onclick="filtrarContratos('vencido', this)" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 text-rose-600 hover:bg-slate-50 cursor-pointer transition-all">🚨 Vencidos</button>
+            <button onclick="filtrarContratos('obrigatorio', this)" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 cursor-pointer transition-all">⚖️ Obrigatórios por Lei</button>
+          </div>
+          <span class="text-xs text-slate-400 font-mono" id="totalContratosListados">5 contratos monitorados</span>
+        </div>
+
+        <!-- Tabela de Contratos & Laudos Regulatórios -->
+        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#151D2D] shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-slate-100 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <th class="py-3.5 px-6">Fornecedor / Razão Social</th>
+                  <th class="py-3.5 px-6">Categoria & Amparo Legal</th>
+                  <th class="py-3.5 px-6">Vigência & Vencimento</th>
+                  <th class="py-3.5 px-6">Valor Mensal / Anual</th>
+                  <th class="py-3.5 px-6">Status</th>
+                  <th class="py-3.5 px-6 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaContratosBody" class="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
+                <!-- Linhas inseridas dinamicamente via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
 
     <!-- ============================================================== -->
     <!-- MÓDULO NOVO: PORTARIA DIGITAL & ENCOMENDAS COM OCR -->
@@ -6582,21 +7071,21 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     const ROLE_PERMISSIONS = {
       admin: {
         nome: 'Administrador Master',
-        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'],
+        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
       },
       sindico: {
         nome: 'Síndico Geral',
-        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
+        allowedTabs: ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'rag', 'equipe'],
         canBroadcast: true,
         canEmitPix: true,
         canEditAcordo: true
       },
       operador: {
         nome: 'Operador Financeiro',
-        allowedTabs: ['cobranca', 'receitas', 'orcamentos', 'atendimento', 'carteiras', 'reservas'],
+        allowedTabs: ['cobranca', 'receitas', 'orcamentos', 'contratos', 'atendimento', 'carteiras', 'reservas'],
         canBroadcast: false,
         canEmitPix: true,
         canEditAcordo: true
@@ -6710,7 +7199,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function applyRolePermissions(role) {
       const perm = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.admin;
-      const allTabs = ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'manutencao', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'];
+      const allTabs = ['portaria_digital', 'atendimento', 'carteiras', 'comunicados', 'cobranca', 'receitas', 'orcamentos', 'contratos', 'manutencao', 'ocorrencias', 'reservas', 'medicao', 'analytics', 'assembleia', 'configuracoes', 'ai', 'rag', 'equipe'];
       
       allTabs.forEach(t => {
         const navBtn = document.getElementById(`nav-${t}`);
@@ -7821,7 +8310,8 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         comunicados: 'Comunicados & Avisos',
         cobranca: 'Cobranças & Acordos',
         receitas: 'Receitas & Fluxo',
-        orcamentos: 'Orçamentos & Gastos',
+        orcamentos: 'Orçamentos & Previsão IA',
+        contratos: 'Contratos & Laudos Regulatórios',
         manutencao: 'Manutenção & Zeladoria',
         ocorrencias: 'Ocorrências & Multas',
         medicao: 'Medidores & Telemetria',
@@ -7865,6 +8355,12 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (tabName === 'cobranca') {
         carregarSimulacaoAcordo();
         carregarCobrancasFintech();
+      }
+      if (tabName === 'orcamentos') {
+        carregarPrevisaoOrcamentaria();
+      }
+      if (tabName === 'contratos') {
+        carregarContratos();
       }
       if (tabName === 'reservas') carregarReservas();
       if (tabName === 'manutencao') carregarManutencoes();
@@ -13072,6 +13568,580 @@ Regras obrigatórias:
           carregarEncomendas();
         } else {
           showToast('Erro', data.error || 'Falha ao salvar pacote.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    // ==========================================
+    // MÓDULO 1: PREVISÃO ORÇAMENTÁRIA & SIMULADOR IA
+    // ==========================================
+    window._listaPrevisoes = [];
+    window._previsaoAtiva = null;
+
+    async function carregarPrevisaoOrcamentaria(anoDesejado) {
+      const token = getAuthToken();
+      try {
+        const res = await fetch('/api/orcamentos/previsao', {
+          headers: { 'Authorization': `Bearer ${token || 'sandbox-demo-token'}` }
+        });
+        const data = await res.json();
+        if (!data || !data.previsoes) return;
+
+        window._listaPrevisoes = data.previsoes;
+        const anoAtual = anoDesejado ? Number(anoDesejado) : 2027;
+        let prev = window._listaPrevisoes.find(p => p.anoExercicio === anoAtual) || window._listaPrevisoes[0];
+        window._previsaoAtiva = prev;
+
+        if (prev) {
+          // Atualiza select se necessário
+          const sel = document.getElementById('selectExercicioOrcamento');
+          if (sel) sel.value = String(prev.anoExercicio);
+
+          // Atualiza badge de status
+          const badge = document.getElementById('badgeStatusOrcamento');
+          if (badge) {
+            if (prev.status === 'aprovada_ago') {
+              badge.innerHTML = `<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300/40">✓ Aprovada na AGO (${prev.ataProtocolo || 'Protocolado'})</span>`;
+            } else {
+              badge.innerHTML = `<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-300/40">⚡ Status: Em Estudo / Simulação IA</span>`;
+            }
+          }
+
+          // Atualiza controles
+          if (document.getElementById('inputInflacao')) {
+            document.getElementById('inputInflacao').value = prev.inflacaoProjetada || 4.5;
+            document.getElementById('labelInflacaoVal').innerText = (prev.inflacaoProjetada || 4.5) + '%';
+          }
+          if (document.getElementById('inputFundoReserva')) {
+            document.getElementById('inputFundoReserva').value = prev.fundoReservaPercentual || 10;
+            document.getElementById('labelReservaVal').innerText = (prev.fundoReservaPercentual || 10) + '%';
+          }
+          if (document.getElementById('inputFundoObras')) {
+            document.getElementById('inputFundoObras').value = prev.fundoObrasPercentual || 5;
+            document.getElementById('labelObrasVal').innerText = (prev.fundoObrasPercentual || 5) + '%';
+          }
+          if (document.getElementById('inputTotalUnidades')) {
+            document.getElementById('inputTotalUnidades').value = prev.totalUnidades || 240;
+          }
+
+          // Atualiza cards
+          const baseMensal = prev.despesasOrcadasTotal / 12;
+          const totalMensal = baseMensal * (1 + ((prev.fundoReservaPercentual || 10) + (prev.fundoObrasPercentual || 5)) / 100);
+
+          if (document.getElementById('simDespesaMensalBase')) {
+            document.getElementById('simDespesaMensalBase').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(baseMensal);
+          }
+          if (document.getElementById('simTotalMensalNecessario')) {
+            document.getElementById('simTotalMensalNecessario').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalMensal);
+          }
+          if (document.getElementById('simCotaMediaUnitaria')) {
+            document.getElementById('simCotaMediaUnitaria').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(prev.cotaSugeridaUnitaria);
+          }
+          if (document.getElementById('cardOrcamentoTotal')) {
+            document.getElementById('cardOrcamentoTotal').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(prev.despesasOrcadasTotal);
+          }
+
+          if (document.getElementById('simParecerIaTexto') && prev.parecerIa) {
+            document.getElementById('simParecerIaTexto').innerText = prev.parecerIa;
+          }
+
+          // Atualiza tabela de frações
+          renderizarTabelaFracoes(prev.fracoes || []);
+        }
+      } catch (e) {
+        console.error('Erro ao carregar previsão orçamentária:', e);
+      }
+    }
+
+    function renderizarTabelaFracoes(fracoes) {
+      const tbody = document.getElementById('simTabelaFracoesBody');
+      if (!tbody) return;
+      if (!fracoes || fracoes.length === 0) {
+        fracoes = [
+          { tipo: 'Apto Padrão 2D (65m²)', unidadesQtd: 160, fracao: 0.00360, cotaMensal: 589.68 },
+          { tipo: 'Apto 3D Família (92m²)', unidadesQtd: 60, fracao: 0.00450, cotaMensal: 737.10 },
+          { tipo: 'Cobertura Duplex (180m²)', unidadesQtd: 20, fracao: 0.00760, cotaMensal: 1244.88 }
+        ];
+      }
+
+      tbody.innerHTML = fracoes.map(f => {
+        const subtotal = (f.cotaMensal || 0) * (f.unidadesQtd || 0);
+        return `
+          <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02]">
+            <td class="py-2.5 px-4 font-sans font-semibold text-slate-900 dark:text-white">${f.tipo}</td>
+            <td class="py-2.5 px-4">${f.unidadesQtd} unidades</td>
+            <td class="py-2.5 px-4 font-mono">${Number(f.fracao).toFixed(5)}</td>
+            <td class="py-2.5 px-4 font-bold text-indigo-600 dark:text-indigo-400 font-mono">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(f.cotaMensal)}</td>
+            <td class="py-2.5 px-4 text-right text-slate-700 dark:text-slate-300 font-mono">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function trocarExercicioOrcamento(ano) {
+      carregarPrevisaoOrcamentaria(Number(ano));
+    }
+
+    async function simularCotaIa() {
+      const token = getAuthToken();
+      const ano = Number(document.getElementById('selectExercicioOrcamento')?.value || 2027);
+      const inflacao = Number(document.getElementById('inputInflacao')?.value || 4.5);
+      const reserva = Number(document.getElementById('inputFundoReserva')?.value || 10);
+      const obras = Number(document.getElementById('inputFundoObras')?.value || 5);
+      const unidades = Number(document.getElementById('inputTotalUnidades')?.value || 240);
+
+      try {
+        const res = await fetch('/api/orcamentos/simular', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({
+            anoExercicio: ano,
+            inflacaoProjetada: inflacao,
+            fundoReservaPercentual: reserva,
+            fundoObrasPercentual: obras,
+            totalUnidades: unidades
+          })
+        });
+
+        const data = await res.json();
+        if (data && data.success && data.simulacao) {
+          const sim = data.simulacao;
+          document.getElementById('simDespesaMensalBase').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sim.despesaMensalBase);
+          document.getElementById('simTotalMensalNecessario').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sim.totalMensalNecessario);
+          document.getElementById('simCotaMediaUnitaria').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sim.cotaMediaUnitaria);
+          
+          const impact = document.getElementById('simImpactoBadge');
+          if (impact) {
+            impact.innerText = `${sim.impactoPercentualAnoAnterior >= 0 ? '+' : ''}${sim.impactoPercentualAnoAnterior}% vs. ano anterior`;
+          }
+
+          if (document.getElementById('simParecerIaTexto')) {
+            document.getElementById('simParecerIaTexto').innerText = sim.analiseIa;
+          }
+
+          renderizarTabelaFracoes(sim.fracoes);
+          showToast('Simulação Concluída!', `Cálculo atuarial da cota para o exercício ${ano} recalculado com sucesso.`, 'success');
+        }
+      } catch (err) {
+        showToast('Erro na Simulação', err.message, 'error');
+      }
+    }
+
+    function abrirModalNovaPrevisao() {
+      const m = document.getElementById('modalNovaPrevisao');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function fecharModalNovaPrevisao() {
+      const m = document.getElementById('modalNovaPrevisao');
+      if (m) m.classList.add('hidden');
+    }
+
+    async function salvarNovaPrevisao(e) {
+      if (e) e.preventDefault();
+      const token = getAuthToken();
+      const ano = Number(document.getElementById('novaPrevAno')?.value || 2027);
+      const titulo = document.getElementById('novaPrevTitulo')?.value;
+      const despesa = Number(document.getElementById('novaPrevDespesaTotal')?.value || 1965600);
+      const unidades = Number(document.getElementById('novaPrevUnidades')?.value || 240);
+      const inflacao = Number(document.getElementById('novaPrevInflacao')?.value || 4.5);
+      const reserva = Number(document.getElementById('novaPrevFundoReserva')?.value || 10);
+
+      try {
+        const res = await fetch('/api/orcamentos/previsao', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({
+            anoExercicio: ano,
+            titulo,
+            despesasOrcadasTotal: despesa,
+            totalUnidades: unidades,
+            inflacaoProjetada: inflacao,
+            fundoReservaPercentual: reserva,
+            fundoObrasPercentual: 5
+          })
+        });
+
+        const data = await res.json();
+        if (data && data.success) {
+          fecharModalNovaPrevisao();
+          showToast('Previsão Criada!', `Exercício ${ano} cadastrado com sucesso para estudos da AGO.`, 'success');
+          carregarPrevisaoOrcamentaria(ano);
+        } else {
+          showToast('Erro', data.error || 'Falha ao salvar previsão.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    function abrirModalAprovarAgo() {
+      const prev = window._previsaoAtiva;
+      if (!prev) {
+        showToast('Aviso', 'Nenhuma previsão selecionada para homologação.', 'warning');
+        return;
+      }
+      const label = document.getElementById('aprovarAgoExercicioTexto');
+      if (label) label.innerText = `Exercício ${prev.anoExercicio} - ${prev.titulo}`;
+      const m = document.getElementById('modalAprovarAgo');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function fecharModalAprovarAgo() {
+      const m = document.getElementById('modalAprovarAgo');
+      if (m) m.classList.add('hidden');
+    }
+
+    async function confirmarAprovacaoAgo(e) {
+      if (e) e.preventDefault();
+      const token = getAuthToken();
+      const prev = window._previsaoAtiva;
+      if (!prev) return;
+
+      const ataProtocolo = document.getElementById('aprovarAgoProtocolo')?.value || `ATA-AGO-${prev.anoExercicio}-OFICIAL`;
+
+      try {
+        const res = await fetch(`/api/orcamentos/previsao/${prev.id}/aprovar-ago`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({ ataProtocolo })
+        });
+
+        const data = await res.json();
+        if (data && data.success) {
+          if (typeof confetti === 'function') confetti({ particleCount: 60, spread: 80, origin: { y: 0.5 } });
+          fecharModalAprovarAgo();
+          showToast('Previsão Homologada!', `Cota para ${prev.anoExercicio} aprovada oficialmente pela AGO.`, 'success');
+          carregarPrevisaoOrcamentaria(prev.anoExercicio);
+        } else {
+          showToast('Erro', data.error || 'Falha ao homologar em AGO.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    // ==========================================
+    // MÓDULO 3: GESTÃO DE CONTRATOS, LAUDOS & SEGURO PREDIAL
+    // ==========================================
+    window._listaContratos = [];
+    window._filtroContratoAtual = 'todos';
+
+    const CATEGORIA_ICONS = {
+      seguro_predial: '🛡️',
+      avcb_bombeiros: '🔥',
+      elevadores: '🛗',
+      spda_para_raios: '⚡',
+      caixa_dagua: '💧',
+      portaria_seguranca: '👮',
+      limpeza_conservacao: '🧹',
+      gerador: '⚙️',
+      dedetizacao: '🦗',
+      gas_encanado: '🔥',
+      outros: '📦'
+    };
+
+    async function carregarContratos(filtro) {
+      const token = getAuthToken();
+      try {
+        const res = await fetch('/api/contratos', {
+          headers: { 'Authorization': `Bearer ${token || 'sandbox-demo-token'}` }
+        });
+        const data = await res.json();
+        if (!data || !data.contratos) return;
+
+        window._listaContratos = data.contratos;
+
+        // Atualiza KPIs
+        if (data.estatisticas) {
+          if (document.getElementById('kpiContratosVigentes')) {
+            document.getElementById('kpiContratosVigentes').innerText = data.estatisticas.totalVigentes || 0;
+          }
+          if (document.getElementById('kpiContratosVencem30')) {
+            document.getElementById('kpiContratosVencem30').innerText = data.estatisticas.totalVencem30d || 0;
+          }
+          if (document.getElementById('kpiContratosLegais')) {
+            document.getElementById('kpiContratosLegais').innerText = `${data.estatisticas.totalLaudosLegais || 0} / ${data.total || 0} (100%)`;
+          }
+          if (document.getElementById('kpiContratosCustoMensal')) {
+            document.getElementById('kpiContratosCustoMensal').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.estatisticas.custoMensalTotal || 0);
+          }
+        }
+
+        renderizarTabelaContratos(filtro || window._filtroContratoAtual || 'todos');
+      } catch (e) {
+        console.error('Erro ao carregar contratos:', e);
+      }
+    }
+
+    function filtrarContratos(tipo, btn) {
+      window._filtroContratoAtual = tipo;
+      if (btn && btn.parentElement) {
+        btn.parentElement.querySelectorAll('button').forEach(b => {
+          b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-[#151D2D] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer transition-all';
+        });
+        btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 dark:bg-white dark:text-slate-900 text-white cursor-pointer transition-all';
+      }
+      renderizarTabelaContratos(tipo);
+    }
+
+    function renderizarTabelaContratos(filtro) {
+      const tbody = document.getElementById('tabelaContratosBody');
+      if (!tbody) return;
+
+      let lista = window._listaContratos || [];
+      if (filtro === 'vigente') lista = lista.filter(c => c.status === 'vigente');
+      if (filtro === 'vence_em_breve') lista = lista.filter(c => c.diasParaVencer !== undefined && c.diasParaVencer <= 30 && c.diasParaVencer >= 0);
+      if (filtro === 'vencido') lista = lista.filter(c => c.diasParaVencer !== undefined && c.diasParaVencer < 0);
+      if (filtro === 'obrigatorio') lista = lista.filter(c => c.laudoObrigatorioPorLei);
+
+      const countEl = document.getElementById('totalContratosListados');
+      if (countEl) countEl.innerText = `${lista.length} contrato${lista.length !== 1 ? 's' : ''} exibido${lista.length !== 1 ? 's' : ''}`;
+
+      if (lista.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 text-center text-slate-400">
+              Nenhum contrato ou laudo encontrado para o filtro selecionado.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = lista.map(c => {
+        const icone = CATEGORIA_ICONS[c.servicoCategoria] || '📄';
+        const dias = c.diasParaVencer ?? 999;
+
+        let badgeDias = '';
+        if (dias < 0) {
+          badgeDias = `<span class="badge-status-red px-2 py-0.5 rounded text-[10px] font-bold">Vencido há ${Math.abs(dias)} dias</span>`;
+        } else if (dias <= 30) {
+          badgeDias = `<span class="badge-status-amber px-2 py-0.5 rounded text-[10px] font-bold">⚠️ Vence em ${dias} dias</span>`;
+        } else {
+          badgeDias = `<span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Vigente (${dias}d restantes)</span>`;
+        }
+
+        const dtVencFormat = new Date(c.dataVencimento).toLocaleDateString('pt-BR');
+        const dtIniFormat = new Date(c.dataInicio).toLocaleDateString('pt-BR');
+
+        return `
+          <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+            <td class="py-3.5 px-6 font-semibold text-slate-900 dark:text-white">
+              <div class="flex items-center gap-2">
+                <span class="text-base">${icone}</span>
+                <div>
+                  <span>${c.fornecedorNome}</span>
+                  <span class="block text-[11px] text-slate-400 font-mono font-normal">${c.cnpj || 'CNPJ Não inf.'} • Contato: ${c.contatoNome}</span>
+                </div>
+              </div>
+            </td>
+            <td class="py-3.5 px-6 text-slate-600 dark:text-slate-300">
+              <span class="font-semibold text-slate-800 dark:text-slate-200 capitalize">${c.servicoCategoria.replace('_', ' ')}</span>
+              ${c.artigoLegal ? `<span class="block text-[10px] text-indigo-600 dark:text-indigo-400 font-mono font-bold mt-0.5">⚖️ ${c.artigoLegal}</span>` : ''}
+              ${c.apoliceNumero ? `<span class="block text-[10px] text-slate-400 font-mono">Doc: ${c.apoliceNumero}</span>` : ''}
+            </td>
+            <td class="py-3.5 px-6 font-mono text-[11px]">
+              <div>${dtIniFormat} até <strong>${dtVencFormat}</strong></div>
+              <div class="mt-1">${badgeDias}</div>
+            </td>
+            <td class="py-3.5 px-6 font-mono">
+              <div class="font-bold text-slate-900 dark:text-white">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.valorMensal)} /mês</div>
+              <span class="text-[10px] text-slate-400 block">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.valorTotalAnual)} /ano</span>
+            </td>
+            <td class="py-3.5 px-6">
+              ${c.status === 'vencido' 
+                ? '<span class="badge-status-red px-2 py-0.5 rounded text-[10px] font-bold">Vencido</span>' 
+                : c.status === 'vence_em_breve'
+                ? '<span class="badge-status-amber px-2 py-0.5 rounded text-[10px] font-bold">Renovação</span>'
+                : '<span class="badge-status-green px-2 py-0.5 rounded text-[10px] font-bold">Conforme</span>'}
+            </td>
+            <td class="py-3.5 px-6 text-right space-x-2">
+              <button onclick="abrirModalRenovarContrato('${c.id}')" class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 font-semibold text-[11px] cursor-pointer transition-all">
+                Renovar
+              </button>
+              <button onclick="notificarFornecedorWpp('${c.id}')" title="Disparar aviso no WhatsApp" class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 font-semibold text-[11px] cursor-pointer transition-all">
+                📲 Notificar
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function abrirModalNovoContrato() {
+      const m = document.getElementById('modalNovoContrato');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function fecharModalNovoContrato() {
+      const m = document.getElementById('modalNovoContrato');
+      if (m) m.classList.add('hidden');
+    }
+
+    async function salvarNovoContrato(e) {
+      if (e) e.preventDefault();
+      const token = getAuthToken();
+
+      const fornecedorNome = document.getElementById('novoContrFornecedor')?.value;
+      const cnpj = document.getElementById('novoContrCnpj')?.value;
+      const servicoCategoria = document.getElementById('novoContrCategoria')?.value;
+      const descricao = document.getElementById('novoContrDescricao')?.value;
+      const valorMensal = Number(document.getElementById('novoContrValorMensal')?.value || 0);
+      const dataInicio = document.getElementById('novoContrDataInicio')?.value;
+      const dataVencimento = document.getElementById('novoContrDataVencimento')?.value;
+      const laudoObrigatorioPorLei = document.getElementById('novoContrObrigatorio')?.checked;
+      const artigoLegal = document.getElementById('novoContrArtigoLegal')?.value;
+      const apoliceNumero = document.getElementById('novoContrApolice')?.value;
+      const contatoNome = document.getElementById('novoContrContatoNome')?.value;
+      const contatoTelefone = document.getElementById('novoContrContatoTelefone')?.value;
+      const contatoEmail = document.getElementById('novoContrContatoEmail')?.value;
+
+      try {
+        const res = await fetch('/api/contratos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({
+            fornecedorNome,
+            cnpj,
+            servicoCategoria,
+            descricao,
+            valorMensal,
+            dataInicio,
+            dataVencimento,
+            laudoObrigatorioPorLei,
+            artigoLegal,
+            apoliceNumero,
+            contatoNome,
+            contatoTelefone,
+            contatoEmail
+          })
+        });
+
+        const data = await res.json();
+        if (data && data.success) {
+          fecharModalNovoContrato();
+          showToast('Contrato Salvo!', `Contrato com ${fornecedorNome} cadastrado e monitorado.`, 'success');
+          carregarContratos();
+        } else {
+          showToast('Erro', data.error || 'Falha ao salvar contrato.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    function abrirModalRenovarContrato(id) {
+      const c = (window._listaContratos || []).find(item => item.id === id);
+      if (!c) return;
+
+      document.getElementById('renovarContrId').value = c.id;
+      document.getElementById('renovarContrNome').innerText = c.fornecedorNome;
+      document.getElementById('renovarContrVencAtual').innerText = `Vencimento Atual: ${new Date(c.dataVencimento).toLocaleDateString('pt-BR')}`;
+      document.getElementById('renovarContrNovaData').value = '';
+      document.getElementById('renovarContrNovoValor').value = c.valorMensal;
+
+      const m = document.getElementById('modalRenovarContrato');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function fecharModalRenovarContrato() {
+      const m = document.getElementById('modalRenovarContrato');
+      if (m) m.classList.add('hidden');
+    }
+
+    async function confirmarRenovacaoContrato(e) {
+      if (e) e.preventDefault();
+      const token = getAuthToken();
+      const id = document.getElementById('renovarContrId')?.value;
+      const novaData = document.getElementById('renovarContrNovaData')?.value;
+      const novoValor = Number(document.getElementById('renovarContrNovoValor')?.value || 0);
+
+      if (!novaData) {
+        showToast('Data Obrigatória', 'Informe a nova data de vencimento do contrato.', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/contratos/${id}/renovar`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          },
+          body: JSON.stringify({
+            novaDataVencimento: novaData,
+            novoValorMensal: novoValor > 0 ? novoValor : undefined
+          })
+        });
+
+        const data = await res.json();
+        if (data && data.success) {
+          if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+          fecharModalRenovarContrato();
+          showToast('Contrato Renovado!', data.mensagem || 'Vigência prorrogada com sucesso.', 'success');
+          carregarContratos();
+        } else {
+          showToast('Erro', data.error || 'Falha ao renovar contrato.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    async function dispararAlertasContratosWpp() {
+      const token = getAuthToken();
+      try {
+        const res = await fetch('/api/contratos/verificar-alertas', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          }
+        });
+
+        const data = await res.json();
+        if (data && data.success) {
+          showToast('Verificação Concluída!', `${data.totalAlertas} alertas de vencimento identificados e sincronizados para envio via WhatsApp.`, 'info');
+          carregarContratos();
+        } else {
+          showToast('Erro', data.error || 'Falha ao verificar alertas.', 'error');
+        }
+      } catch (err) {
+        showToast('Erro', err.message, 'error');
+      }
+    }
+
+    async function notificarFornecedorWpp(id) {
+      const token = getAuthToken();
+      try {
+        const res = await fetch(`/api/contratos/${id}/notificar-whatsapp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || 'sandbox-demo-token'}`
+          }
+        });
+
+        const data = await res.json();
+        if (data && data.success) {
+          showToast('WhatsApp Disparado!', data.mensagem || 'Notificação enviada ao fornecedor.', 'success');
+        } else {
+          showToast('Erro', data.error || 'Falha ao notificar fornecedor.', 'error');
         }
       } catch (err) {
         showToast('Erro', err.message, 'error');

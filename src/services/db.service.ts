@@ -2,7 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado, AvaliacaoCSAT, ReguaDisparo, Assembleia, AssembleiaVoto, ConsentimentoLGPD, DossieLGPD, PautaAssembleia, Ocorrencia, Enquete, EnqueteVoto, EnqueteOpcao } from '../types/index.js';
+import { UserSession, ChatMessage, Carteira, Cobranca, Reserva, OrdemManutencao, Condominio, AIDecision, PendenciaSupervisao, Visita, Encomenda, Comunicado, AvaliacaoCSAT, ReguaDisparo, Assembleia, AssembleiaVoto, ConsentimentoLGPD, DossieLGPD, PautaAssembleia, Ocorrencia, Enquete, EnqueteVoto, EnqueteOpcao, PrevisaoOrcamentaria, ItemOrcamento, FracaoIdealCota, SimulacaoCotaResultado, ContratoFornecedor, AlertaContrato, CategoriaServicoContrato } from '../types/index.js';
 import { gerarPayloadPix } from '../utils/pix.util.js';
 
 export class DbService {
@@ -488,6 +488,57 @@ export class DbService {
         canal TEXT NOT NULL DEFAULT 'whatsapp',
         dataHora TEXT NOT NULL,
         UNIQUE(enqueteId, cpf)
+      );
+    `);
+
+    // 22. Tabela de Previsão Orçamentária Anual & Simulações de Cota
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS previsoes_orcamentarias (
+        id TEXT PRIMARY KEY,
+        anoExercicio INTEGER NOT NULL,
+        titulo TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'em_estudo',
+        despesasOrcadasTotal REAL NOT NULL,
+        receitasPrevistasTotal REAL NOT NULL,
+        totalUnidades INTEGER NOT NULL,
+        cotaSugeridaUnitaria REAL NOT NULL,
+        fundoReservaPercentual REAL DEFAULT 10,
+        fundoObrasPercentual REAL DEFAULT 5,
+        inflacaoProjetada REAL DEFAULT 4.5,
+        parecerIa TEXT,
+        itensJson TEXT NOT NULL,
+        fracoesJson TEXT,
+        aprovadoAgoEm TEXT,
+        ataProtocolo TEXT,
+        criadoEm TEXT NOT NULL
+      );
+    `);
+
+    // 23. Tabela de Gestão de Contratos de Fornecedores & Laudos Regulatórios
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS contratos_fornecedores (
+        id TEXT PRIMARY KEY,
+        fornecedorNome TEXT NOT NULL,
+        cnpj TEXT,
+        servicoCategoria TEXT NOT NULL,
+        descricao TEXT NOT NULL,
+        valorMensal REAL NOT NULL,
+        valorTotalAnual REAL NOT NULL,
+        dataInicio TEXT NOT NULL,
+        dataVencimento TEXT NOT NULL,
+        renovacaoAutomatica INTEGER DEFAULT 0,
+        contatoNome TEXT NOT NULL,
+        contatoTelefone TEXT NOT NULL,
+        contatoEmail TEXT,
+        status TEXT NOT NULL DEFAULT 'vigente',
+        laudoObrigatorioPorLei INTEGER DEFAULT 0,
+        artigoLegal TEXT,
+        apoliceNumero TEXT,
+        seguradoraNome TEXT,
+        arquivoAnexoUrl TEXT,
+        alertaDiasAntecedenciaJson TEXT,
+        alertasDisparadosJson TEXT,
+        criadoEm TEXT NOT NULL
       );
     `);
 
@@ -1899,6 +1950,199 @@ export class DbService {
       ];
       for (const c of comunicadosIniciais) this.saveComunicado(c);
     }
+
+    // 9. Seed Previsões Orçamentárias
+    const orcCount = (this.db.prepare('SELECT COUNT(*) as total FROM previsoes_orcamentarias').get() as any)?.total || 0;
+    if (orcCount === 0) {
+      const previsao2026: PrevisaoOrcamentaria = {
+        id: 'orc_2026',
+        anoExercicio: 2026,
+        titulo: 'Previsão Orçamentária AGO 2026 - Gestão Eficiente',
+        status: 'aprovada_ago',
+        despesasOrcadasTotal: 1872000.00,
+        receitasPrevistasTotal: 1872000.00,
+        totalUnidades: 240,
+        cotaSugeridaUnitaria: 650.00,
+        fundoReservaPercentual: 10,
+        fundoObrasPercentual: 5,
+        inflacaoProjetada: 4.2,
+        parecerIa: 'Projeção atuarial aprovada pela AGO. Despesas de folha e concessionárias cobrem 68% do total orçado, com provisão de 10% para fundo de reserva garantindo solvência em manutenções preventivas.',
+        itens: [
+          { categoria: 'pessoal_folha', descricao: 'Folha de Pagamento, Encargos (INSS/FGTS) e Benefícios (Portaria/Limpeza)', valorPrevistoAnual: 780000, valorRealizadoAcumulado: 775200, percentualDesvio: -0.6 },
+          { categoria: 'concessionarias', descricao: 'Energia Elétrica (Enel), Água/Esgoto (Sabesp) e Gás Central', valorPrevistoAnual: 360000, valorRealizadoAcumulado: 368500, percentualDesvio: +2.3 },
+          { categoria: 'manutencao_conservacao', descricao: 'Manutenção de Elevadores, Bombas, Portões e Gerador', valorPrevistoAnual: 240000, valorRealizadoAcumulado: 228400, percentualDesvio: -4.8 },
+          { categoria: 'seguros_laudos', descricao: 'Seguro Predial Obrigatório (Art. 1.346 CC), AVCB Bombeiros e SPDA', valorPrevistoAnual: 72000, valorRealizadoAcumulado: 70100, percentualDesvio: -2.6 },
+          { categoria: 'administrativo', descricao: 'Honorários de Administradora, Assessoria Jurídica e Sistema CondoVolto AI', valorPrevistoAnual: 96000, valorRealizadoAcumulado: 94800, percentualDesvio: -1.25 },
+          { categoria: 'fundo_reserva', descricao: 'Fundo de Reserva Legal de Contingência (10% sobre arrecadação líquida)', valorPrevistoAnual: 187200, valorRealizadoAcumulado: 187200, percentualDesvio: 0.0 },
+          { categoria: 'obras_melhorias', descricao: 'Modernização da Iluminação em LED e Automação de Portaria', valorPrevistoAnual: 136800, valorRealizadoAcumulado: 125000, percentualDesvio: -8.6 }
+        ],
+        fracoes: [
+          { tipo: 'Apto Padrão 2D', fracao: 0.00360, cotaMensal: 561.60, unidadesQtd: 160 },
+          { tipo: 'Apto 3D Família', fracao: 0.00450, cotaMensal: 702.00, unidadesQtd: 60 },
+          { tipo: 'Cobertura Duplex', fracao: 0.00760, cotaMensal: 1185.60, unidadesQtd: 20 }
+        ],
+        aprovadoAgoEm: '2026-01-15T20:30:00.000Z',
+        ataProtocolo: 'ATA-AGO-2026-REG-489',
+        criadoEm: '2026-01-10T14:00:00.000Z'
+      };
+
+      const previsao2027: PrevisaoOrcamentaria = {
+        id: 'orc_2027',
+        anoExercicio: 2027,
+        titulo: 'Projeção Orçamentária Preliminar 2027 (Simulação IA)',
+        status: 'em_estudo',
+        despesasOrcadasTotal: 1965600.00,
+        receitasPrevistasTotal: 1965600.00,
+        totalUnidades: 240,
+        cotaSugeridaUnitaria: 682.50,
+        fundoReservaPercentual: 10,
+        fundoObrasPercentual: 5,
+        inflacaoProjetada: 4.5,
+        parecerIa: 'Reajuste sugerido de +5% baseado no IPCA projetado de 4.5% e dissídio coletivo de portaria/limpeza (categoria SECOR). Mantém taxa de inadimplência provisionada em 3% com superávit operacional estimado em R$ 42.000.',
+        itens: [
+          { categoria: 'pessoal_folha', descricao: 'Folha e dissídio projetado 2027', valorPrevistoAnual: 819000, valorRealizadoAcumulado: 0 },
+          { categoria: 'concessionarias', descricao: 'Concessionárias de energia, saneamento e gás', valorPrevistoAnual: 378000, valorRealizadoAcumulado: 0 },
+          { categoria: 'manutencao_conservacao', descricao: 'Contratos preventivos de infraestrutura', valorPrevistoAnual: 252000, valorRealizadoAcumulado: 0 },
+          { categoria: 'seguros_laudos', descricao: 'Renovações de seguro predial, AVCB e laudos', valorPrevistoAnual: 75600, valorRealizadoAcumulado: 0 },
+          { categoria: 'administrativo', descricao: 'Administração condominial e tecnologia', valorPrevistoAnual: 100800, valorRealizadoAcumulado: 0 },
+          { categoria: 'fundo_reserva', descricao: 'Aporte de reserva 10%', valorPrevistoAnual: 196560, valorRealizadoAcumulado: 0 },
+          { categoria: 'obras_melhorias', descricao: 'Projetos de eficiência energética solar', valorPrevistoAnual: 143640, valorRealizadoAcumulado: 0 }
+        ],
+        fracoes: [
+          { tipo: 'Apto Padrão 2D', fracao: 0.00360, cotaMensal: 589.68, unidadesQtd: 160 },
+          { tipo: 'Apto 3D Família', fracao: 0.00450, cotaMensal: 737.10, unidadesQtd: 60 },
+          { tipo: 'Cobertura Duplex', fracao: 0.00760, cotaMensal: 1244.88, unidadesQtd: 20 }
+        ],
+        criadoEm: '2026-11-20T09:00:00.000Z'
+      };
+
+      this.savePrevisaoOrcamentaria(previsao2026);
+      this.savePrevisaoOrcamentaria(previsao2027);
+    }
+
+    // 10. Seed Contratos de Fornecedores & Laudos Regulatórios
+    const conCount = (this.db.prepare('SELECT COUNT(*) as total FROM contratos_fornecedores').get() as any)?.total || 0;
+    if (conCount === 0) {
+      const contratosIniciais: ContratoFornecedor[] = [
+        {
+          id: 'contr_seguro',
+          fornecedorNome: 'Porto Seguro Companhia de Seguros Gerais',
+          cnpj: '61.198.164/0001-60',
+          servicoCategoria: 'seguro_predial',
+          descricao: 'Apólice Integral Compreensiva Condominial (Incêndio, Queda de Raio, Explosão, Vendaval, Danos Elétricos e Responsabilidade Civil do Síndico)',
+          valorMensal: 3450.00,
+          valorTotalAnual: 41400.00,
+          dataInicio: '2026-01-15',
+          dataVencimento: '2027-01-15',
+          renovacaoAutomatica: false,
+          contatoNome: 'Corretora Nova Aliança / Marcos Siqueira',
+          contatoTelefone: '11988887711',
+          contatoEmail: 'sinistros@novalianca.com.br',
+          status: 'vigente',
+          laudoObrigatorioPorLei: true,
+          artigoLegal: 'Art. 1.346 do Código Civil Brasileiro (Seguro Obrigatório da Edificação)',
+          apoliceNumero: 'AP-PORTO-2026-98124',
+          seguradoraNome: 'Porto Seguro S.A.',
+          alertaDiasAntecedencia: [60, 30, 15],
+          alertasDisparados: [],
+          criadoEm: '2026-01-15T10:00:00.000Z'
+        },
+        {
+          id: 'contr_avcb',
+          fornecedorNome: 'Alfa Engenharia Contra Incêndio & Pânico',
+          cnpj: '28.334.912/0001-44',
+          servicoCategoria: 'avcb_bombeiros',
+          descricao: 'Laudo Técnico de Vistoria do Corpo de Bombeiros (AVCB) com ART/RRT de pressurização de escadas e teste hidrostático de mangueiras',
+          valorMensal: 850.00,
+          valorTotalAnual: 10200.00,
+          dataInicio: '2025-12-10',
+          dataVencimento: '2026-12-10',
+          renovacaoAutomatica: false,
+          contatoNome: 'Eng. Roberto Vasconcelos',
+          contatoTelefone: '11977776655',
+          contatoEmail: 'laudos@alfaengincendio.com.br',
+          status: 'vence_em_breve',
+          laudoObrigatorioPorLei: true,
+          artigoLegal: 'Decreto Estadual nº 63.911/18 (Regulamento de Segurança contra Incêndio PMESP)',
+          apoliceNumero: 'AVCB-SP-2023-88741',
+          seguradoraNome: 'Corpo de Bombeiros da PMESP',
+          alertaDiasAntecedencia: [60, 30, 15],
+          alertasDisparados: ['2026-10-10T09:00:00.000Z', '2026-11-10T09:00:00.000Z'],
+          criadoEm: '2025-12-10T08:00:00.000Z'
+        },
+        {
+          id: 'contr_elevadores',
+          fornecedorNome: 'Otis Elevadores do Brasil Ltda',
+          cnpj: '60.739.026/0001-52',
+          servicoCategoria: 'elevadores',
+          descricao: 'Manutenção Preventiva e Corretiva Integral 24h para 4 elevadores Atlas Schindler com Relatório RIA anual',
+          valorMensal: 4800.00,
+          valorTotalAnual: 57600.00,
+          dataInicio: '2026-03-01',
+          dataVencimento: '2027-02-28',
+          renovacaoAutomatica: true,
+          contatoNome: 'Central de Atendimento Otis 24h',
+          contatoTelefone: '08007038766',
+          contatoEmail: 'suporte@otis.com.br',
+          status: 'vigente',
+          laudoObrigatorioPorLei: true,
+          artigoLegal: 'Lei Municipal nº 12.751/98 e RIA (Relatório de Inspeção Anual)',
+          apoliceNumero: 'CONTR-OTIS-88231-SP',
+          seguradoraNome: 'Otis Elevadores',
+          alertaDiasAntecedencia: [60, 30, 15],
+          alertasDisparados: [],
+          criadoEm: '2026-03-01T09:00:00.000Z'
+        },
+        {
+          id: 'contr_spda',
+          fornecedorNome: 'VoltTech Laudos & SPDA',
+          cnpj: '33.456.789/0001-01',
+          servicoCategoria: 'spda_para_raios',
+          descricao: 'Inspeção e Medição Ôhmica Anual do Sistema de Proteção contra Descargas Atmosféricas (SPDA) com emissão de Laudo e ART',
+          valorMensal: 450.00,
+          valorTotalAnual: 5400.00,
+          dataInicio: '2026-04-10',
+          dataVencimento: '2027-04-10',
+          renovacaoAutomatica: false,
+          contatoNome: 'Eng. Eletricista Marcelo Prado',
+          contatoTelefone: '11966554433',
+          contatoEmail: 'contato@volttechspda.com.br',
+          status: 'vigente',
+          laudoObrigatorioPorLei: true,
+          artigoLegal: 'Norma Técnica NBR 5419/2015 - ABNT',
+          apoliceNumero: 'LAUDO-SPDA-2026-441',
+          seguradoraNome: 'CREA-SP / ABNT',
+          alertaDiasAntecedencia: [60, 30, 15],
+          alertasDisparados: [],
+          criadoEm: '2026-04-10T10:00:00.000Z'
+        },
+        {
+          id: 'contr_caixa_dagua',
+          fornecedorNome: 'HidroClean Saneamento & Higienização',
+          cnpj: '19.876.543/0001-22',
+          servicoCategoria: 'caixa_dagua',
+          descricao: 'Limpeza e Desinfecção Semestral dos 4 reservatórios superiores e 2 inferiores com análise laboratorial de potabilidade da água',
+          valorMensal: 620.00,
+          valorTotalAnual: 7440.00,
+          dataInicio: '2026-06-05',
+          dataVencimento: '2026-12-05',
+          renovacaoAutomatica: true,
+          contatoNome: 'Tatiana Ferreira (Bióloga Responsável)',
+          contatoTelefone: '11955443322',
+          contatoEmail: 'operacoes@hidrocleansp.com.br',
+          status: 'vence_em_breve',
+          laudoObrigatorioPorLei: true,
+          artigoLegal: 'Portaria Ministério da Saúde nº 888/21 e CVS 5/2013',
+          apoliceNumero: 'CERT-POTAB-HC-2026-902',
+          seguradoraNome: 'Vigilância Sanitária Municipal',
+          alertaDiasAntecedencia: [30, 15, 7],
+          alertasDisparados: ['2026-11-05T09:00:00.000Z'],
+          criadoEm: '2026-06-05T11:00:00.000Z'
+        }
+      ];
+
+      for (const con of contratosIniciais) this.saveContratoFornecedor(con);
+    }
   }
 
   // ==========================================
@@ -2770,5 +3014,427 @@ export class DbService {
   public getEnqueteVotos(enqueteId: string): EnqueteVoto[] {
     const stmt = this.db.prepare('SELECT * FROM enquete_votos WHERE enqueteId = ? ORDER BY dataHora DESC');
     return stmt.all(enqueteId) as unknown as EnqueteVoto[];
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE PREVISÃO ORÇAMENTÁRIA & SIMULAÇÃO IA
+  // ==========================================
+
+  public getPrevisoesOrcamentarias(): PrevisaoOrcamentaria[] {
+    const rows = this.db.prepare('SELECT * FROM previsoes_orcamentarias ORDER BY anoExercicio DESC, criadoEm DESC').all() as any[];
+    return rows.map(r => {
+      let itens: ItemOrcamento[] = [];
+      let fracoes: FracaoIdealCota[] = [];
+      try { itens = JSON.parse(r.itensJson); } catch (e) { itens = []; }
+      try { fracoes = r.fracoesJson ? JSON.parse(r.fracoesJson) : []; } catch (e) { fracoes = []; }
+      return {
+        id: r.id,
+        anoExercicio: r.anoExercicio,
+        titulo: r.titulo,
+        status: r.status,
+        despesasOrcadasTotal: Number(r.despesasOrcadasTotal),
+        receitasPrevistasTotal: Number(r.receitasPrevistasTotal),
+        totalUnidades: Number(r.totalUnidades),
+        cotaSugeridaUnitaria: Number(r.cotaSugeridaUnitaria),
+        fundoReservaPercentual: Number(r.fundoReservaPercentual),
+        fundoObrasPercentual: Number(r.fundoObrasPercentual),
+        inflacaoProjetada: Number(r.inflacaoProjetada),
+        parecerIa: r.parecerIa || undefined,
+        itens,
+        fracoes,
+        aprovadoAgoEm: r.aprovadoAgoEm || undefined,
+        ataProtocolo: r.ataProtocolo || undefined,
+        criadoEm: r.criadoEm
+      };
+    });
+  }
+
+  public getPrevisaoOrcamentariaById(id: string): PrevisaoOrcamentaria | null {
+    const stmt = this.db.prepare('SELECT * FROM previsoes_orcamentarias WHERE id = ? LIMIT 1');
+    const r = stmt.get(id) as any;
+    if (!r) return null;
+    let itens: ItemOrcamento[] = [];
+    let fracoes: FracaoIdealCota[] = [];
+    try { itens = JSON.parse(r.itensJson); } catch (e) { itens = []; }
+    try { fracoes = r.fracoesJson ? JSON.parse(r.fracoesJson) : []; } catch (e) { fracoes = []; }
+    return {
+      id: r.id,
+      anoExercicio: r.anoExercicio,
+      titulo: r.titulo,
+      status: r.status,
+      despesasOrcadasTotal: Number(r.despesasOrcadasTotal),
+      receitasPrevistasTotal: Number(r.receitasPrevistasTotal),
+      totalUnidades: Number(r.totalUnidades),
+      cotaSugeridaUnitaria: Number(r.cotaSugeridaUnitaria),
+      fundoReservaPercentual: Number(r.fundoReservaPercentual),
+      fundoObrasPercentual: Number(r.fundoObrasPercentual),
+      inflacaoProjetada: Number(r.inflacaoProjetada),
+      parecerIa: r.parecerIa || undefined,
+      itens,
+      fracoes,
+      aprovadoAgoEm: r.aprovadoAgoEm || undefined,
+      ataProtocolo: r.ataProtocolo || undefined,
+      criadoEm: r.criadoEm
+    };
+  }
+
+  public savePrevisaoOrcamentaria(previsao: PrevisaoOrcamentaria): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO previsoes_orcamentarias (
+        id, anoExercicio, titulo, status, despesasOrcadasTotal, receitasPrevistasTotal,
+        totalUnidades, cotaSugeridaUnitaria, fundoReservaPercentual, fundoObrasPercentual,
+        inflacaoProjetada, parecerIa, itensJson, fracoesJson, aprovadoAgoEm, ataProtocolo, criadoEm
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        anoExercicio = excluded.anoExercicio,
+        titulo = excluded.titulo,
+        status = excluded.status,
+        despesasOrcadasTotal = excluded.despesasOrcadasTotal,
+        receitasPrevistasTotal = excluded.receitasPrevistasTotal,
+        totalUnidades = excluded.totalUnidades,
+        cotaSugeridaUnitaria = excluded.cotaSugeridaUnitaria,
+        fundoReservaPercentual = excluded.fundoReservaPercentual,
+        fundoObrasPercentual = excluded.fundoObrasPercentual,
+        inflacaoProjetada = excluded.inflacaoProjetada,
+        parecerIa = excluded.parecerIa,
+        itensJson = excluded.itensJson,
+        fracoesJson = excluded.fracoesJson,
+        aprovadoAgoEm = excluded.aprovadoAgoEm,
+        ataProtocolo = excluded.ataProtocolo;
+    `);
+
+    stmt.run(
+      previsao.id,
+      previsao.anoExercicio,
+      previsao.titulo,
+      previsao.status || 'em_estudo',
+      previsao.despesasOrcadasTotal,
+      previsao.receitasPrevistasTotal,
+      previsao.totalUnidades,
+      previsao.cotaSugeridaUnitaria,
+      previsao.fundoReservaPercentual || 10,
+      previsao.fundoObrasPercentual || 5,
+      previsao.inflacaoProjetada || 4.5,
+      previsao.parecerIa || null,
+      JSON.stringify(previsao.itens || []),
+      previsao.fracoes ? JSON.stringify(previsao.fracoes) : null,
+      previsao.aprovadoAgoEm || null,
+      previsao.ataProtocolo || null,
+      previsao.criadoEm || new Date().toISOString()
+    );
+  }
+
+  public simularCotaOrcamentaria(params: {
+    anoExercicio?: number;
+    inflacaoProjetada?: number;
+    fundoReservaPercentual?: number;
+    fundoObrasPercentual?: number;
+    despesaBaseAnual?: number;
+    totalUnidades?: number;
+    fracoesCustomizadas?: { tipo: string; fracao: number; unidadesQtd: number }[];
+  }): SimulacaoCotaResultado {
+    const ano = params.anoExercicio || (new Date().getFullYear() + 1);
+    const inflacao = params.inflacaoProjetada ?? 4.5;
+    const reservaPct = params.fundoReservaPercentual ?? 10;
+    const obrasPct = params.fundoObrasPercentual ?? 5;
+    const unidades = params.totalUnidades || 240;
+
+    // Buscar despesa realizada ou base do ano anterior
+    let baseAnual = params.despesaBaseAnual;
+    if (!baseAnual) {
+      const orcAnterior = this.db.prepare('SELECT despesasOrcadasTotal FROM previsoes_orcamentarias WHERE anoExercicio = ? LIMIT 1').get(ano - 1) as any;
+      baseAnual = orcAnterior ? Number(orcAnterior.despesasOrcadasTotal) : 1872000;
+    }
+
+    // Reajuste inflacionário
+    const despesaProjetadaAnual = baseAnual * (1 + inflacao / 100);
+    const despesaMensalBase = despesaProjetadaAnual / 12;
+
+    const fundoReservaMensal = despesaMensalBase * (reservaPct / 100);
+    const fundoObrasMensal = despesaMensalBase * (obrasPct / 100);
+    const totalMensalNecessario = despesaMensalBase + fundoReservaMensal + fundoObrasMensal;
+    const cotaMediaUnitaria = Math.round((totalMensalNecessario / unidades) * 100) / 100;
+
+    const cotaAnteriorBase = (baseAnual * 1.15) / 12 / unidades; // com 10% reserva + 5% obras
+    const impactoPercentualAnoAnterior = Math.round(((cotaMediaUnitaria - cotaAnteriorBase) / cotaAnteriorBase) * 10000) / 100;
+
+    const fracoesModel = params.fracoesCustomizadas && params.fracoesCustomizadas.length > 0 ? params.fracoesCustomizadas : [
+      { tipo: 'Apto Padrão 2D', fracao: 0.00360, unidadesQtd: 160 },
+      { tipo: 'Apto 3D Família', fracao: 0.00450, unidadesQtd: 60 },
+      { tipo: 'Cobertura Duplex', fracao: 0.00760, unidadesQtd: 20 }
+    ];
+
+    const fracoes: FracaoIdealCota[] = fracoesModel.map(f => ({
+      tipo: f.tipo,
+      fracao: f.fracao,
+      unidadesQtd: f.unidadesQtd,
+      cotaMensal: Math.round((totalMensalNecessario * f.fracao) * 100) / 100
+    }));
+
+    const analiseIa = `Simulação atuarial para o exercício ${ano}: Com inflação projetada de ${inflacao.toFixed(1)}% (IPCA/FIPE) e reservas obrigatórias de ${reservaPct}% (Fundo de Reserva) e ${obrasPct}% (Fundo de Obras), o custo operacional mensal totalizará ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalMensalNecessario)}. A cota média sugerida é de ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cotaMediaUnitaria)} por unidade (${impactoPercentualAnoAnterior >= 0 ? '+' : ''}${impactoPercentualAnoAnterior}% vs período anterior). Proposta plenamente equilibrada para apresentação em AGO.`;
+
+    return {
+      anoExercicio: ano,
+      despesaMensalBase: Math.round(despesaMensalBase * 100) / 100,
+      fundoReservaMensal: Math.round(fundoReservaMensal * 100) / 100,
+      fundoObrasMensal: Math.round(fundoObrasMensal * 100) / 100,
+      totalMensalNecessario: Math.round(totalMensalNecessario * 100) / 100,
+      cotaMediaUnitaria,
+      impactoPercentualAnoAnterior,
+      fracoes,
+      analiseIa
+    };
+  }
+
+  public aprovarPrevisaoAgo(id: string, ataProtocolo: string): PrevisaoOrcamentaria | null {
+    const previsao = this.getPrevisaoOrcamentariaById(id);
+    if (!previsao) return null;
+
+    const agora = new Date().toISOString();
+    previsao.status = 'aprovada_ago';
+    previsao.aprovadoAgoEm = agora;
+    previsao.ataProtocolo = ataProtocolo || `ATA-AGO-${previsao.anoExercicio}-${Date.now().toString(36).toUpperCase()}`;
+
+    this.savePrevisaoOrcamentaria(previsao);
+    this.logAudit('admin', 'sistema', 'ORCAMENTO_APROVADO_AGO', `Previsão ${previsao.anoExercicio} aprovada em AGO sob protocolo ${previsao.ataProtocolo}`);
+    return previsao;
+  }
+
+  // ==========================================
+  // OPERAÇÕES DE CONTRATOS & LAUDOS REGULATÓRIOS
+  // ==========================================
+
+  public getContratosFornecedores(filtros?: { status?: string; categoria?: string; laudoObrigatorio?: boolean }): ContratoFornecedor[] {
+    let sql = 'SELECT * FROM contratos_fornecedores WHERE 1=1';
+    const params: any[] = [];
+
+    if (filtros?.categoria) {
+      sql += ' AND servicoCategoria = ?';
+      params.push(filtros.categoria);
+    }
+    if (filtros?.laudoObrigatorio !== undefined) {
+      sql += ' AND laudoObrigatorioPorLei = ?';
+      params.push(filtros.laudoObrigatorio ? 1 : 0);
+    }
+    sql += ' ORDER BY dataVencimento ASC';
+
+    const rows = this.db.prepare(sql).all(...params) as any[];
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const lista: ContratoFornecedor[] = rows.map(r => {
+      let alertaDias: number[] = [60, 30, 15];
+      let alertasDisp: string[] = [];
+      try { alertaDias = r.alertaDiasAntecedenciaJson ? JSON.parse(r.alertaDiasAntecedenciaJson) : [60, 30, 15]; } catch (e) {}
+      try { alertasDisp = r.alertasDisparadosJson ? JSON.parse(r.alertasDisparadosJson) : []; } catch (e) {}
+
+      // Cálculo dinâmico de dias para vencer
+      const dtVenc = new Date(r.dataVencimento);
+      dtVenc.setHours(0, 0, 0, 0);
+      const diffMs = dtVenc.getTime() - hoje.getTime();
+      const diasParaVencer = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+      let statusCalculado = r.status;
+      if (statusCalculado !== 'renovado') {
+        if (diasParaVencer < 0) {
+          statusCalculado = 'vencido';
+        } else if (diasParaVencer <= 30) {
+          statusCalculado = 'vence_em_breve';
+        } else {
+          statusCalculado = 'vigente';
+        }
+      }
+
+      return {
+        id: r.id,
+        fornecedorNome: r.fornecedorNome,
+        cnpj: r.cnpj || undefined,
+        servicoCategoria: r.servicoCategoria as CategoriaServicoContrato,
+        descricao: r.descricao,
+        valorMensal: Number(r.valorMensal),
+        valorTotalAnual: Number(r.valorTotalAnual),
+        dataInicio: r.dataInicio,
+        dataVencimento: r.dataVencimento,
+        renovacaoAutomatica: Boolean(r.renovacaoAutomatica),
+        contatoNome: r.contatoNome,
+        contatoTelefone: r.contatoTelefone,
+        contatoEmail: r.contatoEmail || undefined,
+        status: statusCalculado,
+        laudoObrigatorioPorLei: Boolean(r.laudoObrigatorioPorLei),
+        artigoLegal: r.artigoLegal || undefined,
+        apoliceNumero: r.apoliceNumero || undefined,
+        seguradoraNome: r.seguradoraNome || undefined,
+        arquivoAnexoUrl: r.arquivoAnexoUrl || undefined,
+        diasParaVencer,
+        alertaDiasAntecedencia: alertaDias,
+        alertasDisparados: alertasDisp,
+        criadoEm: r.criadoEm
+      };
+    });
+
+    if (filtros?.status) {
+      return lista.filter(c => c.status === filtros.status);
+    }
+    return lista;
+  }
+
+  public getContratoFornecedorById(id: string): ContratoFornecedor | null {
+    const stmt = this.db.prepare('SELECT * FROM contratos_fornecedores WHERE id = ? LIMIT 1');
+    const r = stmt.get(id) as any;
+    if (!r) return null;
+
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const dtVenc = new Date(r.dataVencimento);
+    dtVenc.setHours(0, 0, 0, 0);
+    const diffMs = dtVenc.getTime() - hoje.getTime();
+    const diasParaVencer = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+    let statusCalculado = r.status;
+    if (statusCalculado !== 'renovado') {
+      if (diasParaVencer < 0) {
+        statusCalculado = 'vencido';
+      } else if (diasParaVencer <= 30) {
+        statusCalculado = 'vence_em_breve';
+      } else {
+        statusCalculado = 'vigente';
+      }
+    }
+
+    let alertaDias: number[] = [60, 30, 15];
+    let alertasDisp: string[] = [];
+    try { alertaDias = r.alertaDiasAntecedenciaJson ? JSON.parse(r.alertaDiasAntecedenciaJson) : [60, 30, 15]; } catch (e) {}
+    try { alertasDisp = r.alertasDisparadosJson ? JSON.parse(r.alertasDisparadosJson) : []; } catch (e) {}
+
+    return {
+      id: r.id,
+      fornecedorNome: r.fornecedorNome,
+      cnpj: r.cnpj || undefined,
+      servicoCategoria: r.servicoCategoria as CategoriaServicoContrato,
+      descricao: r.descricao,
+      valorMensal: Number(r.valorMensal),
+      valorTotalAnual: Number(r.valorTotalAnual),
+      dataInicio: r.dataInicio,
+      dataVencimento: r.dataVencimento,
+      renovacaoAutomatica: Boolean(r.renovacaoAutomatica),
+      contatoNome: r.contatoNome,
+      contatoTelefone: r.contatoTelefone,
+      contatoEmail: r.contatoEmail || undefined,
+      status: statusCalculado,
+      laudoObrigatorioPorLei: Boolean(r.laudoObrigatorioPorLei),
+      artigoLegal: r.artigoLegal || undefined,
+      apoliceNumero: r.apoliceNumero || undefined,
+      seguradoraNome: r.seguradoraNome || undefined,
+      arquivoAnexoUrl: r.arquivoAnexoUrl || undefined,
+      diasParaVencer,
+      alertaDiasAntecedencia: alertaDias,
+      alertasDisparados: alertasDisp,
+      criadoEm: r.criadoEm
+    };
+  }
+
+  public saveContratoFornecedor(contrato: ContratoFornecedor): void {
+    const stmt = this.db.prepare(`
+      INSERT INTO contratos_fornecedores (
+        id, fornecedorNome, cnpj, servicoCategoria, descricao, valorMensal, valorTotalAnual,
+        dataInicio, dataVencimento, renovacaoAutomatica, contatoNome, contatoTelefone,
+        contatoEmail, status, laudoObrigatorioPorLei, artigoLegal, apoliceNumero,
+        seguradoraNome, arquivoAnexoUrl, alertaDiasAntecedenciaJson, alertasDisparadosJson, criadoEm
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        fornecedorNome = excluded.fornecedorNome,
+        cnpj = excluded.cnpj,
+        servicoCategoria = excluded.servicoCategoria,
+        descricao = excluded.descricao,
+        valorMensal = excluded.valorMensal,
+        valorTotalAnual = excluded.valorTotalAnual,
+        dataInicio = excluded.dataInicio,
+        dataVencimento = excluded.dataVencimento,
+        renovacaoAutomatica = excluded.renovacaoAutomatica,
+        contatoNome = excluded.contatoNome,
+        contatoTelefone = excluded.contatoTelefone,
+        contatoEmail = excluded.contatoEmail,
+        status = excluded.status,
+        laudoObrigatorioPorLei = excluded.laudoObrigatorioPorLei,
+        artigoLegal = excluded.artigoLegal,
+        apoliceNumero = excluded.apoliceNumero,
+        seguradoraNome = excluded.seguradoraNome,
+        arquivoAnexoUrl = excluded.arquivoAnexoUrl,
+        alertaDiasAntecedenciaJson = excluded.alertaDiasAntecedenciaJson,
+        alertasDisparadosJson = excluded.alertasDisparadosJson;
+    `);
+
+    stmt.run(
+      contrato.id,
+      contrato.fornecedorNome,
+      contrato.cnpj || null,
+      contrato.servicoCategoria,
+      contrato.descricao,
+      contrato.valorMensal,
+      contrato.valorTotalAnual || (contrato.valorMensal * 12),
+      contrato.dataInicio,
+      contrato.dataVencimento,
+      contrato.renovacaoAutomatica ? 1 : 0,
+      contrato.contatoNome,
+      contrato.contatoTelefone,
+      contrato.contatoEmail || null,
+      contrato.status || 'vigente',
+      contrato.laudoObrigatorioPorLei ? 1 : 0,
+      contrato.artigoLegal || null,
+      contrato.apoliceNumero || null,
+      contrato.seguradoraNome || null,
+      contrato.arquivoAnexoUrl || null,
+      JSON.stringify(contrato.alertaDiasAntecedencia || [60, 30, 15]),
+      JSON.stringify(contrato.alertasDisparados || []),
+      contrato.criadoEm || new Date().toISOString()
+    );
+  }
+
+  public renovarContratoFornecedor(id: string, novaDataVencimento: string, novoValorMensal?: number): ContratoFornecedor | null {
+    const contrato = this.getContratoFornecedorById(id);
+    if (!contrato) return null;
+
+    contrato.dataInicio = contrato.dataVencimento;
+    contrato.dataVencimento = novaDataVencimento;
+    if (novoValorMensal && novoValorMensal > 0) {
+      contrato.valorMensal = novoValorMensal;
+      contrato.valorTotalAnual = novoValorMensal * 12;
+    }
+    contrato.status = 'vigente';
+    this.saveContratoFornecedor(contrato);
+    this.logAudit('admin', 'sistema', 'CONTRATO_RENOVADO', `Contrato ${contrato.fornecedorNome} renovado até ${novaDataVencimento}`);
+    return this.getContratoFornecedorById(id);
+  }
+
+  public verificarAlertasContratos(): AlertaContrato[] {
+    const contratos = this.getContratosFornecedores();
+    const alertasGerados: AlertaContrato[] = [];
+    const agoraStr = new Date().toISOString();
+
+    for (const c of contratos) {
+      const dias = c.diasParaVencer ?? 999;
+      if (dias <= 60 && c.status !== 'renovado') {
+        const severidade: 'info' | 'alerta' | 'critico' = dias <= 7 ? 'critico' : dias <= 30 ? 'alerta' : 'info';
+        const alerta: AlertaContrato = {
+          id: `alt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          contratoId: c.id,
+          fornecedorNome: c.fornecedorNome,
+          servicoCategoria: c.servicoCategoria,
+          dataVencimento: c.dataVencimento,
+          diasRestantes: dias,
+          severidade,
+          notificadoWhatsapp: true,
+          criadoEm: agoraStr
+        };
+        alertasGerados.push(alerta);
+
+        // Registra alerta disparado se ainda não registrado
+        if (!c.alertasDisparados) c.alertasDisparados = [];
+        c.alertasDisparados.push(agoraStr);
+        this.saveContratoFornecedor(c);
+      }
+    }
+
+    return alertasGerados;
   }
 }

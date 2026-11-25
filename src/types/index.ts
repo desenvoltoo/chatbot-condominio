@@ -588,3 +588,110 @@ export interface DossieLGPD {
   geradoEm: string;
   hashValidador: string;
 }
+
+// ==========================================
+// MÓDULO 1: PREVISÃO ORÇAMENTÁRIA & SIMULADOR DE COTA IA
+// ==========================================
+export interface ItemOrcamento {
+  id?: string;
+  categoria: 'pessoal_folha' | 'concessionarias' | 'manutencao_conservacao' | 'seguros_laudos' | 'administrativo' | 'fundo_reserva' | 'obras_melhorias';
+  descricao: string;
+  valorPrevistoMensal?: number;
+  valorPrevistoAnual: number;
+  valorRealizadoAcumulado: number;
+  percentualDesvio?: number;
+}
+
+export interface FracaoIdealCota {
+  tipo: string; // Ex: "Apto Padrão 2D", "Apto 3D", "Cobertura Duplex"
+  fracao: number; // Ex: 0.00385
+  cotaMensal: number;
+  unidadesQtd: number;
+}
+
+export interface PrevisaoOrcamentaria {
+  id: string;
+  anoExercicio: number; // Ex: 2026, 2027
+  titulo: string;
+  status: 'em_estudo' | 'aprovada_ago' | 'encerrada';
+  despesasOrcadasTotal: number;
+  receitasPrevistasTotal: number;
+  totalUnidades: number;
+  cotaSugeridaUnitaria: number;
+  fundoReservaPercentual: number; // Padrão: 10%
+  fundoObrasPercentual: number; // Padrão: 5%
+  inflacaoProjetada: number; // Padrão: 4.5% IPCA
+  parecerIa?: string;
+  itens: ItemOrcamento[];
+  fracoes?: FracaoIdealCota[];
+  aprovadoAgoEm?: string;
+  ataProtocolo?: string;
+  criadoEm: string;
+}
+
+export interface SimulacaoCotaResultado {
+  anoExercicio: number;
+  despesaMensalBase: number;
+  fundoReservaMensal: number;
+  fundoObrasMensal: number;
+  totalMensalNecessario: number;
+  cotaMediaUnitaria: number;
+  impactoPercentualAnoAnterior: number;
+  fracoes: FracaoIdealCota[];
+  analiseIa: string;
+}
+
+// ==========================================
+// MÓDULO 3: GESTÃO DE CONTRATOS, LAUDOS & SEGURO PREDIAL
+// ==========================================
+export type CategoriaServicoContrato =
+  | 'elevadores'
+  | 'seguro_predial'
+  | 'avcb_bombeiros'
+  | 'spda_para_raios'
+  | 'caixa_dagua'
+  | 'portaria_seguranca'
+  | 'limpeza_conservacao'
+  | 'gerador'
+  | 'portoes_cameras'
+  | 'dedetizacao'
+  | 'gas_encanado'
+  | 'outros';
+
+export interface ContratoFornecedor {
+  id: string;
+  fornecedorNome: string;
+  cnpj?: string;
+  servicoCategoria: CategoriaServicoContrato;
+  descricao: string;
+  valorMensal: number;
+  valorTotalAnual: number;
+  dataInicio: string;
+  dataVencimento: string;
+  renovacaoAutomatica: boolean;
+  contatoNome: string;
+  contatoTelefone: string;
+  contatoEmail?: string;
+  status: 'vigente' | 'vence_em_breve' | 'vencido' | 'renovado';
+  laudoObrigatorioPorLei: boolean;
+  artigoLegal?: string;
+  apoliceNumero?: string;
+  seguradoraNome?: string;
+  arquivoAnexoUrl?: string;
+  diasParaVencer?: number;
+  alertaDiasAntecedencia: number[]; // Ex: [60, 30, 15]
+  alertasDisparados: string[]; // Histórico de datas em que o alerta foi disparado
+  criadoEm: string;
+}
+
+export interface AlertaContrato {
+  id: string;
+  contratoId: string;
+  fornecedorNome: string;
+  servicoCategoria: CategoriaServicoContrato;
+  dataVencimento: string;
+  diasRestantes: number;
+  severidade: 'info' | 'alerta' | 'critico';
+  notificadoWhatsapp: boolean;
+  criadoEm: string;
+}
