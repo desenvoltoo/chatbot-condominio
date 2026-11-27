@@ -6260,7 +6260,12 @@
             </div>
 
             <div class="space-y-2 pt-2">
-              <label class="text-slate-400 font-semibold block text-xs">System Prompt Principal do Agente Condominial Autônomo:</label>
+              <div class="flex items-center justify-between">
+                <label class="text-slate-400 font-semibold block text-xs">System Prompt Principal do Agente Condominial Autônomo:</label>
+                <button type="button" onclick="restaurarSystemPromptPadrao()" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold cursor-pointer flex items-center gap-1 transition-colors" title="Restaurar prompt padrão de fábrica">
+                  <span>🔄</span> <span>Restaurar Prompt Padrão</span>
+                </button>
+              </div>
               <textarea id="aiSystemPrompt" rows="6" class="w-full bg-[#0a0e18] border border-white/[0.08] rounded-xl p-3 text-xs text-white font-mono">Você é o CondoVolto AI, assistente inteligente oficial do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP predial.
 Você opera com alta autonomia e precisão operacional, resolvendo as solicitações dos condôminos com base estrita nos regulamentos do condomínio:
 
@@ -6525,7 +6530,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Configurações da Plataforma</h1>
             <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
-              Gerencie a carteira de condomínios integrados ao ERP Siscon, a documentação RAG e as regras de inteligência artificial.
+              Gerencie a governança de privacidade LGPD, a conexão WhatsApp (Evolution API), a integração com o ERP Siscon e os parâmetros financeiros de cobrança.
             </p>
           </div>
 
@@ -6861,127 +6866,44 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             </div>
           </div>
 
-          <!-- CARD: MOTOR DE INTELIGÊNCIA ARTIFICIAL & PROVEDOR NEURAL (SELEÇÃO POR CARDS) -->
-          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 shadow-xs space-y-5">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
+          <!-- CARD: MOTOR DE INTELIGÊNCIA ARTIFICIAL & PROVEDOR NEURAL (CENTRALIZADO NO HUB MULTI-IA) -->
+          <div class="p-6 rounded-3xl bg-white dark:bg-[#111625] border border-indigo-200 dark:border-indigo-500/30 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/10">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg border border-indigo-200 dark:border-indigo-500/30">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-xl border border-indigo-200 dark:border-indigo-500/30">
                   ⚡
                 </div>
                 <div>
-                  <h2 class="text-base font-bold text-slate-900 dark:text-white">Motor de Inteligência Artificial & Provedor</h2>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">Clique no card do provedor desejado para carregar os parâmetros e conectar sua chave.</p>
+                  <div class="flex items-center gap-2">
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white">Motor de Inteligência Artificial & Agente</h2>
+                    <span id="aiEngineStatusBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30">
+                      GPT-4o ATIVO
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Centralizado como Fonte Única de Verdade no módulo dedicado <strong>Hub Multi-IA</strong>.</p>
                 </div>
               </div>
-              <span id="aiEngineStatusBadge" class="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30">
-                GPT-4o ATIVO
-              </span>
+              <button type="button" onclick="switchTab('ai')" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center gap-2 cursor-pointer shrink-0">
+                <span>Configurar Agente no Hub Multi-IA</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
             </div>
 
-            <!-- Presets Rápidos de Provedor Clicáveis em Cards -->
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">Selecione o Provedor Neural (Clique no Card):</label>
-              <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5" id="containerConfigProviderCards">
-                <button type="button" onclick="aplicarPresetIA('openai')" id="cardProvider_openai" class="p-3 rounded-2xl border-2 border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40 text-left cursor-pointer shadow-sm ring-2 ring-indigo-500/20 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>OpenAI</span>
-                    <span class="text-[10px] text-indigo-600 dark:text-indigo-400 font-mono">Recomendado</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">GPT-4o & Mini</span>
-                </button>
-
-                <button type="button" onclick="aplicarPresetIA('anthropic')" id="cardProvider_anthropic" class="p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-400 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>Anthropic</span>
-                    <span class="text-[10px] text-amber-500 font-mono">Claude 3.5</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Sonnet & Haiku</span>
-                </button>
-
-                <button type="button" onclick="aplicarPresetIA('google')" id="cardProvider_google" class="p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-400 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>Google</span>
-                    <span class="text-[10px] text-cyan-500 font-mono">Gemini</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">1.5 Flash / Pro</span>
-                </button>
-
-                <button type="button" onclick="aplicarPresetIA('groq')" id="cardProvider_groq" class="p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-400 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>Groq</span>
-                    <span class="text-[10px] text-emerald-500 font-mono">Ultra-Rápido</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Llama 3.3 70B</span>
-                </button>
-
-                <button type="button" onclick="aplicarPresetIA('ollama')" id="cardProvider_ollama" class="p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-400 transition-all">
-                  <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center justify-between">
-                    <span>Ollama / Local</span>
-                    <span class="text-[10px] text-purple-500 font-mono">Privativo</span>
-                  </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Servidor Próprio</span>
-                </button>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#07090e] border border-slate-200/80 dark:border-white/10 space-y-1">
+                <span class="text-slate-400 text-[11px]">Provedores & Chaves de API:</span>
+                <p class="font-bold text-slate-800 dark:text-slate-200">OpenAI, Anthropic, Gemini, Groq, Ollama</p>
+                <span class="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium">● Configuração Unificada de API Keys</span>
               </div>
-            </div>
-
-            <!-- Campos Técnicos do Modelo -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label for="cfgAIProvider" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Provedor Selecionado</label>
-                <select id="cfgAIProvider" onchange="atualizarModelosPorProvedor(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-semibold text-xs focus:ring-2 focus:ring-indigo-500">
-                  <option value="openai" selected>OpenAI (GPT-4o, GPT-4o-mini)</option>
-                  <option value="anthropic">Anthropic (Claude 3.5 Sonnet, Haiku)</option>
-                  <option value="google">Google Gemini (Gemini 1.5 Pro, Flash)</option>
-                  <option value="groq">Groq Cloud (Llama 3.3 70B Versatile)</option>
-                  <option value="custom">Provedor Customizado / Compatível OpenAI</option>
-                </select>
+              <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#07090e] border border-slate-200/80 dark:border-white/10 space-y-1">
+                <span class="text-slate-400 text-[11px]">Governança & Autonomia:</span>
+                <p class="font-bold text-slate-800 dark:text-slate-200">3 Níveis Estritos de Risco</p>
+                <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">● Human-in-the-Loop para Financeiro</span>
               </div>
-
-              <div>
-                <label for="cfgAIModel" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Modelo Neural</label>
-                <input type="text" id="cfgAIModel" value="gpt-4o" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs focus:ring-2 focus:ring-indigo-500" />
-              </div>
-
-              <div class="sm:col-span-2">
-                <label for="cfgAIApiKey" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Chave de API do Provedor (API Key)</label>
-                <div class="relative">
-                  <input type="password" id="cfgAIApiKey" value="sk-proj-condovolto-live-ai-key-secure" class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs focus:ring-2 focus:ring-indigo-500" />
-                  <button type="button" onclick="togglePasswordVisibility('cfgAIApiKey')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer" title="Mostrar/Ocultar chave">👁️</button>
-                </div>
-              </div>
-
-              <div>
-                <label for="cfgAIBaseUrl" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Endpoint Base URL (Opcional)</label>
-                <input type="text" id="cfgAIBaseUrl" value="https://api.openai.com/v1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs" />
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <div class="flex items-center justify-between mb-1.5">
-                    <label for="cfgAITemperature" class="text-xs font-semibold text-slate-700 dark:text-slate-300">Temperatura</label>
-                    <span id="tempValueDisplay" class="text-[11px] font-mono font-bold text-indigo-600 dark:text-indigo-400">0.2</span>
-                  </div>
-                  <input type="range" id="cfgAITemperature" min="0.0" max="1.0" step="0.05" value="0.2" oninput="document.getElementById('tempValueDisplay').innerText = this.value" class="w-full accent-indigo-600" />
-                  <span class="text-[10px] text-slate-400 block mt-0.5">0.2 = Mais factual e preciso</span>
-                </div>
-
-                <div>
-                  <label for="cfgAIMaxTokens" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Max Tokens</label>
-                  <input type="number" id="cfgAIMaxTokens" value="1024" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-200 font-mono text-xs" />
-                </div>
-              </div>
-            </div>
-
-            <!-- Botão Testar Inferência da IA & Salvar -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-white/10 text-xs">
-              <span id="aiLatencyResult" class="text-slate-500 dark:text-slate-400 font-mono text-[11px]">Latência média: 320ms • Conexão estável</span>
-              <div class="flex items-center gap-2">
-                <button type="button" onclick="testarConexaoIACompleta()" class="px-4 py-2 rounded-xl border border-indigo-500/40 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-bold transition-all flex items-center gap-1.5 cursor-pointer">
-                  <span>⚡</span> Testar Conexão IA
-                </button>
-                <button type="button" onclick="salvarConfiguracoesIACondo()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
-                  <span>💾</span> Salvar Motor de IA
-                </button>
+              <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#07090e] border border-slate-200/80 dark:border-white/10 space-y-1">
+                <span class="text-slate-400 text-[11px]">Persona & System Prompt:</span>
+                <p class="font-bold text-slate-800 dark:text-slate-200">CondoVolto Autonomous Engine</p>
+                <span class="text-[10px] text-cyan-600 dark:text-cyan-400 font-medium">● Guardrails Anti-Alucinação</span>
               </div>
             </div>
           </div>
@@ -7580,8 +7502,25 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
 
     function salvarConfiguracoesIA(e) {
       if (e) e.preventDefault();
+      const prov = document.getElementById('aiProviderSelect')?.value || 'openai';
+      const model = document.getElementById('aiModelName')?.value || 'gpt-4o-mini';
+      const key = document.getElementById('aiApiKey')?.value || '';
+      const url = document.getElementById('aiBaseUrl')?.value || '';
+      const temp = document.getElementById('aiTemperature')?.value || '0.2';
+      const tokens = document.getElementById('aiMaxTokens')?.value || '600';
+      const prompt = document.getElementById('aiSystemPrompt')?.value || '';
+      const guardrails = document.getElementById('aiGuardrails')?.checked ?? true;
+
+      const config = { prov, model, key, url, temp, tokens, prompt, guardrails };
+      try {
+        localStorage.setItem('condovolto_ai_config', JSON.stringify(config));
+      } catch (err) {}
+
+      const badge = document.getElementById('aiEngineStatusBadge');
+      if (badge) badge.innerText = `${model.toUpperCase()} ATIVO`;
+
       confetti({ particleCount: 45, spread: 60 });
-      showToast('Configurações Salvas!', 'Políticas de autonomia e parâmetros da IA gravados com sucesso.', 'success');
+      showToast('Configurações Salvas!', `Parâmetros da IA (${model}) e System Prompt gravados com sucesso.`, 'success');
     }
 
     // ==========================================
@@ -12840,28 +12779,11 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     // FUNÇÕES DA CENTRAL DE CONFIGURAÇÕES (CONDOVOLTO MULTI-CONDOMÍNIO & IA)
     // ==============================================================
     function switchConfigSubtab(subtab) {
-      if (subtab === 'ia') {
+      if (subtab === 'ia' || subtab === 'ai') {
         switchTab('ai');
         return;
       }
-      const btnGerais = document.getElementById('btnSubtabGerais');
-      const btnIA = document.getElementById('btnSubtabIA');
-      const contentGerais = document.getElementById('subtab-content-gerais');
-      const contentIA = document.getElementById('subtab-content-ia');
-
-      if (!btnGerais || !btnIA || !contentGerais || !contentIA) return;
-
-      if (subtab === 'gerais') {
-        btnGerais.className = 'px-4 py-2 rounded-xl font-bold text-xs bg-slate-900 dark:bg-indigo-600 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5';
-        btnIA.className = 'px-4 py-2 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer flex items-center gap-1.5';
-        contentGerais.classList.remove('hidden');
-        contentIA.classList.add('hidden');
-      } else {
-        btnIA.className = 'px-4 py-2 rounded-xl font-bold text-xs bg-slate-900 dark:bg-indigo-600 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5';
-        btnGerais.className = 'px-4 py-2 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer flex items-center gap-1.5';
-        contentIA.classList.remove('hidden');
-        contentGerais.classList.add('hidden');
-      }
+      switchTab('configuracoes');
     }
 
     function onConfigCondoScopeChange(scope) {
@@ -12992,7 +12914,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         showToast('Preset Ollama Aplicado', 'Configurado para servidor privativo Ollama.', 'info');
       }
 
-      // Atualiza visualmente o card selecionado nos dois containers
+      // Atualiza visualmente o card selecionado no Hub Multi-IA
       const allPresets = ['openai', 'anthropic', 'google', 'groq', 'ollama'];
       allPresets.forEach(p => {
         const hubBtn = document.getElementById('aiCardProvider_' + p);
@@ -13003,14 +12925,6 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
             hubBtn.className = 'p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-400 transition-all';
           }
         }
-        const cfgBtn = document.getElementById('cardProvider_' + p);
-        if (cfgBtn) {
-          if (p === preset) {
-            cfgBtn.className = 'p-3 rounded-2xl border-2 border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40 text-left cursor-pointer shadow-sm ring-2 ring-indigo-500/20 transition-all';
-          } else {
-            cfgBtn.className = 'p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#07090e] text-left cursor-pointer hover:border-indigo-400 transition-all';
-          }
-        }
       });
     }
 
@@ -13019,30 +12933,31 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
     }
 
     function testarConexaoIACompleta() {
-      const latEl = document.getElementById('aiLatencyResult');
-      showToast('Testando IA', 'Disparando prompt de verificação ao modelo...', 'info');
-      if (latEl) latEl.innerText = 'Enviando teste de ping...';
-
-      setTimeout(() => {
-        const fakeLatency = Math.floor(Math.random() * 80) + 180;
-        if (latEl) latEl.innerText = 'Latência atual: ' + fakeLatency + 'ms • Inferência validada com sucesso';
-        showToast('IA Conectada com Sucesso!', 'Modelo respondeu em ' + fakeLatency + 'ms sem alucinação.', 'success');
-      }, 600);
+      testarConexaoIA();
     }
 
     function restaurarSystemPromptPadrao() {
-      const promptEl = document.getElementById('cfgSystemPrompt');
+      const promptEl = document.getElementById('aiSystemPrompt');
       if (promptEl) {
-        promptEl.value = `Você é o assistente virtual oficial do {condominio_nome}, operando integrado ao ERP Siscon.
-Seu tom é cordial, profissional, conciso e resolutivo.
-Você tem acesso aos seguintes dados do morador: {nome_morador}, {unidade}, {status_financeiro}.
-Regras obrigatórias:
-1. Responda apenas com base na Convenção, Regimento Interno e Atas da base RAG do {condominio_nome}. Se não souber com certeza, informe que encaminhará para o síndico.
-2. Ao solicitar 2ª via de boleto ou cota condominial, gere o código Pix Copia e Cola instantaneamente.
-3. Se o morador solicitar acordo de parcelamento, respeite o teto de tolerância e nunca ofereça desconto no valor principal da cota.
-4. Respeite estritamente a LGPD e nunca compartilhe dados de outras unidades.`;
-        showToast('System Prompt Restaurado', 'Prompt padrão multi-condomínio restabelecido.', 'info');
+        promptEl.value = `Você é o CondoVolto AI, assistente inteligente oficial do condomínio {{condominioNome}}, conectado em tempo real ao sistema ERP predial.
+Você opera com alta autonomia e precisão operacional, resolvendo as solicitações dos condôminos com base estrita nos regulamentos do condomínio:
+
+CAPACIDADES AUTÔNOMAS IMEDIATAS:
+1. Cobrança & Pix: Localiza cotas, recalcula encargos e emite chave Pix Copia e Cola e boleto PDF instantaneamente.
+2. Acordos de Dívidas: Simula parcelamentos (1x, 3x, 6x, 12x), formaliza a confissão e gera termo com hash de segurança SHA-256.
+3. Regimento & Convenção (RAG): Responde com base estrita no regimento interno sem alucinações.
+4. Reservas de Lazer: Confirma disponibilidade de churrasqueira e salão de festas na hora.
+5. Portaria & Visitantes: Gera passes temporários com QR Code e notifica pacotes recebidos.
+6. Assembleias: Registra e computa votos dos condôminos com recibo formal.
+
+CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
+{{contextoRAG}}`;
+        showToast('System Prompt Restaurado', 'Prompt padrão do CondoVolto AI restabelecido com sucesso.', 'info');
       }
+    }
+
+    function salvarConfiguracoesIACondo() {
+      salvarConfiguracoesIA();
     }
 
     async function exportarRelatorioCSV(endpoint, filename) {
