@@ -107,8 +107,8 @@
       min-width: 0 !important;
       width: 100% !important;
       max-width: 100% !important;
-      height: calc(100vh - 56px) !important;
-      max-height: calc(100vh - 56px) !important;
+      height: 100% !important;
+      max-height: 100% !important;
       min-height: 0 !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
@@ -147,7 +147,8 @@
     #chatMessagesStream {
       flex: 1 1 0% !important;
       min-height: 0 !important;
-      height: 100% !important;
+      height: auto !important;
+      max-height: 100% !important;
       overflow-y: auto !important;
       overflow-x: hidden !important;
       scroll-behavior: smooth;
@@ -481,58 +482,79 @@
       background-color: #F8F7F4 !important;
     }
 
-    /* BALÕES DE CHAT NO MODO CLARO */
+    /* BALÕES DE CHAT NO MODO CLARO - MÁXIMA NITIDEZ E CONTRASTE */
     html:not(.dark) .chat-bubble-user {
       background-color: #FFFFFF !important;
-      border: 1px solid #E2E8F0 !important;
+      border: 1px solid #CBD5E1 !important;
       color: #0F172A !important;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       letter-spacing: normal !important;
     }
     html:not(.dark) .chat-bubble-user p {
       color: #0F172A !important;
-      font-size: 13.5px !important;
-      font-weight: 450 !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       letter-spacing: normal !important;
       line-height: 1.55 !important;
+    }
+    html:not(.dark) .chat-bubble-user strong,
+    html:not(.dark) .chat-bubble-user .chat-bold {
+      color: #0F172A !important;
+      font-weight: 700 !important;
+    }
+    html:not(.dark) .chat-bubble-user code,
+    html:not(.dark) .chat-bubble-user .chat-code {
+      background-color: #F1F5F9 !important;
+      color: #0F172A !important;
+      border: 1px solid #CBD5E1 !important;
+      font-weight: 600 !important;
+    }
+    html:not(.dark) .chat-bubble-user a,
+    html:not(.dark) .chat-bubble-user .chat-link {
+      color: #4F46E5 !important;
+      text-decoration: underline !important;
+      font-weight: 600 !important;
     }
     html:not(.dark) .chat-bubble-user span.text-slate-400,
     html:not(.dark) .chat-bubble-user span.text-slate-500 {
       color: #64748B !important;
     }
-    html:not(.dark) .chat-bubble-user [class*="bg-black"] {
-      background-color: #F8FAFC !important;
-      border: 1px solid #E2E8F0 !important;
-    }
-    html:not(.dark) .chat-bubble-user [class*="bg-indigo-950"] {
-      background-color: #EEF2FF !important;
-      border: 1px solid #C7D2FE !important;
-      color: #1E1B4B !important;
-    }
-    html:not(.dark) .chat-bubble-user [class*="bg-indigo-950"] p {
-      color: #1E1B4B !important;
-    }
 
     html:not(.dark) .chat-bubble-agent {
-      background-color: #0F172A !important;
-      border: 1px solid #1E293B !important;
+      background-color: #1E293B !important;
+      border: 1px solid #334155 !important;
       color: #FFFFFF !important;
       box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15) !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       letter-spacing: normal !important;
     }
     html:not(.dark) .chat-bubble-agent p {
       color: #FFFFFF !important;
-      font-size: 13.5px !important;
-      font-weight: 450 !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       letter-spacing: normal !important;
       line-height: 1.55 !important;
     }
-    html:not(.dark) .chat-bubble-agent * {
-      color: #FFFFFF !important;
+    html:not(.dark) .chat-bubble-agent strong,
+    html:not(.dark) .chat-bubble-agent .chat-bold {
+      color: #67E8F9 !important;
+      font-weight: 700 !important;
+    }
+    html:not(.dark) .chat-bubble-agent code,
+    html:not(.dark) .chat-bubble-agent .chat-code {
+      background-color: rgba(255, 255, 255, 0.14) !important;
+      color: #E0F2FE !important;
+      border: 1px solid rgba(255, 255, 255, 0.22) !important;
+      font-weight: 600 !important;
+    }
+    html:not(.dark) .chat-bubble-agent a,
+    html:not(.dark) .chat-bubble-agent .chat-link {
+      color: #93C5FD !important;
+      text-decoration: underline !important;
+      font-weight: 600 !important;
     }
     html:not(.dark) .chat-bubble-agent .text-cyan-300,
     html:not(.dark) .chat-bubble-agent .text-cyan-400 {
@@ -952,32 +974,56 @@
       border: 1px solid #334155 !important;
       color: #F8FAFC !important;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       letter-spacing: normal !important;
     }
     html.dark .chat-bubble-user p {
       color: #F1F5F9 !important;
-      font-size: 13.5px !important;
-      font-weight: 450 !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       letter-spacing: normal !important;
       line-height: 1.55 !important;
+    }
+    html.dark .chat-bubble-user strong,
+    html.dark .chat-bubble-user .chat-bold {
+      color: #FFFFFF !important;
+      font-weight: 700 !important;
+    }
+    html.dark .chat-bubble-user code,
+    html.dark .chat-bubble-user .chat-code {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+      color: #F8FAFC !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      font-weight: 600 !important;
     }
     html.dark .chat-bubble-agent {
       background-color: #1E1B4B !important;
       border: 1px solid #4338CA !important;
       color: #FFFFFF !important;
       box-shadow: 0 4px 16px rgba(15, 23, 42, 0.4) !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       letter-spacing: normal !important;
     }
     html.dark .chat-bubble-agent p {
       color: #FFFFFF !important;
-      font-size: 13.5px !important;
-      font-weight: 450 !important;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       letter-spacing: normal !important;
       line-height: 1.55 !important;
+    }
+    html.dark .chat-bubble-agent strong,
+    html.dark .chat-bubble-agent .chat-bold {
+      color: #A5F3FC !important;
+      font-weight: 700 !important;
+    }
+    html.dark .chat-bubble-agent code,
+    html.dark .chat-bubble-agent .chat-code {
+      background-color: rgba(255, 255, 255, 0.14) !important;
+      color: #E0F2FE !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      font-weight: 600 !important;
     }
 
     /* Robustez do Sidebar contra colapso quebrado */
@@ -3324,7 +3370,7 @@
             </div>
             <div class="min-w-0 flex-1 overflow-hidden">
               <!-- Linha 1: Nome do Morador ou Grupo + Badge Financeiro/Comunidade + Sentimento -->
-              <div class="flex items-center gap-2 flex-nowrap min-w-0 overflow-hidden">
+              <div class="flex items-center gap-2 flex-nowrap min-w-0 overflow-hidden leading-tight">
                 <h2 id="chatHeaderName" class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate cursor-pointer hover:text-indigo-600 transition-colors shrink min-w-0" onclick="toggleDossieLateral(true)" title="Clique para ver o Dossiê 360°">Carlos Eduardo Silva</h2>
                 <span id="chatHeaderBadge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
                   Em Dia
@@ -3336,12 +3382,12 @@
                 </span>
               </div>
               <!-- Linha 2: Condomínio/Unidade • Carteira de Atendimento • Operador Responsável -->
-              <p id="chatHeaderSub" class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium flex items-center gap-1.5 flex-nowrap min-w-0 overflow-hidden">
-                <span id="chatHeaderCondoUnidade" class="truncate min-w-0">Residencial Jardins do Bosque • Apt 101 - Bloco A</span>
+              <p id="chatHeaderSub" class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium flex items-center gap-1.5 flex-nowrap min-w-0 overflow-hidden leading-tight">
+                <span id="chatHeaderCondoUnidade" class="truncate min-w-0">Bloco A • Apt 101</span>
                 <span class="text-slate-300 dark:text-slate-600 shrink-0">•</span>
                 <span id="chatHeaderCarteiraBadge" class="inline-flex items-center gap-1 font-medium text-slate-600 dark:text-slate-300 shrink-0">
                   <span id="chatHeaderCarteiraIcon">📂</span>
-                  <span id="chatHeaderCarteiraNome" class="truncate max-w-[130px]">Atendimento Geral</span>
+                  <span id="chatHeaderCarteiraNome" class="truncate max-w-[120px]">Atendimento</span>
                 </span>
                 <span class="text-slate-300 dark:text-slate-600 shrink-0">•</span>
                 <span id="chatHeaderOperadorNome" class="font-medium text-slate-600 dark:text-slate-300 shrink-0 truncate max-w-[120px]">👤 Mariana</span>
@@ -3351,16 +3397,6 @@
 
           <!-- Coluna Direita: Botões de Ação Direta (Sem Redundâncias e Totalmente Responsivos) -->
           <div class="flex items-center gap-1.5 shrink-0">
-            <!-- Botão Principal de Transferência & Atribuição de Operador -->
-            <button 
-              id="btnTransferirAtendimento" 
-              onclick="abrirModalAtribuirCarteira()" 
-              title="Transferir conversa para consultor humano ou alterar operador responsável"
-              class="px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border border-indigo-500/40 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-600/20 dark:hover:bg-indigo-600/30 text-indigo-700 dark:text-indigo-300 cursor-pointer shadow-2xs active:scale-95 shrink-0">
-              <svg class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-              <span class="hidden sm:inline">Transferir</span>
-            </button>
-
             <!-- Toggle Rápido de Autonomia IA vs Fila Humana -->
             <button 
               id="btnToggleHandoff" 
@@ -3379,6 +3415,16 @@
               class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-1.5 shadow-2xs shadow-emerald-600/30 cursor-pointer active:scale-95 shrink-0">
               <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span class="hidden sm:inline">Pix</span>
+            </button>
+
+            <!-- Botão Principal de Transferência & Atribuição de Operador -->
+            <button 
+              id="btnTransferirAtendimento" 
+              onclick="abrirModalAtribuirCarteira()" 
+              title="Transferir conversa para consultor humano ou alterar operador responsável"
+              class="px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border border-indigo-500/40 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-600/20 dark:hover:bg-indigo-600/30 text-indigo-700 dark:text-indigo-300 cursor-pointer shadow-2xs active:scale-95 shrink-0">
+              <svg class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              <span class="hidden sm:inline">Transferir</span>
             </button>
 
             <!-- Botão Concluir Atendimento com CSAT -->
@@ -10675,13 +10721,13 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
       // Negrito WhatsApp *texto*
-      escaped = escaped.replace(/\*([^\*]+)\*/g, '<strong class="font-bold text-indigo-900 dark:text-indigo-200">$1</strong>');
+      escaped = escaped.replace(/\*([^\*]+)\*/g, '<strong class="chat-bold font-bold">$1</strong>');
       // Itálico WhatsApp _texto_
       escaped = escaped.replace(/_([^_]+)_/g, '<em class="italic">$1</em>');
       // Monospace / Código `código`
-      escaped = escaped.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-slate-200 dark:bg-white/10 font-mono text-[11px]">$1</code>');
+      escaped = escaped.replace(/`([^`]+)`/g, '<code class="chat-code px-1.5 py-0.5 rounded font-mono text-[11px]">$1</code>');
       // Links clicáveis (http/https)
-      escaped = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="underline text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 break-all font-semibold">$1</a>');
+      escaped = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="chat-link underline font-semibold break-all">$1</a>');
       return escaped;
     }
 
@@ -10693,7 +10739,11 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (!conv) return;
 
       const nome = conv.pushName || conv.morador?.nome || 'Condômino';
-      const unit = conv.morador?.unidades?.[0] ? `${conv.morador.unidades[0].condominioNome} • ${conv.morador.unidades[0].bloco} ${conv.morador.unidades[0].numero}` : 'Condomínio';
+      let unitClean = 'Condomínio';
+      if (conv.morador?.unidades?.[0]) {
+        const u = conv.morador.unidades[0];
+        unitClean = `${u.bloco || ''} ${u.numero || ''}`.trim() || u.condominioNome;
+      }
       const unitShort = conv.morador?.unidades?.[0] ? `${conv.morador.unidades[0].bloco} ${conv.morador.unidades[0].numero}` : 'Unidade';
       const avatarUrl = conv.avatar || (nome.includes('Mariana') ? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80' : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80');
       const isFinOk = conv.statusFinanceiro === 'regular';
@@ -10704,10 +10754,7 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       if (headerName) headerName.innerText = nome;
       const headerCondoUnidade = document.getElementById('chatHeaderCondoUnidade');
       if (headerCondoUnidade) {
-        headerCondoUnidade.innerText = unit;
-      } else {
-        const headerSub = document.getElementById('chatHeaderSub');
-        if (headerSub) headerSub.innerText = unit;
+        headerCondoUnidade.innerText = unitClean;
       }
       const headerAvatar = document.getElementById('chatHeaderAvatar');
       if (headerAvatar) headerAvatar.src = avatarUrl;
@@ -10716,9 +10763,15 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const headerCarteiraIcon = document.getElementById('chatHeaderCarteiraIcon');
       if (headerCarteiraIcon) headerCarteiraIcon.innerText = conv.isGroup ? '👥' : '📂';
       const headerCarteiraNome = document.getElementById('chatHeaderCarteiraNome');
-      if (headerCarteiraNome) headerCarteiraNome.innerText = conv.carteiraNome || (conv.isGroup ? 'Grupos de WhatsApp' : 'Atendimento Geral');
+      if (headerCarteiraNome) {
+        const cNome = conv.carteiraNome || (conv.isGroup ? 'Grupos' : 'Atendimento');
+        headerCarteiraNome.innerText = cNome.split('&')[0].trim();
+      }
       const headerOperadorNome = document.getElementById('chatHeaderOperadorNome');
-      if (headerOperadorNome) headerOperadorNome.innerText = '👤 ' + (conv.assignedOperator || 'IA Autônoma');
+      if (headerOperadorNome) {
+        const op = conv.assignedOperator || 'IA Autônoma';
+        headerOperadorNome.innerText = '👤 ' + (op.includes('(') ? op.split('(')[0].trim() : op);
+      }
 
       const headerBadge = document.getElementById('chatHeaderBadge');
       if (headerBadge) {
@@ -11031,10 +11084,6 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const btn = document.getElementById('btnToggleHandoff');
       const text = document.getElementById('handoffText');
       const handoffDot = document.getElementById('handoffIndicatorDot');
-      const statusBar = document.getElementById('chatControlStatusBar');
-      const statusDot = document.getElementById('chatControlDot');
-      const statusText = document.getElementById('chatControlText');
-      const statusActionBtn = document.getElementById('chatControlActionBtn');
 
       if (handoffDot) {
         handoffDot.className = isHuman ? 'w-2 h-2 rounded-full bg-amber-400' : 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
@@ -11045,37 +11094,11 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
           btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-amber-500/40 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/20 cursor-pointer shadow-2xs shrink-0 active:scale-95';
         }
         if (text) text.innerText = 'Operador Humano';
-
-        if (statusBar) {
-          statusBar.className = 'px-4 py-1.5 border-t border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300 text-[11px] flex items-center justify-between transition-all';
-        }
-        if (statusDot) {
-          statusDot.className = 'w-2 h-2 rounded-full bg-amber-400 shrink-0';
-        }
-        if (statusText) {
-          statusText.innerHTML = '<strong>Atendimento Humano Ativo:</strong> A IA está pausada. Suas mensagens são enviadas diretamente ao morador.';
-        }
-        if (statusActionBtn) {
-          statusActionBtn.innerText = 'Devolver para IA';
-        }
       } else {
         if (btn) {
           btn.className = 'px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.04] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/[0.08] cursor-pointer shadow-2xs active:scale-95 shrink-0';
         }
         if (text) text.innerText = 'IA Autônoma';
-
-        if (statusBar) {
-          statusBar.className = 'px-4 py-1.5 border-t border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] flex items-center justify-between transition-all';
-        }
-        if (statusDot) {
-          statusDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0';
-        }
-        if (statusText) {
-          statusText.innerHTML = '<strong>IA Autônoma Ativa:</strong> O robô responde dúvidas de convenção, boletos e encomendas automaticamente.';
-        }
-        if (statusActionBtn) {
-          statusActionBtn.innerText = 'Pausar IA & Assumir';
-        }
       }
     }
 
@@ -12597,7 +12620,15 @@ CONTEXTO DO REGIMENTO INTERNO / CONVENÇÃO (RAG):
       const btnSecondary = document.getElementById('btnSmartActionSecondary');
       if (!textEl || !btnPrimary) return;
 
-      if (conv.remoteJid.includes('888888888') || conv.sentiment === 'risco_juridico') {
+      if (conv.isGroup) {
+        textEl.innerHTML = `Grupo Coletivo: <strong>${conv.pushName || 'Moradores'}</strong> (${conv.cotaValor || '48 membros'}). Mensagens coletivas sob moderação.`;
+        btnPrimary.innerHTML = `<svg class="w-3.5 h-3.5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> <span class="hidden sm:inline">Disparar </span><span>Comunicado</span>`;
+        btnPrimary.onclick = () => openBroadcastModal();
+        if (btnSecondary) {
+          btnSecondary.innerHTML = `<svg class="w-3.5 h-3.5 text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span class="hidden sm:inline">Membros</span>`;
+          btnSecondary.onclick = () => showToast('Membros do Grupo', '48 condôminos conectados no grupo oficial do condomínio.', 'info');
+        }
+      } else if (conv.remoteJid.includes('888888888') || conv.sentiment === 'risco_juridico') {
         textEl.innerHTML = `Débito de <strong>${conv.cotaValor || 'R$ 1.350,00'}</strong>. IA recomenda proposta de acordo.`;
         btnPrimary.innerHTML = `<svg class="w-3.5 h-3.5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> <span class="hidden sm:inline">Formalizar </span><span>Acordo</span>`;
         btnPrimary.onclick = () => executarAcaoSugerida('acordo');
